@@ -3,4 +3,4 @@ project(DongmenDB C)
 
 set(CMAKE_C_STANDARD 11)
 
-add_executable(DongmenDB main.c)
+add_executable(DongmenDB src/utils/tokenizer.c src/utils/tokenizer.h)
