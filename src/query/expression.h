@@ -7,20 +7,24 @@
 
 /*定义表达式级别的结构*/
 
-typedef struct TablesExpr_ TablesExpr;
+typedef struct TableExpr_ TableExpr;
+typedef struct WhereExpr_ WhereExpr;
+
 /*当next为null时结尾*/
-typedef struct TablesExpr_ {
+typedef struct TableExpr_ {
     char *db;
     char *schema;
     char *name;
-    TablesExpr *nextTable;
-} TablesExpr;
+    /*用于连接当前Table与nextTable的条件*/
+    WhereExpr *joinExpr;
+    TableExpr *nextTable;
+} TableExpr;
 
+typedef struct ValueExpr_ ValueExpr;
 typedef struct FieldsExpr_ FieldsExpr;
 typedef struct FieldsExpr_ {
-    char *name;
-    char *alias;
-    char *qualifier;
+    /*每一个field都是表达式*/
+    ValueExpr *valueExpr;
     FieldsExpr *nextField;
 } FieldsExpr;
 

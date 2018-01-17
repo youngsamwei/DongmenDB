@@ -18,7 +18,7 @@ typedef struct SelectStmt_ {
 } SelectStmt;
 
 typedef struct CreateStmt_ {
-    TableExpr *tableExpr;
+    TablesExpr *tableExpr;
     ColumnsExpr *columnsExpr;
     ConstraintsExpr *constraintsExpr;
 
