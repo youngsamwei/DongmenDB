@@ -11,7 +11,8 @@
 typedef struct SelectStmt_ {
     FieldsExpr *fieldsExpr;
     TablesExpr *tablesExpr;
-    WhereExpr *whereExpr;
+    /*返回真假的表达式*/
+    Expression *whereExpr;
     GroupExpr *groupExpr;
     OrderExpr *orderExpr;
 
