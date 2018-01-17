@@ -9,22 +9,18 @@
 /*
  * Tokenizer type.  You need to fill in the type as part of your implementation.
  */
-struct TokenizerT_ {
+typedef struct TokenizerT_ {
     char *inputStream;
     char *tokenBuffer;
     char *inputIter;
     char *bufferIter;
     int bufferSize;
-};
+} TokenT;
 
-struct TokenT_ {
+typedef struct TokenT_ {
     char *text;
     char *type;
-};
-
-typedef struct TokenT_ TokenT;
-typedef struct TokenizerT_ TokenizerT;
-
+}  TokenizerT;
 
 
 int isOctal(char curr);

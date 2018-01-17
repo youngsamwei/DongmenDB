@@ -1,7 +1,15 @@
 //
 // Created by Sam on 2018/1/16.
 //
-/*  from: https://github.com/MarcoGiancarli/tokenizer/blob/master/tokenizer.c
+/*
+ *  词法解析
+ *  将sql语句解析为：
+ *  关键字（DML，DDL，DCL等相关的关键字），
+ *  常量（数值，字符串等），
+ *  标识符（对象名称，字段名，数据库名称，约束名称等），
+ *  运算符（算术运算，逻辑运算，比较运算等）等。
+ *
+ * from: https://github.com/MarcoGiancarli/tokenizer/blob/master/tokenizer.c
  * tokenizer.c
  */
 #include <stdio.h>
@@ -21,7 +29,7 @@ int isOctal(char curr) {
 }
 
 
-/*
+/* 创建词法解析器
  * TKCreate creates a new TokenizerT object for a given token stream
  * (given as a string).
  *
