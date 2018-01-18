@@ -50,14 +50,13 @@ enum FuncType {
 };
 
 typedef struct TablesExpr_ TablesExpr;
-typedef struct WhereExpr_ WhereExpr;
 typedef struct Expression_ Expression;
 typedef struct TermExpr_ TermExpr;
 typedef struct BinaryExpr_ BinaryExpr;
 typedef struct UnaryExpr_ UnaryExpr;
 typedef struct FieldsExpr_ FieldsExpr;
 
-
+/*在select子句中使用的field*/
 typedef struct FieldsExpr_ {
     /*每一个field都是表达式*/
     Expression *expr;
@@ -131,11 +130,11 @@ typedef struct OrderExpr_ {
 } OrderExpr;
 
 typedef struct Constraints_ Constraints;
+/*描述在create table中使用的column*/
 typedef struct ColumnsExpr_ {
     enum data_type type;
     char *columnName;
     Constraints *constraints;
-
 } ColumnsExpr;
 
 enum constraint_type {

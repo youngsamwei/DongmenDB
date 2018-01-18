@@ -18,12 +18,13 @@ typedef struct SelectStmt_ {
 
 } SelectStmt;
 
+
 typedef struct CreateStmt_ {
     char *tableName;
     ColumnsExpr *columnsExpr;
     Constraints *constraints;
 
-} CreateStmt_;
+} CreateStmt;
 
 enum AlterType {
     ALTER_ADD,
@@ -32,8 +33,10 @@ enum AlterType {
 
 typedef struct AlterStmt_ {
     char *tableName;
-
+    enum AlterType type;
+    ColumnsExpr *columnsExpr;
 } AlterStmt;
+
 
 typedef struct DeleteStmt_ {
     char *tableName;
@@ -45,5 +48,29 @@ typedef struct UpdateStmt_ {
     SetExpr *setExpr;
     Expression *whereExpr;
 } UpdateStmt;
+
+
+SelectStmt *createSelectStmt(
+        FieldsExpr *fieldsExpr,
+        TablesExpr *tablesExpr,
+        Expression *whereExpr,
+        GroupExpr *groupExpr,
+        OrderExpr *orderExpr
+);
+
+CreateStmt *createCreateStmt(char *tableName,
+                            ColumnsExpr *columnsExpr,
+                            Constraints *constraints);
+
+AlterStmt *createAlterStmt(char *tableName, enum AlterType type,
+                          ColumnsExpr *columnsExpr);
+
+DeleteStmt *createDeleteStmt(char *tableName,
+                            Expression *whereExpr);
+
+UpdateStmt *createUpdateStmt(char *tableName,
+                            SetExpr *setExpr,
+                            Expression *whereExpr);
+
 
 #endif //DONGMENDB_STATEMENT_H
