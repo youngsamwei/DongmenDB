@@ -15,12 +15,12 @@ typedef struct TokenizerT_ {
     char *inputIter;
     char *bufferIter;
     int bufferSize;
-} TokenT;
+} TokenizerT;
 
 typedef struct TokenT_ {
     char *text;
     char *type;
-}  TokenizerT;
+} TokenT ;
 
 
 int isOctal(char curr);

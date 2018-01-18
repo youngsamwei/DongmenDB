@@ -19,25 +19,31 @@ typedef struct SelectStmt_ {
 } SelectStmt;
 
 typedef struct CreateStmt_ {
-    TablesExpr *tableExpr;
+    char *tableName;
     ColumnsExpr *columnsExpr;
-    ConstraintsExpr *constraintsExpr;
+    Constraints *constraints;
 
 } CreateStmt_;
 
+enum AlterType {
+    ALTER_ADD,
+    ALTER_REMOVE
+};
+
 typedef struct AlterStmt_ {
+    char *tableName;
 
 } AlterStmt;
 
 typedef struct DeleteStmt_ {
-    TablesExpr *tablesExpr;
-    WhereExpr *whereExpr;
+    char *tableName;
+    Expression *whereExpr;
 } DeleteStmt;
 
 typedef struct UpdateStmt_ {
-    TablesExpr *tablesExpr;
+    char *tableName;
     SetExpr *setExpr;
-    WhereExpr *whereExpr;
+    Expression *whereExpr;
 } UpdateStmt;
 
 #endif //DONGMENDB_STATEMENT_H
