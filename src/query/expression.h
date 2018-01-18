@@ -22,20 +22,92 @@ enum OpType {
             OP_AND,
     OP_OR,
     OP_NOT,
-    /*原子项*/
-            OP_TERM,
+    /*字符串连接*/
+            OP_CONCAT,
     /*算术运算*/
             OP_PLUS,
     OP_MINUS,
     OP_MULTIPLY,
     OP_DIVIDE,
     OP_NEG,
-    /*字符串连接*/
-            OP_CONCAT
+    /*原子项*/
+            OP_TERM,
 };
+typedef enum {
+    /* 算数运算 */
+            oper_lparen = 0,    // 左括号
+    oper_rparen,        // 右括号
+    oper_plus,          // 加
+    oper_minus,         // 减
+    oper_multiply,      // 乘
+    oper_divide,        // 除
+    oper_mod,           // 模
+    oper_power,         // 幂
+    oper_positive,      // 正号
+    oper_negative,      // 负号
+    oper_factorial,     // 阶乘
+    /* 关系运算 */
+            oper_lt,            // 小于
+    oper_gt,            // 大于
+    oper_eq,            // 等于
+    oper_ne,            // 不等于
+    oper_le,            // 不大于
+    oper_ge,            // 不小于
+    /* 逻辑运算 */
+            oper_and,           // 且
+    oper_or,            // 或
+    oper_not,           // 非
+    /* 赋值 */
+            oper_assignment,    // 赋值
+    oper_min            // 栈底
+} operator_type;
+typedef enum {
+    left2right,
+    right2left
+} associativity;
+typedef struct {
+    int numbers;        // 操作数
+    int icp;            // 优先级
+    int isp;            // 优先级
+    associativity ass;  // 结合性
+    operator_type oper; // 操作符
+} OPERATOR;
+
+// in expression.c
+static const OPERATOR operators[] = {
+        /* 算数运算 */
+        {2, 17, 1, left2right, oper_lparen},     // 左括号
+        {2, 17, 17, left2right, oper_rparen},    // 右括号
+        {2, 12, 12, left2right, oper_plus},      // 加
+        {2, 12, 12, left2right, oper_minus},     // 减
+        {2, 13, 13, left2right, oper_multiply},  // 乘
+        {2, 13, 13, left2right, oper_divide},    // 除
+        {2, 13, 13, left2right, oper_mod},       // 模
+        {2, 14, 14, left2right, oper_power},     // 幂
+        {1, 16, 15, right2left, oper_positive},  // 正号
+        {1, 16, 15, right2left, oper_negative},  // 负号
+        {1, 16, 15, left2right, oper_factorial}, // 阶乘
+        /* 关系运算 */
+        {2, 10, 10, left2right, oper_lt},        // 小于
+        {2, 10, 10, left2right, oper_gt},        // 大于
+        {2, 9, 9, left2right, oper_eq},          // 等于
+        {2, 9, 9, left2right, oper_ne},          // 不等于
+        {2, 10, 10, left2right, oper_le},        // 不大于
+        {2, 10, 10, left2right, oper_ge},        // 不小于
+        /* 逻辑运算 */
+        {2, 5, 5, left2right, oper_and},         // 且
+        {2, 4, 4, left2right, oper_or},          // 或
+        {1, 15, 15, right2left, oper_not},       // 非
+        /* 赋值 */
+        // BASIC 中赋值语句不属于表达式！
+        {2, 2, 2, right2left, oper_assignment},  // 赋值
+        /* 最小优先级 */
+        {2, 0, 0, right2left, oper_min}          // 栈底
+};
+
 enum TermType {
-    TERM_LITERAL,
-    TERM_ID,
+    TERM_LITERAL, /*值（数值，字符串）*/
+    TERM_ID,  /*标识符（字段*/
     TERM_NULL,
     TERM_COLREF,
     TERM_FUNC
@@ -48,124 +120,5 @@ enum FuncType {
     FUNC_AVG,
     FUNC_SUM
 };
-
-typedef struct TablesExpr_ TablesExpr;
-typedef struct Expression_ Expression;
-typedef struct TermExpr_ TermExpr;
-typedef struct BinaryExpr_ BinaryExpr;
-typedef struct UnaryExpr_ UnaryExpr;
-typedef struct FieldsExpr_ FieldsExpr;
-
-/*在select子句中使用的field*/
-typedef struct FieldsExpr_ {
-    /*每一个field都是表达式*/
-    Expression *expr;
-    char *alias;
-    FieldsExpr *nextField;
-} FieldsExpr;
-
-/*当next为null时结尾*/
-typedef struct TablesExpr_ {
-    char *db;
-    char *schema;
-    char *name;
-    /*用于连接当前Table与nextTable的条件*/
-    Expression *joinExpr;
-    TablesExpr *nextTable;
-} TablesExpr;
-
-typedef struct Expression_ {
-    /*当为OP_TERM时，nextExpression=null*/
-    enum OpType opType;
-    union {
-        TermExpr *term;
-        BinaryExpr *binaryExpr;
-        UnaryExpr *unaryExpr;
-    } expr;
-
-    Expression *nextExpression;
-} Expression;
-
-typedef struct Func {
-    enum FuncType t;
-    Expression *expr;
-} Func;
-
-/*原子表达式：标识符，常量，函数*/
-typedef struct TermExpr_ {
-    enum TermType t;
-    union {
-        char *id;
-        Literal *val;
-        Func f;
-    };
-} TermExpr;
-
-/*二元操作符表达式*/
-typedef struct BinaryExpr_ {
-    enum OpType opType;
-    Expression *leftExpr, *rightExpr;
-} BinaryExpr;
-
-/*一元操作符表达式*/
-typedef struct UnaryExpr_ {
-    enum OpType opType;
-    Expression *expr;
-} UnaryExpr;
-
-typedef struct GroupExpr_ GroupExpr;
-typedef struct GroupExpr_ {
-    Expression *expr;
-    GroupExpr *next;
-} GroupExpr;
-
-enum OrderType {
-    ORDER_BY_ASC, ORDER_BY_DESC
-};
-typedef struct OrderExpr_ OrderExpr;
-typedef struct OrderExpr_ {
-    enum OrderType orderType;
-    Expression *expr;
-    OrderExpr *next;
-} OrderExpr;
-
-typedef struct Constraints_ Constraints;
-/*描述在create table中使用的column*/
-typedef struct ColumnsExpr_ {
-    enum data_type type;
-    char *columnName;
-    Constraints *constraints;
-} ColumnsExpr;
-
-enum constraint_type {
-    CONS_NOT_NULL,
-    CONS_UNIQUE,
-    CONS_PRIMARY_KEY,
-    CONS_FOREIGN_KEY,
-    CONS_DEFAULT,
-    CONS_AUTO_INCREMENT,
-    CONS_CHECK,
-    CONS_SIZE
-};
-
-typedef struct ForeignKeyRef {
-    const char *col_name, *table_name, *table_col_name;
-} ForeignKeyRef;
-
-typedef struct Constraints_ {
-    enum constraint_type type;
-    union {
-        ForeignKeyRef ref;
-        Literal *default_val;
-        unsigned size;
-        /*布尔表达式 */
-        Expression *check;
-    } constraint;
-    struct Constraints *next;
-} Constraints;
-
-typedef struct SetExpr_ {
-
-} SetExpr;
 
 #endif //DONGMENDB_EXPRESSION_H

@@ -37,6 +37,11 @@ typedef struct AlterStmt_ {
     ColumnsExpr *columnsExpr;
 } AlterStmt;
 
+typedef struct InsertStmt_{
+    char *tableName;
+    FieldsExpr *fieldsExpr;
+    ValueList *valueList;
+} InsertStmt;
 
 typedef struct DeleteStmt_ {
     char *tableName;
