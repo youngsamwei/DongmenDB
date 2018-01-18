@@ -40,6 +40,7 @@ enum TermType {
     TERM_COLREF,
     TERM_FUNC
 };
+
 enum FuncType {
     FUNC_MAX,
     FUNC_MIN,
@@ -129,16 +130,40 @@ typedef struct OrderExpr_ {
     OrderExpr *next;
 } OrderExpr;
 
+typedef struct Constraints_ Constraints;
 typedef struct ColumnsExpr_ {
-    enum data_type dataType;
+    enum data_type type;
     char *columnName;
-
+    Constraints *constraints;
 
 } ColumnsExpr;
 
-typedef struct ConstraintsExpr_ {
+enum constraint_type {
+    CONS_NOT_NULL,
+    CONS_UNIQUE,
+    CONS_PRIMARY_KEY,
+    CONS_FOREIGN_KEY,
+    CONS_DEFAULT,
+    CONS_AUTO_INCREMENT,
+    CONS_CHECK,
+    CONS_SIZE
+};
 
-} ConstraintsExpr;
+typedef struct ForeignKeyRef {
+    const char *col_name, *table_name, *table_col_name;
+} ForeignKeyRef;
+
+typedef struct Constraints_ {
+    enum constraint_type type;
+    union {
+        ForeignKeyRef ref;
+        Literal *default_val;
+        unsigned size;
+        /*布尔表达式 */
+        Expression *check;
+    } constraint;
+    struct Constraints *next;
+} Constraints;
 
 typedef struct SetExpr_ {
 

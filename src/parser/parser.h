@@ -6,12 +6,7 @@
 #define DONGMENDB_PARSER_H
 
 #include "tokenizer.h"
-
-struct SelectStmt{
-    char *fields[];
-    char[][] *tables;
-
-};
+#include "expression.h"
 
 
 #endif //DONGMENDB_PARSER_H
