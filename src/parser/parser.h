@@ -12,6 +12,7 @@
 SelectStmt *parseSelect(TokenizerT *tokenizer);
 CreateStmt *parseCreate(TokenizerT *tokenizer);
 AlterStmt *parseAlter(TokenizerT *tokenizer);
+InsertStmt *parseInsert(TokenizerT *tokenizer);
 DeleteStmt *parseDelete(TokenizerT *tokenizer);
 UpdateStmt *parseUpdate(TokenizerT *tokenizer);
 
