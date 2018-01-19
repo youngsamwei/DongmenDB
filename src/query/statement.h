@@ -6,6 +6,7 @@
 #define DONGMENDB_STATEMENT_H
 
 #include "expression.h"
+#include "sqlexpression.h"
 
 /*定义语句级的结构*/
 typedef struct SelectStmt_ {

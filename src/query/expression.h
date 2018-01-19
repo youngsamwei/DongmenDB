@@ -5,37 +5,21 @@
 #ifndef DONGMENDB_EXPRESSION_H
 #define DONGMENDB_EXPRESSION_H
 
+#include <tokenizer.h>
 #include "literal.h"
+#include "sqlexpression.h"
 
-/*定义表达式级别的结构*/
+/*解析表达式。表达式支持：
+ * 运算：算术运算，比较运算，逻辑运算，字符串连接
+ * 标识符：字段变量，常量，函数
+ * 数据类型：数值，字符串，布尔型
+ *
+ * 算法：逆波兰法
+ * TODO：递归下降法
+ * */
 
-enum OpType {
-    /*比较运算符*/
-            OP_EQ,
-    OP_LT,
-    OP_GT,
-    OP_LEQ,
-    OP_GEQ,
-    OP_IN,
-    OP_LIKE,
-    /*逻辑运算符*/
-            OP_AND,
-    OP_OR,
-    OP_NOT,
-    /*字符串连接*/
-            OP_CONCAT,
-    /*算术运算*/
-            OP_PLUS,
-    OP_MINUS,
-    OP_MULTIPLY,
-    OP_DIVIDE,
-    OP_NEG,
-    /*原子项*/
-            OP_TERM,
-};
 typedef enum {
-    /* 算数运算 */
-            oper_lparen = 0,    // 左括号
+    oper_lparen = 0,    // 左括号
     oper_rparen,        // 右括号
     oper_plus,          // 加
     oper_minus,         // 减
@@ -46,25 +30,29 @@ typedef enum {
     oper_positive,      // 正号
     oper_negative,      // 负号
     oper_factorial,     // 阶乘
-    /* 关系运算 */
-            oper_lt,            // 小于
+    oper_concat,        //字符串拼接
+    oper_lt,            // 小于
     oper_gt,            // 大于
     oper_eq,            // 等于
     oper_ne,            // 不等于
     oper_le,            // 不大于
     oper_ge,            // 不小于
-    /* 逻辑运算 */
-            oper_and,           // 且
+    oper_in,
+    oper_like,
+    oper_and,           // 且
     oper_or,            // 或
     oper_not,           // 非
-    /* 赋值 */
-            oper_assignment,    // 赋值
-    oper_min            // 栈底
+    oper_assignment,    // 赋值
+    oper_min,            // 栈底
+    oper_term,           //终结符
+    oper_fun            //函数
 } operator_type;
+
 typedef enum {
     left2right,
     right2left
 } associativity;
+
 typedef struct {
     int numbers;        // 操作数
     int icp;            // 优先级
@@ -76,7 +64,7 @@ typedef struct {
 // in expression.c
 static const OPERATOR operators[] = {
         /* 算数运算 */
-        {2, 17, 1, left2right, oper_lparen},     // 左括号
+        {2, 17, 1,  left2right, oper_lparen},     // 左括号
         {2, 17, 17, left2right, oper_rparen},    // 右括号
         {2, 12, 12, left2right, oper_plus},      // 加
         {2, 12, 12, left2right, oper_minus},     // 减
@@ -87,38 +75,73 @@ static const OPERATOR operators[] = {
         {1, 16, 15, right2left, oper_positive},  // 正号
         {1, 16, 15, right2left, oper_negative},  // 负号
         {1, 16, 15, left2right, oper_factorial}, // 阶乘
+        {2, 12, 12, left2right, oper_concat},
         /* 关系运算 */
         {2, 10, 10, left2right, oper_lt},        // 小于
         {2, 10, 10, left2right, oper_gt},        // 大于
-        {2, 9, 9, left2right, oper_eq},          // 等于
-        {2, 9, 9, left2right, oper_ne},          // 不等于
+        {2, 9,  9,  left2right, oper_eq},          // 等于
+        {2, 9,  9,  left2right, oper_ne},          // 不等于
         {2, 10, 10, left2right, oper_le},        // 不大于
         {2, 10, 10, left2right, oper_ge},        // 不小于
+        {2, 9,  9,  left2right, oper_in},
+        {2, 9,  9,  left2right, oper_like},
         /* 逻辑运算 */
-        {2, 5, 5, left2right, oper_and},         // 且
-        {2, 4, 4, left2right, oper_or},          // 或
+        {2, 5,  5,  left2right, oper_and},         // 且
+        {2, 4,  4,  left2right, oper_or},          // 或
         {1, 15, 15, right2left, oper_not},       // 非
         /* 赋值 */
         // BASIC 中赋值语句不属于表达式！
-        {2, 2, 2, right2left, oper_assignment},  // 赋值
+        {2, 2,  2,  right2left, oper_assignment},  // 赋值
         /* 最小优先级 */
-        {2, 0, 0, right2left, oper_min}          // 栈底
+        {2, 0,  0,  right2left, oper_min},          // 栈底
+        {2, 0,  0,  right2left, oper_term}
 };
 
-enum TermType {
+/*终结符类型*/
+typedef enum  {
     TERM_LITERAL, /*值（数值，字符串）*/
-    TERM_ID,  /*标识符（字段*/
+    TERM_ID,  /*标识符（字段)*/
     TERM_NULL,
     TERM_COLREF,
     TERM_FUNC
-};
+}TermType;
 
-enum FuncType {
+typedef enum {
     FUNC_MAX,
     FUNC_MIN,
     FUNC_COUNT,
     FUNC_AVG,
     FUNC_SUM
-};
+} FuncType;
+
+
+typedef struct Func {
+    FuncType type;
+    /*函数的参数*/
+    Expression *param;
+} Func;
+
+
+/*终结符：标识符，常量，函数*/
+typedef struct TermExpr_ {
+    TermType t;
+    union {
+        char *id;
+        Literal *val;
+        Func *func;
+    };
+} TermExpr;
+
+typedef struct Expression_ Expression;
+
+typedef struct Expression_ {
+    /*当为oper_term时，表示是term*/
+    operator_type opType;
+    union {
+        TermExpr *term;
+        /*按链表顺序存操作数*/
+        Expression *nextexpr;
+    };
+} Expression;
 
 #endif //DONGMENDB_EXPRESSION_H
