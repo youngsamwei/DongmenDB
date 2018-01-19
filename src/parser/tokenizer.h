@@ -9,6 +9,70 @@
 /*
  * Tokenizer type.  You need to fill in the type as part of your implementation.
  */
+
+typedef enum TokenType_{
+    TOKEN_INVALID = 0, //"invalid token"
+    TOKEN_RESERVED_WORD,
+    TOKEN_WORD,
+    TOKEN_NOT,
+    TOKEN_NOT_EQUAL,
+    TOKEN_UNENDED_SRING,
+    TOKEN_STRING,
+    TOKEN_MOD_EQUAL,
+    TOKEN_MOD,
+    TOKEN_BITWISE_AND_EQUAL,
+    TOKEN_AND,
+    TOKEN_BITWISE_AND,
+    TOKEN_INCOMPLETE_CHAR,
+    TOKEN_CHAR,
+    TOKEN_INVALID_CHAR,
+    TOKEN_OPEN_PAREN,
+    TOKEN_CLOSE_PAREN,
+    TOKEN_MULTIPLY_EQUAL,
+    TOKEN_MULTIPLY,
+    TOKEN_PLUS_EQUAL,       //+=
+    TOKEN_INCREMENT,        //++
+    TOKEN_PLUS,
+    TOKEN_COMMA,
+    TOKEN_MINUS_EQUAL,
+    TOKEN_DECREMENT,
+    TOKEN_STRUCT_POINT,
+    TOKEN_MINUS,
+    TOKEN_DOT,
+    TOKEN_DIVIDE_EQUAL,
+    TOKEN_DIVIDE,
+    TOKEN_TERNARY_COLON,
+    TOKEN_SEMICOLON,
+    TOKEN_LE,               //less-than-or-equal-to operator"
+    TOKEN_LEFT_SHIFT_EQUAL,
+    TOKEN_LEFT_SHIFT,
+    TOKEN_LT,              //less-than operator
+    TOKEN_EQ,
+    TOKEN_ASSIGNMENT,
+    TOKEN_GE,
+    TOKEN_RIGHT_SHIFT_EQUAL,
+    TOKEN_RIGHT_SHIFT,
+    TOKEN_GT,
+    TOKEN_TERNARY_QMARK,
+    TOKEN_OPEN_BRACKET,
+    TOKEN_CLOSE_BRACKET,
+    TOKEN_BIT_XOR,
+    TOKEN_OPEN_BRACE,
+    TOKEN_CLOSE_BRACE,
+    TOKEN_OR,
+    TOKEN_BITWISE_EQUAL,
+    TOKEN_BITWISE_OR,
+    TOKEN_BITWISE_NOT_EQUAL,
+    TOKEN_BITWISE_NOT,
+    TOKEN_POUND,               //"include operator"
+    TOKEN_EXP_FLOAT,
+    TOKEN_FLOAT,
+    TOKEN_OCTAL,               //"octal integer"
+    TOKEN_HEX,                 //"hexadecimal integer"
+    TOKEN_DECIMAL,            //"decimal integer"
+    TOKEN_ZERO               //"zero integer"
+} TokenType;
+
 typedef struct TokenizerT_ {
     char *inputStream;
     char *tokenBuffer;
@@ -19,7 +83,7 @@ typedef struct TokenizerT_ {
 
 typedef struct TokenT_ {
     char *text;
-    char *type;
+    TokenType type;
 } TokenT ;
 
 
