@@ -45,7 +45,8 @@ typedef enum {
     oper_assignment,    // 赋值
     oper_min,            // 栈底
     oper_term,           //终结符
-    oper_fun            //函数
+    oper_fun,            //把函数解析为一个操作符
+    oper_comma           //逗号 在select中，insert values中，fun(,,,),(1,2,3)等四种用法
 } operator_type;
 
 typedef enum {
@@ -64,8 +65,8 @@ typedef struct {
 // in expression.c
 static const OPERATOR operators[] = {
         /* 算数运算 */
-        {2, 17, 1,  left2right, oper_lparen},     // 左括号
-        {2, 17, 17, left2right, oper_rparen},    // 右括号
+        {2, 18, 1,  left2right, oper_lparen},     // 左括号
+        {2, 18, 18, left2right, oper_rparen},    // 右括号
         {2, 12, 12, left2right, oper_plus},      // 加
         {2, 12, 12, left2right, oper_minus},     // 减
         {2, 13, 13, left2right, oper_multiply},  // 乘
@@ -94,7 +95,9 @@ static const OPERATOR operators[] = {
         {2, 2,  2,  right2left, oper_assignment},  // 赋值
         /* 最小优先级 */
         {2, 0,  0,  right2left, oper_min},          // 栈底
-        {2, 0,  0,  right2left, oper_term}
+        {2, 0,  0,  right2left, oper_term},
+        {2, 17,  17,  right2left, oper_fun},        //把函数解析为一个操作符
+        {2, 1,  1,  right2left, oper_comma}
 };
 
 /*终结符类型*/
@@ -102,33 +105,15 @@ typedef enum  {
     TERM_LITERAL, /*值（数值，字符串）*/
     TERM_ID,  /*标识符（字段)*/
     TERM_NULL,
-    TERM_COLREF,
-    TERM_FUNC
+    TERM_COLREF
 }TermType;
 
-typedef enum {
-    FUNC_MAX,
-    FUNC_MIN,
-    FUNC_COUNT,
-    FUNC_AVG,
-    FUNC_SUM
-} FuncType;
-
-
-typedef struct Func {
-    FuncType type;
-    /*函数的参数*/
-    Expression *param;
-} Func;
-
-
-/*终结符：标识符，常量，函数*/
+/*终结符：标识符，常量*/
 typedef struct TermExpr_ {
     TermType t;
     union {
         char *id;
         Literal *val;
-        Func *func;
     };
 } TermExpr;
 
