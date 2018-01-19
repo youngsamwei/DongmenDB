@@ -169,14 +169,13 @@ int isReservedWord(char *word) {
  * Make a token struct from the current state of the tokenizer and the
  * identified type.
  */
-TokenT *makeToken(TokenizerT *tk, char *type) {
+TokenT *makeToken(TokenizerT *tk, TokenType type) {
     TokenT *token = (TokenT *) malloc(sizeof(TokenT));
 
     token->text = (char *) malloc(sizeof(char) * 1000);
     strcpy(token->text, tk->tokenBuffer);
 
-    token->type = (char *) malloc(sizeof(char) * 50);
-    strcpy(token->type, type);
+    token->type = type;
 
     return token;
 }
@@ -184,7 +183,6 @@ TokenT *makeToken(TokenizerT *tk, char *type) {
 
 void destroyToken(TokenT *token) {
     free(token->text);
-    free(token->type);
     free(token);
 }
 
@@ -193,7 +191,7 @@ void destroyToken(TokenT *token) {
  * Print a token. Used in main loop.
  */
 void printToken(TokenT *token) {
-    if(strcmp(token->type, "string literal") == 0) {
+    if(token->type == TOKEN_STRING) {
         printf("%s '%s'\n", token->type, token->text);
     } else {
         printf("%s \"%s\"\n", token->type, token->text);
@@ -242,7 +240,7 @@ TokenT *_double_quote(TokenizerT *tk) {
     while(tk->inputIter[0] != '"') {
         if(tk->inputIter[0] == '\\') {
             if(atEndOfFile) {
-                return makeToken(tk, TOKEN_UNENDED_SRING;
+                return makeToken(tk, TOKEN_UNENDED_SRING);
             }
             atEndOfFile = nextChar(tk);
         }

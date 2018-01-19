@@ -93,7 +93,7 @@ void clearBuffer(TokenizerT *tk);
 void TKDestroy(TokenizerT *tk);
 int nextChar(TokenizerT *tk);
 int isReservedWord(char *word);
-TokenT *makeToken(TokenizerT *tk, char *type);
+TokenT *makeToken(TokenizerT *tk, TokenType type);
 void destroyToken(TokenT *token);
 void printToken(TokenT *token);
 
