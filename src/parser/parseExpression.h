@@ -12,6 +12,12 @@
  * 这里使用逆波兰法。
  *
  * */
+/*操作符堆栈*/
+typedef  struct op_stack_ op_stack;
+typedef struct op_stack_{
+    operator_type operatorType;
+    op_stack *next;
+} op_stack;
 
 Expression *parseExpression(TokenizerT *tokenizer);
 

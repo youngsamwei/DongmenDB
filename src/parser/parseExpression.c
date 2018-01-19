@@ -6,6 +6,7 @@
 
 /*使用逆波兰法解析表达式*/
 Expression *parseExpression(TokenizerT *tk){
-
-
+    op_stack *opstack ;
+    TokenT *token = TKGetNextToken(tk);
+    if(token->type)
 };
