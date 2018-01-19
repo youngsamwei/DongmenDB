@@ -8,6 +8,7 @@
 
 #include "literal.h"
 #include "expression.h"
+#include "sqlexpression.h"
 
 typedef struct TablesExpr_ TablesExpr;
 typedef struct Expression_ Expression;
@@ -33,46 +34,6 @@ typedef struct TablesExpr_ {
     Expression *joinExpr;
     TablesExpr *nextTable;
 } TablesExpr;
-
-typedef struct Expression_ {
-    /*当为OP_TERM时，nextExpression=null*/
-    enum OpType opType;
-    union {
-        TermExpr *term;
-        BinaryExpr *binaryExpr;
-        UnaryExpr *unaryExpr;
-    } expr;
-
-    Expression *nextExpression;
-} Expression;
-
-typedef struct Func {
-    enum FuncType t;
-    /*函数的参数*/
-    Expression *param;
-} Func;
-
-/*原子表达式：标识符，常量，函数*/
-typedef struct TermExpr_ {
-    enum TermType t;
-    union {
-        char *id;
-        Literal *val;
-        Func f;
-    };
-} TermExpr;
-
-/*二元操作符表达式*/
-typedef struct BinaryExpr_ {
-    enum OpType opType;
-    Expression *leftExpr, *rightExpr;
-} BinaryExpr;
-
-/*一元操作符表达式*/
-typedef struct UnaryExpr_ {
-    enum OpType opType;
-    Expression *expr;
-} UnaryExpr;
 
 typedef struct GroupExpr_ GroupExpr;
 typedef struct GroupExpr_ {

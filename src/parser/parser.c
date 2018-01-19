@@ -6,12 +6,13 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "parser.h"
+#include "parseExpression.h"
 
 
 SelectStmt *parseSelect(TokenizerT *tk) {
     FieldsExpr *fieldsExpr = parseFieldsExpr(tk);
     TokenT *token = TKGetNextToken(tk);
-    if (strcmp(token->text, 'from') != 0) {
+    if (strcmp(token->text, "from") != 0) {
         printf("语法错误. \n");
         exit(1);
     }
@@ -20,7 +21,7 @@ SelectStmt *parseSelect(TokenizerT *tk) {
     if (token == NULL) {
         return createSelectStmt(fieldsExpr, tablesExpr, NULL, NULL, NULL);
     }
-    if (strcmp(token->text, 'where') != 0) {
+    if (strcmp(token->text, "where") != 0) {
         printf("语法错误. \n");
         exit(1);
     }
@@ -30,10 +31,10 @@ SelectStmt *parseSelect(TokenizerT *tk) {
         return createSelectStmt(fieldsExpr, tablesExpr, whereExpr, NULL, NULL);
     }
     TokenT *tokenBy = TKGetNextToken(tk);
-    if (strcmp(token->text, 'group') != 0) {
+    if (strcmp(token->text, "group") != 0) {
         printf("语法错误. \n");
         exit(1);
-    } else if (strcmp(tokenBy->text, 'by') != 0) {
+    } else if (strcmp(tokenBy->text, "by") != 0) {
         printf("语法错误. \n");
         exit(1);
     }
@@ -43,10 +44,10 @@ SelectStmt *parseSelect(TokenizerT *tk) {
         return createSelectStmt(fieldsExpr, tablesExpr, whereExpr, groupExpr, NULL);
     }
     tokenBy = TKGetNextToken(tk);
-    if (strcmp(token->text, 'order') != 0) {
+    if (strcmp(token->text, "order") != 0) {
         printf("语法错误. \n");
         exit(1);
-    } else if (strcmp(tokenBy->text, 'by') != 0) {
+    } else if (strcmp(tokenBy->text, "by") != 0) {
         printf("语法错误. \n");
         exit(1);
     }
