@@ -3,11 +3,10 @@
 //
 
 #include <tokenizer.h>
-#include <stdio.h>
-#include <strings.h>
-#include <mem.h>
+
 
 #include "parseExpression.h"
+
 /*
  * main will have a string argument (in argv[1]).
  * The string argument contains the tokens.
@@ -16,8 +15,10 @@
  */
 int main(int argc, char **argv) {
 
-    //char *sexpr = " 1 + 2 * 3 - 4   ";
-    char *sexpr = " a + b * (c - d)  ";
+//    char *sexpr = " 1 + 2 * (3 - 4)   ";
+    //char *sexpr = " a + b * (c - d)  ";
+//    char *sexpr = " a - b * (c - (d + e)) > f.x ";
+    char *sexpr = " \"abc\" + field.name   ";
     TokenizerT *tokenizer = TKCreate(sexpr);
 
     Expression *expr = parseExpression(tokenizer);

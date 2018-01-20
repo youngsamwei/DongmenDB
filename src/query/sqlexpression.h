@@ -54,7 +54,7 @@ typedef struct OrderExpr_ {
 typedef struct Constraints_ Constraints;
 /*描述在create table中使用的column*/
 typedef struct ColumnsExpr_ {
-    enum data_type type;
+    data_type type;
     char *columnName;
     Constraints *constraints;
 } ColumnsExpr;
@@ -93,7 +93,7 @@ typedef struct SetExpr_ {
 /*用于表示insert语句中的values*/
 typedef struct ValueList_ ValueList;
 typedef struct ValueList_ {
-    union LiteralVal val;
+    LiteralVal val;
     ValueList *next;
 } ValueList;
 
