@@ -22,16 +22,12 @@ Expression *parseExpression(TokenizerT *tk) {
                 break;
             case TOKEN_CLOSE_PAREN: {
                 /*退栈，直到遇到TOKEN_OPEN_PAREN*/
-                op_stack *stack = stackPop(opstack);
-                while (stack != NULL) {
-                    if (stack->operatorType == TOKEN_OPEN_PAREN) {
-                        /* 需要处理func*/
-                    } else {
-                        expr = (Expression *) malloc(sizeof(Expression));
-                        expr->opType = stack->operatorType;
-                        expr->nextexpr = rootexpr;
-                        rootexpr = expr;
-                    }
+                TokenType type = stackPop(opstack);
+                while (type != TOKEN_OPEN_PAREN) {
+                    expr = (Expression *) malloc(sizeof(Expression));
+                    expr->opType = type;
+                    expr->nextexpr = rootexpr;
+                    rootexpr = expr;
                 }
                 break;
             }
@@ -54,14 +50,10 @@ Expression *parseExpression(TokenizerT *tk) {
                         term->id = token->text;
                         break;
                     case TOKEN_STRING:
+                    case TOKEN_CHAR:
                         term->t = TERM_LITERAL;
                         term->val->t = TYPE_TEXT;
                         term->val->val.strval = token->text;
-                        break;
-                    case TOKEN_CHAR:
-                        term->t = TERM_LITERAL;
-                        term->val->t = TYPE_CHAR;
-                        term->val->val.cval = token->text;
                         break;
                     case TOKEN_NULL:
                         term->t = TERM_NULL;
@@ -70,7 +62,7 @@ Expression *parseExpression(TokenizerT *tk) {
                     case TOKEN_FLOAT:
                     case TOKEN_DECIMAL:
                         term->t = TERM_LITERAL;
-                        term->val->val.dval = strtof(token->text, "\0");
+                        term->val->val.dval = strtof(token->text, '\0');
                         break;
                     case TOKEN_OCTAL:
                     case TOKEN_HEX:
@@ -80,7 +72,7 @@ Expression *parseExpression(TokenizerT *tk) {
                         term->val->val.ival = strtol(token->text, NULL, 10);
                         break;
                     default:
-                        printf('error: %s  %s\n', token->type, token->text);
+                        printf("error: %s  %s\n", token->type, token->text);
                         go = 0;
                         /*出错*/;
                 }
@@ -93,13 +85,13 @@ Expression *parseExpression(TokenizerT *tk) {
             case TOKEN_INCOMPLETE_CHAR:
             case TOKEN_INVALID_CHAR:
                 /*出错*/
-                printf('error: %s  %s\n', token->type, token->text);
+                printf("error: %s  %s\n", token->type, token->text);
                 go = 0;
                 break;
             case TOKEN_SEMICOLON:
             case TOKEN_RESERVED_WORD:
                 /*需要判断一下操作符栈里是否还有操作，如果有则出错，若没有则正常返回。*/
-                printf('error: %s  %s\n', token->type, token->text);
+                printf("error: %s  %s\n", token->type, token->text);
                 break;
             case TOKEN_NOT:
             case TOKEN_AND:
@@ -125,9 +117,9 @@ Expression *parseExpression(TokenizerT *tk) {
                 * */;
                 OPERATOR currop = operators[token->type];
                 OPERATOR stackop = operators[opstack->operatorType];
-                if (currop.icp > stackop.icp){
+                if (currop.icp > stackop.icp) {
                     stackPush(opstack, token->type);
-                }else {
+                } else {
                     while (currop.icp <= stackop.icp) {
                         TokenType type = stackPop(opstack);
                         expr = (Expression *) malloc(sizeof(Expression));
@@ -141,7 +133,7 @@ Expression *parseExpression(TokenizerT *tk) {
                 break;
             default:
                 /*出错*/
-                printf('error: %s  %s\n', token->type, token->text);
+                printf("error: %s  %s\n", token->type, token->text);
                 go = 0;
 
         }
