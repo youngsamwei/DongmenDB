@@ -4,7 +4,9 @@
 
 #include <stddef.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include "expression.h"
+#include "literal.h"
 
 
 void printExpression(Expression *expr) {
@@ -56,7 +58,18 @@ char *getExpressionDesc(Expression *expr) {
             return "FUN";
         case TOKEN_WORD:
             return expr->term->id;
+        case TOKEN_DECIMAL: {
+            Literal *l = expr->term->val;
+            char *v;
+            v = gcvt(l->val.dval, 8, v);
+            return v;
+        }
+        case TOKEN_STRING:
+        case TOKEN_CHAR: {
+            return expr->term->val->val.strval;
+        }
         default:
             return "UNKNOWN";
     }
+
 };

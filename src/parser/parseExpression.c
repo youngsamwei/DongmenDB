@@ -5,6 +5,7 @@
 #include <malloc.h>
 #include <expression.h>
 #include <stdio.h>
+#include <literal.h>
 #include "parseExpression.h"
 
 /*使用逆波兰法解析表达式*/
@@ -31,7 +32,7 @@ Expression *parseExpression(TokenizerT *tk) {
                 TokenType type = opstack->operatorType;
                 opstack = stackPop(opstack);
                 while (type != TOKEN_OPEN_PAREN) {
-                    Expression *expr = newExpression(opstack->operatorType, NULL);
+                    Expression *expr = newExpression(type, NULL);
                     if (rootexpr != NULL) {
                         expr->nextexpr = rootexpr;
                     }
@@ -66,26 +67,37 @@ Expression *parseExpression(TokenizerT *tk) {
                         term->id = token->text;
                         break;
                     case TOKEN_STRING:
-                    case TOKEN_CHAR:
+                    case TOKEN_CHAR: {
+
                         term->t = TERM_LITERAL;
-                        term->val->t = TYPE_TEXT;
-                        term->val->val.strval = token->text;
+                        Literal *literal
+                                = newLiteral(TYPE_TEXT);
+                        literal->val.strval = token->text;
+                        term->val = literal;
+                    }
                         break;
                     case TOKEN_NULL:
                         term->t = TERM_NULL;
                         break;
                     case TOKEN_EXP_FLOAT:
                     case TOKEN_FLOAT:
-                    case TOKEN_DECIMAL:
+                    case TOKEN_DECIMAL: {
                         term->t = TERM_LITERAL;
-                        term->val->val.dval = strtof(token->text, '\0');
+                        Literal *literal
+                                = newLiteral(TYPE_DOUBLE);
+                        literal->val.dval = atof(token->text);
+                        term->val = literal;
+                    }
                         break;
                     case TOKEN_OCTAL:
                     case TOKEN_HEX:
-
-                    case TOKEN_ZERO:
+                    case TOKEN_ZERO: {
                         term->t = TERM_LITERAL;
-                        term->val->val.ival = strtol(token->text, NULL, 10);
+                        Literal *literal
+                                = newLiteral(TYPE_INT);
+                        term->val = literal;
+                        literal->val.dval = atoi(token->text);
+                    }
                         break;
                     default:
                         printf("error: %s  %s\n", token->type, token->text);
@@ -135,13 +147,13 @@ Expression *parseExpression(TokenizerT *tk) {
                 * 若小于等于，则出栈直到栈里的操作符优先级大于当前操作符，
                 * */;
                 OPERATOR currop = operators[token->type];
-                if (opstack->operatorType == TOKEN_NULL) {
-                    /*栈中没有操作符*/
+                if ((opstack->operatorType == TOKEN_NULL)) {
+                    /*栈中没有操作符或者栈顶是左括号,则直接进栈*/
                     opstack = stackPush(opstack, token->type);
                 } else {
                     OPERATOR stackop = operators[opstack->operatorType];
 
-                    while (currop.icp <= stackop.icp) {
+                    while ((currop.icp <= stackop.icp) && (opstack->operatorType != TOKEN_OPEN_PAREN)) {
                         Expression *expr = newExpression(opstack->operatorType, NULL);
                         if (rootexpr != NULL) {
                             expr->nextexpr = rootexpr;
@@ -173,13 +185,15 @@ Expression *parseExpression(TokenizerT *tk) {
             opstack = stackPop(opstack);
             Expression *expr = newExpression(type, NULL);
             if (rootexpr != NULL) {
-                expr->nextexpr = rootexpr;
+                expr->
+                        nextexpr = rootexpr;
             }
             rootexpr = expr;
             type = opstack->operatorType;
         }
     }
-    return rootexpr;
+    return
+            rootexpr;
 };
 
 /*使用链表表示栈：入栈*/
