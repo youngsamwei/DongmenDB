@@ -3,6 +3,8 @@
 //
 
 #include <malloc.h>
+#include <expression.h>
+#include <stdio.h>
 #include "parseExpression.h"
 
 /*使用逆波兰法解析表达式*/
@@ -44,7 +46,7 @@ Expression *parseExpression(TokenizerT *tk) {
             case TOKEN_ZERO:
             case TOKEN_NULL:
                 /*终结符*/
-                expr->opType = oper_term;
+                expr->opType = token->type;
                 TermExpr *term = (TermExpr *) malloc((sizeof(TermExpr)));
                 switch (token->type) {
                     case TOKEN_WORD:
@@ -78,6 +80,7 @@ Expression *parseExpression(TokenizerT *tk) {
                         term->val->val.ival = strtol(token->text, NULL, 10);
                         break;
                     default:
+                        printf('error: %s  %s\n', token->type, token->text);
                         go = 0;
                         /*出错*/;
                 }
@@ -90,11 +93,13 @@ Expression *parseExpression(TokenizerT *tk) {
             case TOKEN_INCOMPLETE_CHAR:
             case TOKEN_INVALID_CHAR:
                 /*出错*/
+                printf('error: %s  %s\n', token->type, token->text);
                 go = 0;
                 break;
             case TOKEN_SEMICOLON:
             case TOKEN_RESERVED_WORD:
                 /*需要判断一下操作符栈里是否还有操作，如果有则出错，若没有则正常返回。*/
+                printf('error: %s  %s\n', token->type, token->text);
                 break;
             case TOKEN_NOT:
             case TOKEN_AND:
@@ -118,28 +123,35 @@ Expression *parseExpression(TokenizerT *tk) {
                 * 如果大于栈里的操作符优先级，则进栈，
                 * 若小于等于，则出栈直到栈里的操作符优先级大于当前操作符，
                 * */;
-                op_stack *stack = stackPop(opstack);
-                while (stack != NULL) {
-                    if (stack->operatorType == TOKEN_OPEN_PAREN) {
-                        /* 需要处理func*/
-                    } else {
+                OPERATOR currop = operators[token->type];
+                OPERATOR stackop = operators[opstack->operatorType];
+                if (currop.icp > stackop.icp){
+                    stackPush(opstack, token->type);
+                }else {
+                    while (currop.icp <= stackop.icp) {
+                        TokenType type = stackPop(opstack);
                         expr = (Expression *) malloc(sizeof(Expression));
-                        expr->opType = stack->operatorType;
+                        expr->opType = type;
                         expr->nextexpr = rootexpr;
                         rootexpr = expr;
+
+                        stackop = operators[opstack->operatorType];
                     }
                 }
                 break;
             default:
                 /*出错*/
+                printf('error: %s  %s\n', token->type, token->text);
                 go = 0;
 
         }
 
     }
+    return rootexpr;
 };
 
-op_stack *stackPush(op_stack *opstack, operator_type opType) {
+/*入栈*/
+op_stack *stackPush(op_stack *opstack, TokenType opType) {
     op_stack *stack = (op_stack *) malloc(sizeof(op_stack));
     stack->operatorType = opType;
     stack->next = opstack->next;
@@ -147,10 +159,13 @@ op_stack *stackPush(op_stack *opstack, operator_type opType) {
     return opstack;
 }
 
-operator_type stackPop(op_stack *opstack) {
-    operator_type type = opstack->operatorType;
+/*出栈*/
+TokenType stackPop(op_stack *opstack) {
+    TokenType type = opstack->operatorType;
     op_stack *current = opstack;
     opstack = opstack->next;
     current->next = NULL;
     free(current);
+    return type;
 }
+
