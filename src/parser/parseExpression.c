@@ -10,24 +10,39 @@
 /*使用逆波兰法解析表达式*/
 Expression *parseExpression(TokenizerT *tk) {
     op_stack *opstack = (op_stack *) malloc(sizeof(op_stack));
+    /*以TOKEN_NULL做为栈底*/
+    opstack->operatorType = TOKEN_NULL;
+    opstack->next = NULL;
     Expression *rootexpr = (Expression *) malloc(sizeof(Expression));
+    rootexpr->nextexpr = NULL;
     int go = 1;
     while (go) {
         TokenT *token = TKGetNextToken(tk);
-        Expression *expr;
 
+        if (token == NULL) {
+            break;
+        }
         switch (token->type) {
             case TOKEN_OPEN_PAREN:
-                stackPush(opstack, token->type);
+                opstack = stackPush(opstack, token->type);
                 break;
             case TOKEN_CLOSE_PAREN: {
                 /*退栈，直到遇到TOKEN_OPEN_PAREN*/
-                TokenType type = stackPop(opstack);
+                TokenType type = opstack->operatorType;
+                opstack = stackPop(opstack);
                 while (type != TOKEN_OPEN_PAREN) {
-                    expr = (Expression *) malloc(sizeof(Expression));
+                    Expression *expr = (Expression *) malloc(sizeof(Expression));
                     expr->opType = type;
                     expr->nextexpr = rootexpr;
                     rootexpr = expr;
+                    if (opstack->operatorType == TOKEN_NULL) {
+                        printf("error: %s  %s\n", token->type, token->text);
+                        go = 0;
+                        break;
+                    }
+                    type = opstack->operatorType;
+                    opstack = stackPop(opstack);
+
                 }
                 break;
             }
@@ -40,8 +55,9 @@ Expression *parseExpression(TokenizerT *tk) {
             case TOKEN_HEX:
             case TOKEN_DECIMAL:
             case TOKEN_ZERO:
-            case TOKEN_NULL:
+            case TOKEN_NULL: {
                 /*终结符*/
+                Expression *expr = (Expression *) malloc(sizeof(Expression));;
                 expr->opType = token->type;
                 TermExpr *term = (TermExpr *) malloc((sizeof(TermExpr)));
                 switch (token->type) {
@@ -80,6 +96,7 @@ Expression *parseExpression(TokenizerT *tk) {
                 expr->nextexpr = rootexpr;
                 rootexpr = expr;
                 break;
+            }
             case TOKEN_INVALID:
             case TOKEN_UNENDED_SRING:
             case TOKEN_INCOMPLETE_CHAR:
@@ -116,18 +133,28 @@ Expression *parseExpression(TokenizerT *tk) {
                 * 若小于等于，则出栈直到栈里的操作符优先级大于当前操作符，
                 * */;
                 OPERATOR currop = operators[token->type];
-                OPERATOR stackop = operators[opstack->operatorType];
-                if (currop.icp > stackop.icp) {
-                    stackPush(opstack, token->type);
+                if (opstack->operatorType == TOKEN_NULL) {
+                    opstack = stackPush(opstack, token->type);
                 } else {
-                    while (currop.icp <= stackop.icp) {
-                        TokenType type = stackPop(opstack);
-                        expr = (Expression *) malloc(sizeof(Expression));
-                        expr->opType = type;
-                        expr->nextexpr = rootexpr;
-                        rootexpr = expr;
+                    OPERATOR stackop = operators[opstack->operatorType];
+                    if (currop.icp > stackop.icp) {
+                        opstack = stackPush(opstack, token->type);
+                    } else {
+                        while (currop.icp <= stackop.icp) {
+                            TokenType type = opstack->operatorType;
+                            opstack = stackPop(opstack);
+                            Expression *expr = (Expression *) malloc(sizeof(Expression));
+                            expr->opType = type;
+                            expr->nextexpr = rootexpr;
+                            rootexpr = expr;
 
-                        stackop = operators[opstack->operatorType];
+                            /*如果是栈底*/
+                            if (opstack->operatorType == TOKEN_NULL) {
+                                break;
+                            } else {
+                                stackop = operators[opstack->operatorType];
+                            }
+                        }
                     }
                 }
                 break;
@@ -139,25 +166,33 @@ Expression *parseExpression(TokenizerT *tk) {
         }
 
     }
+
+    if (opstack->operatorType != TOKEN_NULL) {
+        TokenType type = opstack->operatorType;
+        while (type != TOKEN_NULL) {
+            opstack = stackPop(opstack);
+            Expression *expr = (Expression *) malloc(sizeof(Expression));
+            expr->opType = type;
+            expr->nextexpr = rootexpr;
+            rootexpr = expr;
+            type = opstack->operatorType;
+        }
+    }
     return rootexpr;
 };
 
-/*入栈*/
+/*使用链表表示栈：入栈*/
 op_stack *stackPush(op_stack *opstack, TokenType opType) {
     op_stack *stack = (op_stack *) malloc(sizeof(op_stack));
     stack->operatorType = opType;
-    stack->next = opstack->next;
-    opstack->next = stack;
-    return opstack;
+    stack->next = opstack;
+    return stack;
 }
 
 /*出栈*/
-TokenType stackPop(op_stack *opstack) {
-    TokenType type = opstack->operatorType;
-    op_stack *current = opstack;
-    opstack = opstack->next;
-    current->next = NULL;
-    free(current);
-    return type;
+op_stack *stackPop(op_stack *opstack) {
+    op_stack *current = opstack->next;
+    free(opstack);
+    return current;
 }
 

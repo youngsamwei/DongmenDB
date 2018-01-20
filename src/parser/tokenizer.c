@@ -117,9 +117,7 @@ void clearBuffer(TokenizerT *tk) {
  * Returns 1 if a word is a reserved word. Otherwise, returns 0.
  */
 int isReservedWord(char *word) {
-    const char *reservedWords[]={
-            "CREATE", "TABLE", "INSERT", "INTO", "SELECT", "FROM", "WHERE", "FULL"
-    };
+    const char *reservedWords[40];
     reservedWords[0] = "select";
     reservedWords[1] = "from";
     reservedWords[2] = "where";

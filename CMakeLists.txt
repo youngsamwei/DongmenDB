@@ -34,4 +34,6 @@ aux_source_directory( src/shell DIR_SRCS)
 aux_source_directory( src/tx DIR_SRCS)
 aux_source_directory( src/utils DIR_SRCS)
 
-add_executable(DongmenDB ${DIR_SRCS} src_test/parser/testParserExpression.c)
+
+add_executable(testParserExpression ${DIR_SRCS} src_test/parser/testParserExpression.c)
+#add_executable(testTokenizer ${DIR_SRCS} src_test/parser/testTokenizer.c)
