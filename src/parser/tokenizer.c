@@ -117,17 +117,19 @@ void clearBuffer(TokenizerT *tk) {
  * Returns 1 if a word is a reserved word. Otherwise, returns 0.
  */
 int isReservedWord(char *word) {
-    const char *reservedWords[33];
-    reservedWords[0] = "auto";
-    reservedWords[1] = "break";
-    reservedWords[2] = "case";
-    reservedWords[3] = "char";
-    reservedWords[4] = "const";
-    reservedWords[5] = "continue";
-    reservedWords[6] = "default";
-    reservedWords[7] = "do";
-    reservedWords[8] = "double";
-    reservedWords[9] = "else";
+    const char *reservedWords[]={
+            "CREATE", "TABLE", "INSERT", "INTO", "SELECT", "FROM", "WHERE", "FULL"
+    };
+    reservedWords[0] = "select";
+    reservedWords[1] = "from";
+    reservedWords[2] = "where";
+    reservedWords[3] = "order";
+    reservedWords[4] = "by";
+    reservedWords[5] = "group";
+    reservedWords[6] = "create";
+    reservedWords[7] = "table";
+    reservedWords[8] = "index";
+    reservedWords[9] = "";
     reservedWords[10] = "enum";
     reservedWords[11] = "entry";
     reservedWords[12] = "extern";
@@ -152,10 +154,11 @@ int isReservedWord(char *word) {
     reservedWords[31] = "volatile";
     reservedWords[32] = "unsigned";
     reservedWords[33] = "while";
+    reservedWords[34] = "NULL";
 
     int isReservedWord = 0;
     int rWordIndex = 0;
-    for (; rWordIndex < 28; rWordIndex++) {
+    for (; rWordIndex < 33; rWordIndex++) {
         if (strcmp(word, reservedWords[rWordIndex]) == 0) {
             isReservedWord = 1;
         }
@@ -223,6 +226,15 @@ TokenT *_word(TokenizerT *tk) {
                 return makeToken(tk, TOKEN_NOT);
             } else if (strcmp(tk->tokenBuffer, "OR")) {
                 return makeToken(tk, TOKEN_OR);
+            } else if (strcmp(tk->tokenBuffer, "NULL")){
+                return makeToken(tk, TOKEN_NULL);
+            }else if (strcmp(tk->tokenBuffer, "LIKE")){
+                return makeToken(tk, TOKEN_LIKE);
+            }else if (strcmp(tk->tokenBuffer, "IN")){
+                return makeToken(tk, TOKEN_IN);
+            }else if (strcmp(tk->tokenBuffer, "FUN")){
+                /*TODO:需要处理函数*/
+                return makeToken(tk, TOKEN_FUN);
             }
             return makeToken(tk, TOKEN_RESERVED_WORD);
         } else {

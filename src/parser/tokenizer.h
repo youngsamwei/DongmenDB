@@ -29,7 +29,6 @@ typedef enum TokenType_{
     TOKEN_PLUS,
     TOKEN_COMMA,
     TOKEN_MINUS,
-    TOKEN_DOT,
     TOKEN_DIVIDE,
     TOKEN_SEMICOLON,
     TOKEN_LE,               //less-than-or-equal-to operator"
@@ -44,7 +43,11 @@ typedef enum TokenType_{
     TOKEN_OCTAL,               //"octal integer"
     TOKEN_HEX,                 //"hexadecimal integer"
     TOKEN_DECIMAL,            //"decimal integer"
-    TOKEN_ZERO               //"zero integer"
+    TOKEN_ZERO,               //"zero integer"
+    TOKEN_NULL,
+    TOKEN_IN,
+    TOKEN_LIKE,
+    TOKEN_FUN
 } TokenType;
 
 typedef struct TokenizerT_ {

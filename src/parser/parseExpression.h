@@ -15,7 +15,7 @@
 /*操作符堆栈*/
 typedef  struct op_stack_ op_stack;
 typedef struct op_stack_{
-    operator_type operatorType;
+    TokenType operatorType;
     op_stack *next;
 } op_stack;
 

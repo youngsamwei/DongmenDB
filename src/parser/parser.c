@@ -73,8 +73,6 @@ TablesExpr *parseTablesExpr(TokenizerT *tk) {};
 
 Expression *parseExpression(TokenizerT *tk) {};
 
-Func *parseFunc(TokenizerT *tk) {};
-
 TermExpr *parseTermExpr(TokenizerT *tk) {};
 
 BinaryExpr *parseBinaryExpr(TokenizerT *tk) {};
