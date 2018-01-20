@@ -23,4 +23,7 @@ Expression *parseExpression(TokenizerT *tk);
 op_stack *stackPush(op_stack *opstack, TokenType opType);
 op_stack *stackPop(op_stack *opstack) ;
 
+Expression *newExpression(TokenType type, Expression *nextexpr);
+TermExpr *newTermExpr();
+
 #endif //DONGMENDB_PARSEREXPRESSION_H

@@ -127,13 +127,13 @@ int isReservedWord(char *word) {
     reservedWords[6] = "create";
     reservedWords[7] = "table";
     reservedWords[8] = "index";
-    reservedWords[9] = "";
-    reservedWords[10] = "enum";
-    reservedWords[11] = "entry";
-    reservedWords[12] = "extern";
-    reservedWords[13] = "float";
-    reservedWords[14] = "for";
-    reservedWords[15] = "goto";
+    reservedWords[9] = "and";
+    reservedWords[10] = "not";
+    reservedWords[11] = "or";
+    reservedWords[12] = "null";
+    reservedWords[13] = "like";
+    reservedWords[14] = "in";
+    reservedWords[15] = "fun";
     reservedWords[16] = "if";
     reservedWords[17] = "int";
     reservedWords[18] = "long";
@@ -157,7 +157,7 @@ int isReservedWord(char *word) {
     int isReservedWord = 0;
     int rWordIndex = 0;
     for (; rWordIndex < 33; rWordIndex++) {
-        if (strcmp(word, reservedWords[rWordIndex]) == 0) {
+        if (strcasecmp(word, reservedWords[rWordIndex]) == 0) {
             isReservedWord = 1;
         }
     }
@@ -218,19 +218,19 @@ TokenT *_word(TokenizerT *tk) {
         return _word(tk);
     } else {
         if (isReservedWord(tk->tokenBuffer)) {
-            if (strcmp(tk->tokenBuffer, "AND")) {
+            if (strcasecmp(tk->tokenBuffer, "AND") == 0) {
                 return makeToken(tk, TOKEN_AND);
-            } else if (strcmp(tk->tokenBuffer, "NOT")) {
+            } else if (strcasecmp(tk->tokenBuffer, "NOT") == 0) {
                 return makeToken(tk, TOKEN_NOT);
-            } else if (strcmp(tk->tokenBuffer, "OR")) {
+            } else if (strcasecmp(tk->tokenBuffer, "OR") == 0) {
                 return makeToken(tk, TOKEN_OR);
-            } else if (strcmp(tk->tokenBuffer, "NULL")){
+            } else if (strcasecmp(tk->tokenBuffer, "NULL") == 0){
                 return makeToken(tk, TOKEN_NULL);
-            }else if (strcmp(tk->tokenBuffer, "LIKE")){
+            }else if (strcasecmp(tk->tokenBuffer, "LIKE") == 0){
                 return makeToken(tk, TOKEN_LIKE);
-            }else if (strcmp(tk->tokenBuffer, "IN")){
+            }else if (strcasecmp(tk->tokenBuffer, "IN") == 0){
                 return makeToken(tk, TOKEN_IN);
-            }else if (strcmp(tk->tokenBuffer, "FUN")){
+            }else if (strcasecmp(tk->tokenBuffer, "FUN") == 0){
                 /*TODO:需要处理函数*/
                 return makeToken(tk, TOKEN_FUN);
             }
