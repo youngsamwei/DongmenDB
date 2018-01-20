@@ -3,8 +3,7 @@
 //
 
 #include <tokenizer.h>
-#include <stdlib.h>
-#include <stdio.h>
+
 #include "parseExpression.h"
 /*
  * main will have a string argument (in argv[1]).
@@ -14,7 +13,7 @@
  */
 int main(int argc, char **argv) {
     // make sure theres exactly 1 argument
-    char *sexpr = " a > b";
+    char *sexpr = " a > b and c < d";
     TokenizerT *tokenizer = TKCreate(sexpr);
 
     Expression *expr = parseExpression(tokenizer);
