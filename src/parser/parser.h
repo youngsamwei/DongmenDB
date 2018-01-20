@@ -19,7 +19,6 @@ UpdateStmt *parseUpdate(TokenizerT *tokenizer);
 FieldsExpr *parseFieldsExpr(TokenizerT *tokenizer);
 TablesExpr *parseTablesExpr(TokenizerT *tokenizer);
 
-Func *parseFunc(TokenizerT *tokenizer);
 TermExpr *parseTermExpr(TokenizerT *tokenizer);
 BinaryExpr *parseBinaryExpr(TokenizerT *tokenizer);
 UnaryExpr *parseUnaryExpr(TokenizerT *tokenizer);
