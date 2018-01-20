@@ -19,6 +19,8 @@ typedef struct op_stack_{
     op_stack *next;
 } op_stack;
 
-Expression *parseExpression(TokenizerT *tokenizer);
+Expression *parseExpression(TokenizerT *tk);
+op_stack *stackPush(op_stack *opstack, TokenType opType);
+TokenType stackPop(op_stack *opstack);
 
 #endif //DONGMENDB_PARSEREXPRESSION_H
