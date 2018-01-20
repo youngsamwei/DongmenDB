@@ -10,44 +10,46 @@
  * Tokenizer type.  You need to fill in the type as part of your implementation.
  */
 
+/*与operators中的排序一致，方便按照顺序访问operators*/
 typedef enum TokenType_{
-    TOKEN_INVALID = 0, //"invalid token"
+    TOKEN_OPEN_PAREN = 0,
+    TOKEN_CLOSE_PAREN,
+    TOKEN_PLUS,
+    TOKEN_MINUS,
+    TOKEN_DIVIDE,
+    TOKEN_MULTIPLY,
+    TOKEN_LT,              //less-than operator
+    TOKEN_GT,
+    TOKEN_EQ,
+    TOKEN_NOT_EQUAL,
+    TOKEN_LE,               //less-than-or-equal-to operator"
+    TOKEN_GE,
+    TOKEN_IN,
+    TOKEN_LIKE,
+    TOKEN_AND,
+    TOKEN_OR,
+    TOKEN_NOT,
+    TOKEN_ASSIGNMENT,
+    TOKEN_FUN,
+    TOKEN_COMMA,      /*以上是操作符，在表达式解析时使用*/
+
+    TOKEN_INVALID , //"invalid token"
     TOKEN_RESERVED_WORD,
     TOKEN_WORD,
-    TOKEN_NOT,
-    TOKEN_NOT_EQUAL,
     TOKEN_UNENDED_SRING,
     TOKEN_STRING,
     TOKEN_MOD,
-    TOKEN_AND,
     TOKEN_INCOMPLETE_CHAR,
     TOKEN_CHAR,
     TOKEN_INVALID_CHAR,
-    TOKEN_OPEN_PAREN,
-    TOKEN_CLOSE_PAREN,
-    TOKEN_MULTIPLY,
-    TOKEN_PLUS,
-    TOKEN_COMMA,
-    TOKEN_MINUS,
-    TOKEN_DIVIDE,
     TOKEN_SEMICOLON,
-    TOKEN_LE,               //less-than-or-equal-to operator"
-    TOKEN_LT,              //less-than operator
-    TOKEN_EQ,
-    TOKEN_ASSIGNMENT,
-    TOKEN_GE,
-    TOKEN_GT,
-    TOKEN_OR,
     TOKEN_EXP_FLOAT,
     TOKEN_FLOAT,
     TOKEN_OCTAL,               //"octal integer"
     TOKEN_HEX,                 //"hexadecimal integer"
     TOKEN_DECIMAL,            //"decimal integer"
     TOKEN_ZERO,               //"zero integer"
-    TOKEN_NULL,
-    TOKEN_IN,
-    TOKEN_LIKE,
-    TOKEN_FUN
+    TOKEN_NULL
 } TokenType;
 
 typedef struct TokenizerT_ {
