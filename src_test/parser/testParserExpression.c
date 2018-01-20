@@ -16,10 +16,13 @@
  */
 int main(int argc, char **argv) {
 
-    char *sexpr = " a > b and c < d";
+    //char *sexpr = " 1 + 2 * 3 - 4   ";
+    char *sexpr = " a + b * (c - d)  ";
     TokenizerT *tokenizer = TKCreate(sexpr);
 
     Expression *expr = parseExpression(tokenizer);
+
+    printExpression(expr);
 
     TKDestroy(tokenizer);
 

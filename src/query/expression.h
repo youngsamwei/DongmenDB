@@ -87,4 +87,8 @@ typedef struct Expression_ {
 
 } Expression;
 
+
+void printExpression(Expression *expr);
+char *getExpressionDesc(Expression *expr);
+
 #endif //DONGMENDB_EXPRESSION_H
