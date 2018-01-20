@@ -43,15 +43,15 @@ static const OPERATOR operators[] = {
         /* 关系运算 */
         {2, 10, 10, left2right, TOKEN_LT},        // 小于
         {2, 10, 10, left2right, TOKEN_GT},        // 大于
-        {2, 9,  9,  left2right, TOKEN_EQ},          // 等于
-        {2, 9,  9,  left2right, TOKEN_NOT_EQUAL},          // 不等于
+        {2, 10,  9,  left2right, TOKEN_EQ},          // 等于
+        {2, 10,  9,  left2right, TOKEN_NOT_EQUAL},          // 不等于
         {2, 10, 10, left2right, TOKEN_LE},        // 不大于
         {2, 10, 10, left2right, TOKEN_GE},        // 不小于
-        {2, 9,  9,  left2right, TOKEN_IN},
-        {2, 9,  9,  left2right, TOKEN_LIKE},
+        {2, 10,  9,  left2right, TOKEN_IN},
+        {2, 10,  9,  left2right, TOKEN_LIKE},
         /* 逻辑运算 */
         {2, 5,  5,  left2right, TOKEN_AND},         // 且
-        {2, 4,  4,  left2right, TOKEN_OR},          // 或
+        {2, 5,  4,  left2right, TOKEN_OR},          // 或
         {1, 15, 15, right2left, TOKEN_NOT},       // 非
         /* 赋值 */
         {2, 2,  2,  right2left, TOKEN_ASSIGNMENT},  // 赋值

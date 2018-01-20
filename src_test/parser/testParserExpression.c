@@ -3,6 +3,9 @@
 //
 
 #include <tokenizer.h>
+#include <stdio.h>
+#include <strings.h>
+#include <mem.h>
 
 #include "parseExpression.h"
 /*
@@ -12,7 +15,7 @@
  * Each token should be printed on a separate line.
  */
 int main(int argc, char **argv) {
-    // make sure theres exactly 1 argument
+
     char *sexpr = " a > b and c < d";
     TokenizerT *tokenizer = TKCreate(sexpr);
 

@@ -13,8 +13,8 @@ Expression *parseExpression(TokenizerT *tk) {
     /*以TOKEN_NULL做为栈底*/
     opstack->operatorType = TOKEN_NULL;
     opstack->next = NULL;
-    Expression *rootexpr = (Expression *) malloc(sizeof(Expression));
-    rootexpr->nextexpr = NULL;
+    Expression *rootexpr = NULL;
+
     int go = 1;
     while (go) {
         TokenT *token = TKGetNextToken(tk);
@@ -31,9 +31,10 @@ Expression *parseExpression(TokenizerT *tk) {
                 TokenType type = opstack->operatorType;
                 opstack = stackPop(opstack);
                 while (type != TOKEN_OPEN_PAREN) {
-                    Expression *expr = (Expression *) malloc(sizeof(Expression));
-                    expr->opType = type;
-                    expr->nextexpr = rootexpr;
+                    Expression *expr = newExpression(opstack->operatorType, NULL);
+                    if (rootexpr != NULL) {
+                        expr->nextexpr = rootexpr;
+                    }
                     rootexpr = expr;
                     if (opstack->operatorType == TOKEN_NULL) {
                         printf("error: %s  %s\n", token->type, token->text);
@@ -57,9 +58,8 @@ Expression *parseExpression(TokenizerT *tk) {
             case TOKEN_ZERO:
             case TOKEN_NULL: {
                 /*终结符*/
-                Expression *expr = (Expression *) malloc(sizeof(Expression));;
-                expr->opType = token->type;
-                TermExpr *term = (TermExpr *) malloc((sizeof(TermExpr)));
+                Expression *expr = newExpression(token->type, NULL);
+                TermExpr *term = newTermExpr();
                 switch (token->type) {
                     case TOKEN_WORD:
                         term->t = TERM_ID;
@@ -93,7 +93,9 @@ Expression *parseExpression(TokenizerT *tk) {
                         /*出错*/;
                 }
                 expr->term = term;
-                expr->nextexpr = rootexpr;
+                if (rootexpr != NULL) {
+                    expr->nextexpr = rootexpr;
+                }
                 rootexpr = expr;
                 break;
             }
@@ -134,28 +136,26 @@ Expression *parseExpression(TokenizerT *tk) {
                 * */;
                 OPERATOR currop = operators[token->type];
                 if (opstack->operatorType == TOKEN_NULL) {
+                    /*栈中没有操作符*/
                     opstack = stackPush(opstack, token->type);
                 } else {
                     OPERATOR stackop = operators[opstack->operatorType];
-                    if (currop.icp > stackop.icp) {
-                        opstack = stackPush(opstack, token->type);
-                    } else {
-                        while (currop.icp <= stackop.icp) {
-                            TokenType type = opstack->operatorType;
-                            opstack = stackPop(opstack);
-                            Expression *expr = (Expression *) malloc(sizeof(Expression));
-                            expr->opType = type;
-                            expr->nextexpr = rootexpr;
-                            rootexpr = expr;
 
-                            /*如果是栈底*/
-                            if (opstack->operatorType == TOKEN_NULL) {
-                                break;
-                            } else {
-                                stackop = operators[opstack->operatorType];
-                            }
+                    while (currop.icp <= stackop.icp) {
+                        Expression *expr = newExpression(opstack->operatorType, NULL);
+                        if (rootexpr != NULL) {
+                            expr->nextexpr = rootexpr;
+                        }
+                        rootexpr = expr;
+                        opstack = stackPop(opstack);
+                        /*如果是栈底*/
+                        if (opstack->operatorType == TOKEN_NULL) {
+                            break;
+                        } else {
+                            stackop = operators[opstack->operatorType];
                         }
                     }
+                    opstack = stackPush(opstack, token->type);
                 }
                 break;
             default:
@@ -171,9 +171,10 @@ Expression *parseExpression(TokenizerT *tk) {
         TokenType type = opstack->operatorType;
         while (type != TOKEN_NULL) {
             opstack = stackPop(opstack);
-            Expression *expr = (Expression *) malloc(sizeof(Expression));
-            expr->opType = type;
-            expr->nextexpr = rootexpr;
+            Expression *expr = newExpression(type, NULL);
+            if (rootexpr != NULL) {
+                expr->nextexpr = rootexpr;
+            }
             rootexpr = expr;
             type = opstack->operatorType;
         }
@@ -194,5 +195,18 @@ op_stack *stackPop(op_stack *opstack) {
     op_stack *current = opstack->next;
     free(opstack);
     return current;
+}
+
+Expression *newExpression(TokenType type, Expression *nextexpr) {
+    Expression *expr = (Expression *) malloc(sizeof(Expression));
+    expr->opType = type;
+    expr->nextexpr = nextexpr;
+    expr->term = NULL;
+}
+
+TermExpr *newTermExpr() {
+    TermExpr *expr = (TermExpr *) malloc(sizeof(TermExpr));
+    expr->id = NULL;
+    return expr;
 }
 
