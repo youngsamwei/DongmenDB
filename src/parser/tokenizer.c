@@ -55,7 +55,7 @@ TokenizerT *TKCreate(char *ts) {
     newTokenizer->tokenBuffer = (char *) malloc(sizeof(char) * 1000);
     strcpy(newTokenizer->tokenBuffer, "");  // end the buffer with this null byte
     newTokenizer->bufferIter = newTokenizer->tokenBuffer;
-
+    newTokenizer->offset = 0;
     return newTokenizer;
 }
 
@@ -85,6 +85,7 @@ void TKDestroy(TokenizerT *tk) {
  * Returns 1 if inputIter[0] is '\0', else 0.
  */
 int nextChar(TokenizerT *tk) {
+    tk->offset++;
     tk->bufferIter[0] = tk->inputIter[0];  // copy new char to end of buffer
     tk->inputIter++;                       // move the input iterator over
     tk->bufferIter++;                      // move the buffer iterator over

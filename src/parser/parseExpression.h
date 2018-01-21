@@ -7,6 +7,7 @@
 
 #include <expression.h>
 #include "tokenizer.h"
+#include "parser.h"
 
 /* 表达式解析基本方法：逆波兰法(Reverse Polish)和递归下降法(recursive descent)
  * 这里使用逆波兰法。
@@ -19,7 +20,7 @@ typedef struct op_stack_{
     op_stack *next;
 } op_stack;
 
-Expression *parseExpression(TokenizerT *tk);
+Expression *parseExpression(ParserT *parser);
 op_stack *stackPush(op_stack *opstack, TokenType opType);
 op_stack *stackPop(op_stack *opstack) ;
 

@@ -8,80 +8,92 @@
 #include "parser.h"
 #include "parseExpression.h"
 
+ParserT * newParser(TokenizerT *tokenizer){
+    ParserT *parser = (ParserT *)malloc(sizeof(ParserT));
+    parser->tokenizer = tokenizer;
+    parser->currToken = NULL;
+    parser->parserStateType = PARSER_CORRECT;
+    return parser;
+};
 
-SelectStmt *parseSelect(TokenizerT *tk) {
-    FieldsExpr *fieldsExpr = parseFieldsExpr(tk);
-    TokenT *token = TKGetNextToken(tk);
-    if (strcmp(token->text, "from") != 0) {
-        printf("语法错误. \n");
-        exit(1);
+TokenT *parseNextToken(ParserT *parser){
+    parser->currToken = TKGetNextToken(parser->tokenizer);
+    return parser->currToken;
+};
+
+SelectStmt *parseSelect(ParserT *parser) {
+    FieldsExpr *fieldsExpr = parseFieldsExpr(parser);
+    TokenT *token = parseNextToken(parser);
+    if (stricmp(token->text, "from") != 0) {
+        parser->parserMessage = "语法错误.";
+        return NULL;
     }
-    TablesExpr *tablesExpr = parseTablesExpr(tk);
-    token = TKGetNextToken(tk);
+    TablesExpr *tablesExpr = parseTablesExpr(parser);
+    token = parseNextToken(parser);;
     if (token == NULL) {
         return createSelectStmt(fieldsExpr, tablesExpr, NULL, NULL, NULL);
     }
-    if (strcmp(token->text, "where") != 0) {
-        printf("语法错误. \n");
-        exit(1);
+    if (stricmp(token->text, "where") != 0) {
+        parser->parserMessage = "语法错误.";
+        return NULL;
     }
-    Expression *whereExpr = parseExpression(tk);
-    token = TKGetNextToken(tk);
+    Expression *whereExpr = parseExpression(parser);
+    token = parseNextToken(parser);;
     if (token == NULL) {
         return createSelectStmt(fieldsExpr, tablesExpr, whereExpr, NULL, NULL);
     }
-    TokenT *tokenBy = TKGetNextToken(tk);
-    if (strcmp(token->text, "group") != 0) {
-        printf("语法错误. \n");
-        exit(1);
-    } else if (strcmp(tokenBy->text, "by") != 0) {
-        printf("语法错误. \n");
-        exit(1);
+    TokenT *tokenBy = parseNextToken(parser);;
+    if (stricmp(token->text, "group") != 0) {
+        parser->parserMessage = "语法错误.";
+        return NULL;
+    } else if (stricmp(tokenBy->text, "by") != 0) {
+        parser->parserMessage = "语法错误.";
+        return NULL;
     }
-    GroupExpr *groupExpr = parseGroupExpr(tk);
-    token = TKGetNextToken(tk);
+    GroupExpr *groupExpr = parseGroupExpr(parser);
+    token = parseNextToken(parser);;
     if (token == NULL) {
         return createSelectStmt(fieldsExpr, tablesExpr, whereExpr, groupExpr, NULL);
     }
-    tokenBy = TKGetNextToken(tk);
-    if (strcmp(token->text, "order") != 0) {
-        printf("语法错误. \n");
-        exit(1);
-    } else if (strcmp(tokenBy->text, "by") != 0) {
-        printf("语法错误. \n");
-        exit(1);
+    tokenBy = parseNextToken(parser);
+    if (stricmp(token->text, "order") != 0) {
+        parser->parserMessage = "语法错误.";
+        return NULL;
+    } else if (stricmp(tokenBy->text, "by") != 0) {
+        parser->parserMessage = "语法错误.";
+        return NULL;
     }
-    OrderExpr *orderExpr = parseOrderExpr(tk);
-    token = TKGetNextToken(tk);
+    OrderExpr *orderExpr = parseOrderExpr(parser);
+    token = parseNextToken(parser);;
     if (token == NULL) {
         return createSelectStmt(fieldsExpr, tablesExpr, whereExpr, groupExpr, orderExpr);
     }
 
 };
 
-CreateStmt *parseCreate(TokenizerT *tk) {};
+CreateStmt *parseCreate(ParserT *parser) {};
 
-AlterStmt *parseAlter(TokenizerT *tk) {};
+AlterStmt *parseAlter(ParserT *parser) {};
 
-DeleteStmt *parseDelete(TokenizerT *tk) {};
+DeleteStmt *parseDelete(ParserT *parser) {};
 
-UpdateStmt *parseUpdate(TokenizerT *tk) {};
+UpdateStmt *parseUpdate(ParserT *parser) {};
 
-FieldsExpr *parseFieldsExpr(TokenizerT *tk) {};
+FieldsExpr *parseFieldsExpr(ParserT *parser) {};
 
-TablesExpr *parseTablesExpr(TokenizerT *tk) {};
+TablesExpr *parseTablesExpr(ParserT *parser) {};
 
-TermExpr *parseTermExpr(TokenizerT *tk) {};
+TermExpr *parseTermExpr(ParserT *parser) {};
 
-BinaryExpr *parseBinaryExpr(TokenizerT *tk) {};
+BinaryExpr *parseBinaryExpr(ParserT *parser) {};
 
-UnaryExpr *parseUnaryExpr(TokenizerT *tk) {};
+UnaryExpr *parseUnaryExpr(ParserT *parser) {};
 
-GroupExpr *parseGroupExpr(TokenizerT *tk) {};
+GroupExpr *parseGroupExpr(ParserT *parser) {};
 
-OrderExpr *parseOrderExpr(TokenizerT *tk) {};
+OrderExpr *parseOrderExpr(ParserT *parser) {};
 
-ColumnsExpr *parseColumnsExpr(TokenizerT *tk) {};
+ColumnsExpr *parseColumnsExpr(ParserT *parser) {};
 
-SetExpr *parseSetExpr(TokenizerT *tk) {};
+SetExpr *parseSetExpr(ParserT *parser) {};
 

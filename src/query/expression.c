@@ -60,7 +60,7 @@ char *getExpressionDesc(Expression *expr) {
             return expr->term->id;
         case TOKEN_DECIMAL: {
             Literal *l = expr->term->val;
-            char *v;
+            char *v="\0";
             v = gcvt(l->val.dval, 8, v);
             return v;
         }

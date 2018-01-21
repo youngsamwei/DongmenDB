@@ -9,23 +9,41 @@
 #include "tokenizer.h"
 #include "expression.h"
 
-SelectStmt *parseSelect(TokenizerT *tokenizer);
-CreateStmt *parseCreate(TokenizerT *tokenizer);
-AlterStmt *parseAlter(TokenizerT *tokenizer);
-InsertStmt *parseInsert(TokenizerT *tokenizer);
-DeleteStmt *parseDelete(TokenizerT *tokenizer);
-UpdateStmt *parseUpdate(TokenizerT *tokenizer);
+/*语法分析状态类型*/
+typedef enum {
+    PARSER_WRONG,
+    PARSER_CORRECT,
+    PARSER_RESERVED_WORD
+} ParserStateType;
 
-FieldsExpr *parseFieldsExpr(TokenizerT *tokenizer);
-TablesExpr *parseTablesExpr(TokenizerT *tokenizer);
+typedef struct ParserT_{
 
-TermExpr *parseTermExpr(TokenizerT *tokenizer);
-BinaryExpr *parseBinaryExpr(TokenizerT *tokenizer);
-UnaryExpr *parseUnaryExpr(TokenizerT *tokenizer);
-GroupExpr *parseGroupExpr(TokenizerT *tokenizer);
-OrderExpr *parseOrderExpr(TokenizerT *tokenizer);
-ColumnsExpr *parseColumnsExpr(TokenizerT *tokenizer);
-SetExpr *parseSetExpr(TokenizerT *tokenizer);
+    TokenizerT *tokenizer;
+    TokenT *currToken;
+    ParserStateType parserStateType;
+    char *parserMessage;
+} ParserT;
+
+
+ParserT * newParser(TokenizerT *tokenizer);
+TokenT *parseNextToken(ParserT *parser);
+SelectStmt *parseSelect(ParserT *parser);
+CreateStmt *parseCreate(ParserT *parser);
+AlterStmt *parseAlter(ParserT *parser);
+InsertStmt *parseInsert(ParserT *parser);
+DeleteStmt *parseDelete(ParserT *parser);
+UpdateStmt *parseUpdate(ParserT *parser);
+
+FieldsExpr *parseFieldsExpr(ParserT *parser);
+TablesExpr *parseTablesExpr(ParserT *parser);
+
+TermExpr *parseTermExpr(ParserT *parser);
+BinaryExpr *parseBinaryExpr(ParserT *parser);
+UnaryExpr *parseUnaryExpr(ParserT *parser);
+GroupExpr *parseGroupExpr(ParserT *parser);
+OrderExpr *parseOrderExpr(ParserT *parser);
+ColumnsExpr *parseColumnsExpr(ParserT *parser);
+SetExpr *parseSetExpr(ParserT *parser);
 
 
 #endif //DONGMENDB_PARSER_H
