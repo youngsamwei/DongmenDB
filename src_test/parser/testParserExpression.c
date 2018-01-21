@@ -22,17 +22,22 @@ int main(int argc, char **argv) {
 //    char *sexpr = " 1 + 2 * (3 - 4)   ";
     //char *sexpr = " a + b * (c - d)  ";
 //    char *sexpr = " a - b * (c - (d + e)) > f.x ";
-     sexpr = " x = 1 + (fun(\"abc\" + field.name, fun(6, 8), 9)  + 10) < 20 ";
+    sexpr = " x = 1 + (fun(\"abc\" + field.name, fun(6, 8), 9)  + 10) < 20 ";
+    sexpr = "(1 + 2, t2, 3 < 5, t4 + fun(pi, ci))";
+    //sexpr = "1+ (2 - 3)";
     if (argc == 2) {
         sexpr = argv[1];
     }
 
     TokenizerT *tokenizer = TKCreate(sexpr);
+    ParserT *parser = newParser(tokenizer);
 
-    Expression *expr = parseExpression(tokenizer);
-
-    printExpression(expr);
-
+    Expression *expr = parseExpression(parser);
+    if (parser->parserStateType ==PARSER_WRONG){
+        printf(parser->parserMessage);
+    }else {
+        printExpression(expr);
+    }
     TKDestroy(tokenizer);
 
     return 0;

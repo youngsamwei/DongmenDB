@@ -6,7 +6,7 @@
 #define DONGMENDB_TOKENIZER_H
 
 
-/*
+/* 词法分析
  * Tokenizer type.  You need to fill in the type as part of your implementation.
  */
 
@@ -58,6 +58,8 @@ typedef struct TokenizerT_ {
     char *inputIter;
     char *bufferIter;
     int bufferSize;
+    int offset;
+    TokenType currTokenType;
 } TokenizerT;
 
 typedef struct TokenT_ {

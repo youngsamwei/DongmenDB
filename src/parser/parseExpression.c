@@ -9,16 +9,21 @@
 #include "parseExpression.h"
 
 /*使用逆波兰法解析表达式*/
-Expression *parseExpression(TokenizerT *tk) {
+Expression *parseExpression(ParserT *parser) {
+    typedef enum {
+        EET_NONE,
+        EET_OPERATOR,
+        EET_OPERAND
+    } ExprElementType;
     op_stack *opstack = (op_stack *) malloc(sizeof(op_stack));
     /*以TOKEN_NULL做为栈底*/
     opstack->operatorType = TOKEN_NULL;
     opstack->next = NULL;
     Expression *rootexpr = NULL;
+    ExprElementType eetype = EET_NONE;
 
-    int go = 1;
-    while (go) {
-        TokenT *token = TKGetNextToken(tk);
+    while ( parser->parserStateType != PARSER_WRONG) {
+        TokenT *token = parseNextToken(parser);
 
         if (token == NULL) {
             break;
@@ -26,8 +31,10 @@ Expression *parseExpression(TokenizerT *tk) {
         switch (token->type) {
             case TOKEN_OPEN_PAREN:
                 opstack = stackPush(opstack, token->type);
+                eetype = EET_NONE;
                 break;
             case TOKEN_CLOSE_PAREN: {
+                eetype = EET_NONE;
                 /*退栈，直到遇到TOKEN_OPEN_PAREN*/
                 TokenType type = opstack->operatorType;
                 opstack = stackPop(opstack);
@@ -38,8 +45,8 @@ Expression *parseExpression(TokenizerT *tk) {
                     }
                     rootexpr = expr;
                     if (opstack->operatorType == TOKEN_NULL) {
-                        printf("error: %s  %s\n", token->type, token->text);
-                        go = 0;
+                        sprintf(parser->parserMessage, "error: pos:%i, token: %s \n", parser->tokenizer->offset, token->text);
+                        parser->parserStateType = PARSER_WRONG;
                         break;
                     }
                     type = opstack->operatorType;
@@ -58,6 +65,14 @@ Expression *parseExpression(TokenizerT *tk) {
             case TOKEN_DECIMAL:
             case TOKEN_ZERO:
             case TOKEN_NULL: {
+                /*简单的语法检测，操作数不能相邻*/
+                if (eetype == EET_OPERAND) {
+                    sprintf(parser->parserMessage, "error: pos:%i, token: %s \n", parser->tokenizer->offset, token->text);
+                    parser->parserStateType = PARSER_WRONG;
+                    break;
+                } else {
+                    eetype = EET_OPERAND;
+                }
                 /*终结符*/
                 Expression *expr = newExpression(token->type, NULL);
                 TermExpr *term = newTermExpr();
@@ -100,8 +115,8 @@ Expression *parseExpression(TokenizerT *tk) {
                     }
                         break;
                     default:
-                        printf("error: %s  %s\n", token->type, token->text);
-                        go = 0;
+                        sprintf(parser->parserMessage, "error: pos:%i, token: %s \n", parser->tokenizer->offset, token->text);
+                        parser->parserStateType = PARSER_WRONG;
                         /*出错*/;
                 }
                 expr->term = term;
@@ -116,13 +131,14 @@ Expression *parseExpression(TokenizerT *tk) {
             case TOKEN_INCOMPLETE_CHAR:
             case TOKEN_INVALID_CHAR:
                 /*出错*/
-                printf("error: %s  %s\n", token->type, token->text);
-                go = 0;
+                sprintf(parser->parserMessage, "invalid token or string: pos:%i, token: %s \n", parser->tokenizer->offset, token->text);
+                parser->parserStateType = PARSER_WRONG;
                 break;
             case TOKEN_SEMICOLON:
             case TOKEN_RESERVED_WORD:
                 /*需要判断一下操作符栈里是否还有操作，如果有则出错，若没有则正常返回。*/
-                printf("error: %s  %s\n", token->type, token->text);
+                sprintf(parser->parserMessage, "PARSER_RESERVED_WORD: pos:%i, token: %s \n", parser->tokenizer->offset, token->text);
+                parser->parserStateType = PARSER_RESERVED_WORD;
                 break;
             case TOKEN_NOT:
             case TOKEN_AND:
@@ -142,6 +158,18 @@ Expression *parseExpression(TokenizerT *tk) {
             case TOKEN_LIKE:
             case TOKEN_IN:
             case TOKEN_FUN:
+                /*简单的语法检测，操作数不能相邻,但fun特殊*/
+                if (eetype == EET_OPERATOR) {
+                    if (token->type == TOKEN_FUN) {
+                        eetype = EET_OPERAND;
+                    } else {
+                        sprintf(parser->parserMessage, "error: pos:%i, token: %s \n", parser->tokenizer->offset, token->text);
+                        parser->parserStateType = PARSER_WRONG;
+                        break;
+                    }
+                } else {
+                    eetype = EET_OPERATOR;
+                }
                 /*操作符：与栈里的操作符比较优先级，
                 * 如果大于栈里的操作符优先级，则进栈，
                 * 若小于等于，则出栈直到栈里的操作符优先级大于当前操作符，
@@ -172,25 +200,29 @@ Expression *parseExpression(TokenizerT *tk) {
                 break;
             default:
                 /*出错*/
-                printf("error: %s  %s\n", token->type, token->text);
-                go = 0;
+                sprintf(parser->parserMessage, "error: pos:%i, token: %s \n", parser->tokenizer->offset, token->text);
+                parser->parserStateType = PARSER_WRONG;
 
         }
 
     }
 
-    if (opstack->operatorType != TOKEN_NULL) {
-        TokenType type = opstack->operatorType;
-        while (type != TOKEN_NULL) {
-            opstack = stackPop(opstack);
-            Expression *expr = newExpression(type, NULL);
-            if (rootexpr != NULL) {
-                expr->
-                        nextexpr = rootexpr;
-            }
-            rootexpr = expr;
-            type = opstack->operatorType;
+    TokenType type = opstack->operatorType;
+    while (type != TOKEN_NULL) {
+        if (type == TOKEN_OPEN_PAREN) {
+            parser->parserMessage = "error: missing right parenthesis.";
+            parser->parserStateType = PARSER_WRONG;
+            break;
         }
+        opstack = stackPop(opstack);
+        Expression *expr = newExpression(type, NULL);
+        if (rootexpr != NULL) {
+            expr->
+                    nextexpr = rootexpr;
+        }
+        rootexpr = expr;
+        type = opstack->operatorType;
+
     }
     return
             rootexpr;
