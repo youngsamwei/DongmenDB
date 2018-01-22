@@ -134,7 +134,7 @@ int isReservedWord(char *word) {
     reservedWords[12] = "null";
     reservedWords[13] = "like";
     reservedWords[14] = "in";
-    reservedWords[15] = "fun";
+    reservedWords[15] = "grant";
     reservedWords[16] = "if";
     reservedWords[17] = "int";
     reservedWords[18] = "long";
@@ -231,10 +231,8 @@ TokenT *_word(TokenizerT *tk) {
                 return makeToken(tk, TOKEN_LIKE);
             }else if (strcasecmp(tk->tokenBuffer, "IN") == 0){
                 return makeToken(tk, TOKEN_IN);
-            }else if (strcasecmp(tk->tokenBuffer, "FUN") == 0){
-                /*TODO:需要处理函数*/
-                return makeToken(tk, TOKEN_FUN);
             }
+            /*TODO:需要处理函数*/
             return makeToken(tk, TOKEN_RESERVED_WORD);
         } else {
             return makeToken(tk, TOKEN_WORD); //标识符
