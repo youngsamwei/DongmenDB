@@ -24,6 +24,7 @@ typedef struct ParserT_{
     char *parserMessage;
 } ParserT;
 
+#define PARSER_MESSAGE_LENTTH 128
 
 ParserT * newParser(TokenizerT *tokenizer);
 TokenT *parseNextToken(ParserT *parser);

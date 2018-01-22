@@ -19,6 +19,9 @@ ParserT *newParser(TokenizerT *tokenizer) {
 
 /*如果当前的token不为NULL，则不获取下一个token*/
 TokenT *parseNextToken(ParserT *parser) {
+    if (parser->parserStateType==PARSER_WRONG){
+        return NULL;
+    }
     if (parser->currToken == NULL) {
         parser->currToken = TKGetNextToken(parser->tokenizer);
     }
@@ -27,11 +30,18 @@ TokenT *parseNextToken(ParserT *parser) {
 
 /*在处理完当前token后，需要调用此方法。*/
 TokenT *parseEatToken(ParserT *parser) {
+    if (parser->parserStateType==PARSER_WRONG){
+        return NULL;
+    }
     parser->currToken = NULL;
+    return NULL;
 };
 
 /*eat掉当前的token，并获取下一个token*/
 TokenT *parseEatAndNextToken(ParserT *parser) {
+    if (parser->parserStateType==PARSER_WRONG){
+        return NULL;
+    }
     parser->currToken = TKGetNextToken(parser->tokenizer);
     return parser->currToken;
 };
