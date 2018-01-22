@@ -29,6 +29,7 @@ ParserT * newParser(TokenizerT *tokenizer);
 TokenT *parseNextToken(ParserT *parser);
 TokenT *parseEatToken(ParserT *parser);
 TokenT *parseEatAndNextToken(ParserT *parser);
+void *parseError(ParserT *parser, char *message);
 
 SelectStmt *parseSelect(ParserT *parser);
 CreateStmt *parseCreate(ParserT *parser);
