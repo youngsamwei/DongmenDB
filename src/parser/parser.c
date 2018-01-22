@@ -9,15 +9,29 @@
 #include "parseExpression.h"
 #include "parseExpressionRD.h"
 
-ParserT * newParser(TokenizerT *tokenizer){
-    ParserT *parser = (ParserT *)malloc(sizeof(ParserT));
+ParserT *newParser(TokenizerT *tokenizer) {
+    ParserT *parser = (ParserT *) malloc(sizeof(ParserT));
     parser->tokenizer = tokenizer;
     parser->currToken = NULL;
     parser->parserStateType = PARSER_CORRECT;
     return parser;
 };
 
-TokenT *parseNextToken(ParserT *parser){
+/*如果当前的token不为NULL，则不获取下一个token*/
+TokenT *parseNextToken(ParserT *parser) {
+    if (parser->currToken == NULL) {
+        parser->currToken = TKGetNextToken(parser->tokenizer);
+    }
+    return parser->currToken;
+};
+
+/*在处理完当前token后，需要调用此方法。*/
+TokenT *parseEatToken(ParserT *parser) {
+    parser->currToken = NULL;
+};
+
+/*eat掉当前的token，并获取下一个token*/
+TokenT *parseEatAndNextToken(ParserT *parser){
     parser->currToken = TKGetNextToken(parser->tokenizer);
     return parser->currToken;
 };

@@ -536,6 +536,10 @@ TokenT *_zero(TokenizerT *tk) {
     }
 }
 
+TokenT *_power(TokenizerT *tk){
+    nextChar(tk);
+    return makeToken(tk, TOKEN_POWER);
+}
 /*
  * TKGetNextToken returns the next token from the token stream as a
  * character string.  Space for the returned token should be dynamically
@@ -596,6 +600,8 @@ TokenT *TKGetNextToken(TokenizerT *tk) {
         return _eq(tk);
     } else if (curr == '>') { // gt, rshift, gt_eq
         return _gt(tk);
+    } else if (curr == '^'){
+       return _power(tk);
     } else {
         return _invalid(tk);
     }

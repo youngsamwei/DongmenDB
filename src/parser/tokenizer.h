@@ -14,6 +14,7 @@
 typedef enum TokenType_{
     TOKEN_OPEN_PAREN = 0,
     TOKEN_CLOSE_PAREN,
+    TOKEN_POWER,
     TOKEN_PLUS,
     TOKEN_MINUS,
     TOKEN_DIVIDE,
