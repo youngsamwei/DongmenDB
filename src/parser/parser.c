@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include "parser.h"
 #include "parseExpression.h"
+#include "parseExpressionRD.h"
 
 ParserT * newParser(TokenizerT *tokenizer){
     ParserT *parser = (ParserT *)malloc(sizeof(ParserT));
@@ -37,7 +38,7 @@ SelectStmt *parseSelect(ParserT *parser) {
         parser->parserMessage = "语法错误.";
         return NULL;
     }
-    Expression *whereExpr = parseExpression(parser);
+    Expression *whereExpr = parseExpressionRD(parser);
     token = parseNextToken(parser);;
     if (token == NULL) {
         return createSelectStmt(fieldsExpr, tablesExpr, whereExpr, NULL, NULL);
