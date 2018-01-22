@@ -31,9 +31,15 @@ TokenT *parseEatToken(ParserT *parser) {
 };
 
 /*eat掉当前的token，并获取下一个token*/
-TokenT *parseEatAndNextToken(ParserT *parser){
+TokenT *parseEatAndNextToken(ParserT *parser) {
     parser->currToken = TKGetNextToken(parser->tokenizer);
     return parser->currToken;
+};
+
+void *parseError(ParserT *parser, char *message) {
+    parser->parserMessage = message;
+    parser->parserStateType = PARSER_WRONG;
+    return NULL;
 };
 
 SelectStmt *parseSelect(ParserT *parser) {

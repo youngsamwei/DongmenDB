@@ -30,8 +30,8 @@ int main(int argc, char **argv) {
 
 /*错误的例子*/
     sexpr = " a - b * (c - (d + e) > f.x ";
-    sexpr = "2-";
-    sexpr = "ltrim(2)";
+    sexpr = "round(1)";
+//    sexpr = "ltrim(2)";
     if (argc == 2) {
         sexpr = argv[1];
     }

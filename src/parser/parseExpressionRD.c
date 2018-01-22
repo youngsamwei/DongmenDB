@@ -14,8 +14,11 @@ Expression *parseExpressionRD(ParserT *parser) {
 Expression *parseReadDouble(ParserT *parser) {
     Expression *expr0 = NULL;
     TokenT *token = parseNextToken(parser);
-    if (token != NULL && (token->type == TOKEN_FLOAT || token->type == TOKEN_DECIMAL
-                          || token->type == TOKEN_EXP_FLOAT)) {
+    if (token == NULL) {
+        return parseError(parser, "syntax error: missing number.");
+    }
+    if ((token->type == TOKEN_FLOAT || token->type == TOKEN_DECIMAL
+         || token->type == TOKEN_EXP_FLOAT)) {
         /*处理double数据*/
         expr0 = newExpression(token->type, NULL);
         TermExpr *term = newTermExpr();
@@ -30,9 +33,7 @@ Expression *parseReadDouble(ParserT *parser) {
         parseEatToken(parser);
         return expr0;
     } else {
-        parser->parserMessage = "语法错误:不正确的数据.";
-        parser->parserStateType = PARSER_WRONG;
-        return NULL;
+        return parseError(parser, "syntax error: missing number.");
     }
 };
 
@@ -45,7 +46,10 @@ Expression *parseReadDouble(ParserT *parser) {
 Expression *parseReadArgument(ParserT *parser) {
     Expression *expr0 = NULL;
     TokenT *token = parseNextToken(parser);
-    if (token != NULL && token->type == TOKEN_COMMA) {
+    if (token == NULL) {
+        return parseError(parser, "syntax error: missing argument.");
+    }
+    if (token->type == TOKEN_COMMA) {
         parseEatToken(parser);
     }
     expr0 = parseReadExpr(parser);
@@ -60,22 +64,29 @@ Expression *parseReadArgument(ParserT *parser) {
 Expression *parseReadBuiltin(ParserT *parser) {
     Expression *expr0 = NULL, *expr1 = NULL;
     TokenT *token = parseNextToken(parser);
-    if (token != NULL && token->type == TOKEN_WORD) {
+    if (token == NULL) {
+        return parseError(parser, "syntax error: missing id or number.");
+    }
+    if (token->type == TOKEN_WORD) {
         char *text = token->text;
         token = parseEatAndNextToken(parser);
+
         if (token != NULL && token->type == TOKEN_OPEN_PAREN) {
             if (stricmp(text, "ltrim")) {
                 token = parseEatAndNextToken(parser);
                 Expression *param0 = parseReadArgument(parser);
                 expr0 = newExpression(TOKEN_FUN, param0);
-            } else if (stricmp(text, "rtrim")) {
-                /*其他函数处理*/
+            } else if (stricmp(text, "round")) {
+                /*此处的错误提示不准确*/
+                Expression *param0 = parseReadArgument(parser);
+                Expression *param1 = parseReadArgument(parser);
+                expr0 = concatExpression(param0, param1);
+                expr0 = newExpression(TOKEN_FUN, expr0);
             }
             token = parseNextToken(parser);
-            if (token != NULL && token->type != TOKEN_CLOSE_PAREN) {
-                parser->parserMessage = "语法错误:缺少)";
-                parser->parserStateType = PARSER_WRONG;
-                return NULL;
+
+            if (token == NULL || token->type != TOKEN_CLOSE_PAREN) {
+                return parseError(parser, "syntax error: syntax error: missing ')'.");
             }
             return expr0;
         } else {
@@ -101,14 +112,15 @@ Expression *parseReadBuiltin(ParserT *parser) {
 Expression *parseReadParen(ParserT *parser) {
     Expression *expr0 = NULL;
     TokenT *token = parseNextToken(parser);
-    if (token != NULL && token->type == TOKEN_OPEN_PAREN) {
+    if (token == NULL){
+        return parseError(parser, "syntax error: missing something.");
+    }
+    if (token->type == TOKEN_OPEN_PAREN) {
         parseEatAndNextToken(parser);
         expr0 = parseReadBooleanOr(parser);
         token = parseNextToken(parser);
-        if (token != NULL && token->type != TOKEN_CLOSE_PAREN) {
-            parser->parserMessage = "语法错误：缺少)";
-            parser->parserStateType = PARSER_WRONG;
-            return NULL;
+        if (token == NULL || token->type != TOKEN_CLOSE_PAREN) {
+            return parseError(parser, "syntax error: missing ')'.");
         } else {
             parseEatToken(parser);
         }
@@ -126,6 +138,9 @@ Expression *parseReadParen(ParserT *parser) {
 Expression *parseReadUnary(ParserT *parser) {
     Expression *expr0 = NULL, *expr1 = NULL;
     TokenT *token = parseNextToken(parser);
+    if (token == NULL){
+        return parseError(parser, "syntax error: missing something.");
+    }
     if (token != NULL && (token->type == TOKEN_NOT || token->type == TOKEN_MINUS
                           || token->type == TOKEN_PLUS)) {
         parseEatAndNextToken(parser);
@@ -147,7 +162,10 @@ Expression *parseReadPower(ParserT *parser) {
     TokenT *token = parseNextToken(parser);
     expr0 = parseReadUnary(parser);
     token = parseNextToken(parser);
-    if (token != NULL && token->type == TOKEN_POWER) {
+    if (token == NULL){
+        return parseError(parser, "syntax error: missing something.");
+    }
+    if (token->type == TOKEN_POWER) {
         /*需要特殊处理*/
         token = parseEatAndNextToken(parser);
         expr1 = parseReadPower(parser);
@@ -165,7 +183,10 @@ Expression *parseReadTerm(ParserT *parser) {
     Expression *expr0 = NULL, *expr1 = NULL, *expr2 = NULL;
     expr0 = parseReadPower(parser);
     TokenT *token = parseNextToken(parser);
-    while (token != NULL && (token->type == TOKEN_MULTIPLY || token->type == TOKEN_DIVIDE)) {
+    if (token == NULL){
+        return parseError(parser, "syntax error: missing something.");
+    }
+    while (token->type == TOKEN_MULTIPLY || token->type == TOKEN_DIVIDE) {
         /*需要处理多个连续的乘除*/
         parseEatToken(parser);
         /*获得乘法的右表达式*/
@@ -201,7 +222,10 @@ Expression *concatExpression(Expression *expr0, Expression *expr1) {
 Expression *parseReadExpr(ParserT *parser) {
     Expression *expr0 = NULL, *expr1 = NULL, *expr2 = NULL;
     TokenT *token = parseNextToken(parser);
-    if (token != NULL && (token->type == TOKEN_PLUS || token->type == TOKEN_MINUS)) {
+    if (token == NULL){
+        return parseError(parser, "syntax error: missing something.");
+    }
+    if (token->type == TOKEN_PLUS || token->type == TOKEN_MINUS){
         /*处理正负号*/
         parseEatToken(parser);
         expr0 = parseReadTerm(parser);
@@ -211,7 +235,10 @@ Expression *parseReadExpr(ParserT *parser) {
     }
     /*需要递归处理，连续的+-操作*/
     token = parseNextToken(parser);
-    while (token != NULL && (token->type == TOKEN_PLUS || token->type == TOKEN_MINUS)) {
+    if (token == NULL){
+        return parseError(parser, "syntax error: missing something.");
+    }
+    while (token->type == TOKEN_PLUS || token->type == TOKEN_MINUS) {
         parseEatToken(parser);
         expr1 = parseReadTerm(parser);
         expr0 = concatExpression(expr0, expr1);
@@ -231,8 +258,11 @@ Expression *parseReadBooleanComparison(ParserT *parser) {
     Expression *expr0 = NULL, *expr1 = NULL, *expr2 = NULL;
     expr0 = parseReadExpr(parser);
     TokenT *token = parseNextToken(parser);
-    if (token != NULL && (token->type == TOKEN_GE || token->type == TOKEN_LE
-                          || token->type == TOKEN_GT || token->type == TOKEN_LT)) {
+    if (token == NULL){
+        return parseError(parser, "syntax error: missing something.");
+    }
+    if (token->type == TOKEN_GE || token->type == TOKEN_LE
+                          || token->type == TOKEN_GT || token->type == TOKEN_LT){
         parseEatAndNextToken(parser);
         expr1 = parseReadExpr(parser);
         expr0 = concatExpression(expr0, expr1);
@@ -246,7 +276,10 @@ Expression *parseReadBooleanEquality(ParserT *parser) {
     TokenT *token = parseNextToken(parser);
     expr0 = parseReadBooleanComparison(parser);
     token = parseNextToken(parser);
-    if (token != NULL && (token->type == TOKEN_NOT_EQUAL || token->type == TOKEN_EQ)) {
+    if (token == NULL){
+        return parseError(parser, "syntax error: missing something.");
+    }
+    if (token->type == TOKEN_NOT_EQUAL || token->type == TOKEN_EQ) {
         parseEatAndNextToken(parser);
         expr1 = parseReadBooleanComparison(parser);
         expr0 = concatExpression(expr0, expr1);
@@ -267,7 +300,10 @@ Expression *parseReadBooleanAnd(ParserT *parser) {
     TokenT *token = parseNextToken(parser);
     expr0 = parseReadBooleanEquality(parser);
     token = parseNextToken(parser);
-    while (token != NULL && token->type == TOKEN_AND) {
+    if (token == NULL){
+        return parseError(parser, "syntax error: missing something.");
+    }
+    while (token->type == TOKEN_AND) {
         parseEatToken(parser);
         expr1 = parseReadBooleanEquality(parser);
         expr0 = concatExpression(expr0, expr1);
@@ -289,7 +325,10 @@ Expression *parseReadBooleanOr(ParserT *parser) {
     TokenT *token = parseNextToken(parser);
     expr0 = parseReadBooleanAnd(parser);
     token = parseNextToken(parser);
-    while (token != NULL && token->type == TOKEN_OR) {
+    if (token == NULL){
+        return parseError(parser, "syntax error: missing something.");
+    }
+    while (token->type == TOKEN_OR) {
         parseEatToken(parser);
         expr1 = parseReadBooleanAnd(parser);
         expr0 = concatExpression(expr0, expr1);
