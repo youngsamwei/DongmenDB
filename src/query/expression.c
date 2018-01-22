@@ -58,12 +58,7 @@ char *getExpressionDesc(Expression *expr) {
             return "FUN";
         case TOKEN_WORD:
             return expr->term->id;
-        case TOKEN_DECIMAL: {
-            Literal *l = expr->term->val;
-            char *v="\0";
-            v = gcvt(l->val.dval, 8, v);
-            return v;
-        }
+        case TOKEN_DECIMAL:
         case TOKEN_STRING:
         case TOKEN_CHAR: {
             return expr->term->val->val.strval;
