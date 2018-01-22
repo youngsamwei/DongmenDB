@@ -23,14 +23,14 @@ int main(int argc, char **argv) {
     sexpr = "1 > 2";
     sexpr = "a < b";
     sexpr = "1 > 2 and a<b";
-     sexpr = " a - b * (c - (d + e)) > f.x ";
+//     sexpr = " a - b * (c - (d + e)) > f.x ";
 //    sexpr = " x = 1 + (fun(\"abc\" + field.name, fun(6, 8), 9)  + 10) < 20 ";
     //sexpr = "(1 + 2, t2, 3 < 5, t4 + fun(pi, ci))";
     //sexpr = "2 - 3";
 
 /*错误的例子*/
-    sexpr = " a - b * (c - (d + e) > f.x ";
-    sexpr = "round(1)";
+//    sexpr = " a - b * (c - (d + e)) > f.x ";
+//    sexpr = "round(1) + 2";
 //    sexpr = "ltrim(2)";
     if (argc == 2) {
         sexpr = argv[1];
