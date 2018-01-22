@@ -27,6 +27,9 @@ typedef struct ParserT_{
 
 ParserT * newParser(TokenizerT *tokenizer);
 TokenT *parseNextToken(ParserT *parser);
+TokenT *parseEatToken(ParserT *parser);
+TokenT *parseEatAndNextToken(ParserT *parser);
+
 SelectStmt *parseSelect(ParserT *parser);
 CreateStmt *parseCreate(ParserT *parser);
 AlterStmt *parseAlter(ParserT *parser);
