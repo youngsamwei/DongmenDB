@@ -55,7 +55,7 @@ char *getExpressionDesc(Expression *expr) {
         case TOKEN_IN:
             return "IN";
         case TOKEN_FUN:
-            return "FUN";
+            return expr->term->id;
         case TOKEN_WORD:
             return expr->term->id;
         case TOKEN_DECIMAL:
