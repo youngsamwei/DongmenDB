@@ -8,6 +8,25 @@
 #include "parseExpressionRD.h"
 #include "parseExpression.h"
 
+/*使用递归下降法解析表达式
+ *
+ * 支持：
+ * 算术运算 + - * /
+ * 比较运算: > < != <= >=
+ * 逻辑运算: NOT AND OR
+ * 函数:  round, ltrim （仅作为例子，没有实现）
+ * 字段变量: 类似student.sname
+ * 支持简单的语法检查。
+ * 支持的数据类型:数值，字符串
+ *
+ * 尚未支持的运算符： like， between..and 等
+ *
+ * 此功能属于语法检查，尚不支持语义检查。比如函数操作符操作数类型匹配，函数传参类型匹配检查等。
+ *
+ * 入口函数：parseExpressionRD
+ * */
+
+
 Expression *parseExpressionRD(ParserT *parser) {
     Expression *expr = parseReadBooleanOr(parser);
     if (parser->parserStateType != PARSER_WRONG && parser->currToken != NULL
@@ -61,12 +80,6 @@ Expression *parseReadLiteral(ParserT *parser) {
     }
 };
 
-/**
- @brief reads arguments for the builtin functions, auxilliary function for
- parseRead_builtin()
- @param[in] parser input ParserT structure to operate upon
- @return expr of the argument that was read
- */
 Expression *parseReadArgument(ParserT *parser) {
     Expression *expr0 = NULL;
     TokenT *token = parseNextToken(parser);
@@ -80,11 +93,6 @@ Expression *parseReadArgument(ParserT *parser) {
     return expr0;
 };
 
-/**
- @brief reads and calls built-in functions, like sqrt(.), pow(.), etc.
- @param[in] parser input ParserT structure to operate upon
- @return resulting expr
-*/
 Expression *parseReadBuiltin(ParserT *parser) {
     Expression *expr0 = NULL, *expr1 = NULL;
     TokenT *token = parseNextToken(parser);
@@ -151,6 +159,12 @@ Expression *parseReadBuiltin(ParserT *parser) {
                 /*处理掉右括号*/
                 parseEatToken(parser);
             }
+            /*如果是function，则在expr的term_id中保存函数名称*/
+            TermExpr *term = newTermExpr();
+            term->val = NULL;
+            term->t = TERM_ID;
+            term->id = text;
+            expr0->term = term;
             return expr0;
         } else {
             /*此处是标识符处理*/
@@ -167,11 +181,6 @@ Expression *parseReadBuiltin(ParserT *parser) {
     return expr0;
 };
 
-/**
- @brief attempts to read an expression in parentheses, or failing that a literal value
- @param[in] parser input ParserT structure to operate upon
- @return expression/literal
- */
 Expression *parseReadParen(ParserT *parser) {
     Expression *expr0 = NULL;
     TokenT *token = parseNextToken(parser);
@@ -193,11 +202,6 @@ Expression *parseReadParen(ParserT *parser) {
     return expr0;
 };
 
-/**
- @brief attempts to read a unary operation, or failing that, a parenthetical or literal value
- @param[in] parser input ParserT structure to operate upon
- @return expression/literal
-*/
 Expression *parseReadUnary(ParserT *parser) {
     Expression *expr0 = NULL, *expr1 = NULL;
     TokenT *token = parseNextToken(parser);
@@ -215,11 +219,6 @@ Expression *parseReadUnary(ParserT *parser) {
     return expr0;
 };
 
-/**
- @brief attempts to read an exponentiation operator, or failing that, a parenthetical expression
- @param[in] parser input ParserT structure to operate upon
- @return exponentiation
- */
 Expression *parseReadPower(ParserT *parser) {
     Expression *expr0 = NULL, *expr1 = NULL;
     TokenT *token = parseNextToken(parser);
@@ -235,11 +234,6 @@ Expression *parseReadPower(ParserT *parser) {
     return expr0;
 };
 
-/**
- @brief reads a term in an expression
- @param[in] parser input ParserT structure to operate on
- @return expr of the term
- */
 Expression *parseReadTerm(ParserT *parser) {
     Expression *expr0 = NULL, *expr1 = NULL, *expr2 = NULL;
     expr0 = parseReadPower(parser);
@@ -273,11 +267,6 @@ Expression *concatExpression(Expression *expr0, Expression *expr1) {
     return expr0;
 }
 
-/**
- @brief attempts to read an expression
- @param[in] parser input ParserT structure
- @return expression
- */
 Expression *parseReadExpr(ParserT *parser) {
     Expression *expr0 = NULL, *expr1 = NULL, *expr2 = NULL;
     TokenT *token = parseNextToken(parser);
@@ -306,11 +295,6 @@ Expression *parseReadExpr(ParserT *parser) {
     return expr0;
 };
 
-/**
- @brief reads and performs a boolean comparison operations (<,>,<=,>=,==) if found
- @param[in] parser input ParserT structure
- @return sub-expression
- */
 Expression *parseReadBooleanComparison(ParserT *parser) {
     Expression *expr0 = NULL, *expr1 = NULL, *expr2 = NULL;
     expr0 = parseReadExpr(parser);
@@ -343,11 +327,6 @@ Expression *parseReadBooleanEquality(ParserT *parser) {
     return expr0;
 };
 
-/**
- @brief reads and performs a boolean 'and' operation (if found)
- @param[in] parser input ParserT structure
- @return sub-expression
-*/
 Expression *parseReadBooleanAnd(ParserT *parser) {
     Expression *expr0 = NULL, *expr1 = NULL, *expr2 = NULL;
     TokenT *token = parseNextToken(parser);
@@ -366,11 +345,6 @@ Expression *parseReadBooleanAnd(ParserT *parser) {
 
 };
 
-/**
- @brief reads and performs a boolean or operation (if found)
- @param[in] parser input ParserT structure
- @return expression
-*/
 Expression *parseReadBooleanOr(ParserT *parser) {
     Expression *expr0, *expr1 = NULL, *expr2 = NULL;
     TokenT *token = parseNextToken(parser);
