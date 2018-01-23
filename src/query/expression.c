@@ -5,17 +5,23 @@
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <mem.h>
 #include "expression.h"
 #include "literal.h"
+#include "statement.h"
 
 
-void printExpression(Expression *expr) {
-    printf("\n");
+char *printExpression(Expression *expr) {
+    char *exprs = " ";
+    Expression *expr0 = expr;
     while (expr != NULL) {
-        printf("%s ", getExpressionDesc(expr));
-        expr = expr->nextexpr;
+        strcat(exprs,getExpressionDesc(expr0));
+        if (expr0->nextexpr !=NULL){
+            strcat(exprs, " , ");
+        }
+        expr0 = expr0->nextexpr;
     }
-    printf("\n");
+    return exprs;
 }
 
 char *getExpressionDesc(Expression *expr) {

@@ -29,7 +29,7 @@ ParserT *newParser(TokenizerT *tokenizer) {
  * @return Token
  */
 TokenT *parseNextToken(ParserT *parser) {
-    if (parser->parserStateType==PARSER_WRONG){
+    if (parser->parserStateType == PARSER_WRONG) {
         return NULL;
     }
     if (parser->currToken == NULL) {
@@ -44,7 +44,7 @@ TokenT *parseNextToken(ParserT *parser) {
  * @return  NULL
  */
 TokenT *parseEatToken(ParserT *parser) {
-    if (parser->parserStateType==PARSER_WRONG){
+    if (parser->parserStateType == PARSER_WRONG) {
         return NULL;
     }
     parser->currToken = NULL;
@@ -57,7 +57,7 @@ TokenT *parseEatToken(ParserT *parser) {
  * @return
  */
 TokenT *parseEatAndNextToken(ParserT *parser) {
-    if (parser->parserStateType==PARSER_WRONG){
+    if (parser->parserStateType == PARSER_WRONG) {
         return NULL;
     }
     parser->currToken = TKGetNextToken(parser->tokenizer);
@@ -76,116 +76,27 @@ void *parseError(ParserT *parser, char *message) {
     return NULL;
 };
 
-/**
- * @brief 解析select语句
- * @param parser 解析器
- * @return select语句
- */
-SelectStmt *parseSelect(ParserT *parser) {
-    TokenT *token = parseNextToken(parser);
-    if (stricmp(token->text, "select") ==0){
-        token = parseEatAndNextToken(parser);
-    }else{
-        strcpy(parser->parserMessage , "语法错误.");
-        return NULL;
-    }
-    FieldsExpr *fieldsExpr = parseFieldsExpr(parser);
-    token = parseNextToken(parser);
-    if (stricmp(token->text, "from") != 0) {
-        strcpy(parser->parserMessage , "语法错误.");
-        return NULL;
-    }else{
-        token = parseEatAndNextToken(parser);
-    }
-    TablesExpr *tablesExpr = parseTablesExpr(parser);
-    token = parseNextToken(parser);
-    if (token == NULL || token->type ==TOKEN_SEMICOLON) {
-        return createSelectStmt(fieldsExpr, tablesExpr, NULL, NULL, NULL);
-    }
-    if (stricmp(token->text, "where") != 0) {
-        strcpy(parser->parserMessage , "语法错误.");
-        return NULL;
-    }
-    Expression *whereExpr = parseExpressionRD(parser);
-    token = parseNextToken(parser);;
-    if (token == NULL) {
-        return createSelectStmt(fieldsExpr, tablesExpr, whereExpr, NULL, NULL);
-    }
-    TokenT *tokenBy = parseNextToken(parser);;
-    if (stricmp(token->text, "group") != 0) {
-        strcpy(parser->parserMessage , "语法错误.");
-        return NULL;
-    } else if (stricmp(tokenBy->text, "by") != 0) {
-        strcpy(parser->parserMessage , "语法错误.");
-        return NULL;
-    }
-    GroupExpr *groupExpr = parseGroupExpr(parser);
-    token = parseNextToken(parser);;
-    if (token == NULL) {
-        return createSelectStmt(fieldsExpr, tablesExpr, whereExpr, groupExpr, NULL);
-    }
-    tokenBy = parseNextToken(parser);
-    if (stricmp(token->text, "order") != 0) {
-        strcpy(parser->parserMessage , "语法错误.");
-        return NULL;
-    } else if (stricmp(tokenBy->text, "by") != 0) {
-        strcpy(parser->parserMessage , "语法错误.");
-        return NULL;
-    }
-    OrderExpr *orderExpr = parseOrderExpr(parser);
-    token = parseNextToken(parser);;
-    if (token == NULL) {
-        return createSelectStmt(fieldsExpr, tablesExpr, whereExpr, groupExpr, orderExpr);
-    }else{
-        return NULL;
-    }
 
-};
+CreateStmt *parseCreate(ParserT *parser) { return NULL; };
 
-CreateStmt *parseCreate(ParserT *parser) {return NULL;};
+AlterStmt *parseAlter(ParserT *parser) { return NULL; };
 
-AlterStmt *parseAlter(ParserT *parser) {return NULL;};
+DeleteStmt *parseDelete(ParserT *parser) { return NULL; };
 
-DeleteStmt *parseDelete(ParserT *parser) {return NULL;};
+UpdateStmt *parseUpdate(ParserT *parser) { return NULL; };
 
-UpdateStmt *parseUpdate(ParserT *parser) {return NULL;};
 
-FieldsExpr *parseFieldsExpr(ParserT *parser) {
-    Expression *expr0 = parseExpressionRD(parser);
-    FieldsExpr *fieldsExpr = (FieldsExpr *)malloc(sizeof(FieldsExpr));
-    fieldsExpr->alias=NULL;
-    fieldsExpr->nextField = NULL;
-    fieldsExpr->expr = expr0;
-    return fieldsExpr;
-};
+TermExpr *parseTermExpr(ParserT *parser) { return NULL; };
 
-TablesExpr *parseTablesExpr(ParserT *parser) {
-    TokenT *token = parseNextToken(parser);
-    if (token->type==TOKEN_WORD){
-        parseEatAndNextToken(parser);
-        TablesExpr *tablesExpr = (TablesExpr *)malloc(sizeof(TablesExpr));
-        tablesExpr->db=NULL;
-        tablesExpr->joinExpr=NULL;
-        tablesExpr->name = token->text;
-        tablesExpr->nextTable = NULL;
-        tablesExpr->schema = NULL;
-        return tablesExpr;
-    }
+BinaryExpr *parseBinaryExpr(ParserT *parser) { return NULL; };
 
-    return NULL;
-};
+UnaryExpr *parseUnaryExpr(ParserT *parser) { return NULL; };
 
-TermExpr *parseTermExpr(ParserT *parser) {return NULL;};
+GroupExpr *parseGroupExpr(ParserT *parser) { return NULL; };
 
-BinaryExpr *parseBinaryExpr(ParserT *parser) {return NULL;};
+OrderExpr *parseOrderExpr(ParserT *parser) { return NULL; };
 
-UnaryExpr *parseUnaryExpr(ParserT *parser) {return NULL;};
+ColumnsExpr *parseColumnsExpr(ParserT *parser) { return NULL; };
 
-GroupExpr *parseGroupExpr(ParserT *parser) {return NULL;};
-
-OrderExpr *parseOrderExpr(ParserT *parser) {return NULL;};
-
-ColumnsExpr *parseColumnsExpr(ParserT *parser) {return NULL;};
-
-SetExpr *parseSetExpr(ParserT *parser) {return NULL;};
+SetExpr *parseSetExpr(ParserT *parser) { return NULL; };
 

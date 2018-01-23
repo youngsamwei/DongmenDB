@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.9)
 project(DongmenDB C)
 set(CMAKE_C_STANDARD 11)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ./cmake-build-debug/)
 
 INCLUDE_DIRECTORIES(
         src/parser

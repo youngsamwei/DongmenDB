@@ -3,6 +3,7 @@
 //
 
 #include <malloc.h>
+#include <mem.h>
 #include "statement.h"
 
 SelectStmt *createSelectStmt(
@@ -35,3 +36,28 @@ UpdateStmt *createUpdateStmt(char *tableName,
                             SetExpr *setExpr,
                             Expression *whereExpr) {};
 
+
+char *printSelectStmt(SelectStmt *selectStmt) {
+    char *selectstr = "SELECT ";
+
+    FieldsExpr *fieldsExpr;
+    fieldsExpr = selectStmt->fieldsExpr;
+    while (fieldsExpr!=NULL){
+        strcat(selectstr, printExpression(fieldsExpr->expr));
+        if (fieldsExpr->nextField!=NULL){
+            strcat(selectstr, " , ");
+        }
+        fieldsExpr = fieldsExpr->nextField;
+    }
+
+    TablesExpr *tablesExpr;
+    tablesExpr = selectStmt->tablesExpr;
+    while (tablesExpr != NULL) {
+        strcat(selectstr, tablesExpr->name);
+        if (tablesExpr->nextTable != NULL) {
+            strcat(selectstr, " , ");
+        }
+        tablesExpr = tablesExpr->nextTable;
+    }
+
+}
