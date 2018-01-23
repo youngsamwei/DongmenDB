@@ -38,25 +38,25 @@ UpdateStmt *createUpdateStmt(char *tableName,
 
 
 
-char *printSelectStmt(SelectStmt *selectStmt) {
-    char *selectstr = "SELECT ";
-
+char *printSelectStmt(SelectStmt *selectStmt, char *selectStr) {
+    strcat(selectStr, "SELECT " );
     FieldsExpr *fieldsExpr;
     fieldsExpr = selectStmt->fieldsExpr;
     while (fieldsExpr!=NULL){
-        strcat(selectstr, printExpression(fieldsExpr->expr));
+        printExpression(fieldsExpr->expr, selectStr);
         if (fieldsExpr->nextField!=NULL){
-            strcat(selectstr, " , ");
+            strcat(selectStr, " , ");
         }
         fieldsExpr = fieldsExpr->nextField;
     }
 
+    strcat(selectStr, "\nFROM " );
     TablesExpr *tablesExpr;
     tablesExpr = selectStmt->tablesExpr;
     while (tablesExpr != NULL) {
-        strcat(selectstr, tablesExpr->name);
+        strcat(selectStr, tablesExpr->name);
         if (tablesExpr->nextTable != NULL) {
-            strcat(selectstr, " , ");
+            strcat(selectStr, " , ");
         }
         tablesExpr = tablesExpr->nextTable;
     }

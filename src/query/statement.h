@@ -78,5 +78,5 @@ UpdateStmt *createUpdateStmt(char *tableName,
                             SetExpr *setExpr,
                             Expression *whereExpr);
 
-char *printSelectStmt(SelectStmt *selectStmt);
+char *printSelectStmt(SelectStmt *selectStmt, char *selectStr);
 #endif //DONGMENDB_STATEMENT_H

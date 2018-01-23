@@ -11,12 +11,12 @@
 #include "statement.h"
 
 
-char *printExpression(Expression *expr) {
-    char *exprs = " ";
+char *printExpression(Expression *expr, char *exprs) {
     Expression *expr0 = expr;
-    while (expr != NULL) {
-        strcat(exprs,getExpressionDesc(expr0));
-        if (expr0->nextexpr !=NULL){
+    while (expr0 != NULL) {
+        char *desc = getExpressionDesc(expr0);
+        strcat(exprs, desc);
+        if (expr0->nextexpr != NULL) {
             strcat(exprs, " , ");
         }
         expr0 = expr0->nextexpr;
