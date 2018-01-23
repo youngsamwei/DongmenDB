@@ -35,6 +35,6 @@ aux_source_directory( src/tx DIR_SRCS)
 aux_source_directory( src/utils DIR_SRCS)
 
 
-add_executable(testParserExpressionRD ${DIR_SRCS} src_test/parser/testParserExpressionRD.c)
+add_executable(testParseSelect ${DIR_SRCS} src_test/parser/testParseSelect.c)
 
 #add_executable(testTokenizer ${DIR_SRCS} src_test/parser/testTokenizer.c)
