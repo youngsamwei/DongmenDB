@@ -5,6 +5,7 @@
 #include <malloc.h>
 #include <expression.h>
 #include <stdio.h>
+#include <mem.h>
 #include "parser.h"
 #include "parseExpression.h"
 #include "parseExpressionRPN.h"
@@ -212,7 +213,7 @@ Expression *parseExpressionRPN(ParserT *parser) {
     TokenType type = opstack->operatorType;
     while (type != TOKEN_NULL) {
         if (type == TOKEN_OPEN_PAREN) {
-            parser->parserMessage = "error: missing right parenthesis.";
+            strcpy(parser->parserMessage , "error: missing right parenthesis.");
             parser->parserStateType = PARSER_WRONG;
             break;
         }
