@@ -6,6 +6,7 @@
 #include <statement.h>
 #include <parser.h>
 #include <parseSelectStmt.h>
+#include <mem.h>
 
 
 int main(int argc, char **argv) {
@@ -20,6 +21,7 @@ int main(int argc, char **argv) {
     TokenizerT *tokenizer = TKCreate(select);
     ParserT *parser = newParser(tokenizer);
     char selectStr[256];
+    memset(selectStr,0,sizeof(selectStr));
     SelectStmt *selectStmt = parseSelectStmt(parser);
     if (selectStmt != NULL) {
         printSelectStmt(selectStmt, selectStr);
