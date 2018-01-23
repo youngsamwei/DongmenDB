@@ -8,15 +8,7 @@
 #include <tokenizer.h>
 #include "literal.h"
 #include "sqlexpression.h"
-
-/*解析表达式。表达式支持：
- * 运算：算术运算，比较运算，逻辑运算，字符串连接
- * 标识符：字段变量，常量，函数
- * 数据类型：数值，字符串，布尔型
- *
- * 算法：逆波兰法
- * TODO：递归下降法
- * */
+#include "statement.h"
 
 typedef enum {
     left2right,
@@ -88,7 +80,7 @@ typedef struct Expression_ {
 } Expression;
 
 
-void printExpression(Expression *expr);
+char *printExpression(Expression *expr);
 char *getExpressionDesc(Expression *expr);
 
 #endif //DONGMENDB_EXPRESSION_H

@@ -9,6 +9,11 @@
 #include "tokenizer.h"
 #include "expression.h"
 
+/*
+ * 定义parser的基础数据结构和共用的函数
+ *
+ * */
+
 #define PARSER_MESSAGE_LENTTH 128
 
 /*语法分析状态类型*/
@@ -33,15 +38,13 @@ TokenT *parseEatToken(ParserT *parser);
 TokenT *parseEatAndNextToken(ParserT *parser);
 void *parseError(ParserT *parser, char *message);
 
-SelectStmt *parseSelect(ParserT *parser);
+
 CreateStmt *parseCreate(ParserT *parser);
 AlterStmt *parseAlter(ParserT *parser);
 InsertStmt *parseInsert(ParserT *parser);
 DeleteStmt *parseDelete(ParserT *parser);
 UpdateStmt *parseUpdate(ParserT *parser);
 
-FieldsExpr *parseFieldsExpr(ParserT *parser);
-TablesExpr *parseTablesExpr(ParserT *parser);
 
 TermExpr *parseTermExpr(ParserT *parser);
 BinaryExpr *parseBinaryExpr(ParserT *parser);

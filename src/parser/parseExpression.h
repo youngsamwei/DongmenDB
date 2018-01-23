@@ -5,7 +5,7 @@
 #ifndef DONGMENDB_PARSEREXPRESSION_H
 #define DONGMENDB_PARSEREXPRESSION_H
 
-/*定义解析表达式时用到的公共结构*/
+/*定义解析表达式时用到的公共结构和函数*/
 
 #include <expression.h>
 #include "tokenizer.h"
