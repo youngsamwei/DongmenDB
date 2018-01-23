@@ -5,7 +5,7 @@
 #ifndef DONGMENDB_PARSER_H
 #define DONGMENDB_PARSER_H
 
-#include "statement.h"
+#include <statement.h>
 #include "tokenizer.h"
 #include "expression.h"
 
@@ -45,6 +45,10 @@ InsertStmt *parseInsert(ParserT *parser);
 DeleteStmt *parseDelete(ParserT *parser);
 UpdateStmt *parseUpdate(ParserT *parser);
 
+SelectStmt *parseSelectStmt(ParserT *parser);
+
+FieldsExpr *parseFieldsExpr(ParserT *parser);
+TablesExpr *parseTablesExpr(ParserT *parser);
 
 TermExpr *parseTermExpr(ParserT *parser);
 BinaryExpr *parseBinaryExpr(ParserT *parser);
