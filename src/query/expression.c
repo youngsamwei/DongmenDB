@@ -22,7 +22,8 @@ char *printExpression(Expression *expr) {
         expr0 = expr0->nextexpr;
     }
     return exprs;
-}
+};
+
 
 char *getExpressionDesc(Expression *expr) {
     switch (expr->opType) {

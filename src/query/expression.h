@@ -8,7 +8,6 @@
 #include <tokenizer.h>
 #include "literal.h"
 #include "sqlexpression.h"
-#include "statement.h"
 
 typedef enum {
     left2right,

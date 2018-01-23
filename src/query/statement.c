@@ -37,6 +37,7 @@ UpdateStmt *createUpdateStmt(char *tableName,
                             Expression *whereExpr) {};
 
 
+
 char *printSelectStmt(SelectStmt *selectStmt) {
     char *selectstr = "SELECT ";
 
@@ -60,4 +61,4 @@ char *printSelectStmt(SelectStmt *selectStmt) {
         tablesExpr = tablesExpr->nextTable;
     }
 
-}
+};
