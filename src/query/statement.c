@@ -2,6 +2,7 @@
 // Created by Sam on 2018/1/17.
 //
 
+#include <malloc.h>
 #include "statement.h"
 
 SelectStmt *createSelectStmt(
@@ -10,7 +11,15 @@ SelectStmt *createSelectStmt(
         Expression *whereExpr,
         GroupExpr *groupExpr,
         OrderExpr *orderExpr
-) {};
+) {
+    SelectStmt *selectStmt = (SelectStmt *)malloc(sizeof(SelectStmt));
+    selectStmt->fieldsExpr=fieldsExpr;
+    selectStmt->tablesExpr =tablesExpr;
+    selectStmt->whereExpr = whereExpr;
+    selectStmt->groupExpr=groupExpr;
+    selectStmt->orderExpr=orderExpr;
+    return selectStmt;
+};
 
 CreateStmt *createCreateStmt(char *tableName,
                             ColumnsExpr *columnsExpr,
