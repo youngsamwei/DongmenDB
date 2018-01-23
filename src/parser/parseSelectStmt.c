@@ -5,11 +5,12 @@
 #include <stddef.h>
 #include <malloc.h>
 #include <mem.h>
+#include <stdio.h>
 #include "parseSelectStmt.h"
 #include "parseExpressionRD.h"
 
 
-/**
+/** 17096052888
  * @brief 解析select语句
  * @param parser 解析器
  * @return select语句
@@ -23,6 +24,9 @@ SelectStmt *parseSelectStmt(ParserT *parser) {
         return NULL;
     }
     FieldsExpr *fieldsExpr = parseFieldsExpr(parser);
+    if (parser->parserStateType == PARSER_WRONG){
+        return NULL;
+    }
     token = parseNextToken(parser);
     if (stricmp(token->text, "from") != 0) {
         strcpy(parser->parserMessage, "语法错误.");
@@ -31,6 +35,9 @@ SelectStmt *parseSelectStmt(ParserT *parser) {
         token = parseEatAndNextToken(parser);
     }
     TablesExpr *tablesExpr = parseTablesExpr(parser);
+    if (parser->parserStateType == PARSER_WRONG){
+        return NULL;
+    }
     token = parseNextToken(parser);
     if (token == NULL || token->type == TOKEN_SEMICOLON) {
         return createSelectStmt(fieldsExpr, tablesExpr, NULL, NULL, NULL);
@@ -38,10 +45,15 @@ SelectStmt *parseSelectStmt(ParserT *parser) {
     if (stricmp(token->text, "where") != 0) {
         strcpy(parser->parserMessage, "语法错误.");
         return NULL;
+    }else {
+        token = parseEatAndNextToken(parser);
     }
     Expression *whereExpr = parseExpressionRD(parser);
+    if (parser->parserStateType == PARSER_WRONG){
+        return NULL;
+    }
     token = parseNextToken(parser);;
-    if (token == NULL) {
+    if (token == NULL || token->type == TOKEN_SEMICOLON) {
         return createSelectStmt(fieldsExpr, tablesExpr, whereExpr, NULL, NULL);
     }
     TokenT *tokenBy = parseNextToken(parser);;
@@ -53,6 +65,9 @@ SelectStmt *parseSelectStmt(ParserT *parser) {
         return NULL;
     }
     GroupExpr *groupExpr = parseGroupExpr(parser);
+    if (parser->parserStateType == PARSER_WRONG){
+        return NULL;
+    }
     token = parseNextToken(parser);;
     if (token == NULL) {
         return createSelectStmt(fieldsExpr, tablesExpr, whereExpr, groupExpr, NULL);
@@ -66,6 +81,9 @@ SelectStmt *parseSelectStmt(ParserT *parser) {
         return NULL;
     }
     OrderExpr *orderExpr = parseOrderExpr(parser);
+    if (parser->parserStateType == PARSER_WRONG){
+        return NULL;
+    }
     token = parseNextToken(parser);;
     if (token == NULL) {
         return createSelectStmt(fieldsExpr, tablesExpr, whereExpr, groupExpr, orderExpr);

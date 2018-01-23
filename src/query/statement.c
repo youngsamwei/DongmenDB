@@ -61,4 +61,6 @@ char *printSelectStmt(SelectStmt *selectStmt, char *selectStr) {
         tablesExpr = tablesExpr->nextTable;
     }
 
+    strcat(selectStr, "\nWHERE " );
+    printExpression(selectStmt->whereExpr, selectStr);
 };

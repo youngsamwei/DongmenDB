@@ -427,13 +427,10 @@ TokenT *_lt(TokenizerT *tk) {
     return makeToken(tk, TOKEN_LT);
 }
 
+/*不解析赋值语句*/
 TokenT *_eq(TokenizerT *tk) {
     nextChar(tk);
-    if (tk->inputIter[0] == '=') {
-        nextChar(tk);
-        return makeToken(tk, TOKEN_EQ);
-    }
-    return makeToken(tk, TOKEN_ASSIGNMENT);
+    return makeToken(tk, TOKEN_EQ);
 }
 
 TokenT *_gt(TokenizerT *tk) {
