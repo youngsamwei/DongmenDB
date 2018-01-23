@@ -34,12 +34,12 @@ static const OPERATOR operators[] = {
         /* 关系运算 */
         {2, 10, 10, left2right, TOKEN_LT},        // 小于
         {2, 10, 10, left2right, TOKEN_GT},        // 大于
-        {2, 10,  9,  left2right, TOKEN_EQ},          // 等于
-        {2, 10,  9,  left2right, TOKEN_NOT_EQUAL},          // 不等于
+        {2, 10, 9,  left2right, TOKEN_EQ},          // 等于
+        {2, 10, 9,  left2right, TOKEN_NOT_EQUAL},          // 不等于
         {2, 10, 10, left2right, TOKEN_LE},        // 不大于
         {2, 10, 10, left2right, TOKEN_GE},        // 不小于
-        {2, 10,  9,  left2right, TOKEN_IN},
-        {2, 10,  9,  left2right, TOKEN_LIKE},
+        {2, 10, 9,  left2right, TOKEN_IN},
+        {2, 10, 9,  left2right, TOKEN_LIKE},
         /* 逻辑运算 */
         {2, 5,  5,  left2right, TOKEN_AND},         // 且
         {2, 5,  4,  left2right, TOKEN_OR},          // 或
@@ -79,7 +79,10 @@ typedef struct Expression_ {
 } Expression;
 
 
-char *printExpression(Expression *expr, char *exprs);
+char *printExpression(char *exprs, Expression *expr);
+
+Expression *printRNExpression(char *exprs, Expression *expr);
+
 char *getExpressionDesc(Expression *expr);
 
 #endif //DONGMENDB_EXPRESSION_H

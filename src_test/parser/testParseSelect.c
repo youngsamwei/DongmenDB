@@ -22,7 +22,7 @@ int main(int argc, char **argv) {
     memset(selectStr,0,sizeof(selectStr));
     SelectStmt *selectStmt = parseSelectStmt(parser);
     if (selectStmt != NULL) {
-        printSelectStmt(selectStmt, selectStr);
+        printSelectStmt(selectStr, selectStmt );
         printf(selectStr);
     } else {
         printf(parser->parserMessage);
