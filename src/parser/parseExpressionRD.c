@@ -9,7 +9,16 @@
 #include "parseExpression.h"
 
 Expression *parseExpressionRD(ParserT *parser) {
-    return parseReadBooleanOr(parser);
+    Expression *expr = parseReadBooleanOr(parser);
+    if (parser->parserStateType != PARSER_WRONG && parser->currToken != NULL
+        && parser->currToken->type != TOKEN_RESERVED_WORD) {
+        /*表达式没有处理完，比如只有右括号的情况。*/
+        char message[PARSER_MESSAGE_LENTTH];
+        sprintf(message, "syntax error: %s.", parser->currToken->text);
+        return parseError(parser, message);
+    }
+
+    return expr;
 };
 
 /*由parseReadDouble修改而来*/
@@ -33,7 +42,7 @@ Expression *parseReadLiteral(ParserT *parser) {
         expr0->term = term;
         parseEatToken(parser);
         return expr0;
-    } else if (token->type == TOKEN_STRING || token->type == TOKEN_CHAR){
+    } else if (token->type == TOKEN_STRING || token->type == TOKEN_CHAR) {
         /*处理string和char,都转换为string*/
         expr0 = newExpression(TOKEN_STRING, NULL);
         TermExpr *term = newTermExpr();
@@ -87,18 +96,49 @@ Expression *parseReadBuiltin(ParserT *parser) {
         token = parseEatAndNextToken(parser);
 
         if (token != NULL && token->type == TOKEN_OPEN_PAREN) {
-            if (stricmp(text, "ltrim")==0) {
+            if (stricmp(text, "ltrim") == 0) {
+                /*函数参数个数的检测*/
                 token = parseEatAndNextToken(parser);
+                /*如果紧跟着右括号，则丢失参数*/
+                if (token->type == TOKEN_CLOSE_PAREN){
+                    char message[PARSER_MESSAGE_LENTTH];
+                    sprintf(message, "syntax error: function %s missing argument.", text);
+                    return parseError(parser,message);
+                }
                 Expression *param0 = parseReadArgument(parser);
+                token = parseNextToken(parser);
+                /*如果解析参数完毕，接下来是逗号，则太多参数*/
+                if (token->type == TOKEN_COMMA){
+                    char message[PARSER_MESSAGE_LENTTH];
+                    sprintf(message, "syntax error: function %s too many  argument.", text);
+                    return parseError(parser,message);
+                }
                 expr0 = newExpression(TOKEN_FUN, param0);
-            } else if (stricmp(text, "round")==0) {
-                /*此处的错误提示不准确*/
+            } else if (stricmp(text, "round") == 0) {
+                /*函数参数个数的检测*/
                 token = parseEatAndNextToken(parser);
+                if (token->type == TOKEN_CLOSE_PAREN){
+                    char message[PARSER_MESSAGE_LENTTH];
+                    sprintf(message, "syntax error: function %s missing  argument.", text);
+                    return parseError(parser,message);
+                }
                 Expression *param0 = parseReadArgument(parser);
+                token = parseNextToken(parser);
+                if (token->type != TOKEN_COMMA){
+                    char message[PARSER_MESSAGE_LENTTH];
+                    sprintf(message, "syntax error: function %s missing  argument.", text);
+                    return parseError(parser,message);
+                }
                 Expression *param1 = parseReadArgument(parser);
+                token = parseNextToken(parser);
+                if (token->type == TOKEN_COMMA){
+                    char message[PARSER_MESSAGE_LENTTH];
+                    sprintf(message, "syntax error: function %s too many  argument.", text);
+                    return parseError(parser,message);
+                }
                 expr0 = concatExpression(param0, param1);
                 expr0 = newExpression(TOKEN_FUN, expr0);
-            }else {
+            } else {
                 char message[PARSER_MESSAGE_LENTTH];
                 sprintf(message, "syntax error: unsupported function  :%s.", text);
                 return parseError(parser, message);
@@ -107,7 +147,7 @@ Expression *parseReadBuiltin(ParserT *parser) {
 
             if (token == NULL || token->type != TOKEN_CLOSE_PAREN) {
                 return parseError(parser, "syntax error: syntax error: missing ')'.");
-            }else{
+            } else {
                 /*处理掉右括号*/
                 parseEatToken(parser);
             }
@@ -142,7 +182,7 @@ Expression *parseReadParen(ParserT *parser) {
         parseEatAndNextToken(parser);
         expr0 = parseReadBooleanOr(parser);
         token = parseNextToken(parser);
-        if (token != NULL && token->type != TOKEN_CLOSE_PAREN) {
+        if (token == NULL || (token != NULL && token->type != TOKEN_CLOSE_PAREN)) {
             return parseError(parser, "syntax error: missing ')'.");
         } else {
             parseEatToken(parser);

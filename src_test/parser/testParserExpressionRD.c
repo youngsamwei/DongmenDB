@@ -38,6 +38,12 @@ int main(int argc, char **argv) {
 //    sexpr = "1 + ltrim(\"abc\" + field.name)  + 10 < 20 ";
 
 /*错误的例子*/
+    sexpr = " 1 + ltrim(\"abc\" + field.name) + round(6,8,10)  + 10 < 20 and f >g or b < a";
+//    sexpr = "ltrim(\"aaaddd\", 10)"; //函数参数过多检测；
+//    sexpr = "ltrim()";//函数参数过少检测;
+//    sexpr = "round(6)";//函数参数过少检测;
+//    sexpr = " 10 < 20 and f >g or b < a)"; //检测出)
+//    sexpr = " (10";//检测(
 //    sexpr = " a - b * (c - (d + e) > f.x "; //syntax error: missing ')'.
 //    sexpr = "round(1) + 2"; //错误
 //    sexpr = "ltrim(2";  //syntax error: syntax error: missing ')'.

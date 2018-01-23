@@ -9,6 +9,8 @@
 #include "tokenizer.h"
 #include "expression.h"
 
+#define PARSER_MESSAGE_LENTTH 128
+
 /*语法分析状态类型*/
 typedef enum {
     PARSER_WRONG,
@@ -21,10 +23,9 @@ typedef struct ParserT_{
     TokenizerT *tokenizer;
     TokenT *currToken;
     ParserStateType parserStateType;
-    char *parserMessage;
+    char parserMessage[PARSER_MESSAGE_LENTTH];
 } ParserT;
 
-#define PARSER_MESSAGE_LENTTH 128
 
 ParserT * newParser(TokenizerT *tokenizer);
 TokenT *parseNextToken(ParserT *parser);

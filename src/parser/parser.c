@@ -47,7 +47,7 @@ TokenT *parseEatAndNextToken(ParserT *parser) {
 };
 
 void *parseError(ParserT *parser, char *message) {
-    parser->parserMessage = message;
+    strcpy(parser->parserMessage, message);
     parser->parserStateType = PARSER_WRONG;
     return NULL;
 };
@@ -56,7 +56,7 @@ SelectStmt *parseSelect(ParserT *parser) {
     FieldsExpr *fieldsExpr = parseFieldsExpr(parser);
     TokenT *token = parseNextToken(parser);
     if (stricmp(token->text, "from") != 0) {
-        parser->parserMessage = "语法错误.";
+        strcpy(parser->parserMessage , "语法错误.");
         return NULL;
     }
     TablesExpr *tablesExpr = parseTablesExpr(parser);
@@ -65,7 +65,7 @@ SelectStmt *parseSelect(ParserT *parser) {
         return createSelectStmt(fieldsExpr, tablesExpr, NULL, NULL, NULL);
     }
     if (stricmp(token->text, "where") != 0) {
-        parser->parserMessage = "语法错误.";
+        strcpy(parser->parserMessage , "语法错误.");
         return NULL;
     }
     Expression *whereExpr = parseExpressionRD(parser);
@@ -75,10 +75,10 @@ SelectStmt *parseSelect(ParserT *parser) {
     }
     TokenT *tokenBy = parseNextToken(parser);;
     if (stricmp(token->text, "group") != 0) {
-        parser->parserMessage = "语法错误.";
+        strcpy(parser->parserMessage , "语法错误.");
         return NULL;
     } else if (stricmp(tokenBy->text, "by") != 0) {
-        parser->parserMessage = "语法错误.";
+        strcpy(parser->parserMessage , "语法错误.");
         return NULL;
     }
     GroupExpr *groupExpr = parseGroupExpr(parser);
@@ -88,10 +88,10 @@ SelectStmt *parseSelect(ParserT *parser) {
     }
     tokenBy = parseNextToken(parser);
     if (stricmp(token->text, "order") != 0) {
-        parser->parserMessage = "语法错误.";
+        strcpy(parser->parserMessage , "语法错误.");
         return NULL;
     } else if (stricmp(tokenBy->text, "by") != 0) {
-        parser->parserMessage = "语法错误.";
+        strcpy(parser->parserMessage , "语法错误.");
         return NULL;
     }
     OrderExpr *orderExpr = parseOrderExpr(parser);
