@@ -38,12 +38,12 @@ UpdateStmt *createUpdateStmt(char *tableName,
 
 
 
-char *printSelectStmt(SelectStmt *selectStmt, char *selectStr) {
+char *printSelectStmt(char *selectStr, SelectStmt *selectStmt) {
     strcat(selectStr, "SELECT " );
     FieldsExpr *fieldsExpr;
     fieldsExpr = selectStmt->fieldsExpr;
     while (fieldsExpr!=NULL){
-        printExpression(fieldsExpr->expr, selectStr);
+        printExpression(selectStr, fieldsExpr->expr);
         if (fieldsExpr->nextField!=NULL){
             strcat(selectStr, " , ");
         }
@@ -62,5 +62,5 @@ char *printSelectStmt(SelectStmt *selectStmt, char *selectStr) {
     }
 
     strcat(selectStr, "\nWHERE " );
-    printExpression(selectStmt->whereExpr, selectStr);
+    printRNExpression(selectStr, selectStmt->whereExpr);
 };

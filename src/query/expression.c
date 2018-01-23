@@ -11,7 +11,7 @@
 #include "statement.h"
 
 
-char *printExpression(Expression *expr, char *exprs) {
+char *printExpression(char *exprs, Expression *expr) {
     Expression *expr0 = expr;
     while (expr0 != NULL) {
         char *desc = getExpressionDesc(expr0);
@@ -24,6 +24,41 @@ char *printExpression(Expression *expr, char *exprs) {
     return exprs;
 };
 
+/**
+ * @brief 从后序表达式产生中序表达式字符串
+ * @param exprs 表达式字符串
+ * @param expr 表达式
+ * @return 需要继续处理的后序表达式
+ */
+Expression *printRNExpression(char *exprs, Expression *expr) {
+    if (expr->term != NULL) {
+        if (expr->term->t ==TERM_ID){
+            strcat(exprs, expr->term->id);
+        }else {
+            strcat(exprs, expr->term->val->val.strval);
+        }
+        return expr;
+    } else {
+        int operrandNumber = operators[expr->opType].numbers;
+        if ( operrandNumber== 1){
+            strcat(exprs, "(");
+            strcat(exprs, getExpressionDesc(expr));
+            strcat(exprs, " ");
+            Expression *expr0 = printRNExpression(exprs, expr->nextexpr);
+            strcat(exprs, " )");
+            return expr0;
+        } else if (operrandNumber== 2){
+            strcat(exprs, "(");
+            Expression *expr0 = printRNExpression(exprs, expr->nextexpr);
+            strcat(exprs, " ");
+            strcat(exprs, getExpressionDesc(expr));
+            strcat(exprs, " ");
+            expr0 = printRNExpression(exprs, expr0->nextexpr);
+            strcat(exprs, ")");
+            return expr0;
+        }
+    }
+}
 
 char *getExpressionDesc(Expression *expr) {
     switch (expr->opType) {
