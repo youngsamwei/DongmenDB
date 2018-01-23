@@ -2,8 +2,10 @@
 // Created by Sam on 2018/1/23.
 //
 
-#include <parser.h>
 #include <stdio.h>
+#include <statement.h>
+#include <parser.h>
+#include <parseSelectStmt.h>
 
 
 int main(int argc, char **argv) {
@@ -17,10 +19,10 @@ int main(int argc, char **argv) {
 
     TokenizerT *tokenizer = TKCreate(select);
     ParserT *parser = newParser(tokenizer);
-    char *selectStr;
+    char selectStr[256];
     SelectStmt *selectStmt = parseSelectStmt(parser);
     if (selectStmt != NULL) {
-        selectStr = printSelectStmt(selectStmt);
+        printSelectStmt(selectStmt, selectStr);
         printf(selectStr);
     } else {
         printf("error");

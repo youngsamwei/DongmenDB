@@ -45,11 +45,6 @@ InsertStmt *parseInsert(ParserT *parser);
 DeleteStmt *parseDelete(ParserT *parser);
 UpdateStmt *parseUpdate(ParserT *parser);
 
-SelectStmt *parseSelectStmt(ParserT *parser);
-
-FieldsExpr *parseFieldsExpr(ParserT *parser);
-TablesExpr *parseTablesExpr(ParserT *parser);
-
 TermExpr *parseTermExpr(ParserT *parser);
 BinaryExpr *parseBinaryExpr(ParserT *parser);
 UnaryExpr *parseUnaryExpr(ParserT *parser);
