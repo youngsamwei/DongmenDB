@@ -4,6 +4,7 @@ set(CMAKE_C_STANDARD 11)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ./cmake-build-debug/)
 
 INCLUDE_DIRECTORIES(
+        include
         src/parser
         src/query
         src/buffer
@@ -12,7 +13,7 @@ INCLUDE_DIRECTORIES(
         src/log
         src/materialize
         src/metadata
-        src/opt
+        src/optimizer
         src/planner
         src/record
         src/shell
@@ -28,14 +29,15 @@ aux_source_directory( src/index DIR_SRCS)
 aux_source_directory( src/log DIR_SRCS)
 aux_source_directory( src/materialize DIR_SRCS)
 aux_source_directory( src/metadata DIR_SRCS)
-aux_source_directory( src/opt DIR_SRCS)
+aux_source_directory(src/optimizer DIR_SRCS)
 aux_source_directory( src/planner DIR_SRCS)
 aux_source_directory( src/record DIR_SRCS)
 aux_source_directory( src/shell DIR_SRCS)
 aux_source_directory( src/tx DIR_SRCS)
 aux_source_directory( src/utils DIR_SRCS)
+aux_source_directory( src/dongmengdb DIR_SRCS)
 
 
-add_executable(testParseSelect ${DIR_SRCS} src_test/parser/testParseSelect.c)
+add_executable(dongmengdb ${DIR_SRCS} )
 
 #add_executable(testTokenizer ${DIR_SRCS} src_test/parser/testTokenizer.c)
