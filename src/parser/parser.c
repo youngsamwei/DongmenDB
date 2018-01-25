@@ -5,6 +5,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <dongmengsql.h>
 #include "parser.h"
 #include "parseExpression.h"
 #include "parseExpressionRD.h"
@@ -99,3 +100,5 @@ ColumnsExpr *parseColumnsExpr(ParserT *parser) { return NULL; };
 
 SetExpr *parseSetExpr(ParserT *parser) { return NULL; };
 
+int dongmengsqlParser(const char *sql, dongmengsqlStatement_t **stmt){};
+int dongmengsqlStmtPrint(dongmengsqlStatement_t *stmt){};
