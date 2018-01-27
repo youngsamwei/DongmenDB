@@ -50,18 +50,17 @@ int main(int argc, char *argv[]) {
         if ((n = read(0, cmdstring, MAX_CMD)) < 0) {
             printf("read error");
         }
-        /*parse the cmdstring to argv*/
-        char *argv[MAX_CMD];
-        /*Holds modified command line*/
-        char buf[MAX_CMD];
 
-        strcpy(buf, cmdstring);
-
+        int wordcount = 0;
+        while(cmdstring[wordcount] != '\n'){
+            wordcount++;
+        }
+        cmdstring[wordcount] = '\0';
         /*is a buildin command*/
         /*direct return*/
 
-        if (buf) {
-            dongmengdbShellHandleCmd(&shell_ctx, buf);
+        if (cmdstring) {
+            dongmengdbShellHandleCmd(&shell_ctx, cmdstring);
         }
 
     }

@@ -8,6 +8,7 @@ INCLUDE_DIRECTORIES(
         src/parser
         src/query
         src/buffer
+        src/integrity
         src/file
         src/index
         src/log
@@ -16,6 +17,7 @@ INCLUDE_DIRECTORIES(
         src/optimizer
         src/planner
         src/record
+        src/security
         src/shell
         src/tx
         src/utils
@@ -25,6 +27,7 @@ aux_source_directory( src/parser DIR_SRCS)
 aux_source_directory( src/query DIR_SRCS)
 aux_source_directory( src/buffer DIR_SRCS)
 aux_source_directory( src/file DIR_SRCS)
+aux_source_directory( src/integrity DIR_SRCS)
 aux_source_directory( src/index DIR_SRCS)
 aux_source_directory( src/log DIR_SRCS)
 aux_source_directory( src/materialize DIR_SRCS)
@@ -32,6 +35,7 @@ aux_source_directory( src/metadata DIR_SRCS)
 aux_source_directory(src/optimizer DIR_SRCS)
 aux_source_directory( src/planner DIR_SRCS)
 aux_source_directory( src/record DIR_SRCS)
+aux_source_directory( src/security DIR_SRCS)
 aux_source_directory( src/shell DIR_SRCS)
 aux_source_directory( src/tx DIR_SRCS)
 aux_source_directory( src/utils DIR_SRCS)

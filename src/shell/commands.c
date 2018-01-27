@@ -399,8 +399,6 @@ int dongmengdbShellHandleCmd_exit(dongmengdbShellHandleSql_t *ctx, struct handle
         dongmengdbClose(ctx->db);
         free(ctx->dbfile);
     }
-    free(ctx);
-    free(e);
 
     exit(0);
 };
