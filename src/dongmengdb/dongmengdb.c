@@ -4,6 +4,7 @@
 
 #include "dongmengdb.h"
 
+
 int dongmengdbOpen(const char *file, dongmengdb **db){};
 int dongmengdbPrepare(dongmengdb *db, const char *sql, dongmengdb_stmt **stmt){};
 int dongmengdbStep(dongmengdb_stmt *stmt){};

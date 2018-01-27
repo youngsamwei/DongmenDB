@@ -5,10 +5,27 @@
 #ifndef DONGMENDB_DONGMENGDB_H
 #define DONGMENDB_DONGMENGDB_H
 
+#include "filemanager.h"
+#include "buffermanager.h"
+#include "integritymanager.h"
+#include "logmanager.h"
+#include "metadatamanager.h"
+#include "securitymanager.h"
+
+
 /* Forward declarations.
  * From the API's perspective's, these are opaque data types. */
 typedef struct dongmengdb_stmt dongmengdb_stmt;
-typedef struct dongmengdb dongmengdb;
+
+typedef struct dongmengdb_{
+    file_manager fileManager;
+    buffer_manager bufferManager;
+    metadata_manager metadataManager;
+    log_manager logManager;
+    security_manager securityManager;
+    integrity_manager integrityManager;
+
+} dongmengdb;
 
 /* API return codes */
 #define DONGMENGDB_OK (0)
@@ -23,6 +40,7 @@ typedef struct dongmengdb dongmengdb;
 
 #define DONGMENGDB_ROW (100)
 #define DONGMENGDB_DONE (101)
+
 
 /* Opens a dongmengdb file.
  *
