@@ -46,8 +46,8 @@ typedef struct field_info_ {
  * 描述数据表的结构信息
  */
 typedef struct table_info_ {
-    field_info *fieldInfo[0];
-    int *offsets[0];
+    hmap_t fields;
+    hmap_t offsets;
     int recordLen;
     char *tableName;
 } table_info;
@@ -68,7 +68,7 @@ typedef struct record_id_ {
     int id;
 } record_id;
 
-int record_file_new(record_file *recordFile, table_info *tableInfo,
+int record_file_create(record_file *recordFile, table_info *tableInfo,
                     transaction *tx);
 
 int record_file_close(record_file *recordFile);
@@ -102,6 +102,10 @@ int record_file_atlast_block(record_file *recordFile);
 int record_file_append_block(record_file *recordFile);
 
 int record_file_record_formatter(record_file *recordFile, memory_page *memoryPage);
+
+int field_info_create(field_info *fieldInfo, DATA_TYPE type, int lenght);
+
+int table_info_create(table_info *tableInfo, char *tableName, hmap_t fields);
 
 int record_page_close(record_page *recordPage);
 

@@ -5,15 +5,15 @@
 #include "dongmengdb.h"
 
 
-int dongmengdbOpen(const char *file, dongmengdb **db){};
-int dongmengdbPrepare(dongmengdb *db, const char *sql, dongmengdb_stmt **stmt){};
-int dongmengdbStep(dongmengdb_stmt *stmt){};
-int dongmengdbFinalize(dongmengdb_stmt *stmt){};
+int dongmengdb_open(const char *file, dongmengdb **db){};
+int dongmengdb_prepare(dongmengdb *db, const char *sql, dongmengdb_stmt **stmt){};
+int dongmengdb_step(dongmengdb_stmt *stmt){};
+int dongmengdb_finalize(dongmengdb_stmt *stmt){};
 
-int dongmengdbColumnCount(dongmengdb_stmt *stmt){};
-int dongmengdbColumnType(dongmengdb_stmt *stmt, int col){};
-const char *dongmengdbColumnName(dongmengdb_stmt* stmt, int col){};
-int dongmengdbColumnInt(dongmengdb_stmt *stmt, int col){};
-const char *dongmengdbColumnText(dongmengdb_stmt *stmt, int col){};
+int dongmengdb_column_count(dongmengdb_stmt *stmt){};
+int dongmengdb_column_type(dongmengdb_stmt *stmt, int col){};
+const char *dongmengdb_column_name(dongmengdb_stmt* stmt, int col){};
+int dongmengdb_column_int(dongmengdb_stmt *stmt, int col){};
+const char *dongmengdb_column_text(dongmengdb_stmt *stmt, int col){};
 
-int dongmengdbClose(dongmengdb *db){};
+int dongmengdb_close(dongmengdb *db){};

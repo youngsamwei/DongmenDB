@@ -20,9 +20,9 @@ int main(int argc, char *argv[]) {
     int rc;
     int verbosity = 0;
     char *command = "select sno from student;";
-    dongmengdbShellHandleSql_t shell_ctx;
+    dongmengdb_shell_handle_sql_t shell_ctx;
 
-    dongmengdbShellInitCtx(&shell_ctx);
+    dongmengdb_shell_init_ctx(&shell_ctx);
 
     /* Process command-line arguments */
     while ((opt = getopt(argc, argv, "c:vh")) != -1)
@@ -69,7 +69,7 @@ int main(int argc, char *argv[]) {
 //    char *file = "demo.db";
 //    if (optind < argc)
 //    {
-//        rc = dongmengdbShellOpenDB(&shell_ctx, file /*argv[optind]*/);
+//        rc = dongmengdb_shell_opendb(&shell_ctx, file /*argv[optind]*/);
 //        if(rc)
 //        {
 //            fprintf(stderr, "ERROR: Could not open file %s or file is not well formed.\n", argv[optind]);
