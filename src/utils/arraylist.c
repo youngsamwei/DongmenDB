@@ -24,7 +24,7 @@ void array_list_enlarge(array_list *al) {
                        al->capacity * al->element_size);
 }
 
-void array_list_put(array_list *al, void *p) {
+void array_list_add(array_list *al, void *p) {
     if (al->size + 1 > al->capacity) {
         array_list_enlarge(al);
     }
@@ -39,7 +39,6 @@ void *array_list_get(const array_list *al, int idx) {
     return al->data + idx * al->element_size;
 }
 
-
 void *array_list_add_all(const array_list *al) {
     void *arr;
 
@@ -49,7 +48,7 @@ void *array_list_add_all(const array_list *al) {
     return arr;
 }
 
-void array_list_remove(array_list *al) {
+void array_list_remove(array_list *al, void *p) {
     if (al != NULL && al->data != NULL) {
         free(al->data);
     }
