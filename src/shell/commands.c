@@ -34,7 +34,7 @@ void usage_error(struct handler_entry *e, const char *msg)
     fprintf(stderr, "%s\n", e->help);
 }
 
-int dongmengdbShellHandleCmd(dongmengdb_shell_handle_sql_t *ctx, const char *cmd)
+int dongmengdb_shell_handle_cmd(dongmengdb_shell_handle_sql_t *ctx, const char *cmd)
 {
     int rc = 0;
 
@@ -43,7 +43,7 @@ int dongmengdbShellHandleCmd(dongmengdb_shell_handle_sql_t *ctx, const char *cmd
         int h, ntokens;
         char *cmddup = strdup(cmd), **tokens;
 
-        ntokens = dongmengdbTokenize(cmddup, &tokens);
+        ntokens = dongmengdb_tokenize(cmddup, &tokens);
 
         for(h=0; handlers[h].name != NULL; h++)
         {
@@ -212,7 +212,7 @@ int dongmengdb_shell_handle_sql(dongmengdb_shell_handle_sql_t *ctx, const char *
 }
 
 
-int dongmengdbShellHandleCmd_open(dongmengdb_shell_handle_sql_t *ctx, struct handler_entry *e, const char **tokens, int ntokens)
+int dongmengdb_shell_handle_cmd_open(dongmengdb_shell_handle_sql_t *ctx, struct handler_entry *e, const char **tokens, int ntokens)
 {
     int rc;
     dongmengdb *newdb;
@@ -245,9 +245,9 @@ int dongmengdbShellHandleCmd_open(dongmengdb_shell_handle_sql_t *ctx, struct han
 }
 
 
-int dongmengdbShellHandleCmd_parse(dongmengdb_shell_handle_sql_t *ctx, struct handler_entry *e, const char **tokens, int ntokens)
+int dongmengdb_shell_handle_cmd_parse(dongmengdb_shell_handle_sql_t *ctx, struct handler_entry *e, const char **tokens, int ntokens)
 {
-    dongmengsqlStatement_t *sqlStmt;
+    dongmengsql_statement_t *sqlStmt;
     int rc;
 
     if(ntokens != 2)
@@ -256,27 +256,27 @@ int dongmengdbShellHandleCmd_parse(dongmengdb_shell_handle_sql_t *ctx, struct ha
     	return 1;
     }
 
-    rc = dongmengsqlParser(tokens[1], &sqlStmt);
+    rc = dongmengsql_parser(tokens[1], &sqlStmt);
 
     if (rc != DONGMENGDB_OK)
     {
         return rc;
     }
 
-    dongmengsqlStmtPrint(sqlStmt);
+    dongmengsql_stmt_print(sqlStmt);
     printf("\n");
 
     return DONGMENGDB_OK;
 }
 
 /* Implemented in optimizer.c */
-int dongmengdbStmtOptimize(dongmengdb *db,
-            dongmengsqlStatement_t *sqlStmt,
-            dongmengsqlStatement_t **sqlStmtOpt);
+int dongmengdb_stmt_optimize(dongmengdb *db,
+            dongmengsql_statement_t *sqlStmt,
+            dongmengsql_statement_t **sqlStmtOpt);
 
-int dongmengdbShellHandleCmd_opt(dongmengdb_shell_handle_sql_t *ctx, struct handler_entry *e, const char **tokens, int ntokens)
+int dongmengdb_shell_handle_cmd_opt(dongmengdb_shell_handle_sql_t *ctx, struct handler_entry *e, const char **tokens, int ntokens)
 {
-    dongmengsqlStatement_t *sqlStmt, *sqlStmtOpt;
+    dongmengsql_statement_t *sqlStmt, *sqlStmtOpt;
     int rc;
 
     if(ntokens != 2)
@@ -291,30 +291,30 @@ int dongmengdbShellHandleCmd_opt(dongmengdb_shell_handle_sql_t *ctx, struct hand
         return 1;
     }
 
-    rc = dongmengsqlParser(tokens[1], &sqlStmt);
+    rc = dongmengsql_parser(tokens[1], &sqlStmt);
 
     if (rc != DONGMENGDB_OK)
     {
         return rc;
     }
 
-    dongmengsqlStmtPrint(sqlStmt);
+    dongmengsql_stmt_print(sqlStmt);
     printf("\n\n");
 
-    rc = dongmengdbStmtOptimize(ctx->db, sqlStmt, &sqlStmtOpt);
+    rc = dongmengdb_stmt_optimize(ctx->db, sqlStmt, &sqlStmtOpt);
 
     if(rc != DONGMENGDB_OK)
     {
         return rc;
     }
 
-    dongmengsqlStmtPrint(sqlStmtOpt);
+    dongmengsql_stmt_print(sqlStmtOpt);
     printf("\n");
 
     return DONGMENGDB_OK;
 }
 
-int dongmengdbShellHandleCmd_headers(dongmengdb_shell_handle_sql_t *ctx, struct handler_entry *e, const char **tokens, int ntokens)
+int dongmengdb_shell_handle_cmd_headers(dongmengdb_shell_handle_sql_t *ctx, struct handler_entry *e, const char **tokens, int ntokens)
 {
     if(ntokens != 2)
     {
@@ -335,7 +335,7 @@ int dongmengdbShellHandleCmd_headers(dongmengdb_shell_handle_sql_t *ctx, struct 
     return DONGMENGDB_OK;
 }
 
-int dongmengdbShellHandleCmd_mode(dongmengdb_shell_handle_sql_t *ctx, struct handler_entry *e, const char **tokens, int ntokens)
+int dongmengdb_shell_handle_cmd_mode(dongmengdb_shell_handle_sql_t *ctx, struct handler_entry *e, const char **tokens, int ntokens)
 {
     if(ntokens != 2)
     {
@@ -356,7 +356,7 @@ int dongmengdbShellHandleCmd_mode(dongmengdb_shell_handle_sql_t *ctx, struct han
     return DONGMENGDB_OK;
 }
 
-int dongmengdbShellHandleCmd_explain(dongmengdb_shell_handle_sql_t *ctx, struct handler_entry *e, const char **tokens, int ntokens)
+int dongmengdb_shell_handle_cmd_explain(dongmengdb_shell_handle_sql_t *ctx, struct handler_entry *e, const char **tokens, int ntokens)
 {
     if(ntokens != 2)
     {
@@ -383,7 +383,7 @@ int dongmengdbShellHandleCmd_explain(dongmengdb_shell_handle_sql_t *ctx, struct 
     return DONGMENGDB_OK;
 }
 
-int dongmengdbShellHandleCmd_help(dongmengdb_shell_handle_sql_t *ctx, struct handler_entry *e, const char **tokens, int ntokens)
+int dongmengdb_shell_handle_cmd_help(dongmengdb_shell_handle_sql_t *ctx, struct handler_entry *e, const char **tokens, int ntokens)
 {
     for(int h=0; handlers[h].name != NULL; h++)
     {
@@ -393,7 +393,7 @@ int dongmengdbShellHandleCmd_help(dongmengdb_shell_handle_sql_t *ctx, struct han
     return DONGMENGDB_OK;
 }
 
-int dongmengdbShellHandleCmd_exit(dongmengdb_shell_handle_sql_t *ctx, struct handler_entry *e, const char **tokens, int ntokens){
+int dongmengdb_shell_handle_cmd_exit(dongmengdb_shell_handle_sql_t *ctx, struct handler_entry *e, const char **tokens, int ntokens){
     if(ctx->db)
     {
         dongmengdb_close(ctx->db);
