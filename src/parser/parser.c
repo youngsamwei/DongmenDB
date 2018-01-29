@@ -100,5 +100,5 @@ ColumnsExpr *parseColumnsExpr(ParserT *parser) { return NULL; };
 
 SetExpr *parseSetExpr(ParserT *parser) { return NULL; };
 
-int dongmengsqlParser(const char *sql, dongmengsqlStatement_t **stmt){};
-int dongmengsqlStmtPrint(dongmengsqlStatement_t *stmt){};
+int dongmengsql_parser(const char *sql, dongmengsql_statement_t **stmt){};
+int dongmengsql_stmt_print(dongmengsql_statement_t *stmt){};

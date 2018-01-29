@@ -60,7 +60,7 @@ int main(int argc, char *argv[]) {
         /*direct return*/
 
         if (cmdstring) {
-            dongmengdbShellHandleCmd(&shell_ctx, cmdstring);
+            dongmengdb_shell_handle_cmd(&shell_ctx, cmdstring);
         }
 
     }

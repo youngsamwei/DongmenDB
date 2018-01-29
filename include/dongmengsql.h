@@ -13,7 +13,7 @@
 #define STMT_INSERT (2)
 #define STMT_DELETE (3)
 
-typedef struct dongmengsqlStatement
+typedef struct dongmengsql_statement
 {
     /*
     bool explain;
@@ -26,9 +26,9 @@ typedef struct dongmengsqlStatement
         Insert_t *insert;
         Delete_t *delete;
     } stmt;*/
-} dongmengsqlStatement_t;
+} dongmengsql_statement_t;
 
-int dongmengsqlParser(const char *sql, dongmengsqlStatement_t **stmt);
-int dongmengsqlStmtPrint(dongmengsqlStatement_t *stmt);
+int dongmengsql_parser(const char *sql, dongmengsql_statement_t **stmt);
+int dongmengsql_stmt_print(dongmengsql_statement_t *stmt);
 
 #endif /* SQL_TYPES_H_ */

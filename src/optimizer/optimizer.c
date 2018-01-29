@@ -9,12 +9,12 @@
 #include "optimizer.h"
 
 
-int dongmengdbStmtOptimize(dongmengdb *db,
-                             dongmengsqlStatement_t *sqlStmt,
-                             dongmengsqlStatement_t **sqlStmtOpt){
+int dongmengdb_stmt_optimize(dongmengdb *db,
+                             dongmengsql_statement_t *sqlStmt,
+                             dongmengsql_statement_t **sqlStmtOpt){
 
-    *sqlStmtOpt = malloc(sizeof(dongmengsqlStatement_t));
-    memcpy(*sqlStmtOpt, sqlStmt, sizeof(dongmengsqlStatement_t));
+    *sqlStmtOpt = malloc(sizeof(dongmengsql_statement_t));
+    memcpy(*sqlStmtOpt, sqlStmt, sizeof(dongmengsql_statement_t));
 
     return DONGMENGDB_OK;
 
