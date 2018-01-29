@@ -60,10 +60,10 @@ int transaction_size(transaction *tx, char *fileName) {
     //file_manager_size(fileName);
 }
 
-int transaction_append(transaction *tx, char *fileName, disk_block *block) {
+int transaction_append(transaction *tx, char *fileName, disk_block *block, table_info *tableInfo) {
     //concurrency_manager_xlock
 
-    buffer_list_pin_new(tx->bufferList, fileName, block);
+    buffer_list_pin_new(tx->bufferList, fileName, block,tableInfo);
     transaction_unpin(tx, block);
     return 1;
 }
@@ -72,7 +72,36 @@ int transaction_next_txnum(transaction *tx) {
     return 1;
 };
 
-int buffer_list_pin(buffer_list *bufferList, disk_block *block){};
-int buffer_list_unpin(buffer_list *bufferList, disk_block *block){};
-int buffer_list_get_buffer(buffer_list *bufferList, disk_block *block, memory_buffer *buffer){};
-int buffer_list_pin_new(buffer_list *bufferList, char *fileName, disk_block *block){};
+int buffer_list_pin(buffer_list *bufferList, disk_block *block){
+    memory_buffer *buffer;
+    buffer_manager_pin(bufferList->bufferManager, block, buffer);
+    hashmap_put(bufferList->buffers, block, buffer);
+    array_list_add(bufferList->pins, block);
+    return 1;
+};
+
+int buffer_list_unpin(buffer_list *bufferList, disk_block *block){
+
+    void_ptr *buffer;
+    hashmap_get(bufferList->buffers, block, buffer);
+    memory_buffer *buffer1 = (memory_buffer *)buffer;
+    buffer_manager_unpin(bufferList->bufferManager, buffer1);
+    array_list_remove(bufferList->pins, block);
+    return 1;
+};
+int buffer_list_get_buffer(buffer_list *bufferList, disk_block *block, memory_buffer *buffer){
+    void_ptr *buffer1;
+    hashmap_get(bufferList->buffers, block, buffer1);
+    buffer = (memory_buffer *)buffer1;
+    return 1;
+};
+
+int buffer_list_pin_new(buffer_list *bufferList, char *fileName, disk_block *block, table_info *tableInfo){
+    memory_buffer * buffer;
+    buffer_manager_pinnew(bufferList->bufferManager, fileName, buffer, tableInfo);
+    block = buffer->block;
+
+    hashmap_put(bufferList->buffers, block, buffer);
+    array_list_add(bufferList->pins, block);
+    return 1;
+};

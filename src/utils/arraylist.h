@@ -16,8 +16,9 @@ typedef struct array_list_ {
 }array_list;
 
 array_list array_list_create(size_t element_size);
-void array_list_put(array_list *pa, void *p);
+void array_list_add(array_list *pa, void *p);
 void *array_list_get(const array_list *pa, int idx);
-void array_list_remove(array_list *pa);
+void array_list_remove(array_list *pa, void *p);
 void *array_list_add_all(const array_list *pa);
+
 #endif //DONGMENDB_ARRAYLIST_H

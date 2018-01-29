@@ -16,6 +16,7 @@ typedef struct array_list_ array_list;
 typedef struct recovery_manager_ recovery_manager;
 typedef struct concurrency_manager_ concurrency_manager;
 typedef struct buffer_list_ buffer_list;
+typedef struct buffer_manager_ buffer_manager;
 
 typedef struct transaction_ {
     int nextTxNum;
@@ -28,7 +29,7 @@ typedef struct transaction_ {
 typedef struct buffer_list_{
     hmap_t buffers;
     array_list *pins;
-
+    buffer_manager * bufferManager;
 }buffer_list;
 
 int transaction_commit(transaction *transaction);
@@ -44,13 +45,13 @@ int transaction_getstring(transaction *transaction, disk_block *block, int offse
 int transaction_setstring(transaction *transaction, disk_block *block, int offset, char *value);
 
 int transaction_size(transaction *tx, char *fileName) ;
-int transaction_append(transaction *tx, char *fileName, disk_block *block );
+int transaction_append(transaction *tx, char *fileName, disk_block *block , table_info *tableInfo);
 
 int transaction_next_txnum(transaction *tx);
 
 int buffer_list_pin(buffer_list *bufferList, disk_block *block);
 int buffer_list_unpin(buffer_list *bufferList, disk_block *block);
 int buffer_list_get_buffer(buffer_list *bufferList, disk_block *block, memory_buffer *buffer);
-int buffer_list_pin_new(buffer_list *bufferList, char *fileName, disk_block *block);
+int buffer_list_pin_new(buffer_list *bufferList, char *fileName, disk_block *block, table_info *tableInfo);
 
 #endif //DONGMENDB_TRANSACTION_H
