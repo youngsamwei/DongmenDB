@@ -4,23 +4,23 @@
 #include <dongmengdb.h>
 #include <stdbool.h>
 
-typedef enum shellMode
+typedef enum shell_mode
 {
     MODE_LIST          = 0,
     MODE_COLUMN        = 1,
-} shellMode_t;
+} shell_mode_t;
 
-typedef struct dongmengdbShellHandleSql
+typedef struct dongmengdb_shell_handle_sql
 {
     char *dbfile;
     dongmengdb *db;
 
     bool header;
-    shellMode_t mode;
+    shell_mode_t mode;
 
-} dongmengdbShellHandleSql_t;
+} dongmengdb_shell_handle_sql_t;
 
-void dongmengdbShellInitCtx(dongmengdbShellHandleSql_t *ctx);
-int dongmengdbShellOpenDB(dongmengdbShellHandleSql_t *ctx, char *file);
+void dongmengdb_shell_init_ctx(dongmengdb_shell_handle_sql_t *ctx);
+int dongmengdb_shell_opendb(dongmengdb_shell_handle_sql_t *ctx, char *file);
 
 #endif

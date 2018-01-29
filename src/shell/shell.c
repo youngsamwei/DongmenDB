@@ -1,7 +1,7 @@
 #include <string.h>
 #include "shell.h"
 
-void dongmengdbShellInitCtx(dongmengdbShellHandleSql_t *ctx)
+void dongmengdb_shell_init_ctx(dongmengdb_shell_handle_sql_t *ctx)
 {
     ctx->db = NULL;
     ctx->dbfile = NULL;
@@ -10,11 +10,11 @@ void dongmengdbShellInitCtx(dongmengdbShellHandleSql_t *ctx)
     ctx->mode = MODE_LIST;
 }
 
-int dongmengdbShellOpenDB(dongmengdbShellHandleSql_t *ctx, char *file)
+int dongmengdb_shell_opendb(dongmengdb_shell_handle_sql_t *ctx, char *file)
 {
     int rc;
 
-    rc = dongmengdbOpen(file, &ctx->db);
+    rc = dongmengdb_open(file, &ctx->db);
 
     if (rc != DONGMENGDB_OK)
         return 1;

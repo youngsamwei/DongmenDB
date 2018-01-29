@@ -4,7 +4,7 @@
 
 #include "recordfile.h"
 
-int record_file_new(record_file *recordFile, table_info *tableInfo,
+int record_file_create(record_file *recordFile, table_info *tableInfo,
                     transaction *tx) {
     recordFile = (record_file *) malloc(sizeof(record_file));
     recordFile->tableInfo = tableInfo;
@@ -114,6 +114,22 @@ int record_file_append_block(record_file *recordFile) {
 int record_file_record_formatter(record_file *recordFile, memory_page *memoryPage) {
 
 }
+
+int field_info_create(field_info *fieldInfo, DATA_TYPE type, int length){
+    fieldInfo = (field_info *)malloc(sizeof(field_info));
+    fieldInfo->type=type;
+    fieldInfo->length=length;
+    return 1;
+};
+
+int table_info_create(table_info *tableInfo, char *tableName, hmap_t fields){
+    tableInfo = (table_info *)malloc(sizeof(table_info));
+    tableInfo->tableName = tableName;
+    tableInfo->fields = fields;
+    tableInfo->offsets = hashmap_create();
+    tableInfo->recordLen = 0;
+    /*TODO:计算 offsets 和 rrecordLen */
+};
 
 int record_page_close(record_page *recordPage) {
     if (recordPage->diskBlock!=NULL){

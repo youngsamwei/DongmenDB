@@ -14,11 +14,14 @@
 #include "securitymanager.h"
 #include "recordfile.h"
 
+#define MAX_ID_NAME_LENGTH 32
+
 /* Forward declarations.
  * From the API's perspective's, these are opaque data types. */
 typedef struct dongmengdb_stmt dongmengdb_stmt;
 typedef struct buffer_manager_ buffer_manager;
 typedef struct file_manager_ file_manager;
+typedef struct metadata_manager_ metadata_manager;
 
 typedef struct dongmengdb_{
     file_manager *fileManager;
@@ -65,7 +68,7 @@ typedef struct dongmengdb_{
  * - DONGMENGDB_ECORRUPT: The database file is not well formed
  * - DONGMENGDB_EIO: An I/O error has occurred when accessing the file
  */
-int dongmengdbOpen(const char *file, dongmengdb **db);
+int dongmengdb_open(const char *file, dongmengdb **db);
 
 
 /* Prepares a SQL statement for execution
@@ -81,7 +84,7 @@ int dongmengdbOpen(const char *file, dongmengdb **db);
  * - DONGMENGDB_EINVALIDSQL: Invalid SQL
  * - DONGMENGDB_ENOMEM: Could not allocate memory
  */
-int dongmengdbPrepare(dongmengdb *db, const char *sql, dongmengdb_stmt **stmt);
+int dongmengdb_prepare(dongmengdb *db, const char *sql, dongmengdb_stmt **stmt);
 
 
 /* Steps through a prepared SQL statement
@@ -93,7 +96,7 @@ int dongmengdbPrepare(dongmengdb *db, const char *sql, dongmengdb_stmt **stmt);
  * If the statement is a SELECT statement, this function returns
  * DONGMENGDB_ROW each time a result row is produced. The values of the
  * result row can be accessed using the column access functions
- * (dongmengdb_column_*). Thus, dongmengdbStep has to be called repeatedly
+ * (dongmengdb_column_*). Thus, dongmengdb_step has to be called repeatedly
  * to access all the rows returned by the query. Once there are no
  * more rows left, or if the statement is not meant to produce any
  * results, then DONGMENGDB_DONE is returned (note that this function does
@@ -106,7 +109,7 @@ int dongmengdbPrepare(dongmengdb *db, const char *sql, dongmengdb_stmt **stmt);
  * - DONGMENGDB_ROW: Statement returned a row.
  * - DONGMENGDB_DONE: Statement has finished executing.
  */
-int dongmengdbStep(dongmengdb_stmt *stmt);
+int dongmengdb_step(dongmengdb_stmt *stmt);
 
 
 /* Finalizes a SQL statement, freeing all resources associated with it.
@@ -118,7 +121,7 @@ int dongmengdbStep(dongmengdb_stmt *stmt);
  * - DONGMENGDB_OK: Operation successful
  * - DONGMENGDB_EMISUSE: Statement was already finalized
  */
-int dongmengdbFinalize(dongmengdb_stmt *stmt);
+int dongmengdb_finalize(dongmengdb_stmt *stmt);
 
 
 /* Returns the number of columns returned by a SQL statement
@@ -131,7 +134,7 @@ int dongmengdbFinalize(dongmengdb_stmt *stmt);
  *   meant to produce any results (such as an INSERT statement), then 0
  *   is returned.
  */
-int dongmengdbColumnCount(dongmengdb_stmt *stmt);
+int dongmengdb_column_count(dongmengdb_stmt *stmt);
 
 
 /* Returns the type of a column
@@ -143,7 +146,7 @@ int dongmengdbColumnCount(dongmengdb_stmt *stmt);
  * Return
  * - Column type (see dongmengdb Architecture document for valid types)
  */
-int dongmengdbColumnType(dongmengdb_stmt *stmt, int col);
+int dongmengdb_column_type(dongmengdb_stmt *stmt, int col);
 
 
 /* Returns the name of a column
@@ -157,7 +160,7 @@ int dongmengdbColumnType(dongmengdb_stmt *stmt, int col);
  *   client does not have to free() the returned string. It is the API's
  *   responsibility to allocate and free the memory for this string.
  */
-const char *dongmengdbColumnName(dongmengdb_stmt* stmt, int col);
+const char *dongmengdb_column_name(dongmengdb_stmt* stmt, int col);
 
 
 /* Returns the value of a column of integer type
@@ -169,7 +172,7 @@ const char *dongmengdbColumnName(dongmengdb_stmt* stmt, int col);
  * Return
  * - Integer value
  */
-int dongmengdbColumnInt(dongmengdb_stmt *stmt, int col);
+int dongmengdb_column_int(dongmengdb_stmt *stmt, int col);
 
 
 /* Returns the value of a column of string type
@@ -182,9 +185,9 @@ int dongmengdbColumnInt(dongmengdb_stmt *stmt, int col);
  * - Pointer to a null-terminated string with the value. The API client
  *   does not have to free() the returned string. It is the API's
  *   responsibility to allocate and free the memory for this string
- *   (note that this may happen after dongmengdbStep is called again)
+ *   (note that this may happen after dongmengdb_step is called again)
  */
-const char *dongmengdbColumnText(dongmengdb_stmt *stmt, int col);
+const char *dongmengdb_column_text(dongmengdb_stmt *stmt, int col);
 
 
 /* Closes a dongmengdb database
@@ -196,5 +199,5 @@ const char *dongmengdbColumnText(dongmengdb_stmt *stmt, int col);
  * - DONGMENGDB_OK: Operation successful
  * - DONGMENGDB_EMISUSE: Database that is already closed
  */
-int dongmengdbClose(dongmengdb *db);
+int dongmengdb_close(dongmengdb *db);
 #endif //DONGMENDB_DONGMENGDB_H
