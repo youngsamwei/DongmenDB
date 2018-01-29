@@ -7,23 +7,26 @@
 
 #include "filemanager.h"
 #include "buffermanager.h"
+
 #include "integritymanager.h"
 #include "logmanager.h"
 #include "metadatamanager.h"
 #include "securitymanager.h"
-
+#include "recordfile.h"
 
 /* Forward declarations.
  * From the API's perspective's, these are opaque data types. */
 typedef struct dongmengdb_stmt dongmengdb_stmt;
+typedef struct buffer_manager_ buffer_manager;
+typedef struct file_manager_ file_manager;
 
 typedef struct dongmengdb_{
-    file_manager fileManager;
-    buffer_manager bufferManager;
-    metadata_manager metadataManager;
-    log_manager logManager;
-    security_manager securityManager;
-    integrity_manager integrityManager;
+    file_manager *fileManager;
+    buffer_manager *bufferManager;
+    metadata_manager *metadataManager;
+    log_manager *logManager;
+    security_manager *securityManager;
+    integrity_manager *integrityManager;
 
 } dongmengdb;
 
