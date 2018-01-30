@@ -30,7 +30,7 @@ typedef struct transaction_ {
 
 typedef struct buffer_list_{
     hmap_t buffers;
-    array_list *pins;
+    array_list pins;
     buffer_manager * bufferManager;
 }buffer_list;
 

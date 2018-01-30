@@ -71,6 +71,8 @@ int file_manager_getfile(file_manager *fileManager, char *fileName, FILE *fp);
 
 int disk_block_new(char *fileName, int blockNum, table_info *tableInfo, disk_block *diskBlock);
 
+char *disk_block_get_num_string(disk_block *diskBlock);
+
 int memory_page_create(memory_page *memoryPage, file_manager *fileManager);
 
 int memory_page_read(memory_page *memoryPage, disk_block *block);

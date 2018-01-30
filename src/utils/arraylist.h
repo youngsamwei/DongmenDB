@@ -8,6 +8,8 @@
 
 #include <stdlib.h>
 
+#define DEFAULT_ARRAY_LIST_SIZE 10
+
 typedef struct array_list_ {
     int size;
     int capacity;

@@ -215,7 +215,7 @@ int dongmengdb_shell_handle_sql(dongmengdb_shell_handle_sql_t *ctx, const char *
 int dongmengdb_shell_handle_cmd_open(dongmengdb_shell_handle_sql_t *ctx, struct handler_entry *e, const char **tokens, int ntokens)
 {
     int rc;
-    dongmengdb *newdb;
+    dongmengdb *newdb = (dongmengdb *) malloc(sizeof(dongmengdb));
 
     if(ntokens != 2)
     {

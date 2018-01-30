@@ -7,18 +7,21 @@
 
 int dongmengdb_open(char *dbName, dongmengdb *db) {
 
-    db = (dongmengdb *) malloc(sizeof(dongmengdb));
+    db->fileManager = (file_manager *)malloc(sizeof(file_manager));
+
     /*初始化文件管理*/
     file_manager_new(db->fileManager, "", dbName);
     /*初始日志*/
     //log_manager_new(db->fileManager, file);
+    db->bufferManager = (buffer_manager *) malloc(sizeof(buffer_manager));
     buffer_manager_create(db->bufferManager, BUFFER_MAX_SIZE, db->fileManager);
 
     /*初始化事务*/
-    transaction *tx;
+    transaction *tx = (transaction *) malloc(sizeof(transaction));
     transaction_create(tx, db);
 
     /*初始化元数据管理*/
+    db->metadataManager = (metadata_manager *)malloc(sizeof(metadata_manager));
     metadata_manager_create(db->metadataManager, dbName, tx);
     return 1;
 };
