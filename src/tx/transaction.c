@@ -112,7 +112,7 @@ int buffer_list_pin_new(buffer_list *bufferList, char *fileName, disk_block *blo
     int r = buffer_manager_pinnew(bufferList->bufferManager, fileName, pbuffer, tableInfo);
     memory_buffer *buffer;
     if (r){
-        buffer  = (memory_buffer *) pbuffer;
+        buffer  = *pbuffer;
     }
 
     block = buffer->block;
