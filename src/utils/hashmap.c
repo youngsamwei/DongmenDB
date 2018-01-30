@@ -307,7 +307,7 @@ int hashmap_iterate(hmap_t in, hmap_callback_func fnIterValue, void_ptr arg) {
     for (i = 0; i < m->table_size; i++) {
         elem = m->elems + i;
         if (elem->used == hashmap_used_1) {
-            int status = fnIterValue(elem->data, arg);
+            int status = fnIterValue(elem->key, elem->data, arg);
             if (status != HMAP_S_OK) {
                 return status;
             }
@@ -363,6 +363,7 @@ int hashmap_remove(hmap_t in, void_ptr key, void_ptr *outValue) {
  */
 void hashmap_destroy(hmap_t in, hmap_callback_func fnFreeValue, void_ptr arg) {
     hashmap_elem_t *elem;
+    void_ptr key;
     void_ptr data;
     hashmap_map_t* m = (hashmap_map_t*) in;
 
@@ -370,12 +371,13 @@ void hashmap_destroy(hmap_t in, hmap_callback_func fnFreeValue, void_ptr arg) {
         elem = m->elems + (m->table_size);
         if (elem->used == hashmap_used_1) {
             elem->used = hashmap_unused_0;
+            key = elem->key;
             elem->key = NULL;
             data = elem->data;
             elem->data = NULL;
 
             if (fnFreeValue) {
-                fnFreeValue(data, arg);
+                fnFreeValue(key, data, arg);
             }
         }
     }

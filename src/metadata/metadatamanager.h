@@ -31,8 +31,9 @@ typedef struct table_manager_ {
     table_info *fcatInfo;
 }table_manager;
 
+int metadata_manager_create(metadata_manager *metadataManager, const char *file, transaction *tx);
 int table_manager_create(table_manager *tableManager, int isNew, transaction *tx);
-int table_manager_create_table(table_manager *tableManager, char *tableName, hmap_t fields, transaction *tx);
+int table_manager_create_table(table_manager *tableManager, char *tableName, array_list fieldsName, hmap_t fields, transaction *tx);
 int table_manager_get_tableinfo(table_manager *tableManager, char *tableName, transaction tx, hmap_t fields);
 
 #endif //DONGMENDB_METADATA_MANAGER_H

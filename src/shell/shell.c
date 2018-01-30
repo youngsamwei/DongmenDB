@@ -14,7 +14,7 @@ int dongmengdb_shell_opendb(dongmengdb_shell_handle_sql_t *ctx, char *file)
 {
     int rc;
 
-    rc = dongmengdb_open(file, &ctx->db);
+    rc = dongmengdb_open(file, ctx->db);
 
     if (rc != DONGMENGDB_OK)
         return 1;

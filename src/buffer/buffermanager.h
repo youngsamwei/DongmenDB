@@ -23,6 +23,7 @@
 typedef struct table_info_ table_info;
 typedef struct memory_page_ memory_page;
 typedef struct disk_block_ disk_block;
+typedef struct file_manager_ file_manager;
 
 typedef struct memory_buffer_{
     memory_page *contents;
@@ -33,10 +34,11 @@ typedef struct memory_buffer_{
 }memory_buffer;
 
 typedef struct buffer_manager_{
-    memory_buffer bufferPool[BUFFER_MAX_SIZE];
+    memory_buffer *bufferPool[BUFFER_MAX_SIZE];
     int numAvailable;
 }buffer_manager;
 
+int buffer_manager_create(buffer_manager *bufferManager, int bufferSize, file_manager *fileManager);
 /**
  * 将缓冲区pin到一个指定的block上。没有考虑异常情况。
  * @param bufferManager
@@ -55,18 +57,19 @@ int buffer_manager_find_existing(buffer_manager *bufferManager, disk_block *bloc
 int buffer_manager_find_choose_unpinned_buffer(buffer_manager *bufferManager, memory_buffer *buffer);
 int buffer_manager_available(buffer_manager *bufferManager);
 
-int buffer_getint(memory_buffer *buffer, int offset);
-int buffer_getstring(memory_buffer *buffer, int offset, char *val);
-int buffer_setint(memory_buffer *buffer, int offset, int val, int txnum, int lsn);
-int buffer_setstring(memory_buffer *buffer, int offset, char *val, int txnum, int lsn);
+int memory_buffer_create(memory_buffer *buffer, file_manager *fileManager);
+int memory_buffer_getint(memory_buffer *buffer, int offset);
+int memory_buffer_getstring(memory_buffer *buffer, int offset, char *val);
+int memory_buffer_setint(memory_buffer *buffer, int offset, int val, int txnum, int lsn);
+int memory_buffer_setstring(memory_buffer *buffer, int offset, char *val, int txnum, int lsn);
 
-int buffer_flush(memory_buffer *buffer);
-int buffer_pin(memory_buffer *buffer);
-int buffer_unpin(memory_buffer *buffer);
-int buffer_is_pinned(memory_buffer *buffer);
-int buffer_is_modifiedby(memory_buffer *buffer, int txnum);
+int memory_buffer_flush(memory_buffer *buffer);
+int memory_buffer_pin(memory_buffer *buffer);
+int memory_buffer_unpin(memory_buffer *buffer);
+int memory_buffer_is_pinned(memory_buffer *buffer);
+int memory_buffer_is_modifiedby(memory_buffer *buffer, int txnum);
 
-int buffer_assignto(memory_buffer *buffer, disk_block *block);
-int buffer_assignto_new(memory_buffer *buffer, char *fileName, table_info *tableInfo);
+int memory_buffer_assignto(memory_buffer *buffer, disk_block *block);
+int memory_buffer_assignto_new(memory_buffer *buffer, char *fileName, table_info *tableInfo);
 
 #endif //DONGMENDB_BUFFERMANAGER_H

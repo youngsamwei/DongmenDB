@@ -71,12 +71,14 @@ int file_manager_getfile(file_manager *fileManager, char *fileName, FILE *fp);
 
 int disk_block_new(char *fileName, int blockNum, table_info *tableInfo, disk_block *diskBlock);
 
+int memory_page_create(memory_page *memoryPage, file_manager *fileManager);
+
 int memory_page_read(memory_page *memoryPage, disk_block *block);
 
 int memory_page_write(memory_page *memoryPage, disk_block *block);
 
 int memory_page_append(memory_page *memoryPage, char *fileName, table_info *tableInfo);
-
+int memory_page_record_formatter(memory_page *content, table_info *tableInfo);
 int memory_page_getint(memory_page *memoryPage, int offset);
 int memory_page_setint(memory_page *memoryPage, int offset, int val);
 

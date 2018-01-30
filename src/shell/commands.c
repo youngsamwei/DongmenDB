@@ -222,8 +222,8 @@ int dongmengdb_shell_handle_cmd_open(dongmengdb_shell_handle_sql_t *ctx, struct 
     	usage_error(e, "Invalid arguments");
     	return 1;
     }
-
-    rc = dongmengdb_open(tokens[1], &newdb);
+    char *token = (char *)tokens[1];
+    rc = dongmengdb_open(token, newdb);
 
 	if (rc != DONGMENGDB_OK)
     {

@@ -12,6 +12,7 @@
 
 #define  END_OF_FILE -1
 
+typedef struct dongmengdb_ dongmengdb;
 typedef struct array_list_ array_list;
 typedef struct recovery_manager_ recovery_manager;
 typedef struct concurrency_manager_ concurrency_manager;
@@ -19,6 +20,7 @@ typedef struct buffer_list_ buffer_list;
 typedef struct buffer_manager_ buffer_manager;
 
 typedef struct transaction_ {
+    dongmengdb *db;
     int nextTxNum;
     int txNum;
     recovery_manager *recoveryManager;
@@ -32,6 +34,7 @@ typedef struct buffer_list_{
     buffer_manager * bufferManager;
 }buffer_list;
 
+int transaction_create(transaction *tx, dongmengdb *db);
 int transaction_commit(transaction *transaction);
 int transaction_rollback(transaction *transaction);
 int transaction_recover(transaction *transaction);
@@ -45,7 +48,7 @@ int transaction_getstring(transaction *transaction, disk_block *block, int offse
 int transaction_setstring(transaction *transaction, disk_block *block, int offset, char *value);
 
 int transaction_size(transaction *tx, char *fileName) ;
-int transaction_append(transaction *tx, char *fileName, disk_block *block , table_info *tableInfo);
+int transaction_append(transaction *tx, char *fileName, table_info *tableInfo);
 
 int transaction_next_txnum(transaction *tx);
 

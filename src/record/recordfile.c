@@ -102,7 +102,7 @@ int record_file_atlast_block(record_file *recordFile) {
 }
 
 int record_file_append_block(record_file *recordFile) {
-    //transaction_append(recordFile->tx, recordFile->fileName);
+    transaction_append(recordFile->tx, recordFile->fileName, recordFile->tableInfo);
 }
 
 /**
@@ -122,13 +122,24 @@ int field_info_create(field_info *fieldInfo, DATA_TYPE type, int length){
     return 1;
 };
 
-int table_info_create(table_info *tableInfo, char *tableName, hmap_t fields){
+int table_info_create(table_info *tableInfo, char *tableName, array_list fieldsName, hmap_t fields){
     tableInfo = (table_info *)malloc(sizeof(table_info));
     tableInfo->tableName = tableName;
+    tableInfo->fieldsName = fieldsName;
     tableInfo->fields = fields;
     tableInfo->offsets = hashmap_create();
     tableInfo->recordLen = 0;
-    /*TODO:计算 offsets 和 rrecordLen */
+    int pos = 0;
+    for (int i = 0; i < fieldsName.size - 1; i++){
+        char *fieldName = (char *)array_list_get(&fieldsName, i);
+        hashmap_put(tableInfo->offsets, fieldName, (void_ptr)pos);
+
+        void_ptr *value;
+        hashmap_get(tableInfo->fields, fieldName, value );
+        field_info *fieldInfo = (field_info *) value;
+        pos += fieldInfo->length;
+    }
+    tableInfo->recordLen = pos;
 };
 
 int record_page_close(record_page *recordPage) {

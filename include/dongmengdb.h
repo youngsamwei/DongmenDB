@@ -24,6 +24,7 @@ typedef struct file_manager_ file_manager;
 typedef struct metadata_manager_ metadata_manager;
 
 typedef struct dongmengdb_{
+    char *dbName;
     file_manager *fileManager;
     buffer_manager *bufferManager;
     metadata_manager *metadataManager;
@@ -68,7 +69,7 @@ typedef struct dongmengdb_{
  * - DONGMENGDB_ECORRUPT: The database file is not well formed
  * - DONGMENGDB_EIO: An I/O error has occurred when accessing the file
  */
-int dongmengdb_open(const char *file, dongmengdb **db);
+int dongmengdb_open(char *file, dongmengdb *db);
 
 
 /* Prepares a SQL statement for execution
