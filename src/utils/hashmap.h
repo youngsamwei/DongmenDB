@@ -38,7 +38,7 @@ typedef void_ptr hmap_t;
  * hmap_callback_func is a pointer to a function that can take two void_ptr arguments
  * and return an integer. Returns status code..
  */
-typedef int (*hmap_callback_func)(void_ptr, void_ptr);
+typedef int (*hmap_callback_func)(void_ptr, void_ptr, void_ptr);
 
 /**
  * prototype for map element type
