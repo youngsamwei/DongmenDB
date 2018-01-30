@@ -23,22 +23,23 @@ int file_manager_new(file_manager *fileManager, char *directory, char *dbName) {
 int file_manager_read(file_manager *fileManager, unsigned char *buffer, disk_block *diskBlock) {
     //buffer_clear(buffer);
     memset(buffer, 0, sizeof(buffer));
-    FILE *fp = fopen(diskBlock->fileName, "r");
+    FILE *fp = fopen(diskBlock->fileName, "rb+");
     fseek(fp, diskBlock->blkNum * DISK_BOLCK_SIZE, SEEK_SET);
     fread(buffer, sizeof(char), sizeof(buffer), fp);
     fclose(fp);
 };
 
 int file_manager_write(file_manager *fileManager, unsigned char *buffer, disk_block *diskBlock) {
-    FILE *fp = fopen(diskBlock->fileName, "w");
+    FILE *fp = fopen(diskBlock->fileName, "wb+");
     fseek(fp, diskBlock->blkNum * DISK_BOLCK_SIZE, SEEK_SET);
     fwrite(buffer, sizeof(char), sizeof(buffer), fp);
     fclose(fp);
 };
 
-int file_manager_append(file_manager *fileManager, char *fileName, unsigned char *buffer, table_info *tableInfo) {
+int file_manager_append(memory_buffer *memoryBuffer, file_manager *fileManager, char *fileName, unsigned char *buffer, table_info *tableInfo) {
     int newBlockNum = file_manager_size(fileManager, fileName);
-    disk_block *diskBlock;
+    disk_block *diskBlock = (disk_block *) malloc(sizeof(disk_block));
+    memoryBuffer->block = diskBlock;
     disk_block_new(fileName, newBlockNum, tableInfo, diskBlock);
     file_manager_write(fileManager, buffer, diskBlock);
 };
@@ -72,17 +73,24 @@ int file_manager_getfile(file_manager *fileManager, char *fileName, FILE *fp) {
 };
 
 int disk_block_new(char *fileName, int blockNum, table_info *tableInfo, disk_block *diskBlock) {
-    diskBlock = (disk_block *) malloc(sizeof(disk_block));
+
     diskBlock->fileName = fileName;
     diskBlock->blkNum = blockNum;
     diskBlock->tableInfo = tableInfo;
+
     return 1;
 };
 
 char *disk_block_get_num_string(disk_block *block){
-    char *blockNum;
+    char *blockNum = (char *)malloc(sizeof(MAX_ID_NAME_LENGTH));
+    memset(blockNum, 0, sizeof(blockNum));
     itoa(block->blkNum, blockNum, 10);
-    char *blockName = strcat(block->tableInfo->tableName,blockNum);
+
+    char *blockName = (char *)malloc(sizeof(MAX_ID_NAME_LENGTH));
+
+    memset(blockName, 0, sizeof(blockName));
+     strcat(blockName, block->tableInfo->tableName);
+     strcat(blockName, blockNum);
     return blockName;
 };
 
@@ -100,8 +108,8 @@ int memory_page_write(memory_page *memoryPage, disk_block *block) {
     file_manager_write(memoryPage->fileManager, memoryPage->contents, block);
 };
 
-int memory_page_append(memory_page *memoryPage, char *fileName, table_info *tableInfo) {
-    file_manager_append(memoryPage->fileManager, fileName, memoryPage->contents, tableInfo);
+int memory_page_append(memory_buffer *memoryBuffer,char *fileName, table_info *tableInfo) {
+    file_manager_append(memoryBuffer, memoryBuffer->contents->fileManager, fileName, memoryBuffer->contents->contents, tableInfo);
 };
 
 int memory_page_record_formatter(memory_page *contents, table_info *tableInfo) {
@@ -111,7 +119,7 @@ int memory_page_record_formatter(memory_page *contents, table_info *tableInfo) {
         for (int i = 0; i <= tableInfo->fieldsName.size - 1; i ++){
             char *fieldName = (char *)array_list_get(&tableInfo->fieldsName, i);
 
-            void_ptr *fielddesc;
+            void_ptr *fielddesc = (void_ptr)malloc(sizeof(void_ptr));
             hashmap_get(tableInfo->fields, fieldName, fielddesc);
             field_info *fieldInfo =  *fielddesc;
 

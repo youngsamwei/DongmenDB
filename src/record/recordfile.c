@@ -10,7 +10,8 @@ int record_file_create(record_file *recordFile, table_info *tableInfo,
     recordFile->tableInfo = tableInfo;
     recordFile->tx = tx;
 
-    char *fileName = (char *)malloc(sizeof(char) *MAX_ID_NAME_LENGTH);
+    char *fileName = (char *)malloc(MAX_ID_NAME_LENGTH);
+    memset(fileName, 0, sizeof(fileName));
     strcpy(fileName,tableInfo->tableName);
     strcat(fileName,RECORD_FILE_EXT);
 

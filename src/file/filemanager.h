@@ -61,7 +61,7 @@ int file_manager_read(file_manager *fileManager, unsigned char *buffer, disk_blo
 
 int file_manager_write(file_manager *fileManager, unsigned char *buffer, disk_block *diskBlock);
 
-int file_manager_append(file_manager *fileManager,char *fileName, unsigned char *buffer, table_info *tableInfo);
+int file_manager_append(memory_buffer *memoryBuffer, file_manager *fileManager,char *fileName, unsigned char *buffer, table_info *tableInfo);
 
 int file_manager_size(file_manager *fileManager, char *fileName);
 
@@ -79,7 +79,7 @@ int memory_page_read(memory_page *memoryPage, disk_block *block);
 
 int memory_page_write(memory_page *memoryPage, disk_block *block);
 
-int memory_page_append(memory_page *memoryPage, char *fileName, table_info *tableInfo);
+int memory_page_append(memory_buffer *memoryBuffer, char *fileName, table_info *tableInfo);
 int memory_page_record_formatter(memory_page *content, table_info *tableInfo);
 int memory_page_getint(memory_page *memoryPage, int offset);
 int memory_page_setint(memory_page *memoryPage, int offset, int val);

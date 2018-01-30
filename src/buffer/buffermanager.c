@@ -148,7 +148,7 @@ int memory_buffer_assignto(memory_buffer *buffer, disk_block *block) {
 int memory_buffer_assignto_new(memory_buffer *buffer, char *fileName, table_info *tableInfo) {
     memory_buffer_flush(buffer);
     memory_page_record_formatter(buffer->contents, tableInfo);
-    memory_page_append(buffer->contents, fileName, tableInfo);
+    memory_page_append(buffer, fileName, tableInfo);
     buffer->pins = 0;
 };
 
