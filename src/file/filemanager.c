@@ -10,11 +10,12 @@
 int file_manager_new(file_manager *fileManager, char *directory, char *dbName) {
 
     /*如果对应的文件夹不存在*/
-    if ( !access(dbName,F_OK) ){
+    int exists = access(dbName, F_OK);
+    if ( exists != 0){
         mkdir(dbName);
     }
 
-    strcpy(fileManager->dbDirectoryName, dbName);
+    fileManager->dbDirectoryName = dbName;
     fileManager->dbDirectory = fopen(dbName, "rw");
     fileManager->openFiles = hashmap_create();
 };
@@ -45,6 +46,9 @@ int file_manager_append(file_manager *fileManager, char *fileName, unsigned char
 int file_manager_size(file_manager *fileManager, char *fileName) {
     struct _stat stats;
     int result = _stat(fileName, &stats);
+    if (result != 0){
+        return 0;
+    }
     return stats.st_size / DISK_BOLCK_SIZE;
 };
 
@@ -75,8 +79,15 @@ int disk_block_new(char *fileName, int blockNum, table_info *tableInfo, disk_blo
     return 1;
 };
 
+char *disk_block_get_num_string(disk_block *block){
+    char *blockNum;
+    itoa(block->blkNum, blockNum, 10);
+    char *blockName = strcat(block->tableInfo->tableName,blockNum);
+    return blockName;
+};
+
 int memory_page_create(memory_page *memoryPage, file_manager *fileManager){
-    memoryPage = (memory_page *)malloc(sizeof(memory_page));
+
     memoryPage->fileManager =fileManager;
     return 1;
 };
@@ -97,20 +108,21 @@ int memory_page_record_formatter(memory_page *contents, table_info *tableInfo) {
     int recsize = tableInfo->recordLen + INT_SIZE;
     for (int pos = 0; pos + recsize < DISK_BOLCK_SIZE; pos+=recsize){
         memory_page_setint(contents, pos, RECORD_PAGE_EMPTY);
-        for (int i = 0; i < tableInfo->fieldsName.size - 1; i ++){
+        for (int i = 0; i <= tableInfo->fieldsName.size - 1; i ++){
             char *fieldName = (char *)array_list_get(&tableInfo->fieldsName, i);
-            void_ptr ofvalue ;
-            hashmap_get(tableInfo->offsets, fieldName, ofvalue);
-            int offset  = (int)ofvalue;
-            void_ptr fielddesc;
+
+            void_ptr *fielddesc;
             hashmap_get(tableInfo->fields, fieldName, fielddesc);
-            field_info *fieldInfo = (field_info *)fielddesc;
+            field_info *fieldInfo =  *fielddesc;
+
+            void_ptr *ofvalue ;
+            hashmap_get(tableInfo->offsets, fieldName, ofvalue);
+            integer *offset  =  *ofvalue;
 
             if(fieldInfo->type == DATA_TYPE_INT){
-                memory_page_setint(contents, pos + INT_SIZE + offset, 0);
-
+                memory_page_setint(contents, pos + INT_SIZE + offset->val, 0);
             }else{
-                memory_page_setstring(contents, pos + INT_SIZE + offset, "");
+                memory_page_setstring(contents, pos + INT_SIZE + offset->val, "");
             }
         }
     }

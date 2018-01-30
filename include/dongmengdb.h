@@ -18,6 +18,7 @@
 
 /* Forward declarations.
  * From the API's perspective's, these are opaque data types. */
+
 typedef struct dongmengdb_stmt dongmengdb_stmt;
 typedef struct buffer_manager_ buffer_manager;
 typedef struct file_manager_ file_manager;

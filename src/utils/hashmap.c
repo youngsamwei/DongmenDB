@@ -230,7 +230,7 @@ hmap_t hashmap_create() {
 /**
  * Add a pair of key-value to the hashmap
  */
-int hashmap_put(hmap_t in, void_ptr key, void_ptr value) {
+int hashmap_put(hmap_t in, char * key, void_ptr value) {
     int index;
     hashmap_map_t *m;
     hashmap_elem_t *elem;
@@ -263,7 +263,7 @@ int hashmap_put(hmap_t in, void_ptr key, void_ptr value) {
 /**
  * Get your pointer out of the hashmap with a key
  */
-int hashmap_get(hmap_t in, const void_ptr key, void_ptr *value) {
+int hashmap_get(hmap_t in, const char * key, void_ptr *value) {
     int curr;
     int i;
     hashmap_map_t *m;
@@ -319,7 +319,7 @@ int hashmap_iterate(hmap_t in, hmap_callback_func fnIterValue, void_ptr arg) {
 /**
  * Remove an element with that key from the map
  */
-int hashmap_remove(hmap_t in, void_ptr key, void_ptr *outValue) {
+int hashmap_remove(hmap_t in, char * key, void_ptr *outValue) {
     int i, curr;
     hashmap_map_t* m;
     hashmap_elem_t *elem;

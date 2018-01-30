@@ -43,6 +43,13 @@ typedef struct field_info_ {
 } field_info;
 
 /**
+ * 用于保存在hashmap中的key和value
+ */
+typedef struct integer_{
+    int val;
+} integer;
+
+/**
  * 描述数据表的结构信息
  */
 typedef struct table_info_ {

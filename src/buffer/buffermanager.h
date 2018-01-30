@@ -20,6 +20,8 @@
  */
 #define BUFFER_MAX_SIZE 1000
 
+typedef void* void_ptr;
+
 typedef struct table_info_ table_info;
 typedef struct memory_page_ memory_page;
 typedef struct disk_block_ disk_block;
@@ -46,15 +48,15 @@ int buffer_manager_create(buffer_manager *bufferManager, int bufferSize, file_ma
  * @param buffer
  * @return
  */
-int buffer_manager_pin(buffer_manager *bufferManager, disk_block *block, memory_buffer *buffer);
+int buffer_manager_pin(buffer_manager *bufferManager, disk_block *block, void_ptr *buffer);
 
-int buffer_manager_pinnew(buffer_manager *bufferManager, char *fileName, memory_buffer *buffer, table_info *tableInfo);
+int buffer_manager_pinnew(buffer_manager *bufferManager, char *fileName, void_ptr *buffer, table_info *tableInfo);
 
 int buffer_manager_unpin(buffer_manager *bufferManager, memory_buffer *buffer);
 
 int buffer_manager_flushall(buffer_manager *bufferManager, int txnum);
-int buffer_manager_find_existing(buffer_manager *bufferManager, disk_block *block, memory_buffer *buffer);
-int buffer_manager_find_choose_unpinned_buffer(buffer_manager *bufferManager, memory_buffer *buffer);
+int buffer_manager_find_existing(buffer_manager *bufferManager, disk_block *block, void_ptr *buffer);
+int buffer_manager_find_choose_unpinned_buffer(buffer_manager *bufferManager, void_ptr *buffer);
 int buffer_manager_available(buffer_manager *bufferManager);
 
 int memory_buffer_create(memory_buffer *buffer, file_manager *fileManager);

@@ -6,10 +6,15 @@
 
 int record_file_create(record_file *recordFile, table_info *tableInfo,
                     transaction *tx) {
-    recordFile = (record_file *) malloc(sizeof(record_file));
+
     recordFile->tableInfo = tableInfo;
     recordFile->tx = tx;
-    recordFile->fileName = strcat(tableInfo->tableName, RECORD_FILE_EXT);
+
+    char *fileName = (char *)malloc(sizeof(char) *MAX_ID_NAME_LENGTH);
+    strcpy(fileName,tableInfo->tableName);
+    strcat(fileName,RECORD_FILE_EXT);
+
+    recordFile->fileName = fileName;
     if (transaction_size(tx, recordFile->fileName) == 0) {
         record_file_append_block(recordFile);
     }
@@ -116,27 +121,32 @@ int record_file_record_formatter(record_file *recordFile, memory_page *memoryPag
 }
 
 int field_info_create(field_info *fieldInfo, DATA_TYPE type, int length){
-    fieldInfo = (field_info *)malloc(sizeof(field_info));
+
     fieldInfo->type=type;
     fieldInfo->length=length;
     return 1;
 };
 
 int table_info_create(table_info *tableInfo, char *tableName, array_list fieldsName, hmap_t fields){
-    tableInfo = (table_info *)malloc(sizeof(table_info));
+
     tableInfo->tableName = tableName;
     tableInfo->fieldsName = fieldsName;
     tableInfo->fields = fields;
     tableInfo->offsets = hashmap_create();
     tableInfo->recordLen = 0;
     int pos = 0;
-    for (int i = 0; i < fieldsName.size - 1; i++){
+
+    for (int i = 0; i <= fieldsName.size - 1; i++){
         char *fieldName = (char *)array_list_get(&fieldsName, i);
-        hashmap_put(tableInfo->offsets, fieldName, (void_ptr)pos);
 
         void_ptr *value;
         hashmap_get(tableInfo->fields, fieldName, value );
-        field_info *fieldInfo = (field_info *) value;
+        field_info *fieldInfo = *value;
+
+        integer *ipos = (integer *)malloc(sizeof(integer));
+        ipos->val = pos;
+        hashmap_put(tableInfo->offsets, fieldName, ipos);
+
         pos += fieldInfo->length;
     }
     tableInfo->recordLen = pos;

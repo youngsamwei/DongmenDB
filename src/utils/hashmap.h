@@ -38,13 +38,13 @@ typedef void_ptr hmap_t;
  * hmap_callback_func is a pointer to a function that can take two void_ptr arguments
  * and return an integer. Returns status code..
  */
-typedef int (*hmap_callback_func)(void_ptr, void_ptr, void_ptr);
+typedef int (*hmap_callback_func)(char *, void_ptr, void_ptr);
 
 /**
  * prototype for map element type
  */
 typedef struct _hmap_pair_t {
-    void_ptr key;
+    char *key;
     void_ptr data;
 } hmap_pair_t;
 
@@ -65,17 +65,17 @@ extern int hashmap_iterate(hmap_t in, hmap_callback_func fnIterValue,
   * Add an element to the hashmap.
   * Return HMAP_S_OK, HMAP_E_KEYUSED or HMAP_E_OUTMEM.
   */
-extern int hashmap_put(hmap_t in, void_ptr key, void_ptr elem);
+extern int hashmap_put(hmap_t in, char * key, void_ptr elem);
 
 /**
  * Get an element from the hashmap. Return HMAP_S_OK or HMAP_E_NOTFOUND.
  */
-extern int hashmap_get(hmap_t in, const void_ptr key, void_ptr *elem);
+extern int hashmap_get(hmap_t in, const char * key, void_ptr *elem);
 
 /**
  * Remove an element from the hashmap. Return HMAP_S_OK or HMAP_E_NOTFOUND.
  */
-extern int hashmap_remove(hmap_t in, void_ptr key, void_ptr *outValue);
+extern int hashmap_remove(hmap_t in, char * key, void_ptr *outValue);
 
 /**
  * Free the hashmap
