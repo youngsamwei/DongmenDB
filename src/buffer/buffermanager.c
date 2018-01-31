@@ -21,10 +21,10 @@ int buffer_manager_pin(buffer_manager *bufferManager, disk_block *block, void_pt
         if (buffer == NULL) {
             return 1;
         }
-        buf=(memory_buffer *)buffer;
+        buf = *buffer;
         memory_buffer_assignto(buf, block);
     }
-    if (memory_buffer_is_pinned(buf)) {
+    if (!memory_buffer_is_pinned(buf)) {
         bufferManager->numAvailable--;
     }
     memory_buffer_pin(buf);

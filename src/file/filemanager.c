@@ -9,11 +9,11 @@
 #include "filemanager.h"
 
 int file_manager_new(file_manager *fileManager, char *directory, char *dbName) {
-    fileManager->isNew = 1;
+    fileManager->isNew = 0;
     /*如果对应的文件夹不存在*/
     int exists = access(dbName, F_OK);
     if ( exists != 0){
-//        fileManager->isNew = 1;
+        fileManager->isNew = 1;
         mkdir(dbName);
     }
 

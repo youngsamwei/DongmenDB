@@ -17,9 +17,10 @@ typedef struct concurrency_manager_ concurrency_manager;
 typedef struct buffer_list_ buffer_list;
 typedef struct buffer_manager_ buffer_manager;
 
+static int next_tx_num = 1;
+
 typedef struct transaction_ {
     dongmengdb *db;
-    int nextTxNum;
     int txNum;
     recovery_manager *recoveryManager;
     concurrency_manager *concurrencyManager;
@@ -55,5 +56,6 @@ int buffer_list_unpin(buffer_list *bufferList, disk_block *block);
 int buffer_list_unpin_all(buffer_list *bufferList);
 memory_buffer * buffer_list_get_buffer(buffer_list *bufferList, disk_block *block) ;
 int buffer_list_pin_new(buffer_list *bufferList, char *fileName, void_ptr *block, table_info *tableInfo);
+
 
 #endif //DONGMENDB_TRANSACTION_H
