@@ -68,13 +68,12 @@ int table_manager_create(table_manager *tableManager, int isNew, transaction *tx
  * @return
  */
 int table_manager_create_table(table_manager *tableManager, char *tableName, array_list fieldsName, hmap_t fields, transaction *tx) {
-    table_info *tableInfo ;
-    tableInfo = (table_info *)malloc(sizeof(table_info));
+    table_info *tableInfo = (table_info *)malloc(sizeof(table_info));
     table_info_create(tableInfo, tableName, fieldsName, fields);
     /*增加元数据到table描述表中*/
-    record_file *tcatFile;
-    tcatFile = (record_file *) malloc(sizeof(record_file));
+    record_file *tcatFile = (record_file *) malloc(sizeof(record_file));
     record_file_create(tcatFile, tableManager->tcatInfo, tx);
+
     record_file_insert(tcatFile);
     record_file_set_string(tcatFile, "tablename", tableName);
     record_file_set_int(tcatFile, "reclength", tableInfo->recordLen);

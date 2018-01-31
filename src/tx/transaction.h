@@ -54,7 +54,7 @@ int transaction_next_txnum(transaction *tx);
 
 int buffer_list_pin(buffer_list *bufferList, disk_block *block);
 int buffer_list_unpin(buffer_list *bufferList, disk_block *block);
-int buffer_list_get_buffer(buffer_list *bufferList, disk_block *block, memory_buffer *buffer);
-int buffer_list_pin_new(buffer_list *bufferList, char *fileName, disk_block *block, table_info *tableInfo);
+memory_buffer * buffer_list_get_buffer(buffer_list *bufferList, disk_block *block) ;
+int buffer_list_pin_new(buffer_list *bufferList, char *fileName, void_ptr *block, table_info *tableInfo);
 
 #endif //DONGMENDB_TRANSACTION_H

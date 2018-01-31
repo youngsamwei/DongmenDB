@@ -21,19 +21,20 @@ int file_manager_new(file_manager *fileManager, char *directory, char *dbName) {
 };
 
 int file_manager_read(file_manager *fileManager, unsigned char *buffer, disk_block *diskBlock) {
-    //buffer_clear(buffer);
+    void_ptr *pfile = (void_ptr *)malloc(sizeof(void_ptr));
+    file_manager_getfile(fileManager, diskBlock->fileName, pfile);
+    FILE *fp = *pfile;
     memset(buffer, 0, sizeof(buffer));
-    FILE *fp = fopen(diskBlock->fileName, "rb+");
     fseek(fp, diskBlock->blkNum * DISK_BOLCK_SIZE, SEEK_SET);
     fread(buffer, sizeof(char), sizeof(buffer), fp);
-    fclose(fp);
 };
 
 int file_manager_write(file_manager *fileManager, unsigned char *buffer, disk_block *diskBlock) {
-    FILE *fp = fopen(diskBlock->fileName, "wb+");
+    void_ptr *pfile = (void_ptr *)malloc(sizeof(void_ptr));
+    file_manager_getfile(fileManager, diskBlock->fileName, pfile);
+    FILE *fp = *pfile;
     fseek(fp, diskBlock->blkNum * DISK_BOLCK_SIZE, SEEK_SET);
     fwrite(buffer, sizeof(char), sizeof(buffer), fp);
-    fclose(fp);
 };
 
 int file_manager_append(memory_buffer *memoryBuffer, file_manager *fileManager, char *fileName, unsigned char *buffer, table_info *tableInfo) {
@@ -57,19 +58,31 @@ int file_manager_isnew(file_manager *fileManager) {
     return fileManager->isNew;
 };
 
-int file_manager_getfile(file_manager *fileManager, char *fileName, FILE *fp) {
-    void_ptr *file;
-    hashmap_get(fileManager->openFiles, fileName, file);
-    if (file == NULL) {
-        char *fname;
+int file_manager_getfile(file_manager *fileManager, char *fileName, void_ptr *file) {
+    int found = hashmap_get(fileManager->openFiles, fileName, file);
+
+    if (found == HMAP_E_NOTFOUND) {
+        char *fname = (char *)malloc(sizeof(MAX_ID_NAME_LENGTH));
+        memset(fname, 0, sizeof(fname));
         strcat(fname, fileManager->dbDirectoryName);
         strcat(fname, "/");
         strcat(fname, fileName);
-        fp = fopen(fname, "rw");
-        hashmap_put(fileManager->openFiles, fileName, fp);
+        FILE *f = fopen(fname, "rwb+");
+        if (f == NULL){
+            f = fopen(fname, "wb+");
+            if (f==NULL){
+                /*TODO:error*/
+                return DONGMENGDB_ERROR_IO;
+            }
+            fclose(f);
+            f = fopen(fname, "rwb+");
+        }
+
+        hashmap_put(fileManager->openFiles, fileName, f);
+        *file = f;
     }
-    fp = (FILE *) file;
-    return 1;
+
+    return DONGMENGDB_OK;
 };
 
 int disk_block_new(char *fileName, int blockNum, table_info *tableInfo, disk_block *diskBlock) {
@@ -123,7 +136,7 @@ int memory_page_record_formatter(memory_page *contents, table_info *tableInfo) {
             hashmap_get(tableInfo->fields, fieldName, fielddesc);
             field_info *fieldInfo =  *fielddesc;
 
-            void_ptr *ofvalue ;
+            void_ptr *ofvalue  = (void_ptr)malloc(sizeof(void_ptr));
             hashmap_get(tableInfo->offsets, fieldName, ofvalue);
             integer *offset  =  *ofvalue;
 
