@@ -53,7 +53,7 @@ typedef struct integer_{
  * 描述数据表的结构信息
  */
 typedef struct table_info_ {
-    array_list fieldsName;
+    arraylist *fieldsName;
     hmap_t fields;
     hmap_t offsets;
     int recordLen;
@@ -113,7 +113,7 @@ int record_file_record_formatter(record_file *recordFile, memory_page *memoryPag
 
 int field_info_create(field_info *fieldInfo, DATA_TYPE type, int lenght);
 
-int table_info_create(table_info *tableInfo, char *tableName, array_list fieldsName, hmap_t fields);
+int table_info_create(table_info *tableInfo, char *tableName, arraylist *fieldsName, hmap_t fields);
 
 int table_info_offset(table_info *tableInfo, char *fieldName);
 

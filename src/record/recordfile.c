@@ -130,7 +130,7 @@ int field_info_create(field_info *fieldInfo, DATA_TYPE type, int length) {
     return 1;
 };
 
-int table_info_create(table_info *tableInfo, char *tableName, array_list fieldsName, hmap_t fields) {
+int table_info_create(table_info *tableInfo, char *tableName, arraylist *fieldsName, hmap_t fields) {
 
     tableInfo->tableName = tableName;
     tableInfo->fieldsName = fieldsName;
@@ -139,8 +139,8 @@ int table_info_create(table_info *tableInfo, char *tableName, array_list fieldsN
     tableInfo->recordLen = 0;
     int pos = 0;
 
-    for (int i = 0; i <= fieldsName.size - 1; i++) {
-        char *fieldName = (char *) array_list_get(&fieldsName, i);
+    for (int i = 0; i <= fieldsName->size - 1; i++) {
+        char *fieldName = (char *) arraylist_get(fieldsName, i);
 
         void_ptr *value = (void_ptr) malloc(sizeof(void_ptr));
         hashmap_get(tableInfo->fields, fieldName, value);
