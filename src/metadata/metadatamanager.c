@@ -5,11 +5,11 @@
 #include "metadatamanager.h"
 
 int metadata_manager_create(metadata_manager *metadataManager, const char *file, transaction *tx){
-    metadataManager->tableManager = (table_manager *)malloc(sizeof(table_manager));
-    table_manager_create(metadataManager->tableManager, 1, tx);
+    metadataManager->tableManager =    table_manager_create( 1, tx);
 };
 
-int table_manager_create(table_manager *tableManager, int isNew, transaction *tx) {
+table_manager *table_manager_create(int isNew, transaction *tx) {
+    table_manager *tableManager = (table_manager *)malloc(sizeof(table_manager));
     hmap_t tableDescfields = hashmap_create();
 
     field_info *fieldInfo = (field_info *)malloc(sizeof(field_info));
@@ -56,6 +56,7 @@ int table_manager_create(table_manager *tableManager, int isNew, transaction *tx
     if(isNew){
         table_manager_create_table(tableManager, "fieldcat", fieldsName, fieldDescfields, tx);
     }
+    return tableManager;
 };
 
 /**

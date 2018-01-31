@@ -46,8 +46,15 @@ int file_manager_append(memory_buffer *memoryBuffer, file_manager *fileManager, 
 };
 
 int file_manager_size(file_manager *fileManager, char *fileName) {
+    char *prefixFileName = (char *)malloc(sizeof(MAX_ID_NAME_LENGTH));
+    memset(prefixFileName, 0, sizeof(prefixFileName));
+    strcpy(prefixFileName, fileManager->dbDirectoryName);
+    strcat(prefixFileName, "/");
+    strcat(prefixFileName, fileName);
+
     struct _stat stats;
-    int result = _stat(fileName, &stats);
+    int result = _stat(prefixFileName, &stats);
+//    free(prefixFileName);
     if (result != 0){
         return 0;
     }
