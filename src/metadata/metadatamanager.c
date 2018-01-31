@@ -4,8 +4,8 @@
 
 #include "metadatamanager.h"
 
-int metadata_manager_create(metadata_manager *metadataManager, const char *file, transaction *tx){
-    metadataManager->tableManager =    table_manager_create( 1, tx);
+int metadata_manager_create(metadata_manager *metadataManager, const char *file, transaction *tx, int isNew){
+    metadataManager->tableManager =    table_manager_create( isNew, tx);
 };
 
 table_manager *table_manager_create(int isNew, transaction *tx) {
@@ -20,7 +20,7 @@ table_manager *table_manager_create(int isNew, transaction *tx) {
     field_info_create(fieldInfo, DATA_TYPE_INT, INT_SIZE);
     hashmap_put(tableDescfields, "reclength", fieldInfo);
 
-    array_list fieldsName = array_list_create(DEFAULT_ARRAY_LIST_SIZE);
+    array_list fieldsName = array_list_create(MAX_ID_NAME_LENGTH);
     array_list_add(&fieldsName, "tablename");
     array_list_add(&fieldsName, "reclength");
 
@@ -43,7 +43,7 @@ table_manager *table_manager_create(int isNew, transaction *tx) {
     field_info_create(fieldInfo, DATA_TYPE_INT, INT_SIZE);
     hashmap_put(fieldDescfields, "offset", fieldInfo);
 
-    fieldsName = array_list_create(DEFAULT_ARRAY_LIST_SIZE);
+    fieldsName = array_list_create(MAX_ID_NAME_LENGTH);
     array_list_add(&fieldsName, "tablename");
     array_list_add(&fieldsName, "fieldname");
     array_list_add(&fieldsName, "type");
@@ -71,10 +71,12 @@ table_manager *table_manager_create(int isNew, transaction *tx) {
 int table_manager_create_table(table_manager *tableManager, char *tableName, array_list fieldsName, hmap_t fields, transaction *tx) {
     table_info *tableInfo = (table_info *)malloc(sizeof(table_info));
     table_info_create(tableInfo, tableName, fieldsName, fields);
-    /*增加元数据到table描述表中*/
+
+    /*打开元数据表*/
     record_file *tcatFile = (record_file *) malloc(sizeof(record_file));
     record_file_create(tcatFile, tableManager->tcatInfo, tx);
 
+    /*增加元数据到table描述表中*/
     record_file_insert(tcatFile);
     record_file_set_string(tcatFile, "tablename", tableName);
     record_file_set_int(tcatFile, "reclength", tableInfo->recordLen);

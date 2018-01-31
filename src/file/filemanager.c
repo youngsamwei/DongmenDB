@@ -5,13 +5,15 @@
 #include <sys/stat.h>
 #include <utils.h>
 #include <io.h>
+#include <arraylistb.h>
 #include "filemanager.h"
 
 int file_manager_new(file_manager *fileManager, char *directory, char *dbName) {
-
+    fileManager->isNew = 1;
     /*如果对应的文件夹不存在*/
     int exists = access(dbName, F_OK);
     if ( exists != 0){
+//        fileManager->isNew = 1;
         mkdir(dbName);
     }
 
@@ -20,29 +22,30 @@ int file_manager_new(file_manager *fileManager, char *directory, char *dbName) {
     fileManager->openFiles = hashmap_create();
 };
 
-int file_manager_read(file_manager *fileManager, unsigned char *buffer, disk_block *diskBlock) {
+int file_manager_read(file_manager *fileManager, memory_page *memoryPage, disk_block *diskBlock) {
     void_ptr *pfile = (void_ptr *)malloc(sizeof(void_ptr));
     file_manager_getfile(fileManager, diskBlock->fileName, pfile);
     FILE *fp = *pfile;
-    memset(buffer, 0, sizeof(buffer));
+    memset( memoryPage->contents, 0, sizeof( memoryPage->contents));
     fseek(fp, diskBlock->blkNum * DISK_BOLCK_SIZE, SEEK_SET);
-    fread(buffer, sizeof(char), sizeof(buffer), fp);
+    fread( memoryPage->contents, sizeof(char), sizeof( memoryPage->contents), fp);
 };
 
-int file_manager_write(file_manager *fileManager, unsigned char *buffer, disk_block *diskBlock) {
+int file_manager_write(file_manager *fileManager, memory_page *memoryPage, disk_block *diskBlock) {
     void_ptr *pfile = (void_ptr *)malloc(sizeof(void_ptr));
     file_manager_getfile(fileManager, diskBlock->fileName, pfile);
     FILE *fp = *pfile;
     fseek(fp, diskBlock->blkNum * DISK_BOLCK_SIZE, SEEK_SET);
-    fwrite(buffer, sizeof(char), sizeof(buffer), fp);
+    int size = sizeof( memoryPage->contents);
+    fwrite( memoryPage->contents, sizeof(char), size, fp);
 };
 
-int file_manager_append(memory_buffer *memoryBuffer, file_manager *fileManager, char *fileName, unsigned char *buffer, table_info *tableInfo) {
+int file_manager_append( file_manager *fileManager, memory_buffer *memoryBuffer, char *fileName, table_info *tableInfo) {
     int newBlockNum = file_manager_size(fileManager, fileName);
     disk_block *diskBlock = (disk_block *) malloc(sizeof(disk_block));
     memoryBuffer->block = diskBlock;
     disk_block_new(fileName, newBlockNum, tableInfo, diskBlock);
-    file_manager_write(fileManager, buffer, diskBlock);
+    file_manager_write(fileManager, memoryBuffer->contents, diskBlock);
 };
 
 int file_manager_size(file_manager *fileManager, char *fileName) {
@@ -107,7 +110,6 @@ char *disk_block_get_num_string(disk_block *block){
     itoa(block->blkNum, blockNum, 10);
 
     char *blockName = (char *)malloc(sizeof(MAX_ID_NAME_LENGTH));
-
     memset(blockName, 0, sizeof(blockName));
      strcat(blockName, block->tableInfo->tableName);
      strcat(blockName, blockNum);
@@ -115,21 +117,21 @@ char *disk_block_get_num_string(disk_block *block){
 };
 
 int memory_page_create(memory_page *memoryPage, file_manager *fileManager){
-
+    memset(memoryPage->contents, 0, sizeof(memoryPage->contents));
     memoryPage->fileManager =fileManager;
     return 1;
 };
 
 int memory_page_read(memory_page *memoryPage, disk_block *block) {
-    file_manager_read(memoryPage->fileManager, memoryPage->contents, block);
+    file_manager_read(memoryPage->fileManager, memoryPage, block);
 };
 
 int memory_page_write(memory_page *memoryPage, disk_block *block) {
-    file_manager_write(memoryPage->fileManager, memoryPage->contents, block);
+    file_manager_write(memoryPage->fileManager, memoryPage, block);
 };
 
 int memory_page_append(memory_buffer *memoryBuffer,char *fileName, table_info *tableInfo) {
-    file_manager_append(memoryBuffer, memoryBuffer->contents->fileManager, fileName, memoryBuffer->contents->contents, tableInfo);
+    file_manager_append(memoryBuffer->contents->fileManager, memoryBuffer, fileName, tableInfo);
 };
 
 int memory_page_record_formatter(memory_page *contents, table_info *tableInfo) {
@@ -137,7 +139,7 @@ int memory_page_record_formatter(memory_page *contents, table_info *tableInfo) {
     for (int pos = 0; pos + recsize < DISK_BOLCK_SIZE; pos+=recsize){
         memory_page_setint(contents, pos, RECORD_PAGE_EMPTY);
         for (int i = 0; i <= tableInfo->fieldsName.size - 1; i ++){
-            char *fieldName = (char *)array_list_get(&tableInfo->fieldsName, i);
+            char *fieldName = (char *)arraylist_get(&tableInfo->fieldsName, i);
 
             void_ptr *fielddesc = (void_ptr)malloc(sizeof(void_ptr));
             hashmap_get(tableInfo->fields, fieldName, fielddesc);

@@ -5,15 +5,14 @@
 #ifndef DONGMENDB_TRANSACTION_H
 #define DONGMENDB_TRANSACTION_H
 
-#include <arraylist.h>
+#include <arraylistb.h>
 #include "dongmengdb.h"
 #include "hashmap.h"
-#include "arraylist.h"
 
 #define  END_OF_FILE -1
 
 typedef struct dongmengdb_ dongmengdb;
-typedef struct array_list_ array_list;
+typedef struct arraylist_ arraylist;
 typedef struct recovery_manager_ recovery_manager;
 typedef struct concurrency_manager_ concurrency_manager;
 typedef struct buffer_list_ buffer_list;
@@ -30,7 +29,7 @@ typedef struct transaction_ {
 
 typedef struct buffer_list_{
     hmap_t buffers;
-    array_list pins;
+    arraylist pins;
     buffer_manager * bufferManager;
 }buffer_list;
 
@@ -54,6 +53,7 @@ int transaction_next_txnum(transaction *tx);
 
 int buffer_list_pin(buffer_list *bufferList, disk_block *block);
 int buffer_list_unpin(buffer_list *bufferList, disk_block *block);
+int buffer_list_unpin_all(buffer_list *bufferList);
 memory_buffer * buffer_list_get_buffer(buffer_list *bufferList, disk_block *block) ;
 int buffer_list_pin_new(buffer_list *bufferList, char *fileName, void_ptr *block, table_info *tableInfo);
 

@@ -57,11 +57,11 @@ typedef struct memory_page_{
 
 int file_manager_new(file_manager *fileManager, char *directory, char *dbName);
 
-int file_manager_read(file_manager *fileManager, unsigned char *buffer, disk_block *diskBlock);
+int file_manager_read(file_manager *fileManager, memory_page *memoryPage, disk_block *diskBlock);
 
-int file_manager_write(file_manager *fileManager, unsigned char *buffer, disk_block *diskBlock);
+int file_manager_write(file_manager *fileManager, memory_page *memoryPage, disk_block *diskBlock);
 
-int file_manager_append(memory_buffer *memoryBuffer, file_manager *fileManager,char *fileName, unsigned char *buffer, table_info *tableInfo);
+int file_manager_append( file_manager *fileManager, memory_buffer *memoryBuffer, char *fileName, table_info *tableInfo);
 
 int file_manager_size(file_manager *fileManager, char *fileName);
 

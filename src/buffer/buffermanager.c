@@ -6,7 +6,7 @@
 
 int buffer_manager_create(buffer_manager *bufferManager, int bufferSize, file_manager *fileManager) {
 
-
+    bufferManager->numAvailable = bufferSize;
     for (int i = 0; i <= bufferSize - 1 ; i++){
         bufferManager->bufferPool[i] = (memory_buffer *)malloc(sizeof(memory_buffer));
         memory_buffer_create( bufferManager->bufferPool[i], fileManager);
@@ -86,6 +86,7 @@ int memory_buffer_create(memory_buffer *buffer, file_manager *fileManager) {
     buffer->pins = 0;
     buffer->modifiedBy = -1;
     buffer->logSequenceNumber = -1;
+    buffer->block=NULL;
     memory_page_create(buffer->contents, fileManager);
     return 1;
 };
