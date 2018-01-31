@@ -1,55 +1,99 @@
 //
-// Created by Sam on 2018/1/28.
+// Created by Sam on 2018/1/31.
 //
 
 #include "arraylist.h"
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
+#define INITIAL_ARRAYLIST_SIZE 10
 
-array_list array_list_create(size_t element_size) {
-    array_list al;
-    al.capacity = 10;
-    al.size = 0;
-    al.element_size = element_size;
-    al.data = malloc(al.element_size * al.capacity);
-
-    return al;
-}
-
-void array_list_enlarge(array_list *al) {
-    al->capacity *= 2;
-    al->data = realloc(al->data,
-                       al->capacity * al->element_size);
-}
-
-void array_list_add(array_list *al, void *p) {
-    if (al->size + 1 > al->capacity) {
-        array_list_enlarge(al);
+arraylist *arraylist_create()
+{
+    arraylist *list = malloc(sizeof(arraylist));
+    if (list == NULL) {
+        fprintf(stderr, "Insufficient memory to initialize arraylist.\n");
+        return NULL;
+    }
+    list->capacity = INITIAL_ARRAYLIST_SIZE;
+    list->size = 0;
+    list->data = calloc(list->capacity, sizeof(void *));
+    if (list->data == NULL) {
+        free(list);
+        return NULL;
     }
 
-    memcpy(al->data + al->element_size * al->size,
-           p, al->element_size);
-
-    al->size++;
+    return list;
 }
 
-void *array_list_get(const array_list *al, int idx) {
-    return al->data + idx * al->element_size;
+void arraylist_destroy(arraylist **list)
+{
+    free((*list)->data);
+    free(*list);
+    *list = NULL;
 }
 
-void *array_list_add_all(const array_list *al) {
-    void *arr;
-
-    arr = malloc(al->element_size * al->size);
-    memcpy(arr, al->data, al->element_size * al->size);
-
-    return arr;
-}
-
-void array_list_remove(array_list *al, void *p) {
-    if (al != NULL && al->data != NULL) {
-        free(al->data);
+int arraylist_add(arraylist *list, void *element)
+{
+    if (list->size >= list->capacity) {
+        list->capacity *= 2;
+        list->data = realloc(list->data, sizeof(void *) * list->capacity);
+        if (list->data == NULL) {
+            fprintf(stderr, "Insufficient memory to resize arraylist.\n");
+            return 0;
+        }
     }
+
+    list->data[list->size++] = element;
+
+    return 1;
+}
+
+int arraylist_remove_by_element(arraylist *list, void *element){
+    int i = 0 ;
+    for (; i <=list->size-1;i++){
+        if (list->data[i] == element){
+            break;
+        }
+    }
+    arraylist_remove(list, i);
+
+}
+
+int arraylist_remove(arraylist *list, size_t index)
+{
+    size_t i;
+    if (index >= list->size) return 0;
+
+    for (i = index; i <list->size - 1; i++)
+    {
+        list->data[i] = list->data[i + 1];
+    }
+
+    list->size -= 1;
+
+    return 1;
+}
+
+void *arraylist_get(arraylist *list, size_t index)
+{
+    if (index >= list->size) return NULL;
+
+    return list->data[index];
+}
+
+int arraylist_set(arraylist *list, size_t index, void *value)
+{
+    if (index >= list->size) return 0;
+
+    list->data[index] = value;
+    return 1;
+}
+
+int arraylist_shrink(arraylist *list)
+{
+    if (list == NULL || list->data == NULL) return 0;
+
+    list->capacity = list->size;
+    list->data = realloc(list->data, sizeof(void *) * list->capacity);
+
+    return 1;
 }

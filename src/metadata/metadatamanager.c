@@ -20,9 +20,9 @@ table_manager *table_manager_create(int isNew, transaction *tx) {
     field_info_create(fieldInfo, DATA_TYPE_INT, INT_SIZE);
     hashmap_put(tableDescfields, "reclength", fieldInfo);
 
-    array_list fieldsName = array_list_create(MAX_ID_NAME_LENGTH);
-    array_list_add(&fieldsName, "tablename");
-    array_list_add(&fieldsName, "reclength");
+    arraylist *fieldsName = arraylist_create();
+    arraylist_add(fieldsName, "tablename");
+    arraylist_add(fieldsName, "reclength");
 
     tableManager->tcatInfo = (table_info *)malloc(sizeof(table_info));
     table_info_create(tableManager->tcatInfo, "tablecat", fieldsName, tableDescfields);
@@ -43,12 +43,12 @@ table_manager *table_manager_create(int isNew, transaction *tx) {
     field_info_create(fieldInfo, DATA_TYPE_INT, INT_SIZE);
     hashmap_put(fieldDescfields, "offset", fieldInfo);
 
-    fieldsName = array_list_create(MAX_ID_NAME_LENGTH);
-    array_list_add(&fieldsName, "tablename");
-    array_list_add(&fieldsName, "fieldname");
-    array_list_add(&fieldsName, "type");
-    array_list_add(&fieldsName, "length");
-    array_list_add(&fieldsName, "offset");
+    fieldsName = arraylist_create();
+    arraylist_add(fieldsName, "tablename");
+    arraylist_add(fieldsName, "fieldname");
+    arraylist_add(fieldsName, "type");
+    arraylist_add(fieldsName, "length");
+    arraylist_add(fieldsName, "offset");
 
     tableManager->fcatInfo = (table_info *)malloc(sizeof(table_info));
     table_info_create(tableManager->fcatInfo, "fieldcat", fieldsName, fieldDescfields);
@@ -68,7 +68,7 @@ table_manager *table_manager_create(int isNew, transaction *tx) {
  * @param tx
  * @return
  */
-int table_manager_create_table(table_manager *tableManager, char *tableName, array_list fieldsName, hmap_t fields, transaction *tx) {
+int table_manager_create_table(table_manager *tableManager, char *tableName, arraylist *fieldsName, hmap_t fields, transaction *tx) {
     table_info *tableInfo = (table_info *)malloc(sizeof(table_info));
     table_info_create(tableInfo, tableName, fieldsName, fields);
 

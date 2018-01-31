@@ -1,26 +1,25 @@
 //
-// Created by Sam on 2018/1/28.
+// Created by Sam on 2018/1/31.
 //
 
-#ifndef DONGMENDB_ARRAYLIST_H
-#define DONGMENDB_ARRAYLIST_H
-#pragma once
-
+#ifndef DONGMENDB_ARRAYLISTB_H
+#define DONGMENDB_ARRAYLISTB_H
+#include <stdio.h>
 #include <stdlib.h>
 
-#define DEFAULT_ARRAY_LIST_SIZE 10
+typedef struct arraylist {
+    void **data;
+    size_t capacity;
+    size_t size;
+} arraylist;
 
-typedef struct array_list_ {
-    int size;
-    int capacity;
-    size_t element_size;
-    void *data;
-}array_list;
+arraylist *arraylist_create();
+void arraylist_destroy(arraylist **list);
+int arraylist_add(arraylist *list, void *element);
+int arraylist_remove_by_element(arraylist *list, void *element);
+int arraylist_remove(arraylist *list, size_t index);
+void *arraylist_get(arraylist *list, size_t index);
+int arraylist_set(arraylist *list, size_t index, void *value);
+int arraylist_shrink(arraylist *list);
 
-array_list array_list_create(size_t element_size);
-void array_list_add(array_list *pa, void *p);
-void *array_list_get(const array_list *pa, int idx);
-void array_list_remove(array_list *pa, void *p);
-void *array_list_add_all(const array_list *pa);
-
-#endif //DONGMENDB_ARRAYLIST_H
+#endif //DONGMENDB_ARRAYLISTB_H

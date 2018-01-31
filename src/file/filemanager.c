@@ -5,7 +5,7 @@
 #include <sys/stat.h>
 #include <utils.h>
 #include <io.h>
-#include <arraylistb.h>
+#include <arraylist.h>
 #include "filemanager.h"
 
 int file_manager_new(file_manager *fileManager, char *directory, char *dbName) {
@@ -138,8 +138,8 @@ int memory_page_record_formatter(memory_page *contents, table_info *tableInfo) {
     int recsize = tableInfo->recordLen + INT_SIZE;
     for (int pos = 0; pos + recsize < DISK_BOLCK_SIZE; pos+=recsize){
         memory_page_setint(contents, pos, RECORD_PAGE_EMPTY);
-        for (int i = 0; i <= tableInfo->fieldsName.size - 1; i ++){
-            char *fieldName = (char *)arraylist_get(&tableInfo->fieldsName, i);
+        for (int i = 0; i <= tableInfo->fieldsName->size - 1; i ++){
+            char *fieldName = (char *) arraylist_get(tableInfo->fieldsName, i);
 
             void_ptr *fielddesc = (void_ptr)malloc(sizeof(void_ptr));
             hashmap_get(tableInfo->fields, fieldName, fielddesc);
