@@ -139,9 +139,12 @@ int table_info_create(table_info *tableInfo, char *tableName, arraylist *fieldsN
     tableInfo->recordLen = 0;
     int pos = 0;
 
-    for (int i = 0; i <= fieldsName->size - 1; i++) {
+    int count = fieldsName->size - 1;
+    for (int i = 0; i <= count; i++) {
         char *fieldName = (char *) arraylist_get(fieldsName, i);
-
+        if (fieldName == NULL) {
+            continue;
+        }
         void_ptr *value = (void_ptr) malloc(sizeof(void_ptr));
         hashmap_get(tableInfo->fields, fieldName, value);
         field_info *fieldInfo = *value;
@@ -170,6 +173,7 @@ record_page *record_page_create(transaction *tx, table_info *tableInfo, disk_blo
     recordPage->slotSize = tableInfo->recordLen + INT_SIZE;
     recordPage->currentSlot = -1;
     diskBlock->tableInfo = tableInfo;
+    transaction_pin(tx, diskBlock);
     return recordPage;
 };
 

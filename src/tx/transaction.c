@@ -12,13 +12,14 @@ int transaction_create(transaction *tx, dongmengdb *db) {
     tx->bufferList->pins = arraylist_create();
     tx->bufferList->buffers = hashmap_create();
     tx->db = db;
-    tx->txNum = -1;
+    tx->txNum = transaction_next_txnum(tx);
     tx->recoveryManager = NULL;
     tx->concurrencyManager = NULL;
-    tx->nextTxNum = -1;
+
 };
 
 int transaction_commit(transaction *tx) {
+    buffer_manager_flushall(tx->bufferList->bufferManager, tx->txNum);
     //recovery_manager_commit(tx->recoveryManager);
     //concurrency_manager_release(tx->concurrencyManager);
     buffer_list_unpin_all(tx->bufferList);
@@ -77,32 +78,35 @@ int transaction_size(transaction *tx, char *fileName) {
 int transaction_append(transaction *tx, char *fileName, table_info *tableInfo) {
     //concurrency_manager_xlock
     void_ptr *pblock = (void_ptr) malloc(sizeof(void_ptr));
-    disk_block *block;
     buffer_list_pin_new(tx->bufferList, fileName, pblock, tableInfo);
-    block = *pblock;
+
+    disk_block *block = *pblock;
     transaction_unpin(tx, block);
     return 1;
 }
 
-int transaction_next_txnum(transaction *tx) {
-    return 1;
-};
-
 int buffer_list_pin(buffer_list *bufferList, disk_block *block) {
     char *blockName = disk_block_get_num_string(block);
-    void_ptr *buffer;
-    buffer_manager_pin(bufferList->bufferManager, block, buffer);
+    void_ptr *pbuf = (void_ptr) malloc(sizeof(void_ptr));
+    buffer_manager_pin(bufferList->bufferManager, block, pbuf);
+    memory_buffer *buffer = *pbuf;
+    buffer->block = block;
     hashmap_put(bufferList->buffers, blockName, buffer);
     arraylist_add(bufferList->pins, block);
     return 1;
 };
 
+int transaction_next_txnum(transaction *tx){
+    return next_tx_num++;
+};
+
 int buffer_list_unpin(buffer_list *bufferList, disk_block *block) {
     char *blockName = disk_block_get_num_string(block);
-    void_ptr *buffer = (void_ptr) malloc(sizeof(void_ptr));
-    hashmap_get(bufferList->buffers, blockName, buffer);
-    memory_buffer *buffer1 = *buffer;
-    buffer_manager_unpin(bufferList->bufferManager, buffer1);
+    void_ptr *pbuf = (void_ptr) malloc(sizeof(void_ptr));
+    hashmap_remove(bufferList->buffers, blockName, pbuf);
+    memory_buffer *buffer = *pbuf;
+//    buffer->block = NULL;
+    buffer_manager_unpin(bufferList->bufferManager, buffer);
     arraylist_remove_by_element(bufferList->pins, block);
     return 1;
 };
