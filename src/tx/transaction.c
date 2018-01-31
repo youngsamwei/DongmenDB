@@ -9,7 +9,7 @@ int transaction_create(transaction *tx, dongmengdb *db) {
 
     tx->bufferList = (buffer_list *) malloc(sizeof(buffer_list));
     tx->bufferList->bufferManager = db->bufferManager;
-    tx->bufferList->pins = array_list_create(DEFAULT_ARRAY_LIST_SIZE);
+    tx->bufferList->pins = arraylist_create(sizeof(void_ptr));
     tx->bufferList->buffers = hashmap_create();
     tx->db = db;
     tx->txNum = -1;
@@ -18,7 +18,10 @@ int transaction_create(transaction *tx, dongmengdb *db) {
     tx->nextTxNum = -1;
 };
 
-int transaction_commit(transaction *transaction) {
+int transaction_commit(transaction *tx) {
+    //recovery_manager_commit(tx->recoveryManager);
+    //concurrency_manager_release(tx->concurrencyManager);
+    buffer_list_unpin_all(tx->bufferList);
 
 }
 
@@ -91,6 +94,7 @@ int buffer_list_pin(buffer_list *bufferList, disk_block *block) {
     buffer_manager_pin(bufferList->bufferManager, block, buffer);
     hashmap_put(bufferList->buffers, blockName, buffer);
     array_list_add(&bufferList->pins, block);
+    void_ptr *ptr = array_list_get(&bufferList->pins, bufferList->pins.size - 1);
     return 1;
 };
 
@@ -102,6 +106,22 @@ int buffer_list_unpin(buffer_list *bufferList, disk_block *block) {
     buffer_manager_unpin(bufferList->bufferManager, buffer1);
     array_list_remove(&bufferList->pins, block);
     return 1;
+};
+
+int buffer_list_unpin_all(buffer_list *bufferList){
+    for (int i =0; i<= bufferList->pins.size;i++){
+        void_ptr *ptr = array_list_get(&bufferList->pins, i);
+        disk_block *diskBlock = *ptr;
+
+        char *blockName = disk_block_get_num_string(diskBlock);
+        void_ptr *pbuf = (void_ptr) malloc(sizeof(void_ptr));
+        hashmap_get(bufferList->buffers, blockName, pbuf);
+        memory_buffer *buffer = *pbuf;
+
+        buffer_manager_unpin(bufferList->bufferManager, buffer);
+    }
+//    array_list_clear(bufferList->pins);
+//    hashmap_clear(bufferList->buffers);
 };
 
 memory_buffer *buffer_list_get_buffer(buffer_list *bufferList, disk_block *block) {
@@ -125,5 +145,6 @@ int buffer_list_pin_new(buffer_list *bufferList, char *fileName, void_ptr *pbloc
     char *blockName = disk_block_get_num_string(diskBlock);
     hashmap_put(bufferList->buffers, blockName, buffer);
     array_list_add(&bufferList->pins, diskBlock);
+    void_ptr *ptr = array_list_get(&bufferList->pins, bufferList->pins.size - 1);
     return 1;
 };

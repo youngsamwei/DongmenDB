@@ -22,7 +22,9 @@ int dongmengdb_open(char *dbName, dongmengdb *db) {
 
     /*初始化元数据管理*/
     db->metadataManager = (metadata_manager *)malloc(sizeof(metadata_manager));
-    metadata_manager_create(db->metadataManager, dbName, tx);
+    metadata_manager_create(db->metadataManager, dbName, tx, db->fileManager->isNew);
+
+    transaction_commit(tx);
     return DONGMENGDB_OK;
 };
 
