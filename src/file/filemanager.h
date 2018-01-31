@@ -67,7 +67,7 @@ int file_manager_size(file_manager *fileManager, char *fileName);
 
 int file_manager_isnew(file_manager *fileManager);
 
-int file_manager_getfile(file_manager *fileManager, char *fileName, FILE *fp);
+int file_manager_getfile(file_manager *fileManager, char *fileName, void_ptr *fp);
 
 int disk_block_new(char *fileName, int blockNum, table_info *tableInfo, disk_block *diskBlock);
 

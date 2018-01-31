@@ -43,7 +43,7 @@ typedef struct dongmengdb_{
 #define DONGMENGDB_ECORRUPT (4)
 #define DONGMENGDB_ECONSTRAINT (5)
 #define DONGMENGDB_EMISMATCH (6)
-#define DONGMENGDB_EIO (7)
+#define DONGMENGDB_ERROR_IO (7)
 #define DONGMENGDB_EMISUSE (8)
 
 #define DONGMENGDB_ROW (100)

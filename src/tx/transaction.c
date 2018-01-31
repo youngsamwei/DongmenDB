@@ -12,6 +12,10 @@ int transaction_create(transaction *tx, dongmengdb *db) {
     tx->bufferList->pins = array_list_create(DEFAULT_ARRAY_LIST_SIZE);
     tx->bufferList->buffers = hashmap_create();
     tx->db = db;
+    tx->txNum = -1;
+    tx->recoveryManager = NULL;
+    tx->concurrencyManager = NULL;
+    tx->nextTxNum = -1;
 };
 
 int transaction_commit(transaction *transaction) {
@@ -36,30 +40,29 @@ int transaction_unpin(transaction *transaction, disk_block *block) {
 
 int transaction_getint(transaction *transaction, disk_block *block, int offset) {
     //concurrency_manager_slock(transaction->concurrencyManager, block);
-    memory_buffer *buffer;
-    buffer_list_get_buffer(transaction->bufferList, block, buffer);
+    memory_buffer *buffer = buffer_list_get_buffer(transaction->bufferList, block);
     return memory_buffer_getint(buffer, offset);
 };
 
 int transaction_setint(transaction *transaction, disk_block *block, int offset, int value) {
     //concurrency_manager_xlock(transaction->concurrencyManager, block);
-    memory_buffer *buffer;
-    buffer_list_get_buffer(transaction->bufferList, block, buffer);
+    memory_buffer *buffer =
+            buffer_list_get_buffer(transaction->bufferList, block);
     int lsn = 0;//recovery_manager_setint(transaction->recoveryManager, buffer, offset, value);
     return memory_buffer_setint(buffer, offset, value, transaction->txNum, lsn);
 };
 
 int transaction_getstring(transaction *transaction, disk_block *block, int offset, char *value) {
     //concurrency_manager_slock(transaction->concurrencyManager, block);
-    memory_buffer *buffer;
-    buffer_list_get_buffer(transaction->bufferList, block, buffer);
+    memory_buffer *buffer =
+            buffer_list_get_buffer(transaction->bufferList, block);
     return memory_buffer_getstring(buffer, offset, value);
 };
 
 int transaction_setstring(transaction *transaction, disk_block *block, int offset, char *value) {
     //concurrency_manager_xlock(transaction->concurrencyManager, block);
-    memory_buffer *buffer;
-    buffer_list_get_buffer(transaction->bufferList, block, buffer);
+    memory_buffer *buffer =
+            buffer_list_get_buffer(transaction->bufferList, block);
     int lsn = 0;//recovery_manager_setstring(transaction->recoveryManager, buffer, offset, value);
     return memory_buffer_setstring(buffer, offset, value, transaction->txNum, lsn);
 };
@@ -70,8 +73,10 @@ int transaction_size(transaction *tx, char *fileName) {
 
 int transaction_append(transaction *tx, char *fileName, table_info *tableInfo) {
     //concurrency_manager_xlock
+    void_ptr *pblock = (void_ptr) malloc(sizeof(void_ptr));
     disk_block *block;
-    buffer_list_pin_new(tx->bufferList, fileName, block, tableInfo);
+    buffer_list_pin_new(tx->bufferList, fileName, pblock, tableInfo);
+    block = *pblock;
     transaction_unpin(tx, block);
     return 1;
 }
@@ -91,34 +96,34 @@ int buffer_list_pin(buffer_list *bufferList, disk_block *block) {
 
 int buffer_list_unpin(buffer_list *bufferList, disk_block *block) {
     char *blockName = disk_block_get_num_string(block);
-    void_ptr *buffer;
+    void_ptr *buffer = (void_ptr) malloc(sizeof(void_ptr));
     hashmap_get(bufferList->buffers, blockName, buffer);
-    memory_buffer *buffer1 = (memory_buffer *) buffer;
+    memory_buffer *buffer1 = *buffer;
     buffer_manager_unpin(bufferList->bufferManager, buffer1);
     array_list_remove(&bufferList->pins, block);
     return 1;
 };
 
-int buffer_list_get_buffer(buffer_list *bufferList, disk_block *block, memory_buffer *buffer) {
+memory_buffer *buffer_list_get_buffer(buffer_list *bufferList, disk_block *block) {
     char *blockName = disk_block_get_num_string(block);
-    void_ptr *buffer1;
+    void_ptr *buffer1 = (void_ptr) malloc(sizeof(void_ptr));
     hashmap_get(bufferList->buffers, blockName, buffer1);
-    buffer = (memory_buffer *) buffer1;
-    return 1;
+    return *buffer1;
 };
 
-int buffer_list_pin_new(buffer_list *bufferList, char *fileName, disk_block *block, table_info *tableInfo) {
-    void_ptr *pbuffer;
+int buffer_list_pin_new(buffer_list *bufferList, char *fileName, void_ptr *pblock, table_info *tableInfo) {
+    void_ptr *pbuffer = (void_ptr) malloc(sizeof(void_ptr));
     int r = buffer_manager_pinnew(bufferList->bufferManager, fileName, pbuffer, tableInfo);
     memory_buffer *buffer;
-    if (r){
-        buffer  = *pbuffer;
+    if (r) {
+        buffer = *pbuffer;
     }
 
-    block = buffer->block;
+    disk_block *diskBlock = buffer->block;
+    *pblock = buffer->block;
 
-    char *blockName = disk_block_get_num_string(block);
+    char *blockName = disk_block_get_num_string(diskBlock);
     hashmap_put(bufferList->buffers, blockName, buffer);
-    array_list_add(&bufferList->pins, block);
+    array_list_add(&bufferList->pins, diskBlock);
     return 1;
 };

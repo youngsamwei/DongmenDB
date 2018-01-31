@@ -194,7 +194,7 @@ int dongmengdb_shell_handle_sql(dongmengdb_shell_handle_sql_t *ctx, const char *
         case DONGMENGDB_EMISUSE:
             printf("ERROR: API used incorrectly.\n");
             break;
-        case DONGMENGDB_EIO:
+        case DONGMENGDB_ERROR_IO:
             printf("ERROR: An I/O error has occurred when accessing the file.\n");
             break;
         }
