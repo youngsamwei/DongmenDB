@@ -111,9 +111,9 @@ int record_file_append_block(record_file *recordFile);
 
 int record_file_record_formatter(record_file *recordFile, memory_page *memoryPage);
 
-int field_info_create(field_info *fieldInfo, DATA_TYPE type, int lenght);
+field_info *field_info_create( DATA_TYPE type, int length);
 
-int table_info_create(table_info *tableInfo, char *tableName, arraylist *fieldsName, hmap_t fields);
+table_info *table_info_create(char *tableName, arraylist *fieldsName, hmap_t fields);
 
 int table_info_offset(table_info *tableInfo, char *fieldName);
 

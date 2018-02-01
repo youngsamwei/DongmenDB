@@ -15,11 +15,11 @@ int buffer_manager_create(buffer_manager *bufferManager, int bufferSize, file_ma
 
 int buffer_manager_pin(buffer_manager *bufferManager, disk_block *block, void_ptr *buffer) {
     buffer_manager_find_existing(bufferManager, block, buffer);
-    memory_buffer *buf;
-    if (buffer == NULL) {
+    memory_buffer *buf = *buffer;
+    if (*buffer == NULL) {
         buffer_manager_find_choose_unpinned_buffer(bufferManager, buffer);
-        if (buffer == NULL) {
-            return 1;
+        if (*buffer == NULL) {
+            return -1;
         }
         buf = *buffer;
         memory_buffer_assignto(buf, block);
@@ -56,14 +56,17 @@ int buffer_manager_flushall(buffer_manager *bufferManager, int txnum) {
     }
 }
 
+/*这里的查找算法效率低，可以修改为效率高的算法.*/
 int buffer_manager_find_existing(buffer_manager *bufferManager, disk_block *block, void_ptr *buffer) {
     for (int i = 0; i <= BUFFER_MAX_SIZE - 1; i++) {
-        *buffer = (void_ptr) bufferManager->bufferPool[i];
-        disk_block *b = ((memory_buffer *)buffer)->block;
-        if (b != NULL && b == block) {
+        memory_buffer *buf = bufferManager->bufferPool[i];
+        disk_block *b = buf->block;
+        if (b != NULL && stricmp(b->fileName, block->fileName) && (b->blkNum == block->blkNum)) {
+            *buffer = buf;
             return 0;
         }
     }
+    *buffer = NULL;
     return 1;
 }
 
@@ -121,6 +124,8 @@ int memory_buffer_flush(memory_buffer *buffer) {
         memory_page_write(buffer->contents, buffer->block);
         buffer->modifiedBy = -1;
     }
+    /*写入磁盘后，重新初始化*/
+    memset(buffer->contents->contents, 0, sizeof(buffer->contents->contents));
 };
 
 int memory_buffer_pin(memory_buffer *buffer) {

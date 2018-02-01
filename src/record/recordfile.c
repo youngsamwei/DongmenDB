@@ -39,7 +39,7 @@ int record_file_next(record_file *recordFile) {
             return 1;
         }
         if (record_file_atlast(recordFile)) {
-            return 1;
+            return 0;
         }
         record_file_moveto(recordFile, recordFile->currentBlkNum + 1);
     }
@@ -71,6 +71,7 @@ int record_file_delete(record_file *recordFile) {
 
 int record_file_insert(record_file *recordFile) {
     while (!record_page_insert(recordFile->recordPage)) {
+        /*逻辑问题*/
         if (record_file_atlast_block(recordFile)) {
             record_file_append_block(recordFile);
         }
@@ -105,8 +106,9 @@ int record_file_moveto(record_file *recordFile, int currentBlkNum) {
 }
 
 int record_file_atlast_block(record_file *recordFile) {
-    return recordFile->currentBlkNum == transaction_size(recordFile->tx, recordFile->fileName) - 1;
-
+    int size = transaction_size(recordFile->tx, recordFile->fileName) - 1;
+    int result = recordFile->currentBlkNum == size;
+    return result;
 }
 
 int record_file_append_block(record_file *recordFile) {
@@ -123,15 +125,15 @@ int record_file_record_formatter(record_file *recordFile, memory_page *memoryPag
 
 }
 
-int field_info_create(field_info *fieldInfo, DATA_TYPE type, int length) {
-
+field_info * field_info_create(DATA_TYPE type, int length) {
+    field_info *fieldInfo = (field_info *)malloc(sizeof(field_info));
     fieldInfo->type = type;
     fieldInfo->length = length;
-    return 1;
+    return fieldInfo;
 };
 
-int table_info_create(table_info *tableInfo, char *tableName, arraylist *fieldsName, hmap_t fields) {
-
+table_info * table_info_create(char *tableName, arraylist *fieldsName, hmap_t fields) {
+    table_info *tableInfo = (table_info *)malloc(sizeof(table_info));
     tableInfo->tableName = tableName;
     tableInfo->fieldsName = fieldsName;
     tableInfo->fields = fields;
@@ -142,9 +144,7 @@ int table_info_create(table_info *tableInfo, char *tableName, arraylist *fieldsN
     int count = fieldsName->size - 1;
     for (int i = 0; i <= count; i++) {
         char *fieldName = (char *) arraylist_get(fieldsName, i);
-        if (fieldName == NULL) {
-            continue;
-        }
+
         void_ptr *value = (void_ptr) malloc(sizeof(void_ptr));
         hashmap_get(tableInfo->fields, fieldName, value);
         field_info *fieldInfo = *value;
@@ -156,6 +156,7 @@ int table_info_create(table_info *tableInfo, char *tableName, arraylist *fieldsN
         pos += fieldInfo->length;
     }
     tableInfo->recordLen = pos;
+    return tableInfo;
 };
 
 int table_info_offset(table_info *tableInfo, char *fieldName){

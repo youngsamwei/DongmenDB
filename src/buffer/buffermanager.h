@@ -18,7 +18,7 @@
 /**
  * 缓冲区大小，1000块
  */
-#define BUFFER_MAX_SIZE 1000
+#define BUFFER_MAX_SIZE 5
 
 typedef void* void_ptr;
 
