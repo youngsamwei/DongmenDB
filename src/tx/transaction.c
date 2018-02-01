@@ -5,8 +5,8 @@
 #include <malloc.h>
 #include "transaction.h"
 
-int transaction_create(transaction *tx, dongmengdb *db) {
-
+transaction * transaction_create( dongmengdb *db) {
+    transaction *tx = (transaction *) malloc(sizeof(transaction));
     tx->bufferList = (buffer_list *) malloc(sizeof(buffer_list));
     tx->bufferList->bufferManager = db->bufferManager;
     tx->bufferList->pins = arraylist_create();
@@ -105,7 +105,7 @@ int buffer_list_unpin(buffer_list *bufferList, disk_block *block) {
     void_ptr *pbuf = (void_ptr) malloc(sizeof(void_ptr));
     hashmap_remove(bufferList->buffers, blockName, pbuf);
     memory_buffer *buffer = *pbuf;
-//    buffer->block = NULL;
+    //buffer->block = NULL;
     buffer_manager_unpin(bufferList->bufferManager, buffer);
     arraylist_remove_by_element(bufferList->pins, block);
     return 1;

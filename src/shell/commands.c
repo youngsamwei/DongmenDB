@@ -23,6 +23,7 @@ struct handler_entry handlers[] =
     HANDLER_ENTRY (explain,   ".explain on|off    Turn output mode suitable for EXPLAIN on or off."),
     HANDLER_ENTRY (help,      ".help              Show this message"),
     HANDLER_ENTRY (exit,      ".exit              exit shell"),
+    HANDLER_ENTRY (desc,      ".desc TABLENAME    desc table"),
 
     NULL_ENTRY
 };
@@ -222,7 +223,7 @@ int dongmengdb_shell_handle_cmd_open(dongmengdb_shell_handle_sql_t *ctx, struct 
     	usage_error(e, "Invalid arguments");
     	return 1;
     }
-    char *token = (char *)tokens[1];
+    char *token = strdup(tokens[1]);
     rc = dongmengdb_open(token, newdb);
 
 	if (rc != DONGMENGDB_OK)
@@ -401,4 +402,12 @@ int dongmengdb_shell_handle_cmd_exit(dongmengdb_shell_handle_sql_t *ctx, struct 
     }
 
     exit(0);
+};
+
+int dongmengdb_shell_handle_cmd_desc(dongmengdb_shell_handle_sql_t *ctx, struct handler_entry *e, const char **tokens, int ntokens){
+    if (ctx->db){
+        char *token = (char *)tokens[1];
+        table_info *tableInfo = table_manager_get_tableinfo(ctx->db->metadataManager->tableManager,token, ctx->db->tx);
+    }
+    return DONGMENGDB_OK;
 };

@@ -23,6 +23,7 @@ typedef struct dongmengdb_stmt dongmengdb_stmt;
 typedef struct buffer_manager_ buffer_manager;
 typedef struct file_manager_ file_manager;
 typedef struct metadata_manager_ metadata_manager;
+typedef struct transaction_ transaction;
 
 typedef struct dongmengdb_{
     char *dbName;
@@ -32,7 +33,7 @@ typedef struct dongmengdb_{
     log_manager *logManager;
     security_manager *securityManager;
     integrity_manager *integrityManager;
-
+    transaction *tx;
 } dongmengdb;
 
 /* API return codes */

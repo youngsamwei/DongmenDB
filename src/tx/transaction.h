@@ -33,7 +33,7 @@ typedef struct buffer_list_{
     buffer_manager * bufferManager;
 }buffer_list;
 
-int transaction_create(transaction *tx, dongmengdb *db);
+transaction * transaction_create( dongmengdb *db);
 int transaction_commit(transaction *transaction);
 int transaction_rollback(transaction *transaction);
 int transaction_recover(transaction *transaction);

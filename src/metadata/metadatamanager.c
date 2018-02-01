@@ -12,31 +12,30 @@ table_manager *table_manager_create(int isNew, transaction *tx) {
     table_manager *tableManager = (table_manager *)malloc(sizeof(table_manager));
     hmap_t tableDescfields = hashmap_create();
 
-    field_info *fieldInfo = (field_info *)malloc(sizeof(field_info));
-    field_info_create(fieldInfo, DATA_TYPE_CHAR, MAX_ID_NAME_LENGTH);
+
+    field_info *fieldInfo = field_info_create(DATA_TYPE_CHAR, MAX_ID_NAME_LENGTH);
     hashmap_put(tableDescfields, "tablename", fieldInfo);
 
-    fieldInfo = (field_info *)malloc(sizeof(field_info));
-    field_info_create(fieldInfo, DATA_TYPE_INT, INT_SIZE);
+
+    fieldInfo =  field_info_create(DATA_TYPE_INT, INT_SIZE);
     hashmap_put(tableDescfields, "reclength", fieldInfo);
 
     arraylist *tableMetaFieldsName = arraylist_create();
     arraylist_add(tableMetaFieldsName, "tablename");
     arraylist_add(tableMetaFieldsName, "reclength");
 
-    tableManager->tcatInfo = (table_info *)malloc(sizeof(table_info));
-    table_info_create(tableManager->tcatInfo, "tablecat", tableMetaFieldsName, tableDescfields);
+    tableManager->tcatInfo =   table_info_create("tablecat", tableMetaFieldsName, tableDescfields);
 
     hmap_t fieldDescfields = hashmap_create();
-    field_info_create(fieldInfo, DATA_TYPE_CHAR, MAX_ID_NAME_LENGTH);
+    fieldInfo =  field_info_create( DATA_TYPE_CHAR, MAX_ID_NAME_LENGTH);
     hashmap_put(fieldDescfields, "tablename", fieldInfo);
-    field_info_create(fieldInfo, DATA_TYPE_CHAR, MAX_ID_NAME_LENGTH);
+    fieldInfo =  field_info_create( DATA_TYPE_CHAR, MAX_ID_NAME_LENGTH);
     hashmap_put(fieldDescfields, "fieldname", fieldInfo);
-    field_info_create(fieldInfo, DATA_TYPE_INT, INT_SIZE);
+    fieldInfo =  field_info_create( DATA_TYPE_INT, INT_SIZE);
     hashmap_put(fieldDescfields, "type", fieldInfo);
-    field_info_create(fieldInfo, DATA_TYPE_INT, INT_SIZE);
+    fieldInfo =  field_info_create( DATA_TYPE_INT, INT_SIZE);
     hashmap_put(fieldDescfields, "length", fieldInfo);
-    field_info_create(fieldInfo, DATA_TYPE_INT, INT_SIZE);
+    fieldInfo =  field_info_create( DATA_TYPE_INT, INT_SIZE);
     hashmap_put(fieldDescfields, "offset", fieldInfo);
 
     arraylist *fieldMetaFieldsName = arraylist_create();
@@ -46,8 +45,8 @@ table_manager *table_manager_create(int isNew, transaction *tx) {
     arraylist_add(fieldMetaFieldsName, "length");
     arraylist_add(fieldMetaFieldsName, "offset");
 
-    tableManager->fcatInfo = (table_info *)malloc(sizeof(table_info));
-    table_info_create(tableManager->fcatInfo, "fieldcat", fieldMetaFieldsName, fieldDescfields);
+    tableManager->fcatInfo =
+    table_info_create( "fieldcat", fieldMetaFieldsName, fieldDescfields);
 
     if(isNew){
         table_manager_create_table(tableManager, "tablecat", tableMetaFieldsName, tableDescfields, tx);
@@ -66,8 +65,7 @@ table_manager *table_manager_create(int isNew, transaction *tx) {
  * @return
  */
 int table_manager_create_table(table_manager *tableManager, char *tableName, arraylist *fieldsName, hmap_t fields, transaction *tx) {
-    table_info *tableInfo = (table_info *)malloc(sizeof(table_info));
-    table_info_create(tableInfo, tableName, fieldsName, fields);
+    table_info *tableInfo =    table_info_create( tableName, fieldsName, fields);
 
     /*打开元数据表*/
     record_file *tcatFile = (record_file *) malloc(sizeof(record_file));
@@ -105,6 +103,40 @@ int table_manager_create_table(table_manager *tableManager, char *tableName, arr
     record_file_close(fcatFile);
 };
 
-int table_manager_get_tableinfo(table_manager *tableManager, char *tableName, transaction tx, hmap_t fields) {
+table_info *table_manager_get_tableinfo(table_manager *tableManager, char *tableName, transaction *tx) {
+    record_file *tcatFile = (record_file *) malloc(sizeof(record_file));
+    record_file_create(tcatFile, tableManager->tcatInfo, tx);
 
+    int recLen = -1;
+//    while(record_file_next(tcatFile)){
+//        char *name = (char *)malloc(sizeof(MAX_ID_NAME_LENGTH));
+//        record_file_get_string(tcatFile, "tablename", name);
+//        if (stricmp(tableName, name) == 0){
+//            recLen = record_file_get_int(tcatFile, "reclength");
+//        }
+//    }
+//    record_file_close(tcatFile);
+
+    record_file *fcatFile = (record_file *) malloc(sizeof(record_file));
+    record_file_create(fcatFile, tableManager->fcatInfo, tx);
+    arraylist *fieldsName = arraylist_create();
+    hmap_t  *fields = hashmap_create();
+    while(record_file_next(fcatFile)){
+        char *name = (char *)malloc(MAX_ID_NAME_LENGTH);
+        memset(name, 0, MAX_ID_NAME_LENGTH);
+        record_file_get_string(fcatFile, "tablename", name);
+        if (stricmp(tableName, name) == 0){
+            char *fieldName = (char *)malloc(MAX_ID_NAME_LENGTH);
+            record_file_get_string(fcatFile, "fieldname", fieldName);
+            int type = record_file_get_int(fcatFile, "type");
+            int length = record_file_get_int(fcatFile, "length");
+            int offset = record_file_get_int(fcatFile, "offset");
+            recLen = record_file_get_int(tcatFile, "reclength");
+            field_info *fi = field_info_create(type, length);
+            hashmap_put(fields, fieldName, fi);
+            arraylist_add(fieldsName, fieldName);
+        }
+    }
+    record_file_close(fcatFile);
+    return table_info_create(tableName, fieldsName, fields);
 };

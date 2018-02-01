@@ -17,8 +17,8 @@ int dongmengdb_open(char *dbName, dongmengdb *db) {
     buffer_manager_create(db->bufferManager, BUFFER_MAX_SIZE, db->fileManager);
 
     /*初始化事务*/
-    transaction *tx = (transaction *) malloc(sizeof(transaction));
-    transaction_create(tx, db);
+    transaction *tx =    transaction_create( db);
+    db->tx = tx;
 
     /*初始化元数据管理*/
     db->metadataManager = (metadata_manager *)malloc(sizeof(metadata_manager));
