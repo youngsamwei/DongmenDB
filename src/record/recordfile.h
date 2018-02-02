@@ -114,6 +114,7 @@ int record_file_record_formatter(record_file *recordFile, memory_page *memoryPag
 field_info *field_info_create( DATA_TYPE type, int length);
 
 table_info *table_info_create(char *tableName, arraylist *fieldsName, hmap_t fields);
+int table_info_free(table_info *tableInfo);
 
 int table_info_offset(table_info *tableInfo, char *fieldName);
 

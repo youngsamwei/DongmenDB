@@ -13,8 +13,7 @@ int record_file_create(record_file *recordFile, table_info *tableInfo,
     recordFile->fileName = NULL;
     recordFile->currentBlkNum = -1;
 
-    char *fileName = (char *) malloc(MAX_ID_NAME_LENGTH);
-    memset(fileName, 0, sizeof(fileName));
+    char *fileName = (char *) calloc(MAX_ID_NAME_LENGTH, 1);
     strcpy(fileName, tableInfo->tableName);
     strcat(fileName, RECORD_FILE_EXT);
 
@@ -27,6 +26,7 @@ int record_file_create(record_file *recordFile, table_info *tableInfo,
 
 int record_file_close(record_file *recordFile) {
     record_page_close(recordFile->recordPage);
+    free(recordFile->fileName);
 }
 
 int record_file_before_first(record_file *recordFile) {
@@ -159,6 +159,13 @@ table_info * table_info_create(char *tableName, arraylist *fieldsName, hmap_t fi
     return tableInfo;
 };
 
+int table_info_free(table_info *tableInfo){
+    /*free hashmap offsets*/
+    // free hashmap fields
+    // free arraylist fieldsName
+    return DONGMENGDB_OK;
+}
+
 int table_info_offset(table_info *tableInfo, char *fieldName){
     void_ptr *ptr = (void_ptr)malloc(sizeof(void_ptr));
     hashmap_get(tableInfo->offsets, fieldName, ptr);
@@ -245,8 +252,8 @@ int record_page_current_pos(record_page *recordPage) {
 };
 
 int record_page_fieldpos(record_page *recordPage, char *fieldName) {
-    int offset = table_info_offset( recordPage->tableInfo, fieldName);
-    offset = INT_SIZE + offset;
+
+    int offset = INT_SIZE + table_info_offset(recordPage->tableInfo, fieldName);
 
     return recordPage->currentSlot * recordPage->slotSize + offset;
 };
