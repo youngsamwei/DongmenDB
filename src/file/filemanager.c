@@ -23,7 +23,7 @@ int file_manager_new(file_manager *fileManager, char *directory, char *dbName) {
 };
 
 int file_manager_read(file_manager *fileManager, memory_page *memoryPage, disk_block *diskBlock) {
-    void_ptr *pfile = (void_ptr *) malloc(sizeof(void_ptr));
+    void_ptr *pfile = (void_ptr *) malloc(sizeof(void_ptr *));
     file_manager_getfile(fileManager, diskBlock->fileName, pfile);
     FILE *fp = *pfile;
     //memset(memoryPage->contents, 0, sizeof(memoryPage->contents));
@@ -32,7 +32,7 @@ int file_manager_read(file_manager *fileManager, memory_page *memoryPage, disk_b
 };
 
 int file_manager_write(file_manager *fileManager, memory_page *memoryPage, disk_block *diskBlock) {
-    void_ptr *pfile = (void_ptr *) malloc(sizeof(void_ptr));
+    void_ptr *pfile = (void_ptr *) calloc(sizeof(void_ptr *), 1);
     file_manager_getfile(fileManager, diskBlock->fileName, pfile);
     FILE *fp = *pfile;
     fseek(fp, diskBlock->blkNum * DISK_BOLCK_SIZE, SEEK_SET);
@@ -42,14 +42,14 @@ int file_manager_write(file_manager *fileManager, memory_page *memoryPage, disk_
 
 int file_manager_append(file_manager *fileManager, memory_buffer *memoryBuffer, char *fileName, table_info *tableInfo) {
     int newBlockNum = file_manager_size(fileManager, fileName);
-    disk_block *diskBlock = (disk_block *) malloc(sizeof(disk_block));
+    disk_block *diskBlock = (disk_block *) calloc(sizeof(disk_block), 1);
     memoryBuffer->block = diskBlock;
     disk_block_new(fileName, newBlockNum, tableInfo, diskBlock);
     file_manager_write(fileManager, memoryBuffer->contents, diskBlock);
 };
 
 int file_manager_size(file_manager *fileManager, char *fileName) {
-    void_ptr *pfile = (void_ptr *)malloc(sizeof(void_ptr));
+    void_ptr *pfile = (void_ptr)malloc(sizeof(void_ptr));
     file_manager_getfile(fileManager, fileName, pfile);
 
     FILE *file = *pfile;
@@ -67,7 +67,7 @@ int file_manager_getfile(file_manager *fileManager, char *fileName, void_ptr *fi
     int found = hashmap_get(fileManager->openFiles, fileName, file);
 
     if (found == HMAP_E_NOTFOUND) {
-        char *fname = (char *) calloc(MAX_ID_NAME_LENGTH, 1);
+        char *fname = new_id_name();
         strcat(fname, fileManager->dbDirectoryName);
         strcat(fname, "/");
         strcat(fname, fileName);
@@ -99,10 +99,10 @@ int disk_block_new(char *fileName, int blockNum, table_info *tableInfo, disk_blo
 };
 
 char *disk_block_get_num_string(disk_block *block) {
-    char *blockNum = (char *) calloc(MAX_ID_NAME_LENGTH, 1);
+    char *blockNum = new_id_name();
     itoa(block->blkNum, blockNum, 10);
 
-    char *blockName = (char *) calloc(MAX_ID_NAME_LENGTH, 1);
+    char *blockName = new_id_name();
     strcat(blockName, block->tableInfo->tableName);
     strcat(blockName, blockNum);
     return blockName;
@@ -135,7 +135,7 @@ int memory_page_record_formatter(memory_page *contents, table_info *tableInfo) {
         for (int i = 0; i <= count; i++) {
             char *fieldName = (char *) arraylist_get(tableInfo->fieldsName, i);
 
-            void_ptr *fielddesc = (void_ptr) malloc(sizeof(void_ptr));
+            void_ptr *fielddesc = (void_ptr *) malloc(sizeof(void_ptr *));
             hashmap_get(tableInfo->fields, fieldName, fielddesc);
             field_info *fieldInfo = *fielddesc;
 

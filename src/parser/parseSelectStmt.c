@@ -6,6 +6,7 @@
 #include <malloc.h>
 #include <mem.h>
 #include <stdio.h>
+#include <utils.h>
 #include "parseSelectStmt.h"
 #include "parseExpressionRD.h"
 
@@ -150,7 +151,8 @@ TablesExpr *parseTablesExpr(ParserT *parser) {
 
 sql_stmt_create *parse_sql_stmt_create(ParserT *parser) {
     char *tableName = NULL;
-    arraylist *columns = arraylist_create();
+    hmap_t columns = hashmap_create();
+    arraylist *fieldsName = arraylist_create();
     if (!matchToken(parser, TOKEN_RESERVED_WORD, "create")) {
         return NULL;
     }
@@ -160,7 +162,7 @@ sql_stmt_create *parse_sql_stmt_create(ParserT *parser) {
     }
     TokenT *token = parseNextToken(parser);
     if (token->type == TOKEN_WORD) {
-        tableName = (char *) calloc(MAX_ID_NAME_LENGTH, 1);
+        tableName = new_id_name();
         strcpy(tableName, token->text);
     } else {
         strcpy(parser->parserMessage, "invalid sql: missing table name.");
@@ -174,11 +176,12 @@ sql_stmt_create *parse_sql_stmt_create(ParserT *parser) {
     token = parseNextToken(parser);
 
     while (token->type != TOKEN_CLOSE_PAREN) {
-        ColumnsExpr *column = parse_sql_stmt_columnexpr(parser);
-        if (column == NULL) {
+        field_info *field = parse_sql_stmt_columnexpr(parser);
+        if (field == NULL) {
             break;
         } else {
-            arraylist_add(columns, column);
+            hashmap_put(columns, field->fieldName, field);
+            arraylist_add(fieldsName, field->fieldName);
         }
         token = parseNextToken(parser);
         if (token->type==TOKEN_COMMA){
@@ -192,16 +195,17 @@ sql_stmt_create *parse_sql_stmt_create(ParserT *parser) {
         strcpy(parser->parserMessage, "invalid sql: missing ).");
         return NULL;
     }
-    return sql_stmt_create_create(tableName, columns, NULL);
+
+    return sql_stmt_create_create(tableName, fieldsName, columns, NULL);
 };
 
-ColumnsExpr *parse_sql_stmt_columnexpr(ParserT *parser) {
+field_info *parse_sql_stmt_columnexpr(ParserT *parser) {
     TokenT *token = parseNextToken(parser);
     char *columnName = NULL;
     DATA_TYPE type;
     int length;
     if (token->type == TOKEN_WORD) {
-        columnName = (char *) calloc(MAX_ID_NAME_LENGTH, 1);
+        columnName = new_id_name();
         strcpy(columnName, token->text);
     } else {
         strcpy(parser->parserMessage, "invalid sql: missing field name.");
@@ -244,10 +248,9 @@ ColumnsExpr *parse_sql_stmt_columnexpr(ParserT *parser) {
         strcpy(parser->parserMessage, "invalid sql : missing field name.");
         return NULL;
     }
-    ColumnsExpr *column = (ColumnsExpr *) malloc(sizeof(ColumnsExpr));
-    column->type = type;
-    column->columnName = columnName;
-    column->length = length;
-    column->constraints = NULL;
-    return column;
+    field_info *field = (field_info *) calloc(sizeof(field_info), 1);
+    field->type = type;
+    field->length = length;
+    field->fieldName = columnName;
+    return field;
 };

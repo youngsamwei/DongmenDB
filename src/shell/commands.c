@@ -7,6 +7,8 @@
 #include <stdlib.h>
 #include <dongmengsql.h>
 #include <utils.h>
+#include <statement.h>
+#include <parseSelectStmt.h>
 
 
 #define COL_SEPARATOR "|"
@@ -34,6 +36,7 @@ void usage_error(struct handler_entry *e, const char *msg) {
     fprintf(stderr, "ERROR: %s\n", msg);
     fprintf(stderr, "%s\n", e->help);
 }
+
 
 int dongmengdb_shell_handle_cmd(dongmengdb_shell_handle_sql_t *ctx, const char *cmd) {
     int rc = 0;
@@ -70,7 +73,7 @@ int dongmengdb_shell_handle_cmd(dongmengdb_shell_handle_sql_t *ctx, const char *
             if (stricmp(tokens[0], "select") == 0) {
                 rc = dongmengdb_shell_handle_sql(ctx, cmd);
             } else if (stricmp(tokens[0], "create") == 0 && stricmp(tokens[1], "table") == 0) {
-                fprintf(stdout, " %s.\n", cmd);
+                dongmengdb_shell_handle_create_table(ctx, cmd);
             } else {
                 fprintf(stderr, "ERROR: not support %s.\n", tokens[0]);
             }
@@ -185,11 +188,38 @@ int dongmengdb_shell_handle_sql(dongmengdb_shell_handle_sql_t *ctx, const char *
     return rc;
 }
 
+int dongmengdb_shell_handle_create_table(dongmengdb_shell_handle_sql_t *ctx, const char *sqlcreate){
+    if (!ctx->db){
+        fprintf(stderr, "ERROR: No database is open.\n");
+        return 1;
+    }
+    char *sql = (char *)calloc(strlen(sqlcreate),1);
+    strcpy(sql, sqlcreate);
+    TokenizerT *tokenizer = TKCreate(sql);
+    ParserT *parser = newParser(tokenizer);
+    memset(parser->parserMessage, 0, sizeof(parser->parserMessage));
+
+    sql_stmt_create *sqlStmtCreate = parse_sql_stmt_create(parser);
+    int status = table_manager_create_table(ctx->db->metadataManager->tableManager,
+                               sqlStmtCreate->tableInfo->tableName,
+                               sqlStmtCreate->tableInfo->fieldsName,
+                               sqlStmtCreate->tableInfo->fields,
+                               ctx->db->tx);
+
+    if (status == DONGMENGDB_OK){
+        transaction_commit( ctx->db->tx);
+        fprintf(stdout, "create  success!");
+        return DONGMENGDB_OK;
+    }else{
+        fprintf(stderr, "create  failed!");
+        return DONGMENGDB_ERROR_IO;
+    }
+};
 
 int dongmengdb_shell_handle_cmd_open(dongmengdb_shell_handle_sql_t *ctx, struct handler_entry *e, const char **tokens,
                                      int ntokens) {
     int rc;
-    dongmengdb *newdb = (dongmengdb *) malloc(sizeof(dongmengdb));
+    dongmengdb *newdb = (dongmengdb *) calloc(sizeof(dongmengdb), 1);
 
     if (ntokens != 2) {
         usage_error(e, "Invalid arguments");
@@ -202,7 +232,6 @@ int dongmengdb_shell_handle_cmd_open(dongmengdb_shell_handle_sql_t *ctx, struct 
         fprintf(stderr, "ERROR: Could not open file %s or file is not well formed.\n", tokens[1]);
         return rc;
     }
-
 
     if (ctx->db) {
         dongmengdb_close(ctx->db);
@@ -366,7 +395,7 @@ int dongmengdb_shell_handle_cmd_desc(dongmengdb_shell_handle_sql_t *ctx, struct 
         return DONGMENGDB_ECANTOPEN;
     }
     if (ctx->db) {
-        char *token = (char *) calloc(MAX_ID_NAME_LENGTH, 1);
+        char *token = new_id_name();
         strcpy(token, tokens[1]);
         table_info *tableInfo = table_manager_get_tableinfo(ctx->db->metadataManager->tableManager, token, ctx->db->tx);
         table_info_free(tableInfo);

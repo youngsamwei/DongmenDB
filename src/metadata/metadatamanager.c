@@ -2,6 +2,7 @@
 // Created by Sam on 2018/1/26.
 //
 
+#include <utils.h>
 #include "metadatamanager.h"
 
 int metadata_manager_create(metadata_manager *metadataManager, const char *file, transaction *tx, int isNew) {
@@ -85,7 +86,7 @@ int table_manager_create_table(table_manager *tableManager, char *tableName, arr
     for (int i = 0; i <= count; i++) {
         char *fieldName = arraylist_get(tableInfo->fieldsName, i);
 
-        void_ptr *ptr = (void_ptr *) malloc(sizeof(void_ptr));
+        void_ptr *ptr = (void_ptr *) malloc(sizeof(void_ptr *));
         hashmap_get(tableInfo->fields, fieldName, ptr);
         field_info *fieldInfo = *ptr;
 
@@ -99,6 +100,7 @@ int table_manager_create_table(table_manager *tableManager, char *tableName, arr
         record_file_set_int(fcatFile, "offset", offset);
     }
     record_file_close(fcatFile);
+    return DONGMENGDB_OK;
 };
 
 table_info *table_manager_get_tableinfo(table_manager *tableManager, char *tableName, transaction *tx) {
@@ -107,7 +109,7 @@ table_info *table_manager_get_tableinfo(table_manager *tableManager, char *table
 
     int recordLen = -1;
     while (record_file_next(tcatFile)) {
-        char *name = (char *) calloc(MAX_ID_NAME_LENGTH, 1);
+        char *name = new_id_name();
         record_file_get_string(tcatFile, "tablename", name);
         if (stricmp(tableName, name) == 0) {
             recordLen = record_file_get_int(tcatFile, "reclength");
@@ -122,10 +124,10 @@ table_info *table_manager_get_tableinfo(table_manager *tableManager, char *table
     hmap_t *fields = hashmap_create();
     hmap_t *offsets = hashmap_create();
     while (record_file_next(fcatFile)) {
-        char *name = (char *) calloc(MAX_ID_NAME_LENGTH, 1);
+        char *name = new_id_name();
         record_file_get_string(fcatFile, "tablename", name);
         if (stricmp(tableName, name) == 0) {
-            char *fieldName = (char *) calloc(MAX_ID_NAME_LENGTH, 1);
+            char *fieldName = new_id_name();
             record_file_get_string(fcatFile, "fieldname", fieldName);
             int type = record_file_get_int(fcatFile, "type");
             int length = record_file_get_int(fcatFile, "length");

@@ -23,11 +23,10 @@ SelectStmt *createSelectStmt(
 };
 
 sql_stmt_create *sql_stmt_create_create(char *tableName,
-                            arraylist *columns,
+                            arraylist *fieldsName, hmap_t columns,
                             Constraints *constraints) {
     sql_stmt_create *sqlStmtCreate = (sql_stmt_create *)malloc(sizeof(sql_stmt_create));
-    sqlStmtCreate->tableName = tableName;
-    sqlStmtCreate->columns = columns;
+    sqlStmtCreate->tableInfo =  table_info_create(tableName, fieldsName, columns);
     sqlStmtCreate->constraints = constraints;
     return sqlStmtCreate;
 };

@@ -77,7 +77,7 @@ int transaction_size(transaction *tx, char *fileName) {
 
 int transaction_append(transaction *tx, char *fileName, table_info *tableInfo) {
     //concurrency_manager_xlock
-    void_ptr *pblock = (void_ptr) malloc(sizeof(void_ptr));
+    void_ptr *pblock = (void_ptr *) malloc(sizeof(void_ptr *));
     buffer_list_pin_new(tx->bufferList, fileName, pblock, tableInfo);
 
     disk_block *block = *pblock;
@@ -87,7 +87,7 @@ int transaction_append(transaction *tx, char *fileName, table_info *tableInfo) {
 
 int buffer_list_pin(buffer_list *bufferList, disk_block *block) {
     char *blockName = disk_block_get_num_string(block);
-    void_ptr *pbuf = (void_ptr) malloc(sizeof(void_ptr));
+    void_ptr *pbuf = (void_ptr *) malloc(sizeof(void_ptr *));
     buffer_manager_pin(bufferList->bufferManager, block, pbuf);
     memory_buffer *buffer = *pbuf;
     buffer->block = block;
@@ -102,7 +102,7 @@ int transaction_next_txnum(transaction *tx){
 
 int buffer_list_unpin(buffer_list *bufferList, disk_block *block) {
     char *blockName = disk_block_get_num_string(block);
-    void_ptr *pbuf = (void_ptr) malloc(sizeof(void_ptr));
+    void_ptr *pbuf = (void_ptr *) malloc(sizeof(void_ptr *));
     hashmap_remove(bufferList->buffers, blockName, pbuf);
     memory_buffer *buffer = *pbuf;
     //buffer->block = NULL;
@@ -118,7 +118,7 @@ int buffer_list_unpin_all(buffer_list *bufferList) {
         disk_block *diskBlock = *ptr;
 
         char *blockName = disk_block_get_num_string(diskBlock);
-        void_ptr *pbuf = (void_ptr) malloc(sizeof(void_ptr));
+        void_ptr *pbuf = (void_ptr *) malloc(sizeof(void_ptr *));
         hashmap_get(bufferList->buffers, blockName, pbuf);
         memory_buffer *buffer = *pbuf;
 
@@ -130,13 +130,13 @@ int buffer_list_unpin_all(buffer_list *bufferList) {
 
 memory_buffer *buffer_list_get_buffer(buffer_list *bufferList, disk_block *block) {
     char *blockName = disk_block_get_num_string(block);
-    void_ptr *buffer1 = (void_ptr) malloc(sizeof(void_ptr));
+    void_ptr *buffer1 = (void_ptr *) malloc(sizeof(void_ptr *));
     hashmap_get(bufferList->buffers, blockName, buffer1);
     return *buffer1;
 };
 
 int buffer_list_pin_new(buffer_list *bufferList, char *fileName, void_ptr *pblock, table_info *tableInfo) {
-    void_ptr *pbuffer = (void_ptr) malloc(sizeof(void_ptr));
+    void_ptr *pbuffer = (void_ptr *) malloc(sizeof(void_ptr *));
     int r = buffer_manager_pinnew(bufferList->bufferManager, fileName, pbuffer, tableInfo);
     memory_buffer *buffer;
     if (r) {
