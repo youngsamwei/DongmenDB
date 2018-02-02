@@ -100,7 +100,7 @@ int dongmengdb_prepare(dongmengdb *db, const char *sql, dongmengdb_stmt **stmt);
  * DONGMENGDB_ROW each time a result row is produced. The values of the
  * result row can be accessed using the column access functions
  * (dongmengdb_column_*). Thus, dongmengdb_step has to be called repeatedly
- * to access all the rows returned by the query. Once there are no
+ * to access all the rows returned by the queryplan. Once there are no
  * more rows left, or if the statement is not meant to produce any
  * results, then DONGMENGDB_DONE is returned (note that this function does
  * not return DONGMENGDB_OK).

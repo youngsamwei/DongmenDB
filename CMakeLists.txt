@@ -6,7 +6,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ./cmake-build-debug/)
 INCLUDE_DIRECTORIES(
         include
         src/parser
-        src/query
+        src/queryplan
         src/buffer
         src/integrity
         src/file
@@ -14,8 +14,7 @@ INCLUDE_DIRECTORIES(
         src/log
         src/materialize
         src/metadata
-        src/optimizer
-        src/planner
+        src/physicalplan
         src/record
         src/security
         src/shell
@@ -24,7 +23,7 @@ INCLUDE_DIRECTORIES(
 )
 
 aux_source_directory( src/parser DIR_SRCS)
-aux_source_directory( src/query DIR_SRCS)
+aux_source_directory(src/queryplan DIR_SRCS)
 aux_source_directory( src/buffer DIR_SRCS)
 aux_source_directory( src/file DIR_SRCS)
 aux_source_directory( src/integrity DIR_SRCS)
@@ -32,8 +31,7 @@ aux_source_directory( src/index DIR_SRCS)
 aux_source_directory( src/log DIR_SRCS)
 aux_source_directory( src/materialize DIR_SRCS)
 aux_source_directory( src/metadata DIR_SRCS)
-aux_source_directory( src/optimizer DIR_SRCS)
-aux_source_directory( src/planner DIR_SRCS)
+aux_source_directory(src/physicalplan DIR_SRCS)
 aux_source_directory( src/record DIR_SRCS)
 aux_source_directory( src/security DIR_SRCS)
 aux_source_directory( src/shell DIR_SRCS)
