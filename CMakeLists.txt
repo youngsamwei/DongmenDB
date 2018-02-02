@@ -42,4 +42,5 @@ aux_source_directory( src/dongmengdb DIR_SRCS)
 
 add_executable(dongmengdb ${DIR_SRCS} )
 
+#add_executable(testParserCreate ${DIR_SRCS} src_test/parser/testParserCreate.c)
 #add_executable(testTokenizer ${DIR_SRCS} src_test/parser/testTokenizer.c)

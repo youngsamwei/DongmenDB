@@ -39,7 +39,7 @@ TokenT *parseEatAndNextToken(ParserT *parser);
 void *parseError(ParserT *parser, char *message);
 
 
-CreateStmt *parseCreate(ParserT *parser);
+sql_stmt_create *parse_sql_stmt_create(ParserT *parser);
 AlterStmt *parseAlter(ParserT *parser);
 InsertStmt *parseInsert(ParserT *parser);
 DeleteStmt *parseDelete(ParserT *parser);
@@ -53,5 +53,6 @@ OrderExpr *parseOrderExpr(ParserT *parser);
 ColumnsExpr *parseColumnsExpr(ParserT *parser);
 SetExpr *parseSetExpr(ParserT *parser);
 
+int matchToken(ParserT *parser, TokenType type, char *text);
 
 #endif //DONGMENDB_PARSER_H

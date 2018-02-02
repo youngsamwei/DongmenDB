@@ -5,6 +5,7 @@
 #ifndef DONGMENDB_STATEMENT_H
 #define DONGMENDB_STATEMENT_H
 
+#include <arraylist.h>
 #include "expression.h"
 #include "sqlexpression.h"
 
@@ -20,12 +21,13 @@ typedef struct SelectStmt_ {
 } SelectStmt;
 
 
-typedef struct CreateStmt_ {
+typedef struct sql_stmt_create_ {
     char *tableName;
-    ColumnsExpr *columnsExpr;
+    arraylist *columns;
+   // ColumnsExpr *columnsExpr;
     Constraints *constraints;
 
-} CreateStmt;
+} sql_stmt_create;
 
 enum AlterType {
     ALTER_ADD,
@@ -38,7 +40,7 @@ typedef struct AlterStmt_ {
     ColumnsExpr *columnsExpr;
 } AlterStmt;
 
-typedef struct InsertStmt_{
+typedef struct InsertStmt_ {
     char *tableName;
     FieldsExpr *fieldsExpr;
     ValueList *valueList;
@@ -64,19 +66,20 @@ SelectStmt *createSelectStmt(
         OrderExpr *orderExpr
 );
 
-CreateStmt *createCreateStmt(char *tableName,
-                            ColumnsExpr *columnsExpr,
-                            Constraints *constraints);
+sql_stmt_create *sql_stmt_create_create(char *tableName,
+                                        arraylist *columns,
+                                        Constraints *constraints);
 
 AlterStmt *createAlterStmt(char *tableName, enum AlterType type,
-                          ColumnsExpr *columnsExpr);
+                           ColumnsExpr *columnsExpr);
 
 DeleteStmt *createDeleteStmt(char *tableName,
-                            Expression *whereExpr);
+                             Expression *whereExpr);
 
 UpdateStmt *createUpdateStmt(char *tableName,
-                            SetExpr *setExpr,
-                            Expression *whereExpr);
+                             SetExpr *setExpr,
+                             Expression *whereExpr);
 
 char *printSelectStmt(char *selectStr, SelectStmt *selectStmt);
+
 #endif //DONGMENDB_STATEMENT_H

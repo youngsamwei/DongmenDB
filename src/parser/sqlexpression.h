@@ -56,6 +56,7 @@ typedef struct Constraints_ Constraints;
 typedef struct ColumnsExpr_ {
     data_type type;
     char *columnName;
+    int length;
     Constraints *constraints;
 } ColumnsExpr;
 

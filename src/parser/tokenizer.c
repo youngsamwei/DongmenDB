@@ -135,9 +135,9 @@ int isReservedWord(char *word) {
     reservedWords[13] = "like";
     reservedWords[14] = "in";
     reservedWords[15] = "grant";
-    reservedWords[16] = "if";
+    reservedWords[16] = "integer";
     reservedWords[17] = "int";
-    reservedWords[18] = "long";
+    reservedWords[18] = "char";
     reservedWords[19] = "register";
     reservedWords[20] = "return";
     reservedWords[21] = "short";
