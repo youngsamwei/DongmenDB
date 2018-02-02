@@ -8,6 +8,12 @@
 #include <dongmengdb.h>
 #include "utils.h"
 
+char *new_id_name(){
+    char *name = (char *) calloc(MAX_ID_NAME_LENGTH, sizeof(char *));
+//    char *name = (char *)malloc(MAX_ID_NAME_LENGTH);
+//    memset(name, 0, MAX_ID_NAME_LENGTH);
+    return name;
+};
 
 int bytes2int(unsigned char x1, unsigned char x2, unsigned char x3, unsigned char x4){
     return (x1 >>24) | (x2 >>16) | (x3 >>8) | x4;

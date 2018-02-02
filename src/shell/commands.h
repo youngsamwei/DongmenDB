@@ -8,8 +8,6 @@
 #ifndef COMMANDS_H_
 #define COMMANDS_H_
 
-int dongmengdb_shell_handle_cmd(dongmengdb_shell_handle_sql_t *ctx, const char *cmd);
-int dongmengdb_shell_handle_sql(dongmengdb_shell_handle_sql_t *ctx, const char *sql);
 
 struct handler_entry;
 
@@ -36,4 +34,8 @@ int dongmengdb_shell_handle_cmd_explain(dongmengdb_shell_handle_sql_t *ctx, stru
 int dongmengdb_shell_handle_cmd_exit(dongmengdb_shell_handle_sql_t *ctx, struct handler_entry *e, const char **tokens, int ntokens);
 int dongmengdb_shell_handle_cmd_desc(dongmengdb_shell_handle_sql_t *ctx, struct handler_entry *e, const char **tokens, int ntokens);
 
+int dongmengdb_shell_handle_cmd(dongmengdb_shell_handle_sql_t *ctx, const char *cmd);
+int dongmengdb_shell_handle_sql(dongmengdb_shell_handle_sql_t *ctx, const char *sql);
+
+int dongmengdb_shell_handle_create_table(dongmengdb_shell_handle_sql_t *ctx, const char *sqlcreate);
 #endif /* COMMANDS_H_ */

@@ -6,6 +6,7 @@
 #define DONGMENDB_STATEMENT_H
 
 #include <arraylist.h>
+#include <recordfile.h>
 #include "expression.h"
 #include "sqlexpression.h"
 
@@ -22,9 +23,8 @@ typedef struct SelectStmt_ {
 
 
 typedef struct sql_stmt_create_ {
-    char *tableName;
-    arraylist *columns;
-   // ColumnsExpr *columnsExpr;
+    table_info *tableInfo;
+
     Constraints *constraints;
 
 } sql_stmt_create;
@@ -67,7 +67,7 @@ SelectStmt *createSelectStmt(
 );
 
 sql_stmt_create *sql_stmt_create_create(char *tableName,
-                                        arraylist *columns,
+                                        arraylist *fieldsName, hmap_t columns,
                                         Constraints *constraints);
 
 AlterStmt *createAlterStmt(char *tableName, enum AlterType type,

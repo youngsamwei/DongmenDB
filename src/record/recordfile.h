@@ -38,6 +38,7 @@ typedef enum {
 } DATA_TYPE;
 
 typedef struct field_info_ {
+    char *fieldName;
     DATA_TYPE type;
     int length;
 } field_info;

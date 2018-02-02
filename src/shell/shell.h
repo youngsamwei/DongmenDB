@@ -23,4 +23,6 @@ typedef struct dongmengdb_shell_handle_sql
 void dongmengdb_shell_init_ctx(dongmengdb_shell_handle_sql_t *ctx);
 int dongmengdb_shell_opendb(dongmengdb_shell_handle_sql_t *ctx, char *file);
 
+
+
 #endif

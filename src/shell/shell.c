@@ -1,4 +1,5 @@
 #include <string.h>
+#include <utils.h>
 #include "shell.h"
 
 void dongmengdb_shell_init_ctx(dongmengdb_shell_handle_sql_t *ctx)
@@ -9,7 +10,5 @@ void dongmengdb_shell_init_ctx(dongmengdb_shell_handle_sql_t *ctx)
     ctx->header = false;
     ctx->mode = MODE_LIST;
 }
-
-
 
 

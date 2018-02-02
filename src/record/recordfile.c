@@ -2,6 +2,7 @@
 // Created by Sam on 2018/1/26.
 //
 
+#include <utils.h>
 #include "recordfile.h"
 
 int record_file_create(record_file *recordFile, table_info *tableInfo,
@@ -13,7 +14,7 @@ int record_file_create(record_file *recordFile, table_info *tableInfo,
     recordFile->fileName = NULL;
     recordFile->currentBlkNum = -1;
 
-    char *fileName = (char *) calloc(MAX_ID_NAME_LENGTH, 1);
+    char *fileName = new_id_name();
     strcpy(fileName, tableInfo->tableName);
     strcat(fileName, RECORD_FILE_EXT);
 
@@ -26,7 +27,6 @@ int record_file_create(record_file *recordFile, table_info *tableInfo,
 
 int record_file_close(record_file *recordFile) {
     record_page_close(recordFile->recordPage);
-    free(recordFile->fileName);
 }
 
 int record_file_before_first(record_file *recordFile) {
@@ -85,7 +85,7 @@ int record_file_moveto_recordid(record_file *recordFile, record_id *recordId) {
 }
 
 int record_file_current_recordid(record_file *recordFile, record_id *recordId) {
-    recordId = (record_id *) malloc(sizeof(recordId));
+    recordId = (record_id *) malloc(sizeof(record_id));
     recordId->id = recordFile->recordPage->currentSlot;
     recordId->blockNum = recordFile->currentBlkNum;
     return 0;
@@ -126,9 +126,10 @@ int record_file_record_formatter(record_file *recordFile, memory_page *memoryPag
 }
 
 field_info * field_info_create(DATA_TYPE type, int length) {
-    field_info *fieldInfo = (field_info *)malloc(sizeof(field_info));
+    field_info *fieldInfo = (field_info *)calloc(sizeof(field_info), 1);
     fieldInfo->type = type;
     fieldInfo->length = length;
+    fieldInfo->fieldName = NULL;
     return fieldInfo;
 };
 
@@ -145,7 +146,7 @@ table_info * table_info_create(char *tableName, arraylist *fieldsName, hmap_t fi
     for (int i = 0; i <= count; i++) {
         char *fieldName = (char *) arraylist_get(fieldsName, i);
 
-        void_ptr *value = (void_ptr) malloc(sizeof(void_ptr));
+        void_ptr *value = (void_ptr *) malloc(sizeof(void_ptr *));
         hashmap_get(tableInfo->fields, fieldName, value);
         field_info *fieldInfo = *value;
 
