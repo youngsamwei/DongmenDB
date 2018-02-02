@@ -37,12 +37,11 @@ void usage_error(struct handler_entry *e, const char *msg) {
 
 int dongmengdb_shell_handle_cmd(dongmengdb_shell_handle_sql_t *ctx, const char *cmd) {
     int rc = 0;
+    int h, ntokens;
+    char *cmddup = strdup(cmd), **tokens;
 
+    ntokens = dongmengdb_tokenize(cmddup, &tokens);
     if (cmd[0] == '.') {
-        int h, ntokens;
-        char *cmddup = strdup(cmd), **tokens;
-
-        ntokens = dongmengdb_tokenize(cmddup, &tokens);
 
         for (h = 0; handlers[h].name != NULL; h++) {
             if (!strncmp(tokens[0] + 1, handlers[h].name, handlers[h].name_len)) {
@@ -68,7 +67,13 @@ int dongmengdb_shell_handle_cmd(dongmengdb_shell_handle_sql_t *ctx, const char *
             fprintf(stderr, "ERROR: No database is open.\n");
             return 1;
         } else {
-            rc = dongmengdb_shell_handle_sql(ctx, cmd);
+            if (stricmp(tokens[0], "select") == 0) {
+                rc = dongmengdb_shell_handle_sql(ctx, cmd);
+            } else if (stricmp(tokens[0], "create") == 0 && stricmp(tokens[1], "table") == 0) {
+                fprintf(stdout, " %s.\n", cmd);
+            } else {
+                fprintf(stderr, "ERROR: not support %s.\n", tokens[0]);
+            }
             return rc;
         }
     }

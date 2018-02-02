@@ -22,9 +22,15 @@ SelectStmt *createSelectStmt(
     return selectStmt;
 };
 
-CreateStmt *createCreateStmt(char *tableName,
-                            ColumnsExpr *columnsExpr,
-                            Constraints *constraints) {};
+sql_stmt_create *sql_stmt_create_create(char *tableName,
+                            arraylist *columns,
+                            Constraints *constraints) {
+    sql_stmt_create *sqlStmtCreate = (sql_stmt_create *)malloc(sizeof(sql_stmt_create));
+    sqlStmtCreate->tableName = tableName;
+    sqlStmtCreate->columns = columns;
+    sqlStmtCreate->constraints = constraints;
+    return sqlStmtCreate;
+};
 
 AlterStmt *createAlterStmt(char *tableName, enum AlterType type,
                           ColumnsExpr *columnsExpr) {};

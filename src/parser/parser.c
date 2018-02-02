@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <dongmengsql.h>
+#include <dongmengdb.h>
 #include "parser.h"
 #include "parseExpression.h"
 #include "parseExpressionRD.h"
@@ -77,7 +78,7 @@ void *parseError(ParserT *parser, char *message) {
     return NULL;
 };
 
-CreateStmt *parseCreate(ParserT *parser) { return NULL; };
+sql_stmt_create *parseCreate(ParserT *parser) { return NULL; };
 
 AlterStmt *parseAlter(ParserT *parser) { return NULL; };
 
@@ -102,3 +103,15 @@ SetExpr *parseSetExpr(ParserT *parser) { return NULL; };
 
 int dongmengsql_parser(const char *sql, dongmengsql_statement_t **stmt){};
 int dongmengsql_stmt_print(dongmengsql_statement_t *stmt){};
+
+int matchToken(ParserT *parser, TokenType type, char *text){
+    TokenT *token = parseNextToken(parser);
+    if (token->type == type && stricmp(token->text, text) == 0) {
+        parseEatAndNextToken(parser);
+        return 1;
+    } else {
+        strcpy(parser->parserMessage, "invalid sql : missing ");
+        strcat(parser->parserMessage, text);
+        return 0;
+    }
+};
