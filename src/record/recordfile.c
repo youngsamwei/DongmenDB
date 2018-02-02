@@ -160,7 +160,7 @@ table_info * table_info_create(char *tableName, arraylist *fieldsName, hmap_t fi
 };
 
 int table_info_offset(table_info *tableInfo, char *fieldName){
-    void_ptr *ptr = (void_ptr *)malloc(sizeof(void_ptr));
+    void_ptr *ptr = (void_ptr)malloc(sizeof(void_ptr));
     hashmap_get(tableInfo->offsets, fieldName, ptr);
     integer *ipos = *ptr;
     return ipos->val;

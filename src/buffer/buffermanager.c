@@ -14,6 +14,7 @@ int buffer_manager_create(buffer_manager *bufferManager, int bufferSize, file_ma
 };
 
 int buffer_manager_pin(buffer_manager *bufferManager, disk_block *block, void_ptr *buffer) {
+    /*先查找block是否已经在缓存中*/
     buffer_manager_find_existing(bufferManager, block, buffer);
     memory_buffer *buf = *buffer;
     if (*buffer == NULL) {
@@ -61,7 +62,7 @@ int buffer_manager_find_existing(buffer_manager *bufferManager, disk_block *bloc
     for (int i = 0; i <= BUFFER_MAX_SIZE - 1; i++) {
         memory_buffer *buf = bufferManager->bufferPool[i];
         disk_block *b = buf->block;
-        if (b != NULL && stricmp(b->fileName, block->fileName) && (b->blkNum == block->blkNum)) {
+        if (b != NULL && stricmp(b->fileName, block->fileName)==0 && (b->blkNum == block->blkNum)) {
             *buffer = buf;
             return 0;
         }

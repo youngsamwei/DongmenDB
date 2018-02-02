@@ -191,8 +191,9 @@ int memory_page_setint(memory_page *memoryPage, int offset, int val) {
 
 int memory_page_getstring(memory_page *memoryPage, int offset, char *val) {
     int len = memory_page_getint(memoryPage, offset);
-    val = (char *) malloc(len);
-    memcpy(val, memoryPage->contents, len);
+//    val = (char *) malloc(len);
+//    memset(val, 0, len);
+    memcpy(val, memoryPage->contents + offset + INT_SIZE, len);
     return 1;
 };
 
