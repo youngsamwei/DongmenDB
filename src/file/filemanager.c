@@ -58,24 +58,6 @@ int file_manager_size(file_manager *fileManager, char *fileName) {
     int flen=ftell(file); /* 得到文件大小 */
     return flen / DISK_BOLCK_SIZE;
 }
-/*
-int file_manager_size(file_manager *fileManager, char *fileName) {
-
-    char *prefixFileName = (char *) malloc(MAX_ID_NAME_LENGTH);
-    memset(prefixFileName, 0, sizeof(prefixFileName));
-    strcpy(prefixFileName, fileManager->dbDirectoryName);
-    strcat(prefixFileName, "/");
-    strcat(prefixFileName, fileName);
-
-    struct _stat stats;
-    int result = _stat(prefixFileName, &stats);
-//    free(prefixFileName);
-    if (result != 0) {
-        return 0;
-    }
-    return stats.st_size / DISK_BOLCK_SIZE;
-};
-*/
 
 int file_manager_isnew(file_manager *fileManager) {
     return fileManager->isNew;
@@ -85,8 +67,7 @@ int file_manager_getfile(file_manager *fileManager, char *fileName, void_ptr *fi
     int found = hashmap_get(fileManager->openFiles, fileName, file);
 
     if (found == HMAP_E_NOTFOUND) {
-        char *fname = (char *) malloc(MAX_ID_NAME_LENGTH);
-        memset(fname, 0, sizeof(fname));
+        char *fname = (char *) calloc(MAX_ID_NAME_LENGTH, 1);
         strcat(fname, fileManager->dbDirectoryName);
         strcat(fname, "/");
         strcat(fname, fileName);
@@ -118,12 +99,10 @@ int disk_block_new(char *fileName, int blockNum, table_info *tableInfo, disk_blo
 };
 
 char *disk_block_get_num_string(disk_block *block) {
-    char *blockNum = (char *) malloc(MAX_ID_NAME_LENGTH);
-    memset(blockNum, 0, sizeof(blockNum));
+    char *blockNum = (char *) calloc(MAX_ID_NAME_LENGTH, 1);
     itoa(block->blkNum, blockNum, 10);
 
-    char *blockName = (char *) malloc(MAX_ID_NAME_LENGTH);
-    memset(blockName, 0, sizeof(blockName));
+    char *blockName = (char *) calloc(MAX_ID_NAME_LENGTH, 1);
     strcat(blockName, block->tableInfo->tableName);
     strcat(blockName, blockNum);
     return blockName;
@@ -160,14 +139,12 @@ int memory_page_record_formatter(memory_page *contents, table_info *tableInfo) {
             hashmap_get(tableInfo->fields, fieldName, fielddesc);
             field_info *fieldInfo = *fielddesc;
 
-            void_ptr *ofvalue = (void_ptr) malloc(sizeof(void_ptr));
-            hashmap_get(tableInfo->offsets, fieldName, ofvalue);
-            integer *offset = *ofvalue;
+            int offset = table_info_offset(tableInfo, fieldName);
 
             if (fieldInfo->type == DATA_TYPE_INT) {
-                memory_page_setint(contents, pos + INT_SIZE + offset->val, 0);
+                memory_page_setint(contents, pos + INT_SIZE + offset, 0);
             } else {
-                memory_page_setstring(contents, pos + INT_SIZE + offset->val, " ");
+                memory_page_setstring(contents, pos + INT_SIZE + offset, " ");
             }
         }
     }
