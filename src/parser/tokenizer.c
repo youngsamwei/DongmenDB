@@ -118,47 +118,15 @@ void clearBuffer(TokenizerT *tk) {
  * Returns 1 if a word is a reserved word. Otherwise, returns 0.
  */
 int isReservedWord(char *word) {
-    const char *reservedWords[40];
-    reservedWords[0] = "select";
-    reservedWords[1] = "from";
-    reservedWords[2] = "where";
-    reservedWords[3] = "order";
-    reservedWords[4] = "by";
-    reservedWords[5] = "group";
-    reservedWords[6] = "create";
-    reservedWords[7] = "table";
-    reservedWords[8] = "index";
-    reservedWords[9] = "and";
-    reservedWords[10] = "not";
-    reservedWords[11] = "or";
-    reservedWords[12] = "null";
-    reservedWords[13] = "like";
-    reservedWords[14] = "in";
-    reservedWords[15] = "grant";
-    reservedWords[16] = "integer";
-    reservedWords[17] = "int";
-    reservedWords[18] = "char";
-    reservedWords[19] = "register";
-    reservedWords[20] = "return";
-    reservedWords[21] = "short";
-    reservedWords[22] = "signed";
-    reservedWords[23] = "sizeof";
-    reservedWords[24] = "static";
-    reservedWords[25] = "struct";
-    reservedWords[26] = "switch";
-    reservedWords[27] = "typedef";
-    reservedWords[28] = "union";
-    reservedWords[29] = "unsigned";
-    reservedWords[30] = "void";
-    reservedWords[31] = "volatile";
-    reservedWords[32] = "unsigned";
-    reservedWords[33] = "while";
-    reservedWords[34] = "NULL";
-
+    const char *reservedWords[] = {
+            "select", "from", "where", "order", "by", "group", "create", "table", "index", "and", "not", "or", "null",
+            "like", "in", "grant", "integer", "int", "char", "values", "insert", "into", "update", "delete", "set", "on",
+            "user", "view", "rule", "default", "check", "between", "trigger", "primary", "key", "foreign"
+    };
     int isReservedWord = 0;
-    int rWordIndex = 0;
-    for (; rWordIndex < 33; rWordIndex++) {
-        if (strcasecmp(word, reservedWords[rWordIndex]) == 0) {
+    int size = sizeof(reservedWords)/sizeof(1);
+    for (int rWordIndex = 0; rWordIndex <= size - 1; rWordIndex++) {
+        if (stricmp(word, reservedWords[rWordIndex]) == 0) {
             isReservedWord = 1;
         }
     }
@@ -225,11 +193,11 @@ TokenT *_word(TokenizerT *tk) {
                 return makeToken(tk, TOKEN_NOT);
             } else if (strcasecmp(tk->tokenBuffer, "OR") == 0) {
                 return makeToken(tk, TOKEN_OR);
-            } else if (strcasecmp(tk->tokenBuffer, "NULL") == 0){
+            } else if (strcasecmp(tk->tokenBuffer, "NULL") == 0) {
                 return makeToken(tk, TOKEN_NULL);
-            }else if (strcasecmp(tk->tokenBuffer, "LIKE") == 0){
+            } else if (strcasecmp(tk->tokenBuffer, "LIKE") == 0) {
                 return makeToken(tk, TOKEN_LIKE);
-            }else if (strcasecmp(tk->tokenBuffer, "IN") == 0){
+            } else if (strcasecmp(tk->tokenBuffer, "IN") == 0) {
                 return makeToken(tk, TOKEN_IN);
             }
             /*TODO:需要处理函数*/
@@ -531,10 +499,11 @@ TokenT *_zero(TokenizerT *tk) {
     }
 }
 
-TokenT *_power(TokenizerT *tk){
+TokenT *_power(TokenizerT *tk) {
     nextChar(tk);
     return makeToken(tk, TOKEN_POWER);
 }
+
 /*
  * TKGetNextToken returns the next token from the token stream as a
  * character string.  Space for the returned token should be dynamically
@@ -595,8 +564,8 @@ TokenT *TKGetNextToken(TokenizerT *tk) {
         return _eq(tk);
     } else if (curr == '>') { // gt, rshift, gt_eq
         return _gt(tk);
-    } else if (curr == '^'){
-       return _power(tk);
+    } else if (curr == '^') {
+        return _power(tk);
     } else {
         return _invalid(tk);
     }

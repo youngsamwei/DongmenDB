@@ -17,4 +17,6 @@ TablesExpr *parseTablesExpr(ParserT *parser);
 sql_stmt_create *parse_sql_stmt_create(ParserT *parser);
 field_info *parse_sql_stmt_columnexpr(ParserT *parser);
 
+sql_stmt_insert *parse_sql_stmt_insert(ParserT *parser);
+
 #endif //DONGMENDB_PARSESELECTSTMT_H

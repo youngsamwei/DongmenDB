@@ -29,6 +29,12 @@ typedef struct sql_stmt_create_ {
 
 } sql_stmt_create;
 
+typedef struct sql_stmt_insert_{
+    char *tableName;
+    arraylist *fields;
+    arraylist *values;
+} sql_stmt_insert;
+
 enum AlterType {
     ALTER_ADD,
     ALTER_REMOVE
