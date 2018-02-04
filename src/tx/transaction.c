@@ -123,8 +123,8 @@ int buffer_list_unpin_all(buffer_list *bufferList) {
 
         buffer_manager_unpin(bufferList->bufferManager, buffer);
     }
-//    arraylist_clear(bufferList->pins);
-//    hashmap_clear(bufferList->buffers);
+    hashmap_clear(bufferList->buffers);
+    arraylist_clear(bufferList->pins);
 };
 
 memory_buffer *buffer_list_get_buffer(buffer_list *bufferList, disk_block *block) {

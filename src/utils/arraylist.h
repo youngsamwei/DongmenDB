@@ -21,5 +21,6 @@ int arraylist_remove(arraylist *list, size_t index);
 void *arraylist_get(arraylist *list, size_t index);
 int arraylist_set(arraylist *list, size_t index, void *value);
 int arraylist_shrink(arraylist *list);
+int arraylist_clear(arraylist *list);
 
 #endif //DONGMENDB_ARRAYLISTB_H

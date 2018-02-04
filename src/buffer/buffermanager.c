@@ -125,8 +125,7 @@ int memory_buffer_flush(memory_buffer *buffer) {
         memory_page_write(buffer->contents, buffer->block);
         buffer->modifiedBy = -1;
     }
-    /*写入磁盘后，重新初始化*/
-    //memset(buffer->contents->contents, 0, sizeof(buffer->contents->contents));
+
 };
 
 int memory_buffer_pin(memory_buffer *buffer) {

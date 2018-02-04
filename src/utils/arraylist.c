@@ -2,6 +2,7 @@
 // Created by Sam on 2018/1/31.
 //
 
+#include <mem.h>
 #include "arraylist.h"
 
 #define INITIAL_ARRAYLIST_SIZE 10
@@ -23,6 +24,11 @@ arraylist *arraylist_create()
 
     return list;
 }
+
+int arraylist_clear(arraylist *list){
+    memset(list->data, 0, list->capacity*sizeof(void *));
+    list->size = 0;
+};
 
 void arraylist_destroy(arraylist **list)
 {
@@ -97,3 +103,4 @@ int arraylist_shrink(arraylist *list)
 
     return 1;
 }
+
