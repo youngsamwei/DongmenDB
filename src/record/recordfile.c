@@ -125,16 +125,16 @@ int record_file_record_formatter(record_file *recordFile, memory_page *memoryPag
 
 }
 
-field_info * field_info_create(DATA_TYPE type, int length) {
-    field_info *fieldInfo = (field_info *)calloc(sizeof(field_info), 1);
+field_info *field_info_create(DATA_TYPE type, int length) {
+    field_info *fieldInfo = (field_info *) calloc(sizeof(field_info), 1);
     fieldInfo->type = type;
     fieldInfo->length = length;
     fieldInfo->fieldName = NULL;
     return fieldInfo;
 };
 
-table_info * table_info_create(char *tableName, arraylist *fieldsName, hmap_t fields) {
-    table_info *tableInfo = (table_info *)malloc(sizeof(table_info));
+table_info *table_info_create(char *tableName, arraylist *fieldsName, hmap_t fields) {
+    table_info *tableInfo = (table_info *) malloc(sizeof(table_info));
     tableInfo->tableName = tableName;
     tableInfo->fieldsName = fieldsName;
     tableInfo->fields = fields;
@@ -154,21 +154,27 @@ table_info * table_info_create(char *tableName, arraylist *fieldsName, hmap_t fi
         ipos->val = pos;
         hashmap_put(tableInfo->offsets, fieldName, ipos);
 
-        pos += fieldInfo->length;
+        if (fieldInfo->type == DATA_TYPE_CHAR) {
+            /*增加字符串长度的存储 位置*/
+            pos += fieldInfo->length + INT_SIZE;
+        } else if (fieldInfo->type == DATA_TYPE_INT) {
+            pos += fieldInfo->length;
+        }
+
     }
     tableInfo->recordLen = pos;
     return tableInfo;
 };
 
-int table_info_free(table_info *tableInfo){
+int table_info_free(table_info *tableInfo) {
     /*free hashmap offsets*/
     // free hashmap fields
     // free arraylist fieldsName
     return DONGMENGDB_OK;
 }
 
-int table_info_offset(table_info *tableInfo, char *fieldName){
-    void_ptr *ptr = (void_ptr)malloc(sizeof(void_ptr));
+int table_info_offset(table_info *tableInfo, char *fieldName) {
+    void_ptr *ptr = (void_ptr) malloc(sizeof(void_ptr));
     hashmap_get(tableInfo->offsets, fieldName, ptr);
     integer *ipos = *ptr;
     return ipos->val;
@@ -179,6 +185,7 @@ record_page *record_page_create(transaction *tx, table_info *tableInfo, disk_blo
     recordPage->diskBlock = diskBlock;
     recordPage->tx = tx;
     recordPage->tableInfo = tableInfo;
+    /*保留一个整型的位置保存slot的状态*/
     recordPage->slotSize = tableInfo->recordLen + INT_SIZE;
     recordPage->currentSlot = -1;
     diskBlock->tableInfo = tableInfo;
@@ -252,11 +259,19 @@ int record_page_current_pos(record_page *recordPage) {
     return recordPage->currentSlot * recordPage->slotSize;
 };
 
+/**
+ * 计算字段在page中的位置.
+ * 每个page由若干slot构成，每个slot保存一条记录。
+ * slotsize=recsize + Intsize,有一个intsize保存slot使用状态。
+ *
+ * @param recordPage
+ * @param fieldName
+ * @return
+ */
 int record_page_fieldpos(record_page *recordPage, char *fieldName) {
+    int offset = table_info_offset(recordPage->tableInfo, fieldName);
 
-    int offset = INT_SIZE + table_info_offset(recordPage->tableInfo, fieldName);
-
-    return recordPage->currentSlot * recordPage->slotSize + offset;
+    return recordPage->currentSlot * recordPage->slotSize + offset + INT_SIZE;
 };
 
 int record_page_is_valid_slot(record_page *recordPage) {

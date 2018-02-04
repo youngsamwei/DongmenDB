@@ -8,3 +8,4 @@ insert into student(sno, sname, sage) values("2012010105","dan simith",24);
 insert into student(sno, sname, sage) values("2012010106","mary simith",25);
 insert into student(sno, sname, sage) values("2012010107","jene simith",26);
 insert into student(sno, sname, sage) values("2012010108","di simith",27);
+insert into student(sno, sname, sage) values("2012010108","sam simith",27);

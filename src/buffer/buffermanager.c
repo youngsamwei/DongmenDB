@@ -33,7 +33,7 @@ int buffer_manager_pin(buffer_manager *bufferManager, disk_block *block, void_pt
 
 int buffer_manager_pinnew(buffer_manager *bufferManager, char *fileName, void_ptr *buffer, table_info *tableInfo) {
     buffer_manager_find_choose_unpinned_buffer(bufferManager, buffer);
-    if (buffer == NULL) {
+    if (*buffer == NULL) {
         return -1;
     }
     memory_buffer *buf = *buffer;
@@ -126,7 +126,7 @@ int memory_buffer_flush(memory_buffer *buffer) {
         buffer->modifiedBy = -1;
     }
     /*写入磁盘后，重新初始化*/
-    memset(buffer->contents->contents, 0, sizeof(buffer->contents->contents));
+    //memset(buffer->contents->contents, 0, sizeof(buffer->contents->contents));
 };
 
 int memory_buffer_pin(memory_buffer *buffer) {

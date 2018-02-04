@@ -127,11 +127,22 @@ int memory_page_append(memory_buffer *memoryBuffer, char *fileName, table_info *
     file_manager_append(memoryBuffer->contents->fileManager, memoryBuffer, fileName, tableInfo);
 };
 
+/**
+ * recordlen由整型数据的INTSIZE和字符数据的LEN + INTSIZE构成。
+ *
+ * @param contents
+ * @param tableInfo
+ * @return
+ */
 int memory_page_record_formatter(memory_page *contents, table_info *tableInfo) {
 //    memset(contents->contents, 0, DISK_BOLCK_SIZE);
+    /*保留一个整型位置保存slot的使用状态,默认RECORD_PAGE_EMPTY*/
     int recsize = tableInfo->recordLen + INT_SIZE;
     for (int pos = 0; pos + recsize <= DISK_BOLCK_SIZE; pos += recsize) {
+        /*先写slot的使用状态*/
         memory_page_setint(contents, pos, RECORD_PAGE_EMPTY);
+        /*计算当前记录的偏移量, +slot的使用状态的整型值偏移量*/
+        int recoffset = pos + INT_SIZE;
         int count = tableInfo->fieldsName->size - 1;
         for (int i = 0; i <= count; i++) {
             char *fieldName = (char *) arraylist_get(tableInfo->fieldsName, i);
@@ -143,9 +154,9 @@ int memory_page_record_formatter(memory_page *contents, table_info *tableInfo) {
             int offset = table_info_offset(tableInfo, fieldName);
 
             if (fieldInfo->type == DATA_TYPE_INT) {
-                memory_page_setint(contents, pos + INT_SIZE + offset, 0);
+                memory_page_setint(contents, recoffset + offset, 0);
             } else {
-                memory_page_setstring(contents, pos + INT_SIZE + offset, " ");
+                memory_page_setstring(contents, recoffset + offset, " ");
             }
         }
     }
@@ -167,17 +178,37 @@ int memory_page_setint(memory_page *memoryPage, int offset, int val) {
     memoryPage->contents[offset + 3] = val;
 };
 
+/**
+ * 先读取字符串长度，再根据长度读取字符串
+ * @param memoryPage
+ * @param offset 偏移量
+ * @param val 返回结果
+ * @return 返回状态
+ */
 int memory_page_getstring(memory_page *memoryPage, int offset, char *val) {
     int len = memory_page_getint(memoryPage, offset);
+    /*增加一个整型的偏移量*/
+    offset += INT_SIZE;
 //    val = (char *) malloc(len);
 //    memset(val, 0, len);
-    memcpy(val, memoryPage->contents + offset + INT_SIZE, len);
+    memcpy(val, memoryPage->contents + offset , len);
+    val[len]='\0';
     return 1;
 };
 
+/**
+ * 写字符串
+ * @param memoryPage
+ * @param offset 偏移量
+ * @param val 要写的值
+ * @return 返回状态
+ */
 int memory_page_setstring(memory_page *memoryPage, int offset, char *val) {
     int len = strlen(val);
+    /*先写字符串长度*/
     memory_page_setint(memoryPage, offset, len);
-    memcpy(memoryPage->contents + offset + INT_SIZE, val, len);
+    /*增加一个整型的偏移量*/
+    offset += INT_SIZE;
+    memcpy(memoryPage->contents + offset , val, len);
     return 1;
 };
