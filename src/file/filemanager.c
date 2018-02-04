@@ -43,6 +43,7 @@ int file_manager_write(file_manager *fileManager, memory_page *memoryPage, disk_
 int file_manager_append(file_manager *fileManager, memory_buffer *memoryBuffer, char *fileName, table_info *tableInfo) {
     int newBlockNum = file_manager_size(fileManager, fileName);
     disk_block *diskBlock = (disk_block *) calloc(sizeof(disk_block), 1);
+
     memoryBuffer->block = diskBlock;
     disk_block_new(fileName, newBlockNum, tableInfo, diskBlock);
     file_manager_write(fileManager, memoryBuffer->contents, diskBlock);

@@ -9,6 +9,7 @@ table_scan *table_scan_create(table_info *tableInfo, transaction *tx) {
     tableScan->tableInfo = tableInfo;
     tableScan->recordFile = (record_file *) malloc(sizeof(record_file));
     record_file_create(tableScan->recordFile, tableInfo, tx);
+    return tableScan;
 };
 
 int table_scan_before_first(table_scan *tableScan) {

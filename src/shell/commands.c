@@ -9,6 +9,7 @@
 #include <utils.h>
 #include <statement.h>
 #include <parseSelectStmt.h>
+#include <physicalplan.h>
 
 
 #define COL_SEPARATOR "|"
@@ -74,9 +75,12 @@ int dongmengdb_shell_handle_cmd(dongmengdb_shell_handle_sql_t *ctx, const char *
                 rc = dongmengdb_shell_handle_sql(ctx, cmd);
             } else if (stricmp(tokens[0], "create") == 0 && stricmp(tokens[1], "table") == 0) {
                 dongmengdb_shell_handle_create_table(ctx, cmd);
+            } else if (stricmp(tokens[0], "insert") == 0 && stricmp(tokens[1], "into") == 0) {
+                dongmengdb_shell_handle_insert_table(ctx, cmd);
             } else {
                 fprintf(stderr, "ERROR: not support %s.\n", tokens[0]);
             }
+
             return rc;
         }
     }
@@ -188,12 +192,12 @@ int dongmengdb_shell_handle_sql(dongmengdb_shell_handle_sql_t *ctx, const char *
     return rc;
 }
 
-int dongmengdb_shell_handle_create_table(dongmengdb_shell_handle_sql_t *ctx, const char *sqlcreate){
-    if (!ctx->db){
+int dongmengdb_shell_handle_create_table(dongmengdb_shell_handle_sql_t *ctx, const char *sqlcreate) {
+    if (!ctx->db) {
         fprintf(stderr, "ERROR: No database is open.\n");
         return 1;
     }
-    char *sql = (char *)calloc(strlen(sqlcreate),1);
+    char *sql = (char *) calloc(strlen(sqlcreate), 1);
     strcpy(sql, sqlcreate);
     TokenizerT *tokenizer = TKCreate(sql);
     ParserT *parser = newParser(tokenizer);
@@ -201,16 +205,43 @@ int dongmengdb_shell_handle_create_table(dongmengdb_shell_handle_sql_t *ctx, con
 
     sql_stmt_create *sqlStmtCreate = parse_sql_stmt_create(parser);
     int status = table_manager_create_table(ctx->db->metadataManager->tableManager,
-                               sqlStmtCreate->tableInfo->tableName,
-                               sqlStmtCreate->tableInfo->fieldsName,
-                               sqlStmtCreate->tableInfo->fields,
-                               ctx->db->tx);
+                                            sqlStmtCreate->tableInfo->tableName,
+                                            sqlStmtCreate->tableInfo->fieldsName,
+                                            sqlStmtCreate->tableInfo->fields,
+                                            ctx->db->tx);
 
-    if (status == DONGMENGDB_OK){
-        transaction_commit( ctx->db->tx);
+    if (status == DONGMENGDB_OK) {
+        transaction_commit(ctx->db->tx);
         fprintf(stdout, "create  success!");
         return DONGMENGDB_OK;
-    }else{
+    } else {
+        fprintf(stderr, "create  failed!");
+        return DONGMENGDB_ERROR_IO;
+    }
+};
+
+int dongmengdb_shell_handle_insert_table(dongmengdb_shell_handle_sql_t *ctx, const char *sqlinsert) {
+    if (!ctx->db) {
+        fprintf(stderr, "ERROR: No database is open.\n");
+        return 1;
+    }
+    char *sql = (char *) calloc(strlen(sqlinsert), 1);
+    strcpy(sql, sqlinsert);
+    TokenizerT *tokenizer = TKCreate(sql);
+    ParserT *parser = newParser(tokenizer);
+    memset(parser->parserMessage, 0, sizeof(parser->parserMessage));
+
+    sql_stmt_insert *sqlStmtInsert = parse_sql_stmt_insert(parser);
+    int status = plan_execute_insert(ctx->db, sqlStmtInsert->tableName,
+                                     sqlStmtInsert->fields,
+                                     sqlStmtInsert->values,
+                                     ctx->db->tx);
+
+    if (status == DONGMENGDB_OK) {
+        transaction_commit(ctx->db->tx);
+        fprintf(stdout, "create  success!");
+        return DONGMENGDB_OK;
+    } else {
         fprintf(stderr, "create  failed!");
         return DONGMENGDB_ERROR_IO;
     }

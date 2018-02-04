@@ -38,4 +38,5 @@ int dongmengdb_shell_handle_cmd(dongmengdb_shell_handle_sql_t *ctx, const char *
 int dongmengdb_shell_handle_sql(dongmengdb_shell_handle_sql_t *ctx, const char *sql);
 
 int dongmengdb_shell_handle_create_table(dongmengdb_shell_handle_sql_t *ctx, const char *sqlcreate);
+int dongmengdb_shell_handle_insert_table(dongmengdb_shell_handle_sql_t *ctx, const char *sqlinsert);
 #endif /* COMMANDS_H_ */
