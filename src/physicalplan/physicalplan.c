@@ -13,11 +13,21 @@ int plan_execute_update(dongmengdb *db, char *tableName, arraylist *fieldNames, 
 
 };
 
+/**
+ * insert数据，一次一条
+ * @param db
+ * @param tableName
+ * @param fieldNames
+ * @param values
+ * @param tx
+ * @return
+ */
 int plan_execute_insert(dongmengdb *db, char *tableName, arraylist *fieldNames, arraylist *values, transaction *tx){
-    table_plan *tablePlan =    table_plan_create(db, tableName, tx);
+    table_plan *tablePlan = table_plan_create(db, tableName, tx);
     table_scan *tableScan = table_plan_open(tablePlan);
     table_scan_insert(tableScan);
     for (size_t i = 0; i < fieldNames->size; i++){
+
         char *fieldName = arraylist_get(fieldNames, i);
 
         void_ptr *ptr = (void_ptr *) malloc(sizeof(void_ptr *));
@@ -30,6 +40,10 @@ int plan_execute_insert(dongmengdb *db, char *tableName, arraylist *fieldNames, 
             table_scan_set_int(tableScan, fieldName, val->val);
         }else if (type == DATA_TYPE_CHAR){
             char *val = arraylist_get(values, i);
+            /*字符串超出定义时的长度，则截断字符串.*/
+            if(fieldInfo->length<strlen(val)){
+                val[fieldInfo->length] = '\0';
+            }
             table_scan_set_string(tableScan, fieldName, val);
         }else{
             return DONGMENGDB_EINVALIDSQL;

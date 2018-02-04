@@ -313,7 +313,12 @@ sql_stmt_insert *parse_sql_stmt_insert(ParserT *parser) {
     if (token->type == TOKEN_STRING || token->type == TOKEN_DECIMAL) {
         while (token->type == TOKEN_STRING || token->type == TOKEN_DECIMAL) {
             if (token->type == TOKEN_STRING){
-                char *value = strdup(token->text);
+                int len = strlen(token->text) - 1;
+                char *v = token->text + 1;
+                char *value = (char *) calloc(len, 1);
+                strcpy(value, v);
+                value[len-1] = '\0';
+
                 arraylist_add(values, value);
             } else{
                 integer *i = (integer *)calloc(sizeof(integer *), 1);

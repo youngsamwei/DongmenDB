@@ -5,6 +5,11 @@
 #ifndef DONGMENDB_RECORDFILE_H
 #define DONGMENDB_RECORDFILE_H
 
+/**
+ * 以记录为单位的数据管理操作.
+ * recordpage可以取消？
+ */
+
 #include <filemanager.h>
 #include <malloc.h>
 #include <mem.h>
@@ -62,7 +67,7 @@ typedef struct table_info_ {
 } table_info;
 
 /**
- * 管理一个bolck中的记录。
+ * 管理一个block中的记录。
  */
 typedef struct record_page_ {
     disk_block *diskBlock;

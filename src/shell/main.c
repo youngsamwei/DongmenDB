@@ -45,7 +45,7 @@ int main(int argc, char *argv[]) {
     char cmdstring[MAX_CMD];
     int n;
     while (1) {
-        printf("dongmengdb>");
+        printf("\ndongmengdb>");
 
         if ((n = read(0, cmdstring, MAX_CMD)) < 0) {
             printf("read error");

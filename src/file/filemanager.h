@@ -6,8 +6,10 @@
 #define DONGMENDB_FILEMANAGER_H
 
 /**
+ * 以block为单位的数据管理。但meemorypage属于缓存管理。
  * 默认的磁盘块的大小，因为测试目的这里设置的过小，一般可以设置为4k
  * 一条记录的总字节长度不能超过块大小。
+ *
  */
 #include <stdio.h>
 #include "dongmengdb.h"
