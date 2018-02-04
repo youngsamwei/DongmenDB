@@ -114,8 +114,7 @@ int buffer_list_unpin(buffer_list *bufferList, disk_block *block) {
 int buffer_list_unpin_all(buffer_list *bufferList) {
     int size = bufferList->pins->size - 1;
     for (int i = 0; i <= size; i++) {
-        void_ptr *ptr = arraylist_get(bufferList->pins, i);
-        disk_block *diskBlock = *ptr;
+        disk_block *diskBlock = arraylist_get(bufferList->pins, i);
 
         char *blockName = disk_block_get_num_string(diskBlock);
         void_ptr *pbuf = (void_ptr *) malloc(sizeof(void_ptr *));
