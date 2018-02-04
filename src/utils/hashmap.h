@@ -83,6 +83,7 @@ extern int hashmap_remove(hmap_t in, char * key, void_ptr *outValue);
 extern void hashmap_destroy(hmap_t in, hmap_callback_func fnFreeValue,
                             void_ptr arg);
 
+extern void hashmap_clear(hmap_t in);
 /**
  * Get the current size of a hashmap
  */

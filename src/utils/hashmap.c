@@ -385,7 +385,25 @@ void hashmap_destroy(hmap_t in, hmap_callback_func fnFreeValue, void_ptr arg) {
     free(m->elems);
     free(m);
 }
+extern void hashmap_clear(hmap_t in){
+    int i;
+    hashmap_map_t* m;
+    hashmap_elem_t *elem;
 
+    /* Cast the hashmap */
+    m = (hashmap_map_t *) in;
+
+    /* Linear probing, if necessary */
+    for (i = 0; i <= m->table_size - 1; i++) {
+        elem = m->elems + i;
+        if (elem->used == hashmap_used_1) {
+                elem->used = hashmap_unused_0;
+                elem->key = NULL;
+                elem->data = NULL;
+        }
+    }
+    m->size = 0;
+};
 /**
  * Return the length of the hashmap
  */
