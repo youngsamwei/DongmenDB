@@ -51,20 +51,12 @@ static const OPERATOR operators[] = {
         {2, 1,  1,  right2left, TOKEN_COMMA}
 };
 
-/*终结符类型*/
-typedef enum {
-    TERM_LITERAL, /*值（数值，字符串）*/
-    TERM_ID,  /*标识符（字段)*/
-    TERM_NULL,
-    TERM_COLREF
-} TermType;
-
 /*终结符：标识符，常量*/
 typedef struct TermExpr_ {
-    TermType t;
+    enum TermType t;
     union {
         char *id;
-        Literal *val;
+        Literal_t *val;
     };
 } TermExpr;
 
