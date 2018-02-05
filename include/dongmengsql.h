@@ -1,6 +1,13 @@
 #ifndef DONGMENGSQL_H_
 #define DONGMENGSQL_H_
 
+#include <stdint.h>
+#include "common.h"
+#include "create.h"
+#include "insert.h"
+#include "sra.h"
+#include "delete.h"
+
 #define SQL_NOTVALID (-1)
 #define SQL_NULL (0)
 #define SQL_INTEGER_1BYTE (1)

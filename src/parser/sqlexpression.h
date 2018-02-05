@@ -5,7 +5,7 @@
 #ifndef DONGMENDB_SQLEXPRESSION_H
 #define DONGMENDB_SQLEXPRESSION_H
 
-
+#include "dongmengsql.h"
 #include "literal.h"
 #include "expression.h"
 #include "sqlexpression.h"
@@ -41,12 +41,10 @@ typedef struct GroupExpr_ {
     GroupExpr *next;
 } GroupExpr;
 
-enum OrderType {
-    ORDER_BY_ASC, ORDER_BY_DESC
-};
+
 typedef struct OrderExpr_ OrderExpr;
 typedef struct OrderExpr_ {
-    enum OrderType orderType;
+    enum OrderBy orderType;
     Expression *expr;
     OrderExpr *next;
 } OrderExpr;
@@ -54,22 +52,11 @@ typedef struct OrderExpr_ {
 typedef struct Constraints_ Constraints;
 /*描述在create table中使用的column*/
 typedef struct ColumnsExpr_ {
-    data_type type;
+    enum data_type type;
     char *columnName;
     int length;
     Constraints *constraints;
 } ColumnsExpr;
-
-enum constraint_type {
-    CONS_NOT_NULL,
-    CONS_UNIQUE,
-    CONS_PRIMARY_KEY,
-    CONS_FOREIGN_KEY,
-    CONS_DEFAULT,
-    CONS_AUTO_INCREMENT,
-    CONS_CHECK,
-    CONS_SIZE
-};
 
 typedef struct ForeignKeyRef {
     const char *col_name, *table_name, *table_col_name;
@@ -79,7 +66,7 @@ typedef struct Constraints_ {
     enum constraint_type type;
     union {
         ForeignKeyRef ref;
-        Literal *default_val;
+        Literal_t *default_val;
         unsigned size;
         /*布尔表达式 */
         Expression *check;
@@ -94,7 +81,7 @@ typedef struct SetExpr_ {
 /*用于表示insert语句中的values*/
 typedef struct ValueList_ ValueList;
 typedef struct ValueList_ {
-    LiteralVal val;
+    union LitVal val;
     ValueList *next;
 } ValueList;
 
