@@ -106,7 +106,7 @@ int expression_free(Expression *expr);
 
 int expression_free_list(arraylist *exprlist);
 
-int expression_print(Expression *expr);
+Expression *expression_print(Expression *expr);
 
 int expression_print_list(arraylist *exprlist);
 
