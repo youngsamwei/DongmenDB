@@ -104,10 +104,10 @@ TermExpr *newTermExpr();
 
 int expression_free(Expression *expr);
 
-int expression_free_list(arraylist *expr);
+int expression_free_list(arraylist *exprlist);
 
 int expression_print(Expression *expr);
 
-int expression_print_list(arraylist *expr);
+int expression_print_list(arraylist *exprlist);
 
 #endif //DONGMENDB_EXPRESSION_H

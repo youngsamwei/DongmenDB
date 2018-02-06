@@ -3,6 +3,7 @@
 //
 
 #include "dongmengsql.h"
+#include "expression.h"
 
 char *printExpression(char *exprs, Expression *expr) {
     Expression *expr0 = expr;
@@ -25,22 +26,22 @@ char *printExpression(char *exprs, Expression *expr) {
  */
 Expression *printRNExpression(char *exprs, Expression *expr) {
     if (expr->term != NULL) {
-        if (expr->term->t ==TERM_ID){
+        if (expr->term->t == TERM_ID) {
             strcat(exprs, expr->term->id);
-        }else {
+        } else {
             strcat(exprs, expr->term->val->val.strval);
         }
         return expr;
     } else {
         int operrandNumber = operators[expr->opType].numbers;
-        if ( operrandNumber== 1){
+        if (operrandNumber == 1) {
             strcat(exprs, "(");
             strcat(exprs, getExpressionDesc(expr));
             strcat(exprs, " ");
             Expression *expr0 = printRNExpression(exprs, expr->nextexpr);
             strcat(exprs, " )");
             return expr0;
-        } else if (operrandNumber== 2){
+        } else if (operrandNumber == 2) {
             strcat(exprs, "(");
             Expression *expr0 = printRNExpression(exprs, expr->nextexpr);
             strcat(exprs, " ");
@@ -56,39 +57,39 @@ Expression *printRNExpression(char *exprs, Expression *expr) {
 char *getExpressionDesc(Expression *expr) {
     switch (expr->opType) {
         case TOKEN_NOT:
-            return "NOT";
+            return " NOT ";
         case TOKEN_AND:
-            return "AND";
+            return " AND ";
         case TOKEN_OR:
-            return "OR";
+            return " OR ";
         case TOKEN_PLUS:
-            return "+";
+            return " + ";
         case TOKEN_MINUS:
-            return "-";
+            return  " - ";
         case TOKEN_MULTIPLY:
-            return "*";
+            return " * ";
         case TOKEN_DIVIDE:
-            return "/";
+            return " / ";
         case TOKEN_GT:
-            return ">";
+            return " > ";
         case TOKEN_LT:
-            return "<";
+            return " < ";
         case TOKEN_LE:
-            return "<=";
+            return " <= ";
         case TOKEN_GE:
-            return ">=";
+            return " >= ";
         case TOKEN_EQ:
-            return "=";
+            return " = ";
         case TOKEN_NOT_EQUAL:
-            return "!=";
+            return " != ";
         case TOKEN_COMMA:
-            return ",";
+            return ", ";
         case TOKEN_ASSIGNMENT:
-            return "=";
+            return " = ";
         case TOKEN_LIKE:
-            return "LIKE";
+            return " LIKE ";
         case TOKEN_IN:
-            return "IN";
+            return " IN ";
         case TOKEN_FUN:
             return expr->term->id;
         case TOKEN_WORD:
@@ -99,7 +100,7 @@ char *getExpressionDesc(Expression *expr) {
             return expr->term->val->val.strval;
         }
         default:
-            return "UNKNOWN";
+            return " UNKNOWN ";
     }
 
 };
@@ -109,15 +110,51 @@ Expression *newExpression(TokenType type, Expression *nextexpr) {
     expr->opType = type;
     expr->nextexpr = nextexpr;
     expr->term = NULL;
+    expr->alias = NULL;
 }
 
 TermExpr *newTermExpr() {
     TermExpr *expr = (TermExpr *) malloc(sizeof(TermExpr));
     expr->id = NULL;
+    expr->val = NULL;
     return expr;
 }
 
-int expression_free(Expression *expr){};
-int expression_free_list(arraylist *expr){};
-int expression_print(Expression *expr){};
-int expression_print_list(arraylist *expr){};
+int expression_free(Expression *expr) {};
+
+int expression_free_list(arraylist *expr) {};
+
+int expression_print(Expression *expr) {
+    if (expr->term) {
+        printf(getExpressionDesc(expr));
+    } else{
+        printf("(");
+        OPERATOR op = operators[expr->opType];
+
+        if (op.numbers == 1){
+            printf(getExpressionDesc(expr));
+            expression_print(expr->nextexpr);
+        }else if (op.numbers == 2){
+            expression_print(expr->nextexpr);
+            printf(getExpressionDesc(expr));
+            expression_print(expr->nextexpr->nextexpr);
+        }
+        printf(")");
+    }
+
+    if (expr->alias) printf(" as %s", expr->alias);
+
+};
+
+int expression_print_list(arraylist *exprlist) {
+    Expression *expr1 = arraylist_get(exprlist, 0);
+    printf("[");
+    expression_print(expr1);
+
+    for (int i = 1; i <= exprlist->size - 1; i++) {
+        expr1 = arraylist_get(exprlist, i);
+        printf(", ");
+        expression_print(expr1);
+    }
+    printf("]");
+};
