@@ -16,7 +16,7 @@
  * @param parser 解析器
  * @return select语句
  */
-SelectStmt *parseSelectStmt(ParserT *parser) {
+SelectStmt *parse_sql_stmt_select(ParserT *parser) {
     TokenT *token = parseNextToken(parser);
     if (stricmp(token->text, "select") == 0) {
         token = parseEatAndNextToken(parser);

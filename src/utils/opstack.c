@@ -3,7 +3,7 @@
 //
 
 #include <malloc.h>
-#include "parseExpression.h"
+#include "opstack.h"
 
 /*使用链表表示栈：入栈*/
 op_stack *stackPush(op_stack *opstack, TokenType opType) {
@@ -18,17 +18,4 @@ op_stack *stackPop(op_stack *opstack) {
     op_stack *current = opstack->next;
     free(opstack);
     return current;
-}
-
-Expression *newExpression(TokenType type, Expression *nextexpr) {
-    Expression *expr = (Expression *) malloc(sizeof(Expression));
-    expr->opType = type;
-    expr->nextexpr = nextexpr;
-    expr->term = NULL;
-}
-
-TermExpr *newTermExpr() {
-    TermExpr *expr = (TermExpr *) malloc(sizeof(TermExpr));
-    expr->id = NULL;
-    return expr;
 }

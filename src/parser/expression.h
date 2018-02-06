@@ -8,21 +8,25 @@
 #include <literal.h>
 #include "tokenizer.h"
 
-typedef enum  {
+/**
+ * 支持条件表达式和算术表达式
+ *
+ */
+typedef enum {
     TERM_LITERAL,
     TERM_ID,
     TERM_NULL,
     TERM_COLREF,
     TERM_FUNC
-}TermType;
+} TermType;
 
-typedef enum  {
+typedef enum {
     FUNC_MAX,
     FUNC_MIN,
     FUNC_COUNT,
     FUNC_AVG,
     FUNC_SUM
-}FuncType;
+} FuncType;
 
 typedef enum {
     left2right,
@@ -37,7 +41,7 @@ typedef struct {
     TokenType oper; // 操作符
 } OPERATOR;
 
-// [操作数，入栈优先级，出栈优先级，结合性，编号]
+// [操作数，入栈优先级，出栈优先级，结合性，运算符编号]
 static const OPERATOR operators[] = {
         /* 算数运算 */
         {2, 18, 1,  left2right, TOKEN_OPEN_PAREN},     // 左括号
@@ -92,9 +96,16 @@ Expression *printRNExpression(char *exprs, Expression *expr);
 
 char *getExpressionDesc(Expression *expr);
 
+Expression *newExpression(TokenType type, Expression *nextexpr);
+
+TermExpr *newTermExpr();
+
 int expression_free(Expression *expr);
+
 int expression_free_list(Expression *expr);
+
 int expression_print(Expression *expr);
+
 int expression_print_list(Expression *expr);
 
 #endif //DONGMENDB_EXPRESSION_H

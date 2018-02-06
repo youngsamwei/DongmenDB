@@ -6,7 +6,7 @@
 #include <mem.h>
 #include <stdio.h>
 #include "parseExpressionRD.h"
-#include "parseExpression.h"
+#include "opstack.h"
 
 /*使用递归下降法解析表达式
  *

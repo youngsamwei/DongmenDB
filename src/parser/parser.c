@@ -8,7 +8,7 @@
 #include <dongmengsql.h>
 #include <dongmengdb.h>
 #include "parser.h"
-#include "parseExpression.h"
+#include "opstack.h"
 #include "parseExpressionRD.h"
 
 /**
