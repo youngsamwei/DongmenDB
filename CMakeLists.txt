@@ -39,10 +39,11 @@ aux_source_directory( src/security DIR_SRCS)
 aux_source_directory( src/tx DIR_SRCS)
 aux_source_directory( src/utils DIR_SRCS)
 
-aux_source_directory( src/shell DIR_SRCS)
+#aux_source_directory( src/shell DIR_SRCS)
 
-add_executable(dongmengdb ${DIR_SRCS} )
+#add_executable(dongmengdb ${DIR_SRCS} )
 
+add_executable(testParseSelect ${DIR_SRCS} src_test/parser/testParseSelect.c)
 #add_executable(testParserInsert ${DIR_SRCS} src_test/parser/testParserInsert.c)
 #add_executable(testParserCreate ${DIR_SRCS} src_test/parser/testParserCreate.c)
 #add_executable(testTokenizer ${DIR_SRCS} src_test/parser/testTokenizer.c)
