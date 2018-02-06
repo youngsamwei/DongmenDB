@@ -124,26 +124,30 @@ int expression_free(Expression *expr) {};
 
 int expression_free_list(arraylist *expr) {};
 
-int expression_print(Expression *expr) {
+Expression *expression_print(Expression *expr) {
+    if(!expr) return NULL;
+    Expression *result;
     if (expr->term) {
         printf(getExpressionDesc(expr));
+        result = expr->nextexpr;
     } else{
         printf("(");
         OPERATOR op = operators[expr->opType];
 
         if (op.numbers == 1){
             printf(getExpressionDesc(expr));
-            expression_print(expr->nextexpr);
+            result = expression_print(expr->nextexpr);
+
         }else if (op.numbers == 2){
-            expression_print(expr->nextexpr);
+            result = expression_print(expr->nextexpr);
             printf(getExpressionDesc(expr));
-            expression_print(expr->nextexpr->nextexpr);
+            result = expression_print(result);
         }
         printf(")");
     }
 
     if (expr->alias) printf(" as %s", expr->alias);
-
+    return  result;
 };
 
 int expression_print_list(arraylist *exprlist) {
