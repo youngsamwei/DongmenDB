@@ -33,7 +33,7 @@ struct RA_s {
    union {
       struct { char *name; } table;
       struct { RA_t *ra; Expression *cond; } sigma;
-      struct { RA_t *ra; Expression *expr_list; } pi;
+      struct { RA_t *ra; arraylist *expr_list; } pi;
       struct { RA_t *ra1, *ra2; } binary;
       struct { RA_t *ra; Expression *to_rename; char *new_name;} rho;
    };
@@ -44,7 +44,7 @@ void RA_print(RA_t *ra);
 
 RA_t *RA_Table(const char *name);
 RA_t *RA_Sigma(RA_t *ra, Expression *expr);
-RA_t *RA_Pi(RA_t *ra, Expression *expr_list);
+RA_t *RA_Pi(RA_t *ra, arraylist *expr_list);
 RA_t *RA_Union(RA_t *ra1, RA_t *ra2);
 RA_t *RA_Difference(RA_t *ra1, RA_t *ra2);
 RA_t *RA_Cross(RA_t *ra1, RA_t *ra2);

@@ -10,12 +10,12 @@ SRA_t *SRATable(TableReference_t *ref)
     return sra;
 }
 
-SRA_t *SRAProject(SRA_t *sra, Expression *expr)
+SRA_t *SRAProject(SRA_t *sra, arraylist *exprlist)
 {
     SRA_t *new_sra = (SRA_t *)calloc(1, sizeof(SRA_t));
     new_sra->t = SRA_PROJECT;
     new_sra->project.sra = sra;
-    new_sra->project.expr_list = expr;
+    new_sra->project.expr_list = exprlist;
     return new_sra;
 }
 
@@ -130,14 +130,14 @@ void SRA_print(SRA_t *sra)
             if (sra->project.group_by)
             {
                 printf("Group by ");
-                expression_print(sra->project.group_by);
+                expression_print_list(sra->project.group_by);
                 printf(" ");
             }
             if (sra->project.order_by)
             {
                 printf("Order by ");
-                expression_print(sra->project.order_by);
-                printf(sra->project.asc_desc == ORDER_BY_ASC ? " a" : " de");
+                expression_print_list(sra->project.order_by);
+                //printf(sra->project.asc_desc == ORDER_BY_ASC ? " a" : " de");
                 printf("scending");
             }
         }
@@ -250,7 +250,7 @@ SRA_t *SRA_applyOption(SRA_t *sra, ProjectOption_t *option)
         if (option->order_by)
         {
             sra->project.order_by = option->order_by;
-            sra->project.asc_desc = option->asc_desc;
+//            sra->project.asc_desc = option->asc_desc;
         }
         if (option->group_by)
         {
@@ -263,13 +263,13 @@ SRA_t *SRA_applyOption(SRA_t *sra, ProjectOption_t *option)
 void ProjectOption_free(ProjectOption_t *opt)
 {
     if (opt->group_by)
-        expression_free(opt->group_by);
+        expression_free_list(opt->group_by);
     if (opt->order_by)
-        expression_free(opt->order_by);
+        expression_free_list(opt->order_by);
     free(opt);
 }
 
-ProjectOption_t *OrderBy_make(Expression *expr, enum OrderBy asc_desc)
+ProjectOption_t *OrderBy_make(arraylist *expr, enum OrderBy asc_desc)
 {
     ProjectOption_t *ob = (ProjectOption_t *)calloc(1, sizeof(ProjectOption_t));
     ob->asc_desc = asc_desc;
@@ -277,7 +277,7 @@ ProjectOption_t *OrderBy_make(Expression *expr, enum OrderBy asc_desc)
     return ob;
 }
 
-ProjectOption_t *GroupBy_make(Expression *expr)
+ProjectOption_t *GroupBy_make(arraylist *expr)
 {
     ProjectOption_t *gb = (ProjectOption_t *)calloc(1, sizeof(ProjectOption_t));
     gb->group_by = expr;
@@ -347,13 +347,13 @@ void ProjectOption_print(ProjectOption_t *op)
     if (op->order_by)
     {
         printf("Order by: (%p) ", op->order_by);
-        expression_print(op->order_by);
+        expression_print_list(op->order_by);
         printf(op->asc_desc == ORDER_BY_ASC ? " ascending" : " descending");
     }
     if (op->group_by)
     {
         printf("Group by: (%p) ", op->group_by);
-        expression_print(op->group_by);
+        expression_print_list(op->group_by);
     }
     if (!op->order_by && !op->group_by)
     {
@@ -384,8 +384,8 @@ void SRA_free(SRA_t *sra)
     case SRA_PROJECT:
         SRA_free(sra->project.sra);
         expression_free_list(sra->project.expr_list);
-        expression_free(sra->project.order_by);
-        expression_free(sra->project.group_by);
+            expression_free_list(sra->project.order_by);
+            expression_free_list(sra->project.group_by);
         break;
     case SRA_SELECT:
         SRA_free(sra->select.sra);

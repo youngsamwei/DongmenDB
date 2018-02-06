@@ -16,7 +16,7 @@
  * @param parser 解析器
  * @return select语句
  */
-SelectStmt *parse_sql_stmt_select(ParserT *parser) {
+SRA_t *parse_sql_stmt_select(ParserT *parser) {
     TokenT *token = parseNextToken(parser);
     if (stricmp(token->text, "select") == 0) {
         token = parseEatAndNextToken(parser);
@@ -24,7 +24,7 @@ SelectStmt *parse_sql_stmt_select(ParserT *parser) {
         strcpy(parser->parserMessage, "语法错误.");
         return NULL;
     }
-    FieldsExpr *fieldsExpr = parseFieldsExpr(parser);
+    arraylist *fieldsExpr = parseFieldsExpr(parser);
     if (parser->parserStateType == PARSER_WRONG) {
         return NULL;
     }
@@ -35,13 +35,14 @@ SelectStmt *parse_sql_stmt_select(ParserT *parser) {
     } else {
         token = parseEatAndNextToken(parser);
     }
-    TablesExpr *tablesExpr = parseTablesExpr(parser);
+    SRA_t *tablesExpr = parseTablesExpr(parser);
     if (parser->parserStateType == PARSER_WRONG) {
         return NULL;
     }
+    SRA_t *project = SRAProject(tablesExpr, fieldsExpr);
     token = parseNextToken(parser);
     if (token == NULL || token->type == TOKEN_SEMICOLON) {
-        return createSelectStmt(fieldsExpr, tablesExpr, NULL, NULL, NULL);
+        return project;
     }
     if (stricmp(token->text, "where") != 0) {
         strcpy(parser->parserMessage, "语法错误.");
@@ -53,9 +54,10 @@ SelectStmt *parse_sql_stmt_select(ParserT *parser) {
     if (parser->parserStateType == PARSER_WRONG) {
         return NULL;
     }
-    token = parseNextToken(parser);;
+    SRA_t *select = SRASelect(project, whereExpr);
+    token = parseNextToken(parser);
     if (token == NULL || token->type == TOKEN_SEMICOLON) {
-        return createSelectStmt(fieldsExpr, tablesExpr, whereExpr, NULL, NULL);
+        return select;
     }
     TokenT *tokenBy = parseNextToken(parser);;
     if (stricmp(token->text, "group") != 0) {
@@ -65,13 +67,14 @@ SelectStmt *parse_sql_stmt_select(ParserT *parser) {
         strcpy(parser->parserMessage, "语法错误.");
         return NULL;
     }
-    GroupExpr *groupExpr = parseGroupExpr(parser);
+    arraylist *groupExpr = parseFieldsExpr(parser);
+    project->project.group_by = groupExpr;
     if (parser->parserStateType == PARSER_WRONG) {
         return NULL;
     }
     token = parseNextToken(parser);
     if (token == NULL) {
-        return createSelectStmt(fieldsExpr, tablesExpr, whereExpr, groupExpr, NULL);
+        return select;
     }
     tokenBy = parseNextToken(parser);
     if (stricmp(token->text, "order") != 0) {
@@ -81,69 +84,61 @@ SelectStmt *parse_sql_stmt_select(ParserT *parser) {
         strcpy(parser->parserMessage, "语法错误.");
         return NULL;
     }
-    OrderExpr *orderExpr = parseOrderExpr(parser);
+    arraylist *orderExpr = parseOrderExpr(parser);
+    project->project.order_by = orderExpr;
     if (parser->parserStateType == PARSER_WRONG) {
         return NULL;
     }
     token = parseNextToken(parser);;
     if (token == NULL) {
-        return createSelectStmt(fieldsExpr, tablesExpr, whereExpr, groupExpr, orderExpr);
+        return select;
     } else {
         return NULL;
     }
 
 };
 
-
-FieldsExpr *parseFieldsExpr(ParserT *parser) {
-    Expression *expr0;
-    expr0 = parseExpressionRD(parser);
-
-    FieldsExpr *fieldsExpr0 = (FieldsExpr *) malloc(sizeof(FieldsExpr));
-    fieldsExpr0->alias = NULL;
-    fieldsExpr0->nextField = NULL;
-    fieldsExpr0->expr = expr0;
+/**
+ * 解析select后面的表达式列表，以arraylist返回
+ * @param parser 语法分析器
+ * @return 表达式列表
+ */
+arraylist *parseFieldsExpr(ParserT *parser) {
+    arraylist *exprs = arraylist_create();
+    Expression *expr0 = parseExpressionRD(parser);
+    arraylist_add(exprs, expr0);
 
     TokenT *token = parseNextToken(parser);
     while (token != NULL && token->type == TOKEN_COMMA) {
         parseEatAndNextToken(parser);
         Expression *expr1 = parseExpressionRD(parser);
-        FieldsExpr *fieldsExpr1 = (FieldsExpr *) malloc(sizeof(FieldsExpr));
-        fieldsExpr1->alias = NULL;
-        fieldsExpr1->expr = expr1;
-        fieldsExpr1->nextField = fieldsExpr0;
-        fieldsExpr0 = fieldsExpr1;
+        arraylist_add(exprs, expr1);
         token = parseNextToken(parser);
     }
 
-    return fieldsExpr0;
+    return exprs;
 };
 
-TablesExpr *parseTablesExpr(ParserT *parser) {
+SRA_t *parseTablesExpr(ParserT *parser) {
     TokenT *token = parseNextToken(parser);
     if (token->type == TOKEN_WORD) {
 
-        TablesExpr *tablesExpr = (TablesExpr *) malloc(sizeof(TablesExpr));
-        tablesExpr->db = NULL;
-        tablesExpr->joinExpr = NULL;
-        tablesExpr->name = token->text;
-        tablesExpr->nextTable = NULL;
-        tablesExpr->schema = NULL;
+        char *tableName = strdup(token->text);
+        TableReference_t *ref =   TableReference_make(tableName, NULL);
+        SRA_t *table =  SRATable(ref);
 
         TokenT *token = parseEatAndNextToken(parser);
         while (token != NULL && token->type == TOKEN_COMMA) {
             token = parseEatAndNextToken(parser);/*跳过comma*/
-            TablesExpr *tablesExpr1 = (TablesExpr *) malloc(sizeof(TablesExpr));
-            tablesExpr1->db = NULL;
-            tablesExpr1->joinExpr = NULL;
-            tablesExpr1->name = token->text;
-            tablesExpr1->nextTable = tablesExpr;
-            tablesExpr1->schema = NULL;
-            tablesExpr = tablesExpr1;
+            char *tableName = strdup(token->text);
+            TableReference_t *ref1 =   TableReference_make(tableName, NULL);
+            SRA_t *table1 =  SRATable(ref);
+
+            table = SRAJoin(table, table1, NULL);
             token = parseEatAndNextToken(parser);
         }
 
-        return tablesExpr;
+        return table;
     }
 
     return NULL;

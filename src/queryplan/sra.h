@@ -45,6 +45,7 @@ data JoinCondition = On Condition
 
 */
 
+#include <arraylist.h>
 #include "create.h"
 #include "ra.h"
 
@@ -73,13 +74,17 @@ typedef struct SRA_Table_s {
    TableReference_t *ref; /* TableReference_t defined in create.h */
 } SRA_Table_t;
 
+typedef struct order_by_expr_{
+    Expression *expr;
+    enum OrderBy asc_desc;
+}order_by_expr;
+
 typedef struct SRA_Project_s {
    SRA_t *sra;
-   Expression *expr_list;
-   Expression *order_by;
+   arraylist *expr_list; //expression列表
+   arraylist *order_by; //order_by_expr的列表
    int distinct;
-   enum OrderBy asc_desc;
-   Expression *group_by;
+   arraylist *group_by; // expression列表
 } SRA_Project_t;
 
 typedef struct SRA_Select_s {
@@ -125,12 +130,12 @@ struct JoinCondition_s {
 };
 
 typedef struct ProjectOption_s {
-   Expression *order_by, *group_by;
+   arraylist *order_by, *group_by;
    enum OrderBy asc_desc; /* not used by group by */
 } ProjectOption_t;
 
 SRA_t *SRATable(TableReference_t *ref);
-SRA_t *SRAProject(SRA_t *sra, Expression *expr_list);
+SRA_t *SRAProject(SRA_t *sra, arraylist *expr_list);
 SRA_t *SRASelect(SRA_t *sra, Expression *cond);
 SRA_t *SRANaturalJoin(SRA_t *sra1, SRA_t *sra2);
 SRA_t *SRAJoin(SRA_t *sra1, SRA_t *sra2, JoinCondition_t *cond);
@@ -145,8 +150,8 @@ SRA_t *SRAIntersect(SRA_t *sra1, SRA_t *sra2);
 SRA_t *SRA_applyOption(SRA_t *sra, ProjectOption_t *option);
 SRA_t *SRA_makeDistinct(SRA_t *sra);
 
-ProjectOption_t *OrderBy_make(Expression *expr, enum OrderBy o);
-ProjectOption_t *GroupBy_make(Expression *expr);
+ProjectOption_t *OrderBy_make(arraylist *expr, enum OrderBy o);
+ProjectOption_t *GroupBy_make(arraylist *expr);
 ProjectOption_t *ProjectOption_combine(ProjectOption_t *order_by, 
                                         ProjectOption_t *group_by);
 void ProjectOption_print(ProjectOption_t *sra);

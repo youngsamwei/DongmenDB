@@ -118,6 +118,6 @@ TermExpr *newTermExpr() {
 }
 
 int expression_free(Expression *expr){};
-int expression_free_list(Expression *expr){};
+int expression_free_list(arraylist *expr){};
 int expression_print(Expression *expr){};
-int expression_print_list(Expression *expr){};
+int expression_print_list(arraylist *expr){};
