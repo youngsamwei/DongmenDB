@@ -5,6 +5,7 @@
 #include "literal.h"
 #include "column.h"
 /*
+算术表达式.
 
 data Expression_t = Term String
                 | Plus Expression_t Expression

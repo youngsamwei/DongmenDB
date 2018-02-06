@@ -22,17 +22,17 @@
 
 typedef struct dongmengsql_statement
 {
-    /*
+
     bool explain;
     char *text;
-    uint8_t type;*/
-    /*
+    uint8_t type;
+
     union {
         Create_t *create;
         SRA_t    *select;
         Insert_t *insert;
         Delete_t *delete;
-    } stmt;*/
+    } stmt;
 } dongmengsql_statement_t;
 
 int dongmengsql_parser(const char *sql, dongmengsql_statement_t **stmt);

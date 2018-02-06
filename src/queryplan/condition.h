@@ -5,6 +5,7 @@
 #include "expression.h"
 
 /*
+ 条件表达式
 data Condition_t = Eq Expression_t Expression
                | Lt Expression_t Expression
                | Gt Expression_t Expression

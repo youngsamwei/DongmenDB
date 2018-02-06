@@ -11,7 +11,7 @@
 #include "parseExpressionRD.h"
 
 
-/** 17096052888
+/**
  * @brief 解析select语句
  * @param parser 解析器
  * @return select语句
@@ -69,7 +69,7 @@ SelectStmt *parseSelectStmt(ParserT *parser) {
     if (parser->parserStateType == PARSER_WRONG) {
         return NULL;
     }
-    token = parseNextToken(parser);;
+    token = parseNextToken(parser);
     if (token == NULL) {
         return createSelectStmt(fieldsExpr, tablesExpr, whereExpr, groupExpr, NULL);
     }

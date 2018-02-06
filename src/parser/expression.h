@@ -22,7 +22,7 @@ typedef struct {
     TokenType oper; // 操作符
 } OPERATOR;
 
-// in expression.c
+// [操作数，入栈优先级，出栈优先级，结合性，编号]
 static const OPERATOR operators[] = {
         /* 算数运算 */
         {2, 18, 1,  left2right, TOKEN_OPEN_PAREN},     // 左括号
