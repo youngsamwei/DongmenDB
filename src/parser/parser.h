@@ -48,8 +48,8 @@ UpdateStmt *parseUpdate(ParserT *parser);
 TermExpr *parseTermExpr(ParserT *parser);
 BinaryExpr *parseBinaryExpr(ParserT *parser);
 UnaryExpr *parseUnaryExpr(ParserT *parser);
-GroupExpr *parseGroupExpr(ParserT *parser);
-OrderExpr *parseOrderExpr(ParserT *parser);
+arraylist *parseGroupExpr(ParserT *parser);
+arraylist *parseOrderExpr(ParserT *parser);
 ColumnsExpr *parseColumnsExpr(ParserT *parser);
 SetExpr *parseSetExpr(ParserT *parser);
 

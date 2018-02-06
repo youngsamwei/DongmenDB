@@ -93,9 +93,9 @@ BinaryExpr *parseBinaryExpr(ParserT *parser) { return NULL; };
 
 UnaryExpr *parseUnaryExpr(ParserT *parser) { return NULL; };
 
-GroupExpr *parseGroupExpr(ParserT *parser) { return NULL; };
+arraylist *parseGroupExpr(ParserT *parser) { return NULL; };
 
-OrderExpr *parseOrderExpr(ParserT *parser) { return NULL; };
+arraylist *parseOrderExpr(ParserT *parser) { return NULL; };
 
 ColumnsExpr *parseColumnsExpr(ParserT *parser) { return NULL; };
 

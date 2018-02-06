@@ -32,12 +32,6 @@ typedef struct TablesExpr_ {
 } TablesExpr;
 
 typedef struct GroupExpr_ GroupExpr;
-typedef struct GroupExpr_ {
-    Expression *expr;
-    GroupExpr *next;
-} GroupExpr;
-
-
 typedef struct OrderExpr_ OrderExpr;
 typedef struct OrderExpr_ {
     enum OrderBy orderType;
