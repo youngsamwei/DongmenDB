@@ -70,6 +70,7 @@ SRA_t *parse_sql_stmt_select(ParserT *parser) {
     token = parseNextToken(parser);
     arraylist *groupExpr = parseFieldsExpr(parser);
     project->project.group_by = groupExpr;
+    project->project.group_by = groupExpr;
     if (parser->parserStateType == PARSER_WRONG) {
         return NULL;
     }
@@ -94,7 +95,7 @@ SRA_t *parse_sql_stmt_select(ParserT *parser) {
         return NULL;
     }
     token = parseNextToken(parser);;
-    if (token == NULL) {
+    if (token == NULL || token->type == TOKEN_SEMICOLON) {
         return project;
     } else {
         return NULL;
