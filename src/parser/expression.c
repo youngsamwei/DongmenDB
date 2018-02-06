@@ -2,14 +2,7 @@
 // Created by Sam on 2018/1/17.
 //
 
-#include <stddef.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <mem.h>
-#include "expression.h"
-#include "literal.h"
-#include "statement.h"
-
+#include "dongmengsql.h"
 
 char *printExpression(char *exprs, Expression *expr) {
     Expression *expr0 = expr;
@@ -110,3 +103,8 @@ char *getExpressionDesc(Expression *expr) {
     }
 
 };
+
+int expression_free(Expression *expr){};
+int expression_free_list(Expression *expr){};
+int expression_print(Expression *expr){};
+int expression_print_list(Expression *expr){};

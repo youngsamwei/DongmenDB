@@ -1,7 +1,6 @@
 #ifndef __CREATE_H_
 #define __CREATE_H_
 
-#include "common.h"
 #include "column.h"
 
 typedef struct Table_s {

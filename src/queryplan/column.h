@@ -1,8 +1,8 @@
 #ifndef __COLUMN_H_
 #define __COLUMN_H_
 
-#include "common.h"
 #include "literal.h"
+#include "expression.h"
 
 enum constraint_type {
    CONS_NOT_NULL,
@@ -25,7 +25,7 @@ typedef struct Constraint_t {
       ForeignKeyRef_t ref;
       Literal_t *default_val;
       unsigned size;
-      Condition_t *check;
+      Expression *check;
    } constraint;
    struct Constraint_t *next;
 } Constraint_t;
@@ -33,7 +33,7 @@ typedef struct Constraint_t {
 typedef struct Column_t {
    char *name;
    enum data_type type;
-   Constraint_t *constraints;
+    Constraint_t *constraints;
    size_t offset; /* offset in bytes from the beginning of the row */
    struct Column_t *next;
 } Column_t;
@@ -53,7 +53,7 @@ Constraint_t *PrimaryKey(void);
 Constraint_t *ForeignKey(ForeignKeyRef_t fkr);
 Constraint_t *Default(Literal_t *val);
 Constraint_t *Unique(void);
-Constraint_t *Check(Condition_t *cond);
+Constraint_t *Check(Expression *cond);
 Constraint_t *ColumnSize(unsigned size);
 Constraint_t *Constraint_append(Constraint_t *constraints, Constraint_t *constraint);
 Column_t *Column_addConstraint(Column_t *column, Constraint_t *constraints);

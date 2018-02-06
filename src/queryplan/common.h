@@ -11,9 +11,6 @@ enum query_type {
    SELECT_Q, CREATE_T_Q, CREATE_I_Q, INSERT_Q, DELETE_Q 
 };
 
-/* Forward declarations */
-typedef struct Condition_s Condition_t;
-
 typedef struct Query_s {
    enum query_type t;
    union {

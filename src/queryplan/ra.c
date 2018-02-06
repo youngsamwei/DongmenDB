@@ -1,5 +1,4 @@
-#include <dongmengsql.h>
-
+#include "dongmengsql.h"
 
 void RA_print(RA_t *ra)
 {
@@ -10,7 +9,7 @@ void RA_print(RA_t *ra)
         break;
     case RA_SIGMA:
         indent_print("Sigma(");
-        Condition_print(ra->sigma.cond);
+        expression_print(ra->sigma.cond);
         printf(", ");
         upInd();
         RA_print(ra->sigma.ra);
@@ -19,7 +18,7 @@ void RA_print(RA_t *ra)
         break;
     case RA_PI:
         indent_print("Pi(");
-        Expression_printList(ra->pi.expr_list);
+        expression_print_list(ra->pi.expr_list);
         printf(", ");
         upInd();
         RA_print(ra->pi.ra);
@@ -55,7 +54,7 @@ void RA_print(RA_t *ra)
         break;
     case RA_RHO_EXPR:
         indent_print("RhoExpr(");
-        Expression_print(ra->rho.to_rename);
+        expression_print(ra->rho.to_rename);
         printf(", \"%s\",", ra->rho.new_name);
         upInd();
         RA_print(ra->rho.ra);
@@ -90,7 +89,7 @@ RA_t *RA_Table (const char *name)
     return new_ra;
 }
 
-RA_t *RA_Sigma (RA_t *ra, Condition_t *cond)
+RA_t *RA_Sigma (RA_t *ra, Expression *cond)
 {
     RA_t *new_ra = (RA_t *)calloc(1, sizeof(RA_t));
     new_ra->t = RA_SIGMA;
@@ -100,7 +99,7 @@ RA_t *RA_Sigma (RA_t *ra, Condition_t *cond)
     return new_ra;
 }
 
-RA_t *RA_Pi (RA_t *ra, Expression_t *expr_list)
+RA_t *RA_Pi (RA_t *ra, Expression *expr_list)
 {
     RA_t *new_ra = (RA_t *)calloc(1, sizeof(RA_t));
     new_ra->t = RA_PI;
@@ -149,7 +148,7 @@ RA_t *RA_RhoTable (RA_t *ra, const char *new_name)
     return new_ra;
 }
 
-RA_t *RA_RhoExpr (RA_t *ra, Expression_t *expr, const char *new_name)
+RA_t *RA_RhoExpr (RA_t *ra, Expression *expr, const char *new_name)
 {
     RA_t *new_ra = (RA_t *)calloc(1, sizeof(RA_t));
     new_ra->t = RA_RHO_EXPR;
@@ -164,12 +163,12 @@ void RA_free(RA_t *ra)
     switch(ra->t)
     {
     case RA_SIGMA:
-        Condition_free(ra->sigma.cond);
+        expression_free(ra->sigma.cond);
         RA_free(ra->sigma.ra);
         break;
     case RA_PI:
         RA_free(ra->pi.ra);
-        Expression_freeList(ra->pi.expr_list);
+        expression_free_list(ra->pi.expr_list);
         break;
     case RA_UNION:
     case RA_DIFFERENCE:
@@ -180,7 +179,7 @@ void RA_free(RA_t *ra)
     case RA_RHO_EXPR:
         RA_free(ra->rho.ra);
         free(ra->rho.new_name);
-        Expression_free(ra->rho.to_rename);
+        expression_free(ra->rho.to_rename);
         break;
     case RA_RHO_TABLE:
         RA_free(ra->rho.ra);
