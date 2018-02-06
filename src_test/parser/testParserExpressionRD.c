@@ -6,7 +6,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <parseExpressionRD.h>
-#include "parseExpression.h"
+#include "opstack.h"
 
 /*
  * main will have a string argument (in argv[1]).

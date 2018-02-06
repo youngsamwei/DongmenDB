@@ -104,6 +104,19 @@ char *getExpressionDesc(Expression *expr) {
 
 };
 
+Expression *newExpression(TokenType type, Expression *nextexpr) {
+    Expression *expr = (Expression *) malloc(sizeof(Expression));
+    expr->opType = type;
+    expr->nextexpr = nextexpr;
+    expr->term = NULL;
+}
+
+TermExpr *newTermExpr() {
+    TermExpr *expr = (TermExpr *) malloc(sizeof(TermExpr));
+    expr->id = NULL;
+    return expr;
+}
+
 int expression_free(Expression *expr){};
 int expression_free_list(Expression *expr){};
 int expression_print(Expression *expr){};

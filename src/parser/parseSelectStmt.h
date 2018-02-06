@@ -9,7 +9,7 @@
 #include "parser.h"
 #include "dongmengdb.h"
 
-SelectStmt *parseSelectStmt(ParserT *parser);
+SelectStmt *parse_sql_stmt_select(ParserT *parser);
 
 FieldsExpr *parseFieldsExpr(ParserT *parser);
 TablesExpr *parseTablesExpr(ParserT *parser);
