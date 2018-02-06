@@ -18,9 +18,7 @@
  */
 SRA_t *parse_sql_stmt_select(ParserT *parser) {
     TokenT *token = parseNextToken(parser);
-    if (stricmp(token->text, "select") == 0) {
-        token = parseEatAndNextToken(parser);
-    } else {
+    if(!matchToken(parser, TOKEN_RESERVED_WORD, "select")){
         strcpy(parser->parserMessage, "语法错误.");
         return NULL;
     }
@@ -29,44 +27,47 @@ SRA_t *parse_sql_stmt_select(ParserT *parser) {
         return NULL;
     }
     token = parseNextToken(parser);
-    if (stricmp(token->text, "from") != 0) {
+    if(!matchToken(parser, TOKEN_RESERVED_WORD, "from")){
         strcpy(parser->parserMessage, "语法错误.");
         return NULL;
-    } else {
-        token = parseEatAndNextToken(parser);
     }
+    token = parseNextToken(parser);
     SRA_t *tablesExpr = parseTablesExpr(parser);
     if (parser->parserStateType == PARSER_WRONG) {
         return NULL;
     }
-    SRA_t *project = SRAProject(tablesExpr, fieldsExpr);
     token = parseNextToken(parser);
     if (token == NULL || token->type == TOKEN_SEMICOLON) {
+        SRA_t *project = SRAProject(tablesExpr, fieldsExpr);
         return project;
     }
-    if (stricmp(token->text, "where") != 0) {
+    token = parseNextToken(parser);
+    if(!matchToken(parser, TOKEN_RESERVED_WORD, "where")){
         strcpy(parser->parserMessage, "语法错误.");
         return NULL;
-    } else {
-        token = parseEatAndNextToken(parser);
     }
+    token = parseNextToken(parser);
     Expression *whereExpr = parseExpressionRD(parser);
     if (parser->parserStateType == PARSER_WRONG) {
         return NULL;
     }
-    SRA_t *select = SRASelect(project, whereExpr);
+    SRA_t *select = SRASelect(tablesExpr, whereExpr);
+    SRA_t *project = SRAProject(select, fieldsExpr);
     token = parseNextToken(parser);
     if (token == NULL || token->type == TOKEN_SEMICOLON) {
-        return select;
+        return project;
     }
-    TokenT *tokenBy = parseNextToken(parser);;
-    if (stricmp(token->text, "group") != 0) {
-        strcpy(parser->parserMessage, "语法错误.");
-        return NULL;
-    } else if (stricmp(tokenBy->text, "by") != 0) {
+    token = parseNextToken(parser);
+    if(!matchToken(parser, TOKEN_RESERVED_WORD, "group")){
         strcpy(parser->parserMessage, "语法错误.");
         return NULL;
     }
+    token = parseNextToken(parser);
+    if(!matchToken(parser, TOKEN_RESERVED_WORD, "by")){
+        strcpy(parser->parserMessage, "语法错误.");
+        return NULL;
+    }
+    token = parseNextToken(parser);
     arraylist *groupExpr = parseFieldsExpr(parser);
     project->project.group_by = groupExpr;
     if (parser->parserStateType == PARSER_WRONG) {
@@ -74,16 +75,19 @@ SRA_t *parse_sql_stmt_select(ParserT *parser) {
     }
     token = parseNextToken(parser);
     if (token == NULL) {
-        return select;
+        return project;
     }
-    tokenBy = parseNextToken(parser);
-    if (stricmp(token->text, "order") != 0) {
-        strcpy(parser->parserMessage, "语法错误.");
-        return NULL;
-    } else if (stricmp(tokenBy->text, "by") != 0) {
+    token = parseNextToken(parser);
+    if(!matchToken(parser, TOKEN_RESERVED_WORD, "order")){
         strcpy(parser->parserMessage, "语法错误.");
         return NULL;
     }
+    token = parseNextToken(parser);
+    if(!matchToken(parser, TOKEN_RESERVED_WORD, "by")){
+        strcpy(parser->parserMessage, "语法错误.");
+        return NULL;
+    }
+    token = parseNextToken(parser);
     arraylist *orderExpr = parseOrderExpr(parser);
     project->project.order_by = orderExpr;
     if (parser->parserStateType == PARSER_WRONG) {
@@ -91,7 +95,7 @@ SRA_t *parse_sql_stmt_select(ParserT *parser) {
     }
     token = parseNextToken(parser);;
     if (token == NULL) {
-        return select;
+        return project;
     } else {
         return NULL;
     }
@@ -132,7 +136,7 @@ SRA_t *parseTablesExpr(ParserT *parser) {
             token = parseEatAndNextToken(parser);/*跳过comma*/
             char *tableName = strdup(token->text);
             TableReference_t *ref1 =   TableReference_make(tableName, NULL);
-            SRA_t *table1 =  SRATable(ref);
+            SRA_t *table1 =  SRATable(ref1);
 
             table = SRAJoin(table, table1, NULL);
             token = parseEatAndNextToken(parser);

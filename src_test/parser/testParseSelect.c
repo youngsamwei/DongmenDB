@@ -20,10 +20,9 @@ int main(int argc, char **argv) {
     ParserT *parser = newParser(tokenizer);
     char selectStr[256];
     memset(selectStr,0,sizeof(selectStr));
-    SelectStmt *selectStmt = parse_sql_stmt_select(parser);
+    SRA_t *selectStmt = parse_sql_stmt_select(parser);
     if (selectStmt != NULL) {
-        printSelectStmt(selectStr, selectStmt );
-        printf(selectStr);
+        SRA_print(selectStmt);
     } else {
         printf(parser->parserMessage);
     }
