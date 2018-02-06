@@ -1,12 +1,6 @@
 #ifndef __SRA_H_
 #define __SRA_H_
 
-#include "common.h"
-#include "expression.h"
-#include "create.h"
-#include "condition.h"
-#include "ra.h"
-
 /*
 SQL:
 select f.a as Col1, g.a as Col2 from Foo f, Foo g where Col1 != Col2;
@@ -51,6 +45,9 @@ data JoinCondition = On Condition
 
 */
 
+#include "create.h"
+#include "ra.h"
+
 /* Forward declarations */
 typedef struct SRA_s SRA_t;
 typedef struct JoinCondition_s JoinCondition_t;
@@ -78,16 +75,16 @@ typedef struct SRA_Table_s {
 
 typedef struct SRA_Project_s {
    SRA_t *sra;
-   Expression_t *expr_list;
-   Expression_t *order_by;
+   Expression *expr_list;
+   Expression *order_by;
    int distinct;
    enum OrderBy asc_desc;
-   Expression_t *group_by;
+   Expression *group_by;
 } SRA_Project_t;
 
 typedef struct SRA_Select_s {
    SRA_t *sra;
-   Condition_t *cond;
+    Expression *cond;
 } SRA_Select_t;
 
 typedef struct SRA_Join_s {
@@ -122,19 +119,19 @@ enum JoinConditionType {
 struct JoinCondition_s {
    enum JoinConditionType t;
    union {
-      Condition_t *on;
+       Expression *on;
       StrList_t *col_list;
    };
 };
 
 typedef struct ProjectOption_s {
-   Expression_t *order_by, *group_by;
+   Expression *order_by, *group_by;
    enum OrderBy asc_desc; /* not used by group by */
 } ProjectOption_t;
 
 SRA_t *SRATable(TableReference_t *ref);
-SRA_t *SRAProject(SRA_t *sra, Expression_t *expr_list);
-SRA_t *SRASelect(SRA_t *sra, Condition_t *cond);
+SRA_t *SRAProject(SRA_t *sra, Expression *expr_list);
+SRA_t *SRASelect(SRA_t *sra, Expression *cond);
 SRA_t *SRANaturalJoin(SRA_t *sra1, SRA_t *sra2);
 SRA_t *SRAJoin(SRA_t *sra1, SRA_t *sra2, JoinCondition_t *cond);
 SRA_t *SRALeftOuterJoin(SRA_t *sra1, SRA_t *sra2, JoinCondition_t *cond);
@@ -148,13 +145,13 @@ SRA_t *SRAIntersect(SRA_t *sra1, SRA_t *sra2);
 SRA_t *SRA_applyOption(SRA_t *sra, ProjectOption_t *option);
 SRA_t *SRA_makeDistinct(SRA_t *sra);
 
-ProjectOption_t *OrderBy_make(Expression_t *expr, enum OrderBy o);
-ProjectOption_t *GroupBy_make(Expression_t *expr);
+ProjectOption_t *OrderBy_make(Expression *expr, enum OrderBy o);
+ProjectOption_t *GroupBy_make(Expression *expr);
 ProjectOption_t *ProjectOption_combine(ProjectOption_t *order_by, 
                                         ProjectOption_t *group_by);
 void ProjectOption_print(ProjectOption_t *sra);
 
-JoinCondition_t *On(Condition_t *cond);
+JoinCondition_t *On(Expression *cond);
 JoinCondition_t *Using(StrList_t *col_list);
 
 void SRA_free(SRA_t *sra);

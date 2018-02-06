@@ -5,9 +5,24 @@
 #ifndef DONGMENDB_EXPRESSION_H
 #define DONGMENDB_EXPRESSION_H
 
-#include <tokenizer.h>
-#include "literal.h"
-#include "sqlexpression.h"
+#include <literal.h>
+#include "tokenizer.h"
+
+typedef enum  {
+    TERM_LITERAL,
+    TERM_ID,
+    TERM_NULL,
+    TERM_COLREF,
+    TERM_FUNC
+}TermType;
+
+typedef enum  {
+    FUNC_MAX,
+    FUNC_MIN,
+    FUNC_COUNT,
+    FUNC_AVG,
+    FUNC_SUM
+}FuncType;
 
 typedef enum {
     left2right,
@@ -53,7 +68,7 @@ static const OPERATOR operators[] = {
 
 /*终结符：标识符，常量*/
 typedef struct TermExpr_ {
-    enum TermType t;
+    TermType t;
     union {
         char *id;
         Literal_t *val;
@@ -76,5 +91,10 @@ char *printExpression(char *exprs, Expression *expr);
 Expression *printRNExpression(char *exprs, Expression *expr);
 
 char *getExpressionDesc(Expression *expr);
+
+int expression_free(Expression *expr);
+int expression_free_list(Expression *expr);
+int expression_print(Expression *expr);
+int expression_print_list(Expression *expr);
 
 #endif //DONGMENDB_EXPRESSION_H

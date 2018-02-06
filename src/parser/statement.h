@@ -7,7 +7,6 @@
 
 #include <arraylist.h>
 #include <recordfile.h>
-#include "expression.h"
 #include "sqlexpression.h"
 
 /*定义语句级的结构*/

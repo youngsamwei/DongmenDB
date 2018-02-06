@@ -6,12 +6,8 @@
 #define DONGMENDB_SQLEXPRESSION_H
 
 #include "dongmengsql.h"
-#include "literal.h"
-#include "expression.h"
-#include "sqlexpression.h"
 
 typedef struct TablesExpr_ TablesExpr;
-typedef struct Expression_ Expression;
 typedef struct TermExpr_ TermExpr;
 typedef struct BinaryExpr_ BinaryExpr;
 typedef struct UnaryExpr_ UnaryExpr;

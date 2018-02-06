@@ -1,5 +1,4 @@
-#include <dongmengsql.h>
-
+#include "dongmengsql.h"
 
 static SRA_t *SRABinary(SRA_t *sra1, SRA_t *sra2, enum SRAType t);
 
@@ -11,7 +10,7 @@ SRA_t *SRATable(TableReference_t *ref)
     return sra;
 }
 
-SRA_t *SRAProject(SRA_t *sra, Expression_t *expr)
+SRA_t *SRAProject(SRA_t *sra, Expression *expr)
 {
     SRA_t *new_sra = (SRA_t *)calloc(1, sizeof(SRA_t));
     new_sra->t = SRA_PROJECT;
@@ -20,7 +19,7 @@ SRA_t *SRAProject(SRA_t *sra, Expression_t *expr)
     return new_sra;
 }
 
-SRA_t *SRASelect(SRA_t *sra, Condition_t *cond)
+SRA_t *SRASelect(SRA_t *sra, Expression *cond)
 {
     if (!cond)
     {
@@ -107,7 +106,7 @@ void SRA_print(SRA_t *sra)
         break;
     case SRA_SELECT:
         indent_print("Select(");
-        Condition_print(sra->select.cond);
+        expression_print(sra->select.cond);
         printf(", ");
         upInd();
         SRA_print(sra->select.sra);
@@ -116,7 +115,7 @@ void SRA_print(SRA_t *sra)
         break;
     case SRA_PROJECT:
         indent_print("Project(");
-        Expression_printList(sra->project.expr_list);
+        expression_print_list(sra->project.expr_list);
         printf(", ");
         upInd();
         SRA_print(sra->project.sra);
@@ -131,13 +130,13 @@ void SRA_print(SRA_t *sra)
             if (sra->project.group_by)
             {
                 printf("Group by ");
-                Expression_print(sra->project.group_by);
+                expression_print(sra->project.group_by);
                 printf(" ");
             }
             if (sra->project.order_by)
             {
                 printf("Order by ");
-                Expression_print(sra->project.order_by);
+                expression_print(sra->project.order_by);
                 printf(sra->project.asc_desc == ORDER_BY_ASC ? " a" : " de");
                 printf("scending");
             }
@@ -226,7 +225,7 @@ void JoinCondition_print(JoinCondition_t *cond)
     if (cond->t == JOIN_COND_ON)
     {
         printf("On: ");
-        Condition_print(cond->on);
+        expression_print(cond->on);
     }
     else if (cond->t == JOIN_COND_USING)
     {
@@ -264,13 +263,13 @@ SRA_t *SRA_applyOption(SRA_t *sra, ProjectOption_t *option)
 void ProjectOption_free(ProjectOption_t *opt)
 {
     if (opt->group_by)
-        Expression_free(opt->group_by);
+        expression_free(opt->group_by);
     if (opt->order_by)
-        Expression_free(opt->order_by);
+        expression_free(opt->order_by);
     free(opt);
 }
 
-ProjectOption_t *OrderBy_make(Expression_t *expr, enum OrderBy asc_desc)
+ProjectOption_t *OrderBy_make(Expression *expr, enum OrderBy asc_desc)
 {
     ProjectOption_t *ob = (ProjectOption_t *)calloc(1, sizeof(ProjectOption_t));
     ob->asc_desc = asc_desc;
@@ -278,7 +277,7 @@ ProjectOption_t *OrderBy_make(Expression_t *expr, enum OrderBy asc_desc)
     return ob;
 }
 
-ProjectOption_t *GroupBy_make(Expression_t *expr)
+ProjectOption_t *GroupBy_make(Expression *expr)
 {
     ProjectOption_t *gb = (ProjectOption_t *)calloc(1, sizeof(ProjectOption_t));
     gb->group_by = expr;
@@ -327,7 +326,7 @@ SRA_t *SRA_makeDistinct(SRA_t *sra)
     return sra;
 }
 
-JoinCondition_t *On(Condition_t *cond)
+JoinCondition_t *On(Expression *cond)
 {
     JoinCondition_t *jc = (JoinCondition_t *)calloc(1, sizeof(JoinCondition_t));
     jc->t = JOIN_COND_ON;
@@ -348,13 +347,13 @@ void ProjectOption_print(ProjectOption_t *op)
     if (op->order_by)
     {
         printf("Order by: (%p) ", op->order_by);
-        Expression_print(op->order_by);
+        expression_print(op->order_by);
         printf(op->asc_desc == ORDER_BY_ASC ? " ascending" : " descending");
     }
     if (op->group_by)
     {
         printf("Group by: (%p) ", op->group_by);
-        Expression_print(op->group_by);
+        expression_print(op->group_by);
     }
     if (!op->order_by && !op->group_by)
     {
@@ -367,7 +366,7 @@ void JoinCondition_free(JoinCondition_t *cond)
     switch (cond->t)
     {
     case JOIN_COND_ON:
-        Condition_free(cond->on);
+        expression_free(cond->on);
         break;
     case JOIN_COND_USING:
         StrList_free(cond->col_list);
@@ -384,13 +383,13 @@ void SRA_free(SRA_t *sra)
         break;
     case SRA_PROJECT:
         SRA_free(sra->project.sra);
-        Expression_freeList(sra->project.expr_list);
-        Expression_free(sra->project.order_by);
-        Expression_free(sra->project.group_by);
+        expression_free_list(sra->project.expr_list);
+        expression_free(sra->project.order_by);
+        expression_free(sra->project.group_by);
         break;
     case SRA_SELECT:
         SRA_free(sra->select.sra);
-        Condition_free(sra->select.cond);
+        expression_free(sra->select.cond);
         break;
     case SRA_FULL_OUTER_JOIN:
     case SRA_LEFT_OUTER_JOIN:
@@ -505,7 +504,7 @@ static RA_t *desugar_natural_join(SRA_t *sra)
     // /* for later use in choosing which columns to project */
     // List_t to_project;
     // /* create a condition that shared columns have equal values */
-    // Condition_t *cond = NULL;
+    // Expression *cond = NULL;
     // int first = 1; /* see below for purpose */
     // while (shared.size > 0) {
     //    Column_t *shared_col = (Column_t *)list_removeFront(&shared);

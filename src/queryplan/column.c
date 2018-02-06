@@ -1,4 +1,5 @@
-#include <dongmengsql.h>
+
+#include "dongmengsql.h"
 
 static ssize_t size_constraint = -1;
 
@@ -46,7 +47,7 @@ Constraint_t *Unique(void)
     return con;
 }
 
-Constraint_t *Check(Condition_t *cond)
+Constraint_t *Check(Expression *cond)
 {
     Constraint_t *con = (Constraint_t *)calloc(1, sizeof(Constraint_t));
     con->t = CONS_CHECK;
@@ -73,7 +74,7 @@ static void deleteConstraint_ts(Constraint_t *constraint)
             Literal_free(constraint->constraint.default_val);
             break;
         case CONS_CHECK:
-            Condition_free(constraint->constraint.check);
+            expression_free(constraint->constraint.check);
             break;
         default:
             break;
@@ -225,7 +226,7 @@ void Constraint_print(void *constraint_voidp)
         break;
     case CONS_CHECK:
         printf("Check: ");
-        Condition_print(constraint->constraint.check);
+        expression_print(constraint->constraint.check);
         break;
     case CONS_SIZE:
         printf("Size: %u", constraint->constraint.size);

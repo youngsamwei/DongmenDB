@@ -1,6 +1,6 @@
-#include <dongmengsql.h>
+#include "dongmengsql.h"
 
-Delete_t *Delete_make(const char *table_name, Condition_t *where)
+Delete_t *Delete_make(const char *table_name, Expression *where)
 {
     Delete_t *new_free = (Delete_t *)calloc(1, sizeof(Delete_t));
     new_free->table_name = strdup(table_name);
@@ -10,7 +10,7 @@ Delete_t *Delete_make(const char *table_name, Condition_t *where)
 
 void deleteDelete(Delete_t *del)
 {
-    Condition_free(del->where);
+    expression_free(del->where);
     free(del->table_name);
     free(del);
 }
@@ -18,7 +18,7 @@ void deleteDelete(Delete_t *del)
 void Delete_print(Delete_t *del)
 {
     printf("Delete from %s where ", del->table_name);
-    Condition_print(del->where);
+    expression_print(del->where);
     puts("");
 }
 
@@ -31,6 +31,6 @@ void Delete_free(Delete_t *del)
     }
     free(del->table_name);
     if (del->where)
-        Condition_free(del->where);
+        expression_free(del->where);
     free(del);
 }
