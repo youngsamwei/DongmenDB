@@ -267,7 +267,15 @@ int dongmengdb_shell_handle_select_table(dongmengdb_shell_handle_sql_t *ctx, con
     }
     if (selectStmt != NULL) {
         physical_scan *plan = plan_execute_select(ctx->db, selectStmt, ctx->db->tx);
-        printf("success.");
+        printf("\nsno \t sname\n");
+        while (plan->next(plan)){
+            char *sno = (char *)calloc(10,1);
+            char *sname = (char *)calloc(20,1);
+            plan->getString(plan, "sno", sno);
+            plan->getString(plan, "sname", sname);
+            printf("%i \t %s\n", sno, sname);
+        }
+        printf("\nsuccess.");
     } else {
         printf(parser->parserMessage);
     }

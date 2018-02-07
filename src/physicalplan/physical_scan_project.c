@@ -31,17 +31,36 @@ void physical_scan_project_init_scan(physical_scan *scan){
     scan->movetoRid = physical_scan_project_moveto_rid;
 }
 
-int physical_scan_project_before_first(physical_scan *scan){};
+int physical_scan_project_before_first(physical_scan *scan){
+    physical_scan *scan1  = scan->physicalScanProject->scan;
+    return scan1->beforeFirst(scan1);
+};
 
-int physical_scan_project_next(physical_scan *scan){};
+int physical_scan_project_next(physical_scan *scan){
+    physical_scan *scan1  = scan->physicalScanProject->scan;
+    return scan1->next(scan1);
+};
 
-int physical_scan_project_close(physical_scan *scan){};
+int physical_scan_project_close(physical_scan *scan){
+    physical_scan *scan1  = scan->physicalScanProject->scan;
+    return scan1->close(scan1);
+};
 
-int physical_scan_project_get_int(physical_scan *scan, char *fieldName){};
+int physical_scan_project_get_int(physical_scan *scan, char *fieldName){
+    physical_scan *scan1  = scan->physicalScanProject->scan;
+    return scan1->getInt(scan1, fieldName);
+};
 
-int physical_scan_project_get_string(physical_scan *scan, char *fieldName, char *value){};
+int physical_scan_project_get_string(physical_scan *scan, char *fieldName, char *value){
+    physical_scan *scan1  = scan->physicalScanProject->scan;
+    return scan1->getString(scan1, fieldName, value);
+};
 
-int physical_scan_project_has_field(physical_scan *scan, char *fieldName){};
+int physical_scan_project_has_field(physical_scan *scan, char *fieldName){
+    physical_scan *scan1  = scan->physicalScanProject->scan;
+    /*TODO:判断是否包含在 scan->physicalScanProject->expr_list 中*/
+    return scan1->hasField(scan1, fieldName);
+};
 
 int physical_scan_project_set_int(physical_scan *scan, char *fieldName, int value){};
 
