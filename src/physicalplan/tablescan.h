@@ -8,11 +8,13 @@
 #include <recordfile.h>
 
 typedef struct table_scan_ {
+    dongmengdb *db;
     record_file *recordFile;
     table_info *tableInfo;
+    transaction *tx;
 } table_scan;
 
-table_scan *table_scan_create(table_info *tableInfo, transaction *tx);
+table_scan *table_scan_create(dongmengdb *db, char *tableName, transaction *tx);
 
 int table_scan_before_first(table_scan *tableScan);
 

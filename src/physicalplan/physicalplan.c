@@ -3,7 +3,7 @@
 //
 
 #include "physicalplan.h"
-#include "tableplan.h"
+#include "tablescan.h"
 
 int plan_execute_delete(dongmengdb *db, char *tableName, Expression *condition, transaction *tx){
 
@@ -23,15 +23,14 @@ int plan_execute_update(dongmengdb *db, char *tableName, arraylist *fieldNames, 
  * @return
  */
 int plan_execute_insert(dongmengdb *db, char *tableName, arraylist *fieldNames, arraylist *values, transaction *tx){
-    table_plan *tablePlan = table_plan_create(db, tableName, tx);
-    table_scan *tableScan = table_plan_open(tablePlan);
+    table_scan *tableScan = table_scan_create(db, tableName, tx);
     table_scan_insert(tableScan);
     for (size_t i = 0; i < fieldNames->size; i++){
 
         char *fieldName = arraylist_get(fieldNames, i);
 
         void_ptr *ptr = (void_ptr *) malloc(sizeof(void_ptr *));
-        hashmap_get(tablePlan->tableInfo->fields, fieldName, ptr);
+        hashmap_get(tableScan->tableInfo->fields, fieldName, ptr);
         field_info *fieldInfo = *ptr;
 
         int type = fieldInfo->type;
