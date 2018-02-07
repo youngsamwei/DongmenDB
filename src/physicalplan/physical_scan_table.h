@@ -21,30 +21,30 @@ physical_scan *physical_scan_table_create(dongmengdb *db, char *tableName, trans
 
 void physical_scan_table_init_scan(physical_scan *scan);
 
-int physical_scan_table_before_first(physical_scan *tableScan);
+int physical_scan_table_before_first(physical_scan *scan);
 
-int physical_scan_table_next(physical_scan *tableScan);
+int physical_scan_table_next(physical_scan *scan);
 
-int physical_scan_table_close(physical_scan *tableScan);
+int physical_scan_table_close(physical_scan *scan);
 
-int physical_scan_table_get_val(physical_scan *tableScan, char *fieldName);
+int physical_scan_table_get_val(physical_scan *scan, char *fieldName);
 
-int physical_scan_table_get_int(physical_scan *tableScan, char *fieldName);
+int physical_scan_table_get_int(physical_scan *scan, char *fieldName);
 
-int physical_scan_table_get_string(physical_scan *tableScan, char *fieldName, char *value);
+int physical_scan_table_get_string(physical_scan *scan, char *fieldName, char *value);
 
-int physical_scan_table_has_field(physical_scan *tableScan, char *fieldName);
+int physical_scan_table_has_field(physical_scan *scan, char *fieldName);
 
-int physical_scan_table_set_int(physical_scan *tableScan, char *fieldName, int value);
+int physical_scan_table_set_int(physical_scan *scan, char *fieldName, int value);
 
-int physical_scan_table_set_string(physical_scan *tableScan, char *fieldName, char *value);
+int physical_scan_table_set_string(physical_scan *scan, char *fieldName, char *value);
 
-int physical_scan_table_delete(physical_scan *tableScan);
+int physical_scan_table_delete(physical_scan *scan);
 
-int physical_scan_table_insert(physical_scan *tableScan);
+int physical_scan_table_insert(physical_scan *scan);
 
-int physical_scan_table_get_rid(physical_scan *tableScan, record_id *recordId);
+int physical_scan_table_get_rid(physical_scan *scan, record_id *recordId);
 
-int physical_scan_table_moveto_rid(physical_scan *tableScan, record_id *recordId);
+int physical_scan_table_moveto_rid(physical_scan *scan, record_id *recordId);
 
 #endif //DONGMENDB_PHYSICAL_SCAN_TABLE_H
