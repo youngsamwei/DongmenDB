@@ -3,7 +3,8 @@
 //
 
 #include "physicalplan.h"
-#include "tablescan.h"
+#include "physicalscan.h"
+#include "physical_scan_table.h"
 
 int plan_execute_delete(dongmengdb *db, char *tableName, Expression *condition, transaction *tx){
 
@@ -23,27 +24,27 @@ int plan_execute_update(dongmengdb *db, char *tableName, arraylist *fieldNames, 
  * @return
  */
 int plan_execute_insert(dongmengdb *db, char *tableName, arraylist *fieldNames, arraylist *values, transaction *tx){
-    table_scan *tableScan = table_scan_create(db, tableName, tx);
-    table_scan_insert(tableScan);
+    physical_scan *scan = physical_scan_table_create(db, tableName, tx);
+    scan->insert(scan);
     for (size_t i = 0; i < fieldNames->size; i++){
 
         char *fieldName = arraylist_get(fieldNames, i);
 
         void_ptr *ptr = (void_ptr *) malloc(sizeof(void_ptr *));
-        hashmap_get(tableScan->tableInfo->fields, fieldName, ptr);
+        hashmap_get(scan->physicalScanTable->tableInfo->fields, fieldName, ptr);
         field_info *fieldInfo = *ptr;
 
         int type = fieldInfo->type;
         if (type == DATA_TYPE_INT) {
             integer *val = arraylist_get(values, i);
-            table_scan_set_int(tableScan, fieldName, val->val);
+            scan->setInt(scan, fieldName, val->val);
         }else if (type == DATA_TYPE_CHAR){
             char *val = arraylist_get(values, i);
             /*字符串超出定义时的长度，则截断字符串.*/
             if(fieldInfo->length<strlen(val)){
                 val[fieldInfo->length] = '\0';
             }
-            table_scan_set_string(tableScan, fieldName, val);
+            scan->setString(scan, fieldName, val);
         }else{
             return DONGMENGDB_EINVALIDSQL;
         }
