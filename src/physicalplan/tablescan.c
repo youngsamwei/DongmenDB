@@ -4,11 +4,12 @@
 
 #include "tablescan.h"
 
-table_scan *table_scan_create(table_info *tableInfo, transaction *tx) {
-    table_scan *tableScan = (table_scan *) malloc(sizeof(table_scan));
-    tableScan->tableInfo = tableInfo;
+table_scan *table_scan_create(dongmengdb *db, char *tableName,  transaction *tx) {
+    table_scan *tableScan = (table_scan *) calloc(sizeof(table_scan), 1);
+    tableScan->db = db;
+    tableScan->tableInfo = table_manager_get_tableinfo(db->metadataManager->tableManager, tableName, tx);
     tableScan->recordFile = (record_file *) malloc(sizeof(record_file));
-    record_file_create(tableScan->recordFile, tableInfo, tx);
+    record_file_create(tableScan->recordFile, tableScan->tableInfo, tx);
     return tableScan;
 };
 

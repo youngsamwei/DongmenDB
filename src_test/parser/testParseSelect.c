@@ -12,6 +12,7 @@
 int main(int argc, char **argv) {
 
     char *select = "select sno,ltrim(sname), round(ssex + 1,1) from student, sc, course where student.sno = sc.sno and sc.cno = course.cno and sage > 20";
+    select = "select sno,sname, ssex from student, sc, course where student.sno = sc.sno and sc.cno = course.cno and sage > 20";
     if (argc == 2) {
         select = argv[1];
     }
