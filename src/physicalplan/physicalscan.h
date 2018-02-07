@@ -20,6 +20,9 @@ typedef enum {
 
 typedef struct physical_scan_table_ physical_scan_table;
 typedef struct physical_scan_ physical_scan;
+typedef struct physical_scan_project_ physical_scan_project;
+typedef struct physical_scan_select_ physical_scan_select;
+typedef struct physical_scan_join_nest_loop_ physical_scan_join_nest_loop;
 
 typedef int (*physical_scan_before_first)(physical_scan *scan);
 
