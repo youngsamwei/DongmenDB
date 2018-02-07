@@ -7,6 +7,7 @@
 #include <parser.h>
 #include <parseSelectStmt.h>
 #include <mem.h>
+#include <physicalplan.h>
 
 
 int main(int argc, char **argv) {
@@ -24,6 +25,11 @@ int main(int argc, char **argv) {
     SRA_t *selectStmt = parse_sql_stmt_select(parser);
     if (selectStmt != NULL) {
         SRA_print(selectStmt);
+    } else {
+        printf(parser->parserMessage);
+    }
+    if (selectStmt != NULL) {
+        plan_execute_select(db, selectStmt, tx);
     } else {
         printf(parser->parserMessage);
     }

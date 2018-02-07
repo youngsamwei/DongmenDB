@@ -6,6 +6,7 @@
 #define DONGMENDB_PHYSICALSCAN_H
 
 #include <recordfile.h>
+#include <sra.h>
 #include "physical_scan_table.h"
 #include "physical_scan_join_nest_loop.h"
 #include "physical_scan_select.h"
@@ -70,5 +71,6 @@ typedef struct physical_scan_{
     physical_scan_moveto_rid movetoRid;
 } physical_scan;
 
+physical_scan *physical_scan_generate(dongmengdb *db, SRA_t *sra, transaction *tx);
 
 #endif //DONGMENDB_PHYSICALSCAN_H

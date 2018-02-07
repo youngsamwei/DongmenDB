@@ -6,6 +6,10 @@
 #include "physicalscan.h"
 #include "physical_scan_table.h"
 
+physical_scan *plan_execute_select(dongmengdb *db, SRA_t *sra, transaction *tx){
+    return physical_scan_generate(db, sra, tx);
+};
+
 int plan_execute_delete(dongmengdb *db, char *tableName, Expression *condition, transaction *tx){
 
 };

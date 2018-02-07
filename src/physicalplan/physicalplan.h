@@ -4,11 +4,21 @@
 
 #include <transaction.h>
 #include <expression.h>
+#include <sra.h>
+#include "physicalscan.h"
 
 #ifndef DONGMENDB_PLAN_H
 #define DONGMENDB_PLAN_H
 
-int plan_execute_select();
+/**
+ * 根据sra，选择每个操作的算法, 返回物理计划。
+ *
+ * @param db
+ * @param sra 关系代数表达式
+ * @param tx
+ * @return physical_scan 物理计划
+ */
+physical_scan *plan_execute_select(dongmengdb *db, SRA_t *sra, transaction *tx);
 
 int plan_execute_delete(dongmengdb *db, char *tableName, Expression *condition, transaction *tx);
 
