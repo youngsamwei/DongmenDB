@@ -9,8 +9,8 @@ physical_scan *physical_scan_select_create(physical_scan *scan) {
     physicalScanSelect->scan = scan;
 
     physical_scan *physicalScan = (physical_scan *)calloc(sizeof(physical_scan),1);
-    physicalScan->scanType = SCAN_TYPE_PROJECT;
-    physicalScan->physicalScanProject = physicalScanSelect;
+    physicalScan->scanType = SCAN_TYPE_SELECT;
+    physicalScan->physicalScanSelect = physicalScanSelect;
     physical_scan_select_init_scan(physicalScan);
     return physicalScan;
 };

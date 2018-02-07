@@ -16,3 +16,6 @@ insert into student(sno, sname, sage) values("2012010108","sam simith",27);
 
 .exit
 
+
+
+select sno,sname, ssex from student, sc, course where student.sno = sc.sno and sc.cno = course.cno and sage > 20;

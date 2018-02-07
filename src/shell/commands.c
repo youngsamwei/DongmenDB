@@ -72,7 +72,8 @@ int dongmengdb_shell_handle_cmd(dongmengdb_shell_handle_sql_t *ctx, const char *
             return 1;
         } else {
             if (stricmp(tokens[0], "select") == 0) {
-                rc = dongmengdb_shell_handle_sql(ctx, cmd);
+                dongmengdb_shell_handle_select_table(ctx, cmd);
+                //rc = dongmengdb_shell_handle_sql(ctx, cmd);
             } else if (stricmp(tokens[0], "create") == 0 && stricmp(tokens[1], "table") == 0) {
                 dongmengdb_shell_handle_create_table(ctx, cmd);
             } else if (stricmp(tokens[0], "insert") == 0 && stricmp(tokens[1], "into") == 0) {
@@ -247,6 +248,31 @@ int dongmengdb_shell_handle_insert_table(dongmengdb_shell_handle_sql_t *ctx, con
     }
 };
 
+int dongmengdb_shell_handle_select_table(dongmengdb_shell_handle_sql_t *ctx, const char *sqlselect){
+    if (!ctx->db) {
+        fprintf(stderr, "ERROR: No database is open.\n");
+        return 1;
+    }
+    char *sql = (char *) calloc(strlen(sqlselect), 1);
+    strcpy(sql, sqlselect);
+    TokenizerT *tokenizer = TKCreate(sql);
+    ParserT *parser = newParser(tokenizer);
+    memset(parser->parserMessage, 0, sizeof(parser->parserMessage));
+
+    SRA_t *selectStmt = parse_sql_stmt_select(parser);
+    if (selectStmt != NULL) {
+        SRA_print(selectStmt);
+    } else {
+        printf(parser->parserMessage);
+    }
+    if (selectStmt != NULL) {
+        physical_scan *plan = plan_execute_select(ctx->db, selectStmt, ctx->db->tx);
+        printf("success.");
+    } else {
+        printf(parser->parserMessage);
+    }
+}
+
 int dongmengdb_shell_handle_cmd_open(dongmengdb_shell_handle_sql_t *ctx, struct handler_entry *e, const char **tokens,
                                      int ntokens) {
     int rc;
@@ -274,7 +300,6 @@ int dongmengdb_shell_handle_cmd_open(dongmengdb_shell_handle_sql_t *ctx, struct 
 
     return DONGMENGDB_OK;
 }
-
 
 int dongmengdb_shell_handle_cmd_parse(dongmengdb_shell_handle_sql_t *ctx, struct handler_entry *e, const char **tokens,
                                       int ntokens) {
