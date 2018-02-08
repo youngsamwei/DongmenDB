@@ -39,6 +39,7 @@ int physical_scan_project_get_string_by_index(physical_scan *scan, int index, ch
 int physical_scan_project_get_string(physical_scan *scan, char *fieldName, char *value);
 
 int physical_scan_project_has_field(physical_scan *scan, char *fieldName);
+field_info *physical_scan_project_get_field(physical_scan *scan, char *fieldName);
 
 int physical_scan_project_set_int(physical_scan *scan, char *fieldName, int value);
 

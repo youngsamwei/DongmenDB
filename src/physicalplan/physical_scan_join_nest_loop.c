@@ -84,6 +84,17 @@ int physical_scan_join_nest_loop_has_field(physical_scan *scan, char *fieldName)
     return (scan1->hasField(scan1, fieldName)) || (scan2->hasField(scan2, fieldName));
 };
 
+field_info *physical_scan_join_nest_get_field(physical_scan *scan, char *fieldName){
+    physical_scan *scan1  = scan->physicalScanJoinNestLoop->scan1;
+    physical_scan *scan2  = scan->physicalScanJoinNestLoop->scan2;
+    field_info *fi = scan1->getField(scan1, fieldName);
+    if (fi){
+        return fi;
+    }else{
+        return scan2->getField(scan1, fieldName);
+    }
+};
+
 int physical_scan_join_nest_loop_set_int(physical_scan *scan, char *fieldName, int value){};
 
 int physical_scan_join_nest_loop_set_string(physical_scan *scan, char *fieldName, char *value){};

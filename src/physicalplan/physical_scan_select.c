@@ -67,6 +67,11 @@ int physical_scan_select_has_field(physical_scan *scan, char *fieldName){
     return scan1->hasField(scan1, fieldName);
 };
 
+field_info *physical_scan_select_get_field(physical_scan *scan, char *fieldName){
+    physical_scan *scan1  = scan->physicalScanSelect->scan;
+    return scan1->getField(scan1, fieldName);
+};
+
 int physical_scan_select_set_int(physical_scan *scan, char *fieldName, int value){
     physical_scan *scan1  = scan->physicalScanSelect->scan;
     return scan1->setInt(scan1, fieldName, value);

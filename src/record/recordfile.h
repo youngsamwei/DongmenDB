@@ -14,6 +14,7 @@
 #include <malloc.h>
 #include <mem.h>
 #include <transaction.h>
+#include <common.h>
 
 #define RECORD_FILE_EXT ".tbl"
 
@@ -37,14 +38,9 @@ typedef enum {
     RECORD_PAGE_INUSE
 } record_page_status;
 
-typedef enum {
-    DATA_TYPE_INT = 0,
-    DATA_TYPE_CHAR
-} DATA_TYPE;
-
 typedef struct field_info_ {
     char *fieldName;
-    DATA_TYPE type;
+    enum data_type type;
     int length;
 } field_info;
 
@@ -117,7 +113,7 @@ int record_file_append_block(record_file *recordFile);
 
 int record_file_record_formatter(record_file *recordFile, memory_page *memoryPage);
 
-field_info *field_info_create( DATA_TYPE type, int length);
+field_info *field_info_create( enum data_type type, int length);
 
 table_info *table_info_create(char *tableName, arraylist *fieldsName, hmap_t fields);
 int table_info_free(table_info *tableInfo);

@@ -125,7 +125,7 @@ int record_file_record_formatter(record_file *recordFile, memory_page *memoryPag
 
 }
 
-field_info *field_info_create(DATA_TYPE type, int length) {
+field_info *field_info_create(enum data_type type, int length) {
     field_info *fieldInfo = (field_info *) calloc(sizeof(field_info), 1);
     fieldInfo->type = type;
     fieldInfo->length = length;

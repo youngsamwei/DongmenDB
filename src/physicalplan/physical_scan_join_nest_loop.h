@@ -31,6 +31,7 @@ int physical_scan_join_nest_loop_get_int(physical_scan *tableScan, char *fieldNa
 int physical_scan_join_nest_loop_get_string(physical_scan *tableScan, char *fieldName, char *value);
 
 int physical_scan_join_nest_loop_has_field(physical_scan *tableScan, char *fieldName);
+field_info *physical_scan_join_nest_get_field(physical_scan *scan, char *fieldName);
 
 int physical_scan_join_nest_loop_set_int(physical_scan *tableScan, char *fieldName, int value);
 

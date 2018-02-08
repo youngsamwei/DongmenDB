@@ -10,12 +10,12 @@
 
 typedef struct physical_scan_ physical_scan;
 
-typedef struct physical_scan_table_{
+typedef struct physical_scan_table_ {
     dongmengdb *db;
     record_file *recordFile;
     table_info *tableInfo;
     transaction *tx;
-}physical_scan_table;
+} physical_scan_table;
 
 physical_scan *physical_scan_table_create(dongmengdb *db, char *tableName, transaction *tx);
 
@@ -34,6 +34,8 @@ int physical_scan_table_get_int(physical_scan *scan, char *fieldName);
 int physical_scan_table_get_string(physical_scan *scan, char *fieldName, char *value);
 
 int physical_scan_table_has_field(physical_scan *scan, char *fieldName);
+
+field_info *physical_scan_table_get_field(physical_scan *scan, char *fieldName);
 
 int physical_scan_table_set_int(physical_scan *scan, char *fieldName, int value);
 

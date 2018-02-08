@@ -26,6 +26,7 @@ void physical_scan_table_init_scan(physical_scan *scan){
     scan->getInt = physical_scan_table_get_int;
     scan->getString = physical_scan_table_get_string;
     scan->hasField = physical_scan_table_has_field;
+    scan->getField = physical_scan_table_get_field;
     scan->setInt = physical_scan_table_set_int;
     scan->setString = physical_scan_table_set_string;
     scan->delete  = physical_scan_table_delete;
@@ -33,6 +34,7 @@ void physical_scan_table_init_scan(physical_scan *scan){
     scan->getRid = physical_scan_table_get_rid;
     scan->movetoRid = physical_scan_table_moveto_rid;
 }
+
 int physical_scan_table_before_first(physical_scan *scan) {
     return record_file_before_first(scan->physicalScanTable->recordFile);
 };
@@ -53,7 +55,25 @@ int physical_scan_table_get_string(physical_scan *scan, char *fieldName, char *v
     return record_file_get_string(scan->physicalScanTable->recordFile, fieldName, value);
 };
 
-int physical_scan_table_has_field(physical_scan *scan, char *fieldName) {};
+int physical_scan_table_has_field(physical_scan *scan, char *fieldName) {
+    if (physical_scan_table_get_field(scan, fieldName)){
+        return 1;
+    }else{
+        return 0;
+    }
+};
+
+field_info *physical_scan_table_get_field(physical_scan *scan, char *fieldName){
+    hmap_t fields = scan->physicalScanTable->tableInfo->fields;
+    void_ptr *fiptr = (void_ptr *)calloc(sizeof(void_ptr), 1);
+    hashmap_get(fields, fieldName, fiptr);
+    if (fiptr){
+        field_info *fi = *fiptr;
+        return fi;
+    }else{
+        return NULL;
+    }
+};
 
 int physical_scan_table_set_int(physical_scan *scan, char *fieldName, int value) {
     return record_file_set_int(scan->physicalScanTable->recordFile, fieldName, value);
