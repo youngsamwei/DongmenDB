@@ -5,6 +5,8 @@
 #ifndef DONGMENDB_UTILS_H
 #define DONGMENDB_UTILS_H
 
+#include "arraylist.h"
+
 int dongmengdb_tokenize(char *str, char ***tokens);
 
 int bytes2int(unsigned char b1, unsigned char b2, unsigned char b3, unsigned char b4);
@@ -14,4 +16,7 @@ int bytes2int(unsigned char b1, unsigned char b2, unsigned char b3, unsigned cha
  * @return 字符串
  */
 char *new_id_name();
+
+char *getExpressionNamesTitle(arraylist *fields);
+
 #endif //DONGMENDB_UTILS_H

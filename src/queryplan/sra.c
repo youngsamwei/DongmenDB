@@ -106,7 +106,7 @@ void SRA_print(SRA_t *sra)
         break;
     case SRA_SELECT:
         indent_print("Select(");
-        expression_print(sra->select.cond);
+        expression_print(sra->select.cond, NULL);
         printf(", ");
         upInd();
         SRA_print(sra->select.sra);
@@ -225,7 +225,7 @@ void JoinCondition_print(JoinCondition_t *cond)
     if (cond->t == JOIN_COND_ON)
     {
         printf("On: ");
-        expression_print(cond->on);
+        expression_print(cond->on, NULL);
     }
     else if (cond->t == JOIN_COND_USING)
     {

@@ -226,7 +226,7 @@ void Constraint_print(void *constraint_voidp)
         break;
     case CONS_CHECK:
         printf("Check: ");
-        expression_print(constraint->constraint.check);
+        expression_print(constraint->constraint.check, NULL);
         break;
     case CONS_SIZE:
         printf("Size: %u", constraint->constraint.size);

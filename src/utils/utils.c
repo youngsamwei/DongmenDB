@@ -6,7 +6,20 @@
 #include <ctype.h>
 #include <malloc.h>
 #include <dongmengdb.h>
+#include <expression.h>
 #include "utils.h"
+
+char *getExpressionNamesTitle(arraylist *exprs){
+    char *title = (char *)calloc(1024,1);
+
+    for (int i = 0; i <= exprs->size - 1;i++){
+        Expression *expr = arraylist_get(exprs, i);
+        char *desc = getExpressionDesc(expr);
+        strcat(title, desc);
+        strcat(title, "\t");
+    }
+    return title;
+};
 
 char *new_id_name(){
     char *name = (char *) calloc(MAX_ID_NAME_LENGTH, sizeof(char *));

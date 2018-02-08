@@ -30,7 +30,11 @@ int physical_scan_project_next(physical_scan *scan);
 
 int physical_scan_project_close(physical_scan *scan);
 
+int physical_scan_project_get_int_by_index(physical_scan *scan, int index);
+
 int physical_scan_project_get_int(physical_scan *scan, char *fieldName);
+
+int physical_scan_project_get_string_by_index(physical_scan *scan, int index, char *value);
 
 int physical_scan_project_get_string(physical_scan *scan, char *fieldName, char *value);
 

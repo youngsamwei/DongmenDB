@@ -65,7 +65,7 @@ char *getExpressionDesc(Expression *expr) {
         case TOKEN_PLUS:
             return " + ";
         case TOKEN_MINUS:
-            return  " - ";
+            return " - ";
         case TOKEN_MULTIPLY:
             return " * ";
         case TOKEN_DIVIDE:
@@ -124,41 +124,68 @@ int expression_free(Expression *expr) {};
 
 int expression_free_list(arraylist *expr) {};
 
-Expression *expression_print(Expression *expr) {
-    if(!expr) return NULL;
+Expression *expression_print(Expression *expr, char *desc) {
+    if (!expr) return NULL;
     Expression *result;
     if (expr->term) {
-        printf(getExpressionDesc(expr));
+        if (desc) {
+            strcat(desc, getExpressionDesc(expr));
+        } else {
+            printf(getExpressionDesc(expr));
+        }
         result = expr->nextexpr;
-    } else{
-        printf("(");
+    } else {
+        if (desc) {
+            strcat(desc, "(");
+        } else {
+            printf("(");
+        }
         OPERATOR op = operators[expr->opType];
 
-        if (op.numbers == 1){
-            printf(getExpressionDesc(expr));
-            result = expression_print(expr->nextexpr);
+        if (op.numbers == 1) {
+            if (desc) {
+                strcat(desc, getExpressionDesc(expr));
+            } else {
+                printf(getExpressionDesc(expr));
+            }
+            result = expression_print(expr->nextexpr, desc);
 
-        }else if (op.numbers == 2){
-            result = expression_print(expr->nextexpr);
-            printf(getExpressionDesc(expr));
-            result = expression_print(result);
+        } else if (op.numbers == 2) {
+            result = expression_print(expr->nextexpr, desc);
+            if (desc) {
+                strcat(desc, getExpressionDesc(expr));
+            } else {
+                printf(getExpressionDesc(expr));
+            }
+            result = expression_print(result, desc);
         }
-        printf(")");
+        if (desc) {
+            strcat(desc, ")");
+        } else {
+            printf(")");
+        }
     }
 
-    if (expr->alias) printf(" as %s", expr->alias);
-    return  result;
+    if (expr->alias) {
+        if (desc) {
+            strcat(desc, " as ");
+            strcat(desc, expr->alias);
+        } else {
+            printf(" as %s", expr->alias);
+        }
+    }
+    return result;
 };
 
 int expression_print_list(arraylist *exprlist) {
     Expression *expr1 = arraylist_get(exprlist, 0);
     printf("[");
-    expression_print(expr1);
+    expression_print(expr1, NULL);
 
     for (int i = 1; i <= exprlist->size - 1; i++) {
         expr1 = arraylist_get(exprlist, i);
         printf(", ");
-        expression_print(expr1);
+        expression_print(expr1, NULL);
     }
     printf("]");
 };

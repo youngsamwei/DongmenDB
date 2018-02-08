@@ -26,7 +26,8 @@ enum data_type {
    TYPE_INT,
    TYPE_DOUBLE,
    TYPE_CHAR,
-   TYPE_TEXT
+   TYPE_TEXT,
+    TYPE_BOOLEAN
 };
 
 typedef struct StrList_t {
