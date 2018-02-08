@@ -54,7 +54,7 @@ Expression *parseReadLiteral(ParserT *parser) {
         TermExpr *term = newTermExpr();
         term->t = TERM_LITERAL;
         Literal_t *literal
-                = newLiteral(TYPE_DOUBLE);
+                = newLiteral(DATA_TYPE_DOUBLE);
         literal->val.dval = atof(token->text);
         literal->val.strval = token->text;
         term->val = literal;
@@ -67,7 +67,7 @@ Expression *parseReadLiteral(ParserT *parser) {
         TermExpr *term = newTermExpr();
         term->t = TERM_LITERAL;
         Literal_t *literal
-                = newLiteral(TYPE_TEXT);
+                = newLiteral(DATA_TYPE_TEXT);
         literal->val.strval = token->text;
         term->val = literal;
         expr0->term = term;

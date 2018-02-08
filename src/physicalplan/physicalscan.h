@@ -46,6 +46,8 @@ typedef int (* physical_scan_get_string)(physical_scan *scan, char *fieldName, c
 
 typedef int (* physical_scan_has_field)(physical_scan *scan, char *fieldName);
 
+typedef field_info* (* physical_scan_get_field)(physical_scan *scan, char *fieldName);
+
 typedef int (* physical_scan_set_int)(physical_scan *scan, char *fieldName, int value);
 
 typedef int (* physical_scan_set_string)(physical_scan *scan, char *fieldName, char *value);
@@ -72,6 +74,7 @@ typedef struct physical_scan_{
     physical_scan_get_int getInt;
     physical_scan_get_string getString;
     physical_scan_has_field hasField;
+    physical_scan_get_field getField;
     physical_scan_set_int setInt;
     physical_scan_set_string setString;
     physical_scan_delete delete;

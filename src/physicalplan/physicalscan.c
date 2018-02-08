@@ -57,21 +57,22 @@ physical_scan *physical_scan_generate(dongmengdb *db, SRA_t *sra, transaction *t
  * @param var
  * @return 后序表达式中的下一个表达式
  */
-Expression *physical_scan_evaluate_expression(Expression *expr, physical_scan *scan, variant *var){
+Expression *physical_scan_evaluate_expression(Expression *expr, physical_scan *scan, variant *var) {
+    if (!expr) return NULL;
     switch (expr->opType) {
         case TOKEN_NOT: {
-            variant *var1 = (variant *)calloc(sizeof(variant),1);
+            variant *var1 = (variant *) calloc(sizeof(variant), 1);
             Expression *nextexpr1 = physical_scan_evaluate_expression(expr, scan, var1);
-            var->type = TYPE_BOOLEAN;
-            var->booleanValue = ! var1->booleanValue ;
+            var->type = DATA_TYPE_BOOLEAN;
+            var->booleanValue = !var1->booleanValue;
             return nextexpr1;
         }
-        case TOKEN_AND:{
-            variant *var1 = (variant *)calloc(sizeof(variant),1);
-            variant *var2 = (variant *)calloc(sizeof(variant),1);
+        case TOKEN_AND: {
+            variant *var1 = (variant *) calloc(sizeof(variant), 1);
+            variant *var2 = (variant *) calloc(sizeof(variant), 1);
             Expression *nextexpr1 = physical_scan_evaluate_expression(expr, scan, var1);
             Expression *nextexpr2 = physical_scan_evaluate_expression(nextexpr1->nextexpr, scan, var1);
-            var->type = TYPE_BOOLEAN;
+            var->type = DATA_TYPE_BOOLEAN;
             var->booleanValue = var1->booleanValue && var2->booleanValue;
             return nextexpr2;
         }
@@ -80,119 +81,138 @@ Expression *physical_scan_evaluate_expression(Expression *expr, physical_scan *s
             variant *var2 = (variant *) calloc(sizeof(variant), 1);
             Expression *nextexpr1 = physical_scan_evaluate_expression(expr, scan, var1);
             Expression *nextexpr2 = physical_scan_evaluate_expression(nextexpr1->nextexpr, scan, var1);
-            var->type = TYPE_BOOLEAN;
+            var->type = DATA_TYPE_BOOLEAN;
             var->booleanValue = var1->booleanValue || var2->booleanValue;
             return nextexpr2;
         }
-        case TOKEN_PLUS:{
+        case TOKEN_PLUS: {
             variant *var1 = (variant *) calloc(sizeof(variant), 1);
             variant *var2 = (variant *) calloc(sizeof(variant), 1);
             Expression *nextexpr1 = physical_scan_evaluate_expression(expr, scan, var1);
             Expression *nextexpr2 = physical_scan_evaluate_expression(nextexpr1->nextexpr, scan, var1);
-            var->type = TYPE_INT;
+            var->type = DATA_TYPE_INT;
             var->intValue = var1->intValue + var2->intValue;
             return nextexpr2;
         }
-        case TOKEN_MINUS:{
+        case TOKEN_MINUS: {
             variant *var1 = (variant *) calloc(sizeof(variant), 1);
             variant *var2 = (variant *) calloc(sizeof(variant), 1);
             Expression *nextexpr1 = physical_scan_evaluate_expression(expr, scan, var1);
             Expression *nextexpr2 = physical_scan_evaluate_expression(nextexpr1->nextexpr, scan, var1);
-            var->type = TYPE_INT;
+            var->type = DATA_TYPE_INT;
             var->intValue = var1->intValue - var2->intValue;
             return nextexpr2;
         }
-        case TOKEN_MULTIPLY:{
+        case TOKEN_MULTIPLY: {
             variant *var1 = (variant *) calloc(sizeof(variant), 1);
             variant *var2 = (variant *) calloc(sizeof(variant), 1);
             Expression *nextexpr1 = physical_scan_evaluate_expression(expr, scan, var1);
             Expression *nextexpr2 = physical_scan_evaluate_expression(nextexpr1->nextexpr, scan, var1);
-            var->type = TYPE_INT;
+            var->type = DATA_TYPE_INT;
             var->intValue = var1->intValue * var2->intValue;
             return nextexpr2;
         }
-        case TOKEN_DIVIDE:{
+        case TOKEN_DIVIDE: {
             variant *var1 = (variant *) calloc(sizeof(variant), 1);
             variant *var2 = (variant *) calloc(sizeof(variant), 1);
             Expression *nextexpr1 = physical_scan_evaluate_expression(expr, scan, var1);
             Expression *nextexpr2 = physical_scan_evaluate_expression(nextexpr1->nextexpr, scan, var1);
-            var->type = TYPE_INT;
+            var->type = DATA_TYPE_INT;
             var->intValue = var1->intValue / var2->intValue;
             return nextexpr2;
         }
-        case TOKEN_GT:{
+        case TOKEN_GT: {
             variant *var1 = (variant *) calloc(sizeof(variant), 1);
             variant *var2 = (variant *) calloc(sizeof(variant), 1);
             Expression *nextexpr1 = physical_scan_evaluate_expression(expr, scan, var1);
             Expression *nextexpr2 = physical_scan_evaluate_expression(nextexpr1->nextexpr, scan, var1);
-            var->type = TYPE_BOOLEAN;
+            var->type = DATA_TYPE_BOOLEAN;
             var->booleanValue = var1->intValue > var2->intValue;
             return nextexpr2;
         }
-        case TOKEN_LT:{
+        case TOKEN_LT: {
             variant *var1 = (variant *) calloc(sizeof(variant), 1);
             variant *var2 = (variant *) calloc(sizeof(variant), 1);
             Expression *nextexpr1 = physical_scan_evaluate_expression(expr, scan, var1);
             Expression *nextexpr2 = physical_scan_evaluate_expression(nextexpr1->nextexpr, scan, var1);
-            var->type = TYPE_BOOLEAN;
+            var->type = DATA_TYPE_BOOLEAN;
             var->booleanValue = var1->intValue < var2->intValue;
             return nextexpr2;
         }
-        case TOKEN_LE:{
+        case TOKEN_LE: {
             variant *var1 = (variant *) calloc(sizeof(variant), 1);
             variant *var2 = (variant *) calloc(sizeof(variant), 1);
             Expression *nextexpr1 = physical_scan_evaluate_expression(expr, scan, var1);
             Expression *nextexpr2 = physical_scan_evaluate_expression(nextexpr1->nextexpr, scan, var1);
-            var->type = TYPE_BOOLEAN;
+            var->type = DATA_TYPE_BOOLEAN;
             var->booleanValue = var1->intValue <= var2->intValue;
             return nextexpr2;
         }
-        case TOKEN_GE:{
+        case TOKEN_GE: {
             variant *var1 = (variant *) calloc(sizeof(variant), 1);
             variant *var2 = (variant *) calloc(sizeof(variant), 1);
             Expression *nextexpr1 = physical_scan_evaluate_expression(expr, scan, var1);
             Expression *nextexpr2 = physical_scan_evaluate_expression(nextexpr1->nextexpr, scan, var1);
-            var->type = TYPE_BOOLEAN;
+            var->type = DATA_TYPE_BOOLEAN;
             var->booleanValue = var1->intValue >= var2->intValue;
             return nextexpr2;
         }
-        case TOKEN_EQ:{
+        case TOKEN_EQ: {
             variant *var1 = (variant *) calloc(sizeof(variant), 1);
             variant *var2 = (variant *) calloc(sizeof(variant), 1);
             Expression *nextexpr1 = physical_scan_evaluate_expression(expr, scan, var1);
             Expression *nextexpr2 = physical_scan_evaluate_expression(nextexpr1->nextexpr, scan, var1);
-            var->type = TYPE_BOOLEAN;
+            var->type = DATA_TYPE_BOOLEAN;
             var->booleanValue = var1->intValue == var2->intValue;
             return nextexpr2;
         }
-        case TOKEN_NOT_EQUAL:{
+        case TOKEN_NOT_EQUAL: {
             variant *var1 = (variant *) calloc(sizeof(variant), 1);
             variant *var2 = (variant *) calloc(sizeof(variant), 1);
             Expression *nextexpr1 = physical_scan_evaluate_expression(expr, scan, var1);
             Expression *nextexpr2 = physical_scan_evaluate_expression(nextexpr1->nextexpr, scan, var1);
-            var->type = TYPE_BOOLEAN;
+            var->type = DATA_TYPE_BOOLEAN;
             var->booleanValue = var1->intValue != var2->intValue;
             return nextexpr2;
         }
         case TOKEN_COMMA:
-            return ", ";
+            return NULL;
         case TOKEN_ASSIGNMENT:
-            return " = ";
+            return NULL;
         case TOKEN_LIKE:
-            return " LIKE ";
+            return NULL;
         case TOKEN_IN:
-            return " IN ";
+            return NULL;
         case TOKEN_FUN:
-            return expr->term->id;
-        case TOKEN_WORD:
-            arraylist *fields = scan->
-            return expr->term->id;
-        case TOKEN_DECIMAL:
+            return NULL;
+        case TOKEN_WORD: {
+            char *fieldName = expr->term->id;
+            field_info *fi = scan->getField(scan, fieldName);
+            if (fi->type == DATA_TYPE_INT) {
+                var->type = DATA_TYPE_INT;
+                var->intValue = scan->getInt(scan, fieldName);
+                return NULL;
+            } else if (fi->type == DATA_TYPE_CHAR) {
+                var->type = DATA_TYPE_CHAR;
+                var->strValue = (char *) calloc(fi->length, 1);
+                scan->getString(scan, fieldName, var->strValue);
+
+                return NULL;
+            }
+            return NULL;
+        }
+        case TOKEN_DECIMAL:{
+            var->type = DATA_TYPE_INT;
+            var->intValue = expr->term->val->val.ival;
+            return NULL;
+        }
         case TOKEN_STRING:
         case TOKEN_CHAR: {
-            return expr->term->val->val.strval;
+            var->type = DATA_TYPE_CHAR;
+            var->strValue = strdup(expr->term->val->val.strval);
+            return NULL;
         }
         default:
-            return " UNKNOWN ";
+            return NULL;
     }
 };

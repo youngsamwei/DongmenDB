@@ -30,6 +30,8 @@ int physical_scan_select_get_string(physical_scan *scan, char *fieldName, char *
 
 int physical_scan_select_has_field(physical_scan *scan, char *fieldName);
 
+field_info *physical_scan_select_get_field(physical_scan *scan, char *fieldName);
+
 int physical_scan_select_set_int(physical_scan *scan, char *fieldName, int value);
 
 int physical_scan_select_set_string(physical_scan *scan, char *fieldName, char *value);

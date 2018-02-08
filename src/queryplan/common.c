@@ -1,40 +1,39 @@
 #include <dongmengsql.h>
 
-char *typeToString(enum data_type type, char *buf)
-{
-    switch (type)
-    {
-    case TYPE_INT:
+char *typeToString(enum data_type type, char *buf) {
+    switch (type) {
+        case DATA_TYPE_INT:
             sprintf(buf, "int");
-        break;
-    case TYPE_DOUBLE:
-        sprintf(buf, "double");
-        break;
-    case TYPE_CHAR:
-        sprintf(buf, "char");
-        break;
-    case TYPE_TEXT:
-        sprintf(buf, "text");
-        break;
+            break;
+        case DATA_TYPE_DOUBLE:
+            sprintf(buf, "double");
+            break;
+        case DATA_TYPE_CHAR:
+            sprintf(buf, "char");
+            break;
+        case DATA_TYPE_TEXT:
+            sprintf(buf, "text");
+            break;
+        case DATA_TYPE_BOOLEAN:
+            sprintf(buf, "boolean");
+            break;
     }
+
     return buf;
 }
 
-StrList_t *StrList_makeWithNext(const char *str, StrList_t *next)
-{
-    StrList_t *list = (StrList_t *)calloc(1, sizeof(StrList_t));
+StrList_t *StrList_makeWithNext(const char *str, StrList_t *next) {
+    StrList_t *list = (StrList_t *) calloc(1, sizeof(StrList_t));
     list->str = strdup(str);
     list->next = next;
     return list;
 }
 
-void StrList_print(StrList_t *list)
-{
+void StrList_print(StrList_t *list) {
     int first = 1;
     printf("[");
-    while (list)
-    {
-        if (first) first=0;
+    while (list) {
+        if (first) first = 0;
         else printf(", ");
         printf("%s", list->str);
         list = list->next;
@@ -42,10 +41,8 @@ void StrList_print(StrList_t *list)
     printf("]");
 }
 
-void StrList_free(StrList_t *list)
-{
-    while (list)
-    {
+void StrList_free(StrList_t *list) {
+    while (list) {
         StrList_t *next = list->next;
         free(list);
         list = next;
@@ -54,14 +51,12 @@ void StrList_free(StrList_t *list)
 
 int ind = 0;
 
-void upInd()
-{
+void upInd() {
     ind++;
     printf("\n");
 }
 
-void downInd()
-{
+void downInd() {
     ind--;
     printf("\n");
     if (ind < 0) printf("error, ind is < 0");
@@ -69,15 +64,13 @@ void downInd()
 
 #define BUF_SIZE 5000
 
-void indent_print(const char *format,...)
-{
+void indent_print(const char *format, ...) {
     /* indent */
     int i;
     va_list argptr;
     char buffer[BUF_SIZE];
     if (ind < 1) ind = 0;
-    for (i=0; i<ind; ++i)
-    {
+    for (i = 0; i < ind; ++i) {
         if (i == 0)
             sprintf(buffer, "\t");
         else
@@ -90,45 +83,40 @@ void indent_print(const char *format,...)
     fflush(stdout);
 }
 
-static StrList_t *StrList_app(StrList_t *list1, StrList_t *list2)
-{
+static StrList_t *StrList_app(StrList_t *list1, StrList_t *list2) {
     list1->next = list2;
     return list1;
 }
 
-StrList_t *StrList_append(StrList_t *list1, StrList_t *list2)
-{
+StrList_t *StrList_append(StrList_t *list1, StrList_t *list2) {
     if (!list1) return list2;
     return StrList_app(list1, StrList_append(list1->next, list2));
 }
 
-StrList_t *StrList_make(char *str)
-{
-    StrList_t *list = (StrList_t *)calloc(1, sizeof(StrList_t));
+StrList_t *StrList_make(char *str) {
+    StrList_t *list = (StrList_t *) calloc(1, sizeof(StrList_t));
     list->str = str;
     return list;
 }
 
 
-void Query_free(Query_t *query)
-{
-    switch (query->t)
-    {
-    case SELECT_Q:
-        SRA_free(query->sra);
-        return;
-    case CREATE_T_Q:
-        Table_free(query->table);
-        return;
-    case CREATE_I_Q:
-        Index_free(query->index);
-        return;
-    case INSERT_Q:
-        Insert_free(query->insert);
-        return;
-    case DELETE_Q:
-        Delete_free(query->del);
-        return;
+void Query_free(Query_t *query) {
+    switch (query->t) {
+        case SELECT_Q:
+            SRA_free(query->sra);
+            return;
+        case CREATE_T_Q:
+            Table_free(query->table);
+            return;
+        case CREATE_I_Q:
+            Index_free(query->index);
+            return;
+        case INSERT_Q:
+            Insert_free(query->insert);
+            return;
+        case DELETE_Q:
+            Delete_free(query->del);
+            return;
     }
 }
 

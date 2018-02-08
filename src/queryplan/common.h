@@ -23,11 +23,11 @@ typedef struct Query_s {
 } Query_t;
 
 enum data_type {
-   TYPE_INT,
-   TYPE_DOUBLE,
-   TYPE_CHAR,
-   TYPE_TEXT,
-    TYPE_BOOLEAN
+   DATA_TYPE_INT,
+    DATA_TYPE_DOUBLE,
+    DATA_TYPE_CHAR,
+    DATA_TYPE_TEXT,
+    DATA_TYPE_BOOLEAN
 };
 
 typedef struct StrList_t {

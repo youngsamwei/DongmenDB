@@ -4,7 +4,7 @@
 Literal_t *litInt(int i)
 {
     Literal_t *lval = (Literal_t *)calloc(1, sizeof(Literal_t));
-    lval->t = TYPE_INT;
+    lval->t = DATA_TYPE_INT;
     lval->val.ival = i;
     return lval;
 }
@@ -12,7 +12,7 @@ Literal_t *litInt(int i)
 Literal_t *litDouble(double d)
 {
     Literal_t *lval = (Literal_t *)calloc(1, sizeof(Literal_t));
-    lval->t = TYPE_DOUBLE;
+    lval->t = DATA_TYPE_DOUBLE;
     lval->val.dval = d;
     return lval;
 }
@@ -20,7 +20,7 @@ Literal_t *litDouble(double d)
 Literal_t *litChar(char c)
 {
     Literal_t *lval = (Literal_t *)calloc(1, sizeof(Literal_t));
-    lval->t = TYPE_CHAR;
+    lval->t = DATA_TYPE_CHAR;
     lval->val.cval = c;
     return lval;
 }
@@ -28,7 +28,7 @@ Literal_t *litChar(char c)
 Literal_t *litText(char *str)
 {
     Literal_t *lval = (Literal_t *)calloc(1, sizeof(Literal_t));
-    lval->t = TYPE_TEXT;
+    lval->t = DATA_TYPE_TEXT;
     lval->val.strval = str;
     return lval;
 }
@@ -39,16 +39,16 @@ void Literal_print(Literal_t *val)
     printf("%s ", typeToString(val->t, buf));
     switch (val->t)
     {
-    case TYPE_INT:
+    case DATA_TYPE_INT:
         printf("%d", val->val.ival);
         break;
-    case TYPE_DOUBLE:
+    case DATA_TYPE_DOUBLE:
         printf("%f", val->val.dval);
         break;
-    case TYPE_CHAR:
+    case DATA_TYPE_CHAR:
         printf("'%c'", val->val.cval);
         break;
-    case TYPE_TEXT:
+    case DATA_TYPE_TEXT:
         printf("\"%s\"", val->val.strval);
         break;
     default:
@@ -84,7 +84,7 @@ Literal_t *Literal_append(Literal_t *lit1, Literal_t *lit2)
 
 void Literal_free(Literal_t *lval)
 {
-    if (lval->t == TYPE_TEXT)
+    if (lval->t == DATA_TYPE_TEXT)
         free(lval->val.strval);
     free(lval);
 }
