@@ -12,6 +12,15 @@
 #include "physical_scan_select.h"
 #include "physical_scan_project.h"
 
+typedef struct variant_{
+    enum data_type type;
+    union{
+        int intValue;
+        char *strValue;
+        int booleanValue;
+    };
+}variant;
+
 typedef enum {
     SCAN_TYPE_JOIN_NEST_LOOP,  //使用嵌套循环实现连接
     SCAN_TYPE_TABLE,
@@ -72,5 +81,6 @@ typedef struct physical_scan_{
 } physical_scan;
 
 physical_scan *physical_scan_generate(dongmengdb *db, SRA_t *sra, transaction *tx);
+Expression *physical_scan_evaluate_expression(Expression *expr, physical_scan *scan, variant *var);
 
 #endif //DONGMENDB_PHYSICALSCAN_H

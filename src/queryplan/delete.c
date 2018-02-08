@@ -18,7 +18,7 @@ void deleteDelete(Delete_t *del)
 void Delete_print(Delete_t *del)
 {
     printf("Delete from %s where ", del->table_name);
-    expression_print(del->where);
+    expression_print(del->where, NULL);
     puts("");
 }
 

@@ -267,13 +267,17 @@ int dongmengdb_shell_handle_select_table(dongmengdb_shell_handle_sql_t *ctx, con
     }
     if (selectStmt != NULL) {
         physical_scan *plan = plan_execute_select(ctx->db, selectStmt, ctx->db->tx);
-        printf("\nsno \t sname\n");
+        arraylist *exprs = plan->physicalScanProject->expr_list;
+        printf("\n%s\n", getExpressionNamesTitle(exprs));
         while (plan->next(plan)){
-            char *sno = (char *)calloc(10,1);
-            char *sname = (char *)calloc(20,1);
-            plan->getString(plan, "sno", sno);
-            plan->getString(plan, "sname", sname);
-            printf("%i \t %s\n", sno, sname);
+            for (int i = 0; i <= exprs->size - 1; i++) {
+                Expression *expr = arraylist_get(exprs, i);
+                char *sno = (char *) calloc(10, 1);
+                char *sname = (char *) calloc(20, 1);
+                plan->getString(plan, "sno", sno);
+                plan->getString(plan, "sname", sname);
+                printf("%i \t %s\n", sno, sname);
+            }
         }
         printf("\nsuccess.");
     } else {

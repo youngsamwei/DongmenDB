@@ -9,7 +9,7 @@ void RA_print(RA_t *ra)
         break;
     case RA_SIGMA:
         indent_print("Sigma(");
-        expression_print(ra->sigma.cond);
+        expression_print(ra->sigma.cond, NULL);
         printf(", ");
         upInd();
         RA_print(ra->sigma.ra);
@@ -54,7 +54,7 @@ void RA_print(RA_t *ra)
         break;
     case RA_RHO_EXPR:
         indent_print("RhoExpr(");
-        expression_print(ra->rho.to_rename);
+        expression_print(ra->rho.to_rename, NULL);
         printf(", \"%s\",", ra->rho.new_name);
         upInd();
         RA_print(ra->rho.ra);
