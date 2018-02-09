@@ -12,7 +12,7 @@
  * @param expr 表达式
  * @return 需要继续处理的后序表达式
  */
-int printRNExpression(char *exprs, TermExpr *term) {
+int printTermExpression(char *exprs, TermExpr *term) {
     if (term != NULL) {
         if (term->t == TERM_ID) {
             strcat(exprs, term->id);
@@ -99,10 +99,10 @@ Expression *expression_print(Expression *expr, char *desc) {
     Expression *result;
     if (expr->term) {
         if (desc) {
-            printRNExpression(desc, expr->term);
+            printTermExpression(desc, expr->term);
         } else {
             char *t = new_id_name();
-            printRNExpression(t, expr->term);
+            printTermExpression(t, expr->term);
             printf(t);
         }
         result = expr->nextexpr;

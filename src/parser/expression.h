@@ -102,7 +102,7 @@ typedef struct Expression_ {
 
 } Expression;
 
-int printRNExpression(char *exprs, TermExpr *term);
+int printTermExpression(char *exprs, TermExpr *term);
 
 const char *getOperatorDesc(TokenType type);
 
