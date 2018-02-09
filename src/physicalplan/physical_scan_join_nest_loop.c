@@ -20,13 +20,18 @@ void physical_scan_join_nest_loop_init_scan(physical_scan *scan){
     scan->beforeFirst = physical_scan_join_nest_loop_before_first;
     scan->next = physical_scan_join_nest_loop_next;
     scan->close  = physical_scan_join_nest_loop_close;
+    scan->getValByIndex = NULL;
+    scan->getIntByIndex = NULL;
+    scan->getStringByIndex = NULL;
+    scan->getVal = physical_scan_join_nest_loop_get_val;
     scan->getInt = physical_scan_join_nest_loop_get_int;
     scan->getString = physical_scan_join_nest_loop_get_string;
+    scan->getField = physical_scan_join_nest_loop_get_field;
     scan->hasField = physical_scan_join_nest_loop_has_field;
-    scan->setInt = physical_scan_join_nest_loop_set_int;
-    scan->setString = physical_scan_join_nest_loop_set_string;
-    scan->delete  = physical_scan_join_nest_loop_delete;
-    scan->insert = physical_scan_join_nest_loop_insert;
+    scan->setInt = NULL;
+    scan->setString = NULL;
+    scan->delete  = NULL;
+    scan->insert = NULL;
     scan->getRid = physical_scan_join_nest_loop_get_rid;
     scan->movetoRid = physical_scan_join_nest_loop_moveto_rid;
 }
@@ -58,6 +63,16 @@ int physical_scan_join_nest_loop_close(physical_scan *scan){
     scan2->close(scan2);
 };
 
+variant *physical_scan_join_nest_loop_get_val(physical_scan *scan, char *fieldName){
+    physical_scan *scan1  = scan->physicalScanJoinNestLoop->scan1;
+    physical_scan *scan2  = scan->physicalScanJoinNestLoop->scan2;
+    if (scan1->hasField(scan1, fieldName)){
+        return scan1->getVal(scan1, fieldName);
+    }else{
+        return scan2->getVal(scan2, fieldName);
+    };
+};
+
 int physical_scan_join_nest_loop_get_int(physical_scan *scan, char *fieldName){
     physical_scan *scan1  = scan->physicalScanJoinNestLoop->scan1;
     physical_scan *scan2  = scan->physicalScanJoinNestLoop->scan2;
@@ -84,7 +99,7 @@ int physical_scan_join_nest_loop_has_field(physical_scan *scan, char *fieldName)
     return (scan1->hasField(scan1, fieldName)) || (scan2->hasField(scan2, fieldName));
 };
 
-field_info *physical_scan_join_nest_get_field(physical_scan *scan, char *fieldName){
+field_info *physical_scan_join_nest_loop_get_field(physical_scan *scan, char *fieldName){
     physical_scan *scan1  = scan->physicalScanJoinNestLoop->scan1;
     physical_scan *scan2  = scan->physicalScanJoinNestLoop->scan2;
     field_info *fi = scan1->getField(scan1, fieldName);

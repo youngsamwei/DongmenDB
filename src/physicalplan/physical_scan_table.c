@@ -23,6 +23,10 @@ void physical_scan_table_init_scan(physical_scan *scan){
     scan->beforeFirst = physical_scan_table_before_first;
     scan->next = physical_scan_table_next;
     scan->close  = physical_scan_table_close;
+    scan->getValByIndex = physical_scan_table_get_val_by_index;
+    scan->getIntByIndex = physical_scan_table_get_int_by_index;
+    scan->getStringByIndex = physical_scan_table_get_string_by_index;
+    scan->getVal = physical_scan_table_get_val;
     scan->getInt = physical_scan_table_get_int;
     scan->getString = physical_scan_table_get_string;
     scan->hasField = physical_scan_table_has_field;
@@ -46,6 +50,14 @@ int physical_scan_table_next(physical_scan *scan) {
 int physical_scan_table_close(physical_scan *scan) {
     return record_file_close(scan->physicalScanTable->recordFile);
 };
+
+variant *physical_scan_table_get_val(physical_scan *scan, char *fieldName){};
+
+variant *physical_scan_table_get_val_by_index(physical_scan *scan, int index){};
+
+int physical_scan_table_get_int_by_index(physical_scan *scan, int index){};
+
+int physical_scan_table_get_string_by_index(physical_scan *scan, int index, char *value){};
 
 int physical_scan_table_get_int(physical_scan *scan, char *fieldName) {
     return record_file_get_int(scan->physicalScanTable->recordFile, fieldName);

@@ -8,6 +8,7 @@
 #include <recordfile.h>
 #include "physicalscan.h"
 
+typedef struct variant_ variant;
 typedef struct physical_scan_ physical_scan;
 
 typedef struct physical_scan_table_ {
@@ -27,7 +28,13 @@ int physical_scan_table_next(physical_scan *scan);
 
 int physical_scan_table_close(physical_scan *scan);
 
-int physical_scan_table_get_val(physical_scan *scan, char *fieldName);
+variant *physical_scan_table_get_val(physical_scan *scan, char *fieldName);
+
+variant *physical_scan_table_get_val_by_index(physical_scan *scan, int index);
+
+int physical_scan_table_get_int_by_index(physical_scan *scan, int index);
+
+int physical_scan_table_get_string_by_index(physical_scan *scan, int index, char *value);
 
 int physical_scan_table_get_int(physical_scan *scan, char *fieldName);
 
