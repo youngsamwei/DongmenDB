@@ -23,10 +23,12 @@ int printTermExpression(char *exprs, TermExpr *term) {
             if (val->t == DATA_TYPE_CHAR || val->t == DATA_TYPE_TEXT) {
                 strcat(exprs,val->val.strval);
             }else if (val->t == DATA_TYPE_INT || val->t == DATA_TYPE_DOUBLE){
-                char *ival = (char *)calloc(sizeof(20),1);
+                char *ival = (char *)calloc(20,1);
                 itoa(val->val.ival, ival, 10);
                 strcat(exprs, ival);
             }
+        } else if(term->t == TERM_FUNC){
+
         }
         return 1;
     }

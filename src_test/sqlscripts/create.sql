@@ -46,7 +46,7 @@ select student.sno,sname from student, sc, course where student.sno = sc.sno and
 select sage + 1, sno from student
 
 .open demodb
-select sno,cno,sname,grade, cname from student, sc, course where student.sno = sc.sno and sc.cno = course.cno
+select student.sno, sc.cno,sname,grade, cname from student, sc, course where student.sno = sc.sno and sc.cno = course.cno
 
 .open demodb
 select sno,cno,grade, cname from sc, course where sc.cno = course.cno and grade > 80

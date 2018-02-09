@@ -163,7 +163,7 @@ Expression *parseReadBuiltin(ParserT *parser) {
             }
             /*如果是function，则在expr的term_id中保存函数名称*/
             TermExpr *term = newTermExpr();
-            term->t = TERM_ID;
+            term->t = TERM_FUNC;
             term->id = text;
             expr0->term = term;
             return expr0;
