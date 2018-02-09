@@ -49,14 +49,14 @@ Expression *parseReadLiteral(ParserT *parser) {
     }
     if ((token->type == TOKEN_FLOAT || token->type == TOKEN_DECIMAL
          || token->type == TOKEN_EXP_FLOAT)) {
-        /*处理double数据*/
+
+        /*处理数值*/
         expr0 = newExpression(token->type, NULL);
         TermExpr *term = newTermExpr();
         term->t = TERM_LITERAL;
         Literal_t *literal
                 = newLiteral(DATA_TYPE_DOUBLE);
         literal->val.dval = atof(token->text);
-        literal->val.strval = token->text;
         term->val = literal;
         expr0->term = term;
         parseEatToken(parser);
@@ -68,7 +68,7 @@ Expression *parseReadLiteral(ParserT *parser) {
         term->t = TERM_LITERAL;
         Literal_t *literal
                 = newLiteral(DATA_TYPE_TEXT);
-        literal->val.strval = token->text;
+        literal->val.strval = strdup(token->text);
         term->val = literal;
         expr0->term = term;
         parseEatToken(parser);

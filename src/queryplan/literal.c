@@ -105,5 +105,9 @@ Literal_t *newLiteral(enum data_type t){
     Literal_t *literal = (Literal_t *)malloc(sizeof(Literal_t));
     literal->next = NULL;
     literal ->t = t;
+    literal->val.ival = 0;
+    literal->val.dval = 0;
+    literal->val.strval = NULL;
+    literal->val.cval = 0;
     return literal;
 };

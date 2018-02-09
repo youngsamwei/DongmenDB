@@ -43,11 +43,13 @@ int physical_scan_select_before_first(physical_scan *scan){
 
 int physical_scan_select_next(physical_scan *scan){
     physical_scan *scan1  = scan->physicalScanSelect->scan;
+    Expression *expr = scan->physicalScanSelect->cond;
     while (scan1->next(scan1)){
-        /* TODO:判断当前记录是否符合条件，不符合则继续next*/
-       // if (isSatisfied){
+        variant *var = (variant *)calloc(sizeof(variant),1);
+        physical_scan_evaluate_expression(expr, scan1, var);
+        if (var->type == DATA_TYPE_BOOLEAN && var->booleanValue){
             return 1;
-      //  }
+        }
     }
 
     return 0;

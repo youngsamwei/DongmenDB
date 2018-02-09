@@ -106,7 +106,7 @@ field_info *physical_scan_join_nest_loop_get_field(physical_scan *scan, char *fi
     if (fi){
         return fi;
     }else{
-        return scan2->getField(scan1, fieldName);
+        return scan2->getField(scan2, fieldName);
     }
 };
 

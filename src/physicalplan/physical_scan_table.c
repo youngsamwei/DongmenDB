@@ -79,7 +79,7 @@ field_info *physical_scan_table_get_field(physical_scan *scan, char *fieldName){
     hmap_t fields = scan->physicalScanTable->tableInfo->fields;
     void_ptr *fiptr = (void_ptr *)calloc(sizeof(void_ptr), 1);
     hashmap_get(fields, fieldName, fiptr);
-    if (fiptr){
+    if (*fiptr){
         field_info *fi = *fiptr;
         return fi;
     }else{

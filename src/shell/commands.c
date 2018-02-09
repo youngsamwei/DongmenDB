@@ -269,6 +269,7 @@ int dongmengdb_shell_handle_select_table(dongmengdb_shell_handle_sql_t *ctx, con
         physical_scan *plan = plan_execute_select(ctx->db, selectStmt, ctx->db->tx);
         arraylist *exprs = plan->physicalScanProject->expr_list;
         printf("\n%s\n", getExpressionNamesTitle(exprs));
+
         while (plan->next(plan)){
             for (int i = 0; i <= exprs->size - 1; i++) {
                 variant *var = plan->getValByIndex(plan, i);
