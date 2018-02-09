@@ -59,9 +59,9 @@ int physical_scan_select_close(physical_scan *scan){
     physical_scan *scan1  = scan->physicalScanSelect->scan;
     return scan1->close(scan1);
 };
-variant *physical_scan_select_get_val(physical_scan *scan, char *fieldName){
+variant *physical_scan_select_get_val(physical_scan *scan, char *tableName, char *fieldName){
     physical_scan *scan1 = scan->physicalScanProject->scan;
-    return scan1->getVal(scan1, fieldName);
+    return scan1->getVal(scan1, tableName, fieldName);
 };
 
 variant *physical_scan_select_get_val_by_index(physical_scan *scan, int index){
@@ -80,34 +80,34 @@ int physical_scan_select_get_string_by_index(physical_scan *scan, int index, cha
     return 1;
 };
 
-int physical_scan_select_get_int(physical_scan *scan, char *fieldName){
+int physical_scan_select_get_int(physical_scan *scan, char *tableName, char *fieldName){
     physical_scan *scan1  = scan->physicalScanSelect->scan;
-    return scan1->getInt(scan1, fieldName);
+    return scan1->getInt(scan1, tableName, fieldName);
 };
 
-int physical_scan_select_get_string(physical_scan *scan, char *fieldName, char *value){
+int physical_scan_select_get_string(physical_scan *scan, char *tableName, char *fieldName, char *value){
     physical_scan *scan1  = scan->physicalScanSelect->scan;
-    return scan1->getString(scan1, fieldName, value);
+    return scan1->getString(scan1, tableName, fieldName, value);
 };
 
-int physical_scan_select_has_field(physical_scan *scan, char *fieldName){
+int physical_scan_select_has_field(physical_scan *scan, char *tableName, char *fieldName){
     physical_scan *scan1  = scan->physicalScanSelect->scan;
-    return scan1->hasField(scan1, fieldName);
+    return scan1->hasField(scan1, tableName, fieldName);
 };
 
-field_info *physical_scan_select_get_field(physical_scan *scan, char *fieldName){
+field_info *physical_scan_select_get_field(physical_scan *scan, char *tableName, char *fieldName){
     physical_scan *scan1  = scan->physicalScanSelect->scan;
-    return scan1->getField(scan1, fieldName);
+    return scan1->getField(scan1, tableName, fieldName);
 };
 
-int physical_scan_select_set_int(physical_scan *scan, char *fieldName, int value){
+int physical_scan_select_set_int(physical_scan *scan, char *tableName, char *fieldName, int value){
     physical_scan *scan1  = scan->physicalScanSelect->scan;
-    return scan1->setInt(scan1, fieldName, value);
+    return scan1->setInt(scan1, tableName, fieldName, value);
 };
 
-int physical_scan_select_set_string(physical_scan *scan, char *fieldName, char *value){
+int physical_scan_select_set_string(physical_scan *scan, char *tableName, char *fieldName, char *value){
     physical_scan *scan1  = scan->physicalScanSelect->scan;
-    return scan1->setString(scan1, fieldName, value);
+    return scan1->setString(scan1, tableName, fieldName, value);
 };
 
 int physical_scan_select_delete(physical_scan *scan){

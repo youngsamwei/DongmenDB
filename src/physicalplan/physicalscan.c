@@ -221,23 +221,24 @@ Expression *physical_scan_evaluate_expression(Expression *expr, physical_scan *s
             /*两种情况：函数和字段名*/
             TermType type = expr->term->t;
             if (type == TERM_COLREF) {
-                char *fieldName = expr->term->ref->allName;/*包含表名的字段名全称*/
-                field_info *fi = scan->getField(scan, fieldName);
+                char *fieldName = expr->term->ref->columnName;/*包含表名的字段名全称*/
+                char *tableName = expr->term->ref->tableName;
+                field_info *fi = scan->getField(scan, tableName, fieldName);
                 switch (fi->type) {
                     case DATA_TYPE_INT:
                     case DATA_TYPE_DOUBLE:
                         var->type = DATA_TYPE_INT;
-                        var->intValue = scan->getInt(scan, fieldName);
+                        var->intValue = scan->getInt(scan, tableName, fieldName);
                         return expr->nextexpr;
                     case DATA_TYPE_CHAR:
                     case DATA_TYPE_TEXT:
                         var->type = DATA_TYPE_CHAR;
                         var->strValue = (char *) calloc(fi->length, 1);
-                        scan->getString(scan, fieldName, var->strValue);
+                        scan->getString(scan, tableName, fieldName, var->strValue);
                         return expr->nextexpr;
                     case DATA_TYPE_BOOLEAN:
                         var->type = DATA_TYPE_BOOLEAN;
-                        var->booleanValue = scan->getInt(scan, fieldName);
+                        var->booleanValue = scan->getInt(scan, tableName, fieldName);
                         return expr->nextexpr;
                 }
             } else if (type == TERM_FUNC){

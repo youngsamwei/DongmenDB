@@ -46,19 +46,19 @@ typedef int (*physical_scan_get_int_by_index)(physical_scan *scan, int index);
 
 typedef int (*physical_scan_get_string_by_index)(physical_scan *scan, int index, char *value);
 
-typedef variant *( *physical_scan_get_val)(physical_scan *scan, char *fieldName);
+typedef variant *( *physical_scan_get_val)(physical_scan *scan, char *tableName, char *fieldName);
 
-typedef int (*physical_scan_get_int)(physical_scan *scan, char *fieldName);
+typedef int (*physical_scan_get_int)(physical_scan *scan, char *tableName, char *fieldName);
 
-typedef int (*physical_scan_get_string)(physical_scan *scan, char *fieldName, char *value);
+typedef int (*physical_scan_get_string)(physical_scan *scan, char *tableName, char *fieldName, char *value);
 
-typedef int (*physical_scan_has_field)(physical_scan *scan, char *fieldName);
+typedef int (*physical_scan_has_field)(physical_scan *scan, char *tableName, char *fieldName);
 
-typedef field_info *(*physical_scan_get_field)(physical_scan *scan, char *fieldName);
+typedef field_info *(*physical_scan_get_field)(physical_scan *scan, char *tableName, char *fieldName);
 
-typedef int (*physical_scan_set_int)(physical_scan *scan, char *fieldName, int value);
+typedef int (*physical_scan_set_int)(physical_scan *scan, char *tableName, char *fieldName, int value);
 
-typedef int (*physical_scan_set_string)(physical_scan *scan, char *fieldName, char *value);
+typedef int (*physical_scan_set_string)(physical_scan *scan, char *tableName, char *fieldName, char *value);
 
 typedef int (*physical_scan_delete)(physical_scan *scan);
 

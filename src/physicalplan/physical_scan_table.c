@@ -51,7 +51,7 @@ int physical_scan_table_close(physical_scan *scan) {
     return record_file_close(scan->physicalScanTable->recordFile);
 };
 
-variant *physical_scan_table_get_val(physical_scan *scan, char *fieldName){};
+variant *physical_scan_table_get_val(physical_scan *scan, char *tableName, char *fieldName){};
 
 variant *physical_scan_table_get_val_by_index(physical_scan *scan, int index){};
 
@@ -59,23 +59,36 @@ int physical_scan_table_get_int_by_index(physical_scan *scan, int index){};
 
 int physical_scan_table_get_string_by_index(physical_scan *scan, int index, char *value){};
 
-int physical_scan_table_get_int(physical_scan *scan, char *fieldName) {
+int physical_scan_table_get_int(physical_scan *scan, char *tableName, char *fieldName) {
+    if (tableName && stricmp(scan->physicalScanTable->tableInfo->tableName, tableName) != 0){
+        return 0;
+    }
     return record_file_get_int(scan->physicalScanTable->recordFile, fieldName);
 };
 
-int physical_scan_table_get_string(physical_scan *scan, char *fieldName, char *value) {
+int physical_scan_table_get_string(physical_scan *scan, char *tableName, char *fieldName, char *value) {
+    if (tableName && stricmp(scan->physicalScanTable->tableInfo->tableName, tableName) != 0){
+        value = NULL;
+        return 0;
+    }
     return record_file_get_string(scan->physicalScanTable->recordFile, fieldName, value);
 };
 
-int physical_scan_table_has_field(physical_scan *scan, char *fieldName) {
-    if (physical_scan_table_get_field(scan, fieldName)){
+int physical_scan_table_has_field(physical_scan *scan, char *tableName, char *fieldName) {
+    if (tableName && stricmp(scan->physicalScanTable->tableInfo->tableName, tableName) != 0){
+        return 0;
+    }
+    if (physical_scan_table_get_field(scan, tableName, fieldName)){
         return 1;
     }else{
         return 0;
     }
 };
 
-field_info *physical_scan_table_get_field(physical_scan *scan, char *fieldName){
+field_info *physical_scan_table_get_field(physical_scan *scan, char *tableName, char *fieldName){
+    if (tableName && stricmp(scan->physicalScanTable->tableInfo->tableName, tableName) != 0){
+        return NULL;
+    }
     hmap_t fields = scan->physicalScanTable->tableInfo->fields;
     void_ptr *fiptr = (void_ptr *)calloc(sizeof(void_ptr), 1);
     hashmap_get(fields, fieldName, fiptr);
@@ -87,11 +100,11 @@ field_info *physical_scan_table_get_field(physical_scan *scan, char *fieldName){
     }
 };
 
-int physical_scan_table_set_int(physical_scan *scan, char *fieldName, int value) {
+int physical_scan_table_set_int(physical_scan *scan, char *tableName, char *fieldName, int value) {
     return record_file_set_int(scan->physicalScanTable->recordFile, fieldName, value);
 };
 
-int physical_scan_table_set_string(physical_scan *scan, char *fieldName, char *value) {
+int physical_scan_table_set_string(physical_scan *scan, char *tableName, char *fieldName, char *value) {
     return record_file_set_string(scan->physicalScanTable->recordFile, fieldName, value);
 };
 

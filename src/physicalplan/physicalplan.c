@@ -41,14 +41,14 @@ int plan_execute_insert(dongmengdb *db, char *tableName, arraylist *fieldNames, 
         int type = fieldInfo->type;
         if (type == DATA_TYPE_INT) {
             integer *val = arraylist_get(values, i);
-            scan->setInt(scan, fieldName, val->val);
+            scan->setInt(scan, tableName, fieldName, val->val);
         }else if (type == DATA_TYPE_CHAR){
             char *val = arraylist_get(values, i);
             /*字符串超出定义时的长度，则截断字符串.*/
             if(fieldInfo->length<strlen(val)){
                 val[fieldInfo->length] = '\0';
             }
-            scan->setString(scan, fieldName, val);
+            scan->setString(scan, tableName, fieldName, val);
         }else{
             return DONGMENGDB_EINVALIDSQL;
         }
