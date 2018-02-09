@@ -226,6 +226,25 @@ ColumnReference_t *ColumnReference_make(const char *tname, const char *cname) {
     return ref;
 }
 
+/**
+ * 解析字段名，得到ColumnReference_t , 两种形式 student.sno,  sno
+ * @param allName
+ * @return
+ */
+ColumnReference_t *column_get_reference(char *allName){
+    char delims[] = ".";
+
+    ColumnReference_t *columnReference = (ColumnReference_t *)calloc(sizeof(ColumnReference_t), 1);
+    columnReference->tableName = strtok(allName, delims);
+    columnReference->columnName = strtok(NULL, delims);
+    columnReference->allName  = strdup(allName);
+    if (columnReference->columnName == NULL){
+        columnReference->columnName = columnReference->tableName;
+        columnReference->tableName = NULL;
+    }
+    return columnReference;
+};
+
 int Column_compareByName(const void *c1, const void *c2) {
     return strcmp(((Column_t *) c1)->name, ((Column_t *) c2)->name);
 }

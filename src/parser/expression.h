@@ -7,6 +7,7 @@
 
 #include <literal.h>
 #include <arraylist.h>
+#include <column.h>
 #include "tokenizer.h"
 
 /**
@@ -14,6 +15,7 @@
  *
  */
 typedef enum {
+    TERM_UNKNOWN = 0,
     TERM_LITERAL,
     TERM_ID,
     TERM_NULL,
@@ -71,16 +73,24 @@ static const OPERATOR operators[] = {
         {2, 1,  1,  right2left, TOKEN_COMMA}
 };
 
+typedef struct Expression_ Expression;
+typedef struct Func {
+    FuncType t;
+    Expression *expr;
+} Func;
+
+typedef struct ColumnReference_s ColumnReference_t;
 /*终结符：标识符，常量*/
 typedef struct TermExpr_ {
     TermType t;
     union {
         char *id;
         Literal_t *val;
+        ColumnReference_t *ref;
+        Func f;
     };
 } TermExpr;
 
-typedef struct Expression_ Expression;
 typedef struct Expression_ {
     /*当term不为空时，表示是term*/
     TokenType opType;

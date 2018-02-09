@@ -19,6 +19,7 @@ typedef struct ForeignKeyRef_t {
    const char *col_name, *table_name, *table_col_name;
 } ForeignKeyRef_t;
 
+typedef struct Expression_ Expression;
 typedef struct Constraint_t {
    enum constraint_type t;
    union {
@@ -38,8 +39,8 @@ typedef struct Column_t {
    struct Column_t *next;
 } Column_t;
 
-typedef struct ColumnReference_t {
-   char *tableName, *columnName, *columnAlias;
+typedef struct ColumnReference_s {
+   char *tableName, *columnName, *columnAlias, *allName;
 } ColumnReference_t;
 
 /* constraints on single columns */
@@ -61,6 +62,8 @@ Column_t *Column(const char *name, enum data_type type, Constraint_t *constraint
 Column_t *Column_append(Column_t *columns, Column_t *column);
 
 ColumnReference_t *ColumnReference_make(const char *, const char *);
+
+ColumnReference_t *column_get_reference(char *);
 
 int Column_compareByName(const void *col1, const void *col2);
 void *Column_copy(void *col);
