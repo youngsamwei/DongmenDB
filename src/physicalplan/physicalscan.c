@@ -188,16 +188,22 @@ Expression *physical_scan_evaluate_expression(Expression *expr, physical_scan *s
         case TOKEN_WORD: {
             char *fieldName = expr->term->id;
             field_info *fi = scan->getField(scan, fieldName);
-            if (fi->type == DATA_TYPE_INT) {
-                var->type = DATA_TYPE_INT;
-                var->intValue = scan->getInt(scan, fieldName);
-                return NULL;
-            } else if (fi->type == DATA_TYPE_CHAR) {
-                var->type = DATA_TYPE_CHAR;
-                var->strValue = (char *) calloc(fi->length, 1);
-                scan->getString(scan, fieldName, var->strValue);
-
-                return NULL;
+            switch (fi->type){
+                case DATA_TYPE_INT:
+                case DATA_TYPE_DOUBLE:
+                    var->type = DATA_TYPE_INT;
+                    var->intValue = scan->getInt(scan, fieldName);
+                    return NULL;
+                case DATA_TYPE_CHAR:
+                case DATA_TYPE_TEXT:
+                    var->type = DATA_TYPE_CHAR;
+                    var->strValue = (char *) calloc(fi->length, 1);
+                    scan->getString(scan, fieldName, var->strValue);
+                    return NULL;
+                case DATA_TYPE_BOOLEAN:
+                    var->type = DATA_TYPE_BOOLEAN;
+                    var->booleanValue = scan->getInt(scan, fieldName);
+                    return NULL;
             }
             return NULL;
         }
