@@ -116,7 +116,7 @@ Expression *physical_scan_evaluate_expression(Expression *expr, physical_scan *s
             variant *var1 = (variant *) calloc(sizeof(variant), 1);
             variant *var2 = (variant *) calloc(sizeof(variant), 1);
             Expression *nextexpr1 = physical_scan_evaluate_expression(expr->nextexpr, scan, var1);
-            Expression *nextexpr2 = physical_scan_evaluate_expression(nextexpr1, scan, var1);
+            Expression *nextexpr2 = physical_scan_evaluate_expression(nextexpr1, scan, var2);
             var->type = DATA_TYPE_INT;
             var->intValue = var1->intValue / var2->intValue;
             return nextexpr2;
@@ -183,7 +183,7 @@ Expression *physical_scan_evaluate_expression(Expression *expr, physical_scan *s
             variant *var1 = (variant *) calloc(sizeof(variant), 1);
             variant *var2 = (variant *) calloc(sizeof(variant), 1);
             Expression *nextexpr1 = physical_scan_evaluate_expression(expr->nextexpr, scan, var1);
-            Expression *nextexpr2 = physical_scan_evaluate_expression(nextexpr1, scan, var1);
+            Expression *nextexpr2 = physical_scan_evaluate_expression(nextexpr1, scan, var2);
             var->type = DATA_TYPE_BOOLEAN;
             var->booleanValue = 0;
             if (var1->type == DATA_TYPE_INT) {

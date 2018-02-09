@@ -34,7 +34,7 @@ int plan_execute_insert(dongmengdb *db, char *tableName, arraylist *fieldNames, 
 
         char *fieldName = arraylist_get(fieldNames, i);
 
-        void_ptr *ptr = (void_ptr *) malloc(sizeof(void_ptr *));
+        void_ptr *ptr = (void_ptr *) calloc(sizeof(void_ptr *), 1);
         hashmap_get(scan->physicalScanTable->tableInfo->fields, fieldName, ptr);
         field_info *fieldInfo = *ptr;
 

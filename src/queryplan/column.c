@@ -235,9 +235,9 @@ ColumnReference_t *column_get_reference(char *allName){
     char delims[] = ".";
 
     ColumnReference_t *columnReference = (ColumnReference_t *)calloc(sizeof(ColumnReference_t), 1);
+    columnReference->allName  = strdup(allName);
     columnReference->tableName = strtok(allName, delims);
     columnReference->columnName = strtok(NULL, delims);
-    columnReference->allName  = strdup(allName);
     if (columnReference->columnName == NULL){
         columnReference->columnName = columnReference->tableName;
         columnReference->tableName = NULL;
