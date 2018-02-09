@@ -63,56 +63,56 @@ int physical_scan_join_nest_loop_close(physical_scan *scan){
     scan2->close(scan2);
 };
 
-variant *physical_scan_join_nest_loop_get_val(physical_scan *scan, char *fieldName){
+variant *physical_scan_join_nest_loop_get_val(physical_scan *scan, char *tableName, char *fieldName){
     physical_scan *scan1  = scan->physicalScanJoinNestLoop->scan1;
     physical_scan *scan2  = scan->physicalScanJoinNestLoop->scan2;
-    if (scan1->hasField(scan1, fieldName)){
-        return scan1->getVal(scan1, fieldName);
+    if (scan1->hasField(scan1, tableName, fieldName)){
+        return scan1->getVal(scan1, tableName, fieldName);
     }else{
-        return scan2->getVal(scan2, fieldName);
+        return scan2->getVal(scan2, tableName, fieldName);
     };
 };
 
-int physical_scan_join_nest_loop_get_int(physical_scan *scan, char *fieldName){
+int physical_scan_join_nest_loop_get_int(physical_scan *scan, char *tableName, char *fieldName){
     physical_scan *scan1  = scan->physicalScanJoinNestLoop->scan1;
     physical_scan *scan2  = scan->physicalScanJoinNestLoop->scan2;
-    if (scan1->hasField(scan1, fieldName)){
-        return scan1->getInt(scan1, fieldName);
+    if (scan1->hasField(scan1, tableName, fieldName)){
+        return scan1->getInt(scan1, tableName, fieldName);
     }else{
-        return scan2->getInt(scan2, fieldName);
+        return scan2->getInt(scan2, tableName, fieldName);
     };
 };
 
-int physical_scan_join_nest_loop_get_string(physical_scan *scan, char *fieldName, char *value){
+int physical_scan_join_nest_loop_get_string(physical_scan *scan, char *tableName, char *fieldName, char *value){
     physical_scan *scan1  = scan->physicalScanJoinNestLoop->scan1;
     physical_scan *scan2  = scan->physicalScanJoinNestLoop->scan2;
-    if (scan1->hasField(scan1, fieldName)){
-        return scan1->getString(scan1, fieldName, value);
+    if (scan1->hasField(scan1, tableName, fieldName)){
+        return scan1->getString(scan1, tableName, fieldName, value);
     }else{
-        return scan2->getString(scan2, fieldName, value);
+        return scan2->getString(scan2, tableName, fieldName, value);
     };
 };
 
-int physical_scan_join_nest_loop_has_field(physical_scan *scan, char *fieldName){
+int physical_scan_join_nest_loop_has_field(physical_scan *scan, char *tableName, char *fieldName){
     physical_scan *scan1  = scan->physicalScanJoinNestLoop->scan1;
     physical_scan *scan2  = scan->physicalScanJoinNestLoop->scan2;
-    return (scan1->hasField(scan1, fieldName)) || (scan2->hasField(scan2, fieldName));
+    return (scan1->hasField(scan1, tableName, fieldName)) || (scan2->hasField(scan2, tableName, fieldName));
 };
 
-field_info *physical_scan_join_nest_loop_get_field(physical_scan *scan, char *fieldName){
+field_info *physical_scan_join_nest_loop_get_field(physical_scan *scan, char *tableName, char *fieldName){
     physical_scan *scan1  = scan->physicalScanJoinNestLoop->scan1;
     physical_scan *scan2  = scan->physicalScanJoinNestLoop->scan2;
-    field_info *fi = scan1->getField(scan1, fieldName);
+    field_info *fi = scan1->getField(scan1, tableName, fieldName);
     if (fi){
         return fi;
     }else{
-        return scan2->getField(scan2, fieldName);
+        return scan2->getField(scan2, tableName, fieldName);
     }
 };
 
-int physical_scan_join_nest_loop_set_int(physical_scan *scan, char *fieldName, int value){};
+int physical_scan_join_nest_loop_set_int(physical_scan *scan, char *tableName, char *fieldName, int value){};
 
-int physical_scan_join_nest_loop_set_string(physical_scan *scan, char *fieldName, char *value){};
+int physical_scan_join_nest_loop_set_string(physical_scan *scan, char *tableName, char *fieldName, char *value){};
 
 int physical_scan_join_nest_loop_delete(physical_scan *scan){};
 
