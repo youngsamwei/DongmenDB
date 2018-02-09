@@ -14,8 +14,7 @@ char *getExpressionNamesTitle(arraylist *exprs){
 
     for (int i = 0; i <= exprs->size - 1;i++){
         Expression *expr = arraylist_get(exprs, i);
-        char *desc = getExpressionDesc(expr);
-        strcat(title, desc);
+        expression_print(expr, title);
         strcat(title, "\t");
     }
     return title;

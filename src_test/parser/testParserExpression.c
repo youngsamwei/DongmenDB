@@ -35,7 +35,8 @@ int main(int argc, char **argv) {
     if (parser->parserStateType ==PARSER_WRONG){
         printf(parser->parserMessage);
     }else {
-        printExpression(expr);
+        char *strexpr = (char *)calloc(1024,1);
+        expression_print(expr, strexpr);
     }
     TKDestroy(tokenizer);
 

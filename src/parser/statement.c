@@ -42,30 +42,3 @@ UpdateStmt *createUpdateStmt(char *tableName,
                             Expression *whereExpr) {};
 
 
-
-char *printSelectStmt(char *selectStr, SelectStmt *selectStmt) {
-    strcat(selectStr, "SELECT " );
-    FieldsExpr *fieldsExpr;
-    fieldsExpr = selectStmt->fieldsExpr;
-    while (fieldsExpr!=NULL){
-        printExpression(selectStr, fieldsExpr->expr);
-        if (fieldsExpr->nextField!=NULL){
-            strcat(selectStr, " , ");
-        }
-        fieldsExpr = fieldsExpr->nextField;
-    }
-
-    strcat(selectStr, "\nFROM " );
-    TablesExpr *tablesExpr;
-    tablesExpr = selectStmt->tablesExpr;
-    while (tablesExpr != NULL) {
-        strcat(selectStr, tablesExpr->name);
-        if (tablesExpr->nextTable != NULL) {
-            strcat(selectStr, " , ");
-        }
-        tablesExpr = tablesExpr->nextTable;
-    }
-
-    strcat(selectStr, "\nWHERE " );
-    printRNExpression(selectStr, selectStmt->whereExpr);
-};
