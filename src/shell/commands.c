@@ -271,14 +271,14 @@ int dongmengdb_shell_handle_select_table(dongmengdb_shell_handle_sql_t *ctx, con
         printf("\n%s\n", getExpressionNamesTitle(exprs));
         while (plan->next(plan)){
             for (int i = 0; i <= exprs->size - 1; i++) {
-
-                Expression *expr = arraylist_get(exprs, i);
-                char *sno = (char *) calloc(10, 1);
-                char *sname = (char *) calloc(20, 1);
-                plan->getString(plan, "sno", sno);
-                plan->getString(plan, "sname", sname);
-                printf("%i \t %s\n", sno, sname);
+                variant *var = plan->getValByIndex(plan, i);
+                if (var->type == DATA_TYPE_CHAR){
+                    printf("%s\t", var->strValue);
+                }else if(var->type == DATA_TYPE_INT){
+                    printf("%i\t", var->intValue);
+                }
             }
+            printf("\n");
         }
         printf("\nsuccess.");
     } else {
