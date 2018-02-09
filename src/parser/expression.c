@@ -28,6 +28,12 @@ Expression *printRNExpression(char *exprs, Expression *expr) {
     if (expr->term != NULL) {
         if (expr->term->t == TERM_ID) {
             strcat(exprs, expr->term->id);
+        } else if (expr->term->t == TERM_COLREF) {
+            if (expr->term->ref->tableName != NULL) {
+                strcat(exprs, expr->term->ref->tableName);
+                strcat(exprs, ".");
+            }
+            strcat(exprs, expr->term->ref->allName);
         } else {
             strcat(exprs, expr->term->val->val.strval);
         }
@@ -106,7 +112,7 @@ char *getExpressionDesc(Expression *expr) {
 };
 
 Expression *newExpression(TokenType type, Expression *nextexpr) {
-    Expression *expr = (Expression *) malloc(sizeof(Expression));
+    Expression *expr = (Expression *) calloc(sizeof(Expression), 1);
     expr->opType = type;
     expr->nextexpr = nextexpr;
     expr->term = NULL;
@@ -114,9 +120,8 @@ Expression *newExpression(TokenType type, Expression *nextexpr) {
 }
 
 TermExpr *newTermExpr() {
-    TermExpr *expr = (TermExpr *) malloc(sizeof(TermExpr));
-    expr->id = NULL;
-    expr->val = NULL;
+    TermExpr *expr = (TermExpr *) calloc(sizeof(TermExpr), 1);
+    expr->t = TERM_UNKNOWN;
     return expr;
 }
 

@@ -128,9 +128,9 @@ Expression *physical_scan_evaluate_expression(Expression *expr, physical_scan *s
             Expression *nextexpr2 = physical_scan_evaluate_expression(nextexpr1, scan, var2);
             var->type = DATA_TYPE_BOOLEAN;
             var->booleanValue = 0;
-            if (var1->type == DATA_TYPE_INT){
+            if (var1->type == DATA_TYPE_INT) {
                 var->booleanValue = var1->intValue > var2->intValue;
-            } else if (var1->type == DATA_TYPE_CHAR){
+            } else if (var1->type == DATA_TYPE_CHAR) {
                 var->booleanValue = stricmp(var1->strValue, var2->strValue);
             }
             return nextexpr2;
@@ -142,9 +142,9 @@ Expression *physical_scan_evaluate_expression(Expression *expr, physical_scan *s
             Expression *nextexpr2 = physical_scan_evaluate_expression(nextexpr1, scan, var2);
             var->type = DATA_TYPE_BOOLEAN;
             var->booleanValue = 0;
-            if (var1->type == DATA_TYPE_INT){
+            if (var1->type == DATA_TYPE_INT) {
                 var->booleanValue = var1->intValue < var2->intValue;
-            } else if (var1->type == DATA_TYPE_CHAR){
+            } else if (var1->type == DATA_TYPE_CHAR) {
                 var->booleanValue = stricmp(var1->strValue, var2->strValue);
             }
             return nextexpr2;
@@ -156,9 +156,9 @@ Expression *physical_scan_evaluate_expression(Expression *expr, physical_scan *s
             Expression *nextexpr2 = physical_scan_evaluate_expression(nextexpr1, scan, var2);
             var->type = DATA_TYPE_BOOLEAN;
             var->booleanValue = 0;
-            if (var1->type == DATA_TYPE_INT){
+            if (var1->type == DATA_TYPE_INT) {
                 var->booleanValue = var1->intValue <= var2->intValue;
-            } else if (var1->type == DATA_TYPE_CHAR){
+            } else if (var1->type == DATA_TYPE_CHAR) {
                 var->booleanValue = stricmp(var1->strValue, var2->strValue);
             }
 
@@ -171,9 +171,9 @@ Expression *physical_scan_evaluate_expression(Expression *expr, physical_scan *s
             Expression *nextexpr2 = physical_scan_evaluate_expression(nextexpr1, scan, var2);
             var->type = DATA_TYPE_BOOLEAN;
             var->booleanValue = 0;
-            if (var1->type == DATA_TYPE_INT){
+            if (var1->type == DATA_TYPE_INT) {
                 var->booleanValue = var1->intValue >= var2->intValue;
-            } else if (var1->type == DATA_TYPE_CHAR){
+            } else if (var1->type == DATA_TYPE_CHAR) {
                 var->booleanValue = stricmp(var1->strValue, var2->strValue);
             }
 
@@ -186,9 +186,9 @@ Expression *physical_scan_evaluate_expression(Expression *expr, physical_scan *s
             Expression *nextexpr2 = physical_scan_evaluate_expression(nextexpr1, scan, var1);
             var->type = DATA_TYPE_BOOLEAN;
             var->booleanValue = 0;
-            if (var1->type == DATA_TYPE_INT){
+            if (var1->type == DATA_TYPE_INT) {
                 var->booleanValue = var1->intValue == var2->intValue;
-            } else if (var1->type == DATA_TYPE_CHAR){
+            } else if (var1->type == DATA_TYPE_CHAR) {
                 var->booleanValue = !stricmp(var1->strValue, var2->strValue);
             }
             return nextexpr2;
@@ -200,9 +200,9 @@ Expression *physical_scan_evaluate_expression(Expression *expr, physical_scan *s
             Expression *nextexpr2 = physical_scan_evaluate_expression(nextexpr1, scan, var2);
             var->type = DATA_TYPE_BOOLEAN;
             var->booleanValue = 0;
-            if (var1->type == DATA_TYPE_INT){
+            if (var1->type == DATA_TYPE_INT) {
                 var->booleanValue = var1->intValue != var2->intValue;
-            } else if (var1->type == DATA_TYPE_CHAR){
+            } else if (var1->type == DATA_TYPE_CHAR) {
                 var->booleanValue = stricmp(var1->strValue, var2->strValue);
             }
             return nextexpr2;
@@ -218,28 +218,34 @@ Expression *physical_scan_evaluate_expression(Expression *expr, physical_scan *s
         case TOKEN_FUN:
             return expr->nextexpr;
         case TOKEN_WORD: {
-            char *fieldName = expr->term->id;
-            field_info *fi = scan->getField(scan, fieldName);
-            switch (fi->type){
-                case DATA_TYPE_INT:
-                case DATA_TYPE_DOUBLE:
-                    var->type = DATA_TYPE_INT;
-                    var->intValue = scan->getInt(scan, fieldName);
-                    return expr->nextexpr;
-                case DATA_TYPE_CHAR:
-                case DATA_TYPE_TEXT:
-                    var->type = DATA_TYPE_CHAR;
-                    var->strValue = (char *) calloc(fi->length, 1);
-                    scan->getString(scan, fieldName, var->strValue);
-                    return expr->nextexpr;
-                case DATA_TYPE_BOOLEAN:
-                    var->type = DATA_TYPE_BOOLEAN;
-                    var->booleanValue = scan->getInt(scan, fieldName);
-                    return expr->nextexpr;
+            /*两种情况：函数和字段名*/
+            TermType type = expr->term->t;
+            if (type == TERM_COLREF) {
+                char *fieldName = expr->term->ref->allName;/*包含表名的字段名全称*/
+                field_info *fi = scan->getField(scan, fieldName);
+                switch (fi->type) {
+                    case DATA_TYPE_INT:
+                    case DATA_TYPE_DOUBLE:
+                        var->type = DATA_TYPE_INT;
+                        var->intValue = scan->getInt(scan, fieldName);
+                        return expr->nextexpr;
+                    case DATA_TYPE_CHAR:
+                    case DATA_TYPE_TEXT:
+                        var->type = DATA_TYPE_CHAR;
+                        var->strValue = (char *) calloc(fi->length, 1);
+                        scan->getString(scan, fieldName, var->strValue);
+                        return expr->nextexpr;
+                    case DATA_TYPE_BOOLEAN:
+                        var->type = DATA_TYPE_BOOLEAN;
+                        var->booleanValue = scan->getInt(scan, fieldName);
+                        return expr->nextexpr;
+                }
+            } else if (type == TERM_FUNC){
+                /*函数*/
             }
             return expr->nextexpr;
         }
-        case TOKEN_DECIMAL:{
+        case TOKEN_DECIMAL: {
             var->type = DATA_TYPE_INT;
             var->intValue = expr->term->val->val.dval;
             return expr->nextexpr;

@@ -5,6 +5,7 @@
 #include <malloc.h>
 #include <mem.h>
 #include <stdio.h>
+#include <utils.h>
 #include "parseExpressionRD.h"
 #include "opstack.h"
 
@@ -100,10 +101,11 @@ Expression *parseReadBuiltin(ParserT *parser) {
         return parseError(parser, "syntax error: missing id or number.");
     }
     if (token->type == TOKEN_WORD) {
-        char *text = token->text;
+        char *text = strdup(token->text);
         token = parseEatAndNextToken(parser);
 
         if (token != NULL && token->type == TOKEN_OPEN_PAREN) {
+            /*函数*/
             if (stricmp(text, "ltrim") == 0) {
                 /*函数参数个数的检测*/
                 token = parseEatAndNextToken(parser);
@@ -161,18 +163,17 @@ Expression *parseReadBuiltin(ParserT *parser) {
             }
             /*如果是function，则在expr的term_id中保存函数名称*/
             TermExpr *term = newTermExpr();
-            term->val = NULL;
             term->t = TERM_ID;
             term->id = text;
             expr0->term = term;
             return expr0;
         } else {
-            /*此处是标识符处理*/
+            /*此处是标识符处理: column_ref, 两种形式 student.sno,  sno */
+            ColumnReference_t *columnReference = column_get_reference(text);
             expr0 = newExpression(TOKEN_WORD, NULL);
             TermExpr *term = newTermExpr();
-            term->val = NULL;
-            term->t = TERM_ID;
-            term->id = text;
+            term->t = TERM_COLREF;
+            term->ref = columnReference;
             expr0->term = term;
         }
     } else {
