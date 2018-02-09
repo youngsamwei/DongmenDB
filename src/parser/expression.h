@@ -102,11 +102,9 @@ typedef struct Expression_ {
 
 } Expression;
 
-char *printExpression(char *exprs, Expression *expr);
+int printRNExpression(char *exprs, TermExpr *term);
 
-Expression *printRNExpression(char *exprs, Expression *expr);
-
-char *getExpressionDesc(Expression *expr);
+const char *getOperatorDesc(TokenType type);
 
 Expression *newExpression(TokenType type, Expression *nextexpr);
 
