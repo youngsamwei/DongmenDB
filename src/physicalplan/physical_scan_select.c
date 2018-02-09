@@ -19,8 +19,13 @@ void physical_scan_select_init_scan(physical_scan *scan){
     scan->beforeFirst = physical_scan_select_before_first;
     scan->next = physical_scan_select_next;
     scan->close  = physical_scan_select_close;
+    scan->getValByIndex = physical_scan_select_get_val_by_index;
+    scan->getIntByIndex = physical_scan_select_get_int_by_index;
+    scan->getStringByIndex = physical_scan_select_get_string_by_index;
+    scan->getVal = physical_scan_select_get_val;
     scan->getInt = physical_scan_select_get_int;
     scan->getString = physical_scan_select_get_string;
+    scan->getField = physical_scan_select_get_field;
     scan->hasField = physical_scan_select_has_field;
     scan->setInt = physical_scan_select_set_int;
     scan->setString = physical_scan_select_set_string;
@@ -28,6 +33,7 @@ void physical_scan_select_init_scan(physical_scan *scan){
     scan->insert = physical_scan_select_insert;
     scan->getRid = physical_scan_select_get_rid;
     scan->movetoRid = physical_scan_select_moveto_rid;
+
 }
 
 int physical_scan_select_before_first(physical_scan *scan){
@@ -50,6 +56,26 @@ int physical_scan_select_next(physical_scan *scan){
 int physical_scan_select_close(physical_scan *scan){
     physical_scan *scan1  = scan->physicalScanSelect->scan;
     return scan1->close(scan1);
+};
+variant *physical_scan_select_get_val(physical_scan *scan, char *fieldName){
+    physical_scan *scan1 = scan->physicalScanProject->scan;
+    return scan1->getVal(scan1, fieldName);
+};
+
+variant *physical_scan_select_get_val_by_index(physical_scan *scan, int index){
+    physical_scan *scan1 = scan->physicalScanProject->scan;
+    return scan1->getValByIndex(scan1, index);
+};
+
+int physical_scan_select_get_int_by_index(physical_scan *scan, int index){
+    physical_scan *scan1 = scan->physicalScanProject->scan;
+    return scan1->getIntByIndex(scan1, index);
+};
+
+int physical_scan_select_get_string_by_index(physical_scan *scan, int index, char *value){
+    physical_scan *scan1 = scan->physicalScanProject->scan;
+    scan1->getStringByIndex(scan1, index, value);
+    return 1;
 };
 
 int physical_scan_select_get_int(physical_scan *scan, char *fieldName){

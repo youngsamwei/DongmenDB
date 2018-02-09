@@ -20,13 +20,18 @@ void physical_scan_project_init_scan(physical_scan *scan) {
     scan->beforeFirst = physical_scan_project_before_first;
     scan->next = physical_scan_project_next;
     scan->close = physical_scan_project_close;
+    scan->getValByIndex = physical_scan_project_get_val_by_index;
+    scan->getIntByIndex = physical_scan_project_get_int_by_index;
+    scan->getStringByIndex = physical_scan_project_get_string_by_index;
+    scan->getVal = physical_scan_project_get_val;
     scan->getInt = physical_scan_project_get_int;
     scan->getString = physical_scan_project_get_string;
+    scan->getField = physical_scan_project_get_field;
     scan->hasField = physical_scan_project_has_field;
-    scan->setInt = physical_scan_project_set_int;
-    scan->setString = physical_scan_project_set_string;
-    scan->delete = physical_scan_project_delete;
-    scan->insert = physical_scan_project_insert;
+    scan->setInt = NULL;
+    scan->setString = NULL;
+    scan->delete = NULL;
+    scan->insert = NULL;
     scan->getRid = physical_scan_project_get_rid;
     scan->movetoRid = physical_scan_project_moveto_rid;
 }
@@ -44,6 +49,19 @@ int physical_scan_project_next(physical_scan *scan) {
 int physical_scan_project_close(physical_scan *scan) {
     physical_scan *scan1 = scan->physicalScanProject->scan;
     return scan1->close(scan1);
+};
+
+variant *physical_scan_project_get_val(physical_scan *scan, char *fieldName){
+    physical_scan *scan1 = scan->physicalScanProject->scan;
+    return scan1->getVal(scan1, fieldName);
+};
+
+variant *physical_scan_project_get_val_by_index(physical_scan *scan, int index){
+    arraylist *exprs = scan->physicalScanProject->expr_list;
+    Expression *expr = arraylist_get(exprs, index);
+    variant *var = (variant *)calloc(sizeof(variant),1);
+    physical_scan_evaluate_expression(expr,scan, var);
+    return var;
 };
 
 int physical_scan_project_get_int_by_index(physical_scan *scan, int index) {

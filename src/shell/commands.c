@@ -271,6 +271,7 @@ int dongmengdb_shell_handle_select_table(dongmengdb_shell_handle_sql_t *ctx, con
         printf("\n%s\n", getExpressionNamesTitle(exprs));
         while (plan->next(plan)){
             for (int i = 0; i <= exprs->size - 1; i++) {
+
                 Expression *expr = arraylist_get(exprs, i);
                 char *sno = (char *) calloc(10, 1);
                 char *sname = (char *) calloc(20, 1);
