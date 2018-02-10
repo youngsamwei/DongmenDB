@@ -1,2 +1,2 @@
 # DongmenDB
-DongmenDB is a teaching relational database system.
+DongmenDB is a didactical relational database system.
