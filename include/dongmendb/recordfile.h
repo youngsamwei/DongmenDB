@@ -22,9 +22,7 @@ typedef struct table_info_ table_info;
 
 typedef struct record_page_ record_page;
 typedef struct transaction_ transaction;
-/**
- *
- */
+
 typedef struct record_file_ {
     table_info *tableInfo;
     transaction *tx;
