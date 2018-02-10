@@ -110,14 +110,6 @@ field_info *physical_scan_project_get_field(physical_scan *scan, char *tableName
     return scan1->getField(scan1, tableName, fieldName);
 };
 
-int physical_scan_project_set_int(physical_scan *scan, char *tableName, char *fieldName, int value) {};
-
-int physical_scan_project_set_string(physical_scan *scan, char *tableName, char *fieldName, char *value) {};
-
-int physical_scan_project_delete(physical_scan *scan) {};
-
-int physical_scan_project_insert(physical_scan *scan) {};
-
 int physical_scan_project_get_rid(physical_scan *scan, record_id *recordId) {};
 
 int physical_scan_project_moveto_rid(physical_scan *scan, record_id *recordId) {};

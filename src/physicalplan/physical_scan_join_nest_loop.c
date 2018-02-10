@@ -110,14 +110,6 @@ field_info *physical_scan_join_nest_loop_get_field(physical_scan *scan, char *ta
     }
 };
 
-int physical_scan_join_nest_loop_set_int(physical_scan *scan, char *tableName, char *fieldName, int value){};
-
-int physical_scan_join_nest_loop_set_string(physical_scan *scan, char *tableName, char *fieldName, char *value){};
-
-int physical_scan_join_nest_loop_delete(physical_scan *scan){};
-
-int physical_scan_join_nest_loop_insert(physical_scan *scan){};
-
 int physical_scan_join_nest_loop_get_rid(physical_scan *scan, record_id *recordId){};
 
 int physical_scan_join_nest_loop_moveto_rid(physical_scan *scan, record_id *recordId){};
