@@ -248,7 +248,7 @@ Expression *physical_scan_evaluate_expression(Expression *expr, physical_scan *s
         }
         case TOKEN_DECIMAL: {
             var->type = DATA_TYPE_INT;
-            var->intValue = expr->term->val->val.dval;
+            var->intValue = expr->term->val->val.ival;
             return expr->nextexpr;
         }
         case TOKEN_STRING:

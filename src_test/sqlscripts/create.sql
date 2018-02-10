@@ -41,6 +41,8 @@ insert into sc(sno, cno, grade) values("2012010107","c003",80);
 
 .open demodb
 select student.sno,sname from student, sc, course where student.sno = sc.sno and sc.cno = course.cno and grade > 80
+select student.sno,sname, cname, grade from student, sc, course where student.sno = sc.sno and sc.cno = course.cno and grade > 80
+
 
 .open demodb
 select sage + 1, sno from student
@@ -50,3 +52,4 @@ select student.sno, sc.cno,sname,grade, cname from student, sc, course where stu
 
 .open demodb
 select sno,cno,grade, cname from sc, course where sc.cno = course.cno and grade > 80
+select sno, cno,grade from sc where grade > 80
