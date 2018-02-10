@@ -1,6 +1,6 @@
 /*****************************************************************************
  *
- *																 dongmengdb
+ *																 dongmendb
  *
  * 简单的sql命令行界面
  *
@@ -8,7 +8,7 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <string.h>
-#include <dongmengdb.h>
+#include <dongmendb.h>
 #include <stdio.h>
 #include "shell.h"
 #include "commands.h"
@@ -20,9 +20,9 @@ int main(int argc, char *argv[]) {
     int rc;
     int verbosity = 0;
     char *command = "select sno from student;";
-    dongmengdb_shell_handle_sql_t shell_ctx;
+    dongmendb_shell_handle_sql_t shell_ctx;
 
-    dongmengdb_shell_init_ctx(&shell_ctx);
+    dongmendb_shell_init_ctx(&shell_ctx);
 
     /* Process command-line arguments */
     while ((opt = getopt(argc, argv, "c:vh")) != -1)
@@ -34,7 +34,7 @@ int main(int argc, char *argv[]) {
                 verbosity++;
                 break;
             case 'h':
-                printf("Usage: dongmengdb [-c COMMAND] [DATABASE]\n");
+                printf("Usage: dongmendb [-c COMMAND] [DATABASE]\n");
                 exit(0);
             default:
                 printf("ERROR: Unknown option -%c\n", opt);
@@ -45,7 +45,7 @@ int main(int argc, char *argv[]) {
     char cmdstring[MAX_CMD];
     int n;
     while (1) {
-        printf("\ndongmengdb>");
+        printf("\ndongmendb>");
 
         if ((n = read(0, cmdstring, MAX_CMD)) < 0) {
             printf("read error");
@@ -60,7 +60,7 @@ int main(int argc, char *argv[]) {
         /*direct return*/
 
         if (cmdstring) {
-            dongmengdb_shell_handle_cmd(&shell_ctx, cmdstring);
+            dongmendb_shell_handle_cmd(&shell_ctx, cmdstring);
         }
 
     }
@@ -69,7 +69,7 @@ int main(int argc, char *argv[]) {
 //    char *file = "demo.db";
 //    if (optind < argc)
 //    {
-//        rc = dongmengdb_shell_opendb(&shell_ctx, file /*argv[optind]*/);
+//        rc = dongmendb_shell_opendb(&shell_ctx, file /*argv[optind]*/);
 //        if(rc)
 //        {
 //            fprintf(stderr, "ERROR: Could not open file %s or file is not well formed.\n", argv[optind]);

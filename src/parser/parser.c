@@ -5,8 +5,8 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include <dongmengsql.h>
-#include <dongmengdb.h>
+#include <dongmensql.h>
+#include <dongmendb.h>
 #include "parser.h"
 #include "opstack.h"
 #include "parseExpressionRD.h"
@@ -101,8 +101,8 @@ ColumnsExpr *parseColumnsExpr(ParserT *parser) { return NULL; };
 
 SetExpr *parseSetExpr(ParserT *parser) { return NULL; };
 */
-int dongmengsql_parser(const char *sql, dongmengsql_statement_t **stmt){};
-int dongmengsql_stmt_print(dongmengsql_statement_t *stmt){};
+int dongmensql_parser(const char *sql, dongmensql_statement_t **stmt){};
+int dongmensql_stmt_print(dongmensql_statement_t *stmt){};
 
 int matchToken(ParserT *parser, TokenType type, char *text){
     TokenT *token = parseNextToken(parser);

@@ -5,7 +5,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <dongmengsql.h>
+#include <dongmensql.h>
 #include <utils.h>
 #include <statement.h>
 #include <parseSelectStmt.h>
@@ -39,12 +39,12 @@ void usage_error(struct handler_entry *e, const char *msg) {
 }
 
 
-int dongmengdb_shell_handle_cmd(dongmengdb_shell_handle_sql_t *ctx, const char *cmd) {
+int dongmendb_shell_handle_cmd(dongmendb_shell_handle_sql_t *ctx, const char *cmd) {
     int rc = 0;
     int h, ntokens;
     char *cmddup = strdup(cmd), **tokens;
 
-    ntokens = dongmengdb_tokenize(cmddup, &tokens);
+    ntokens = dongmendb_tokenize(cmddup, &tokens);
     if (cmd[0] == '.') {
 
         for (h = 0; handlers[h].name != NULL; h++) {
@@ -72,12 +72,12 @@ int dongmengdb_shell_handle_cmd(dongmengdb_shell_handle_sql_t *ctx, const char *
             return 1;
         } else {
             if (stricmp(tokens[0], "select") == 0) {
-                dongmengdb_shell_handle_select_table(ctx, cmd);
-                //rc = dongmengdb_shell_handle_sql(ctx, cmd);
+                dongmendb_shell_handle_select_table(ctx, cmd);
+                //rc = dongmendb_shell_handle_sql(ctx, cmd);
             } else if (stricmp(tokens[0], "create") == 0 && stricmp(tokens[1], "table") == 0) {
-                dongmengdb_shell_handle_create_table(ctx, cmd);
+                dongmendb_shell_handle_create_table(ctx, cmd);
             } else if (stricmp(tokens[0], "insert") == 0 && stricmp(tokens[1], "into") == 0) {
-                dongmengdb_shell_handle_insert_table(ctx, cmd);
+                dongmendb_shell_handle_insert_table(ctx, cmd);
             } else {
                 fprintf(stderr, "ERROR: not support %s.\n", tokens[0]);
             }
@@ -89,23 +89,23 @@ int dongmengdb_shell_handle_cmd(dongmengdb_shell_handle_sql_t *ctx, const char *
     return 0;
 }
 
-int dongmengdb_shell_handle_sql(dongmengdb_shell_handle_sql_t *ctx, const char *sql) {
+int dongmendb_shell_handle_sql(dongmendb_shell_handle_sql_t *ctx, const char *sql) {
     int rc;
-    dongmengdb_stmt *stmt;
+    dongmendb_stmt *stmt;
 
-    rc = dongmengdb_prepare(ctx->db, sql, &stmt);
+    rc = dongmendb_prepare(ctx->db, sql, &stmt);
 
-    if (rc == DONGMENGDB_OK) {
-        int numcol = dongmengdb_column_count(stmt);
+    if (rc == DONGMENDB_OK) {
+        int numcol = dongmendb_column_count(stmt);
 
         if (ctx->header) {
             for (int i = 0; i < numcol; i++) {
                 if (ctx->mode == MODE_LIST) {
                     printf(i == 0 ? "" : COL_SEPARATOR);
-                    printf("%s", dongmengdb_column_name(stmt, i));
+                    printf("%s", dongmendb_column_name(stmt, i));
                 } else if (ctx->mode == MODE_COLUMN) {
                     printf(i == 0 ? "" : " ");
-                    printf("%-10.10s", dongmengdb_column_name(stmt, i));
+                    printf("%-10.10s", dongmendb_column_name(stmt, i));
                 }
             }
             printf("\n");
@@ -119,7 +119,7 @@ int dongmengdb_shell_handle_sql(dongmengdb_shell_handle_sql_t *ctx, const char *
             }
         }
 
-        while ((rc = dongmengdb_step(stmt)) == DONGMENGDB_ROW) {
+        while ((rc = dongmendb_step(stmt)) == DONGMENDB_ROW) {
             for (int i = 0; i < numcol; i++) {
                 int coltype;
 
@@ -129,7 +129,7 @@ int dongmengdb_shell_handle_sql(dongmengdb_shell_handle_sql_t *ctx, const char *
                     printf(i == 0 ? "" : " ");
 
 
-                coltype = dongmengdb_column_type(stmt, i);
+                coltype = dongmendb_column_type(stmt, i);
 
                 if (coltype == SQL_NOTVALID) {
                     printf("ERROR: Column %i return an invalid type.\n", coltype);
@@ -137,9 +137,9 @@ int dongmengdb_shell_handle_sql(dongmengdb_shell_handle_sql_t *ctx, const char *
                 } else if (coltype == SQL_INTEGER_1BYTE || coltype == SQL_INTEGER_2BYTE ||
                            coltype == SQL_INTEGER_4BYTE) {
                     if (ctx->mode == MODE_LIST)
-                        printf("%i", dongmengdb_column_int(stmt, i));
+                        printf("%i", dongmendb_column_int(stmt, i));
                     else if (ctx->mode == MODE_COLUMN)
-                        printf("%10i", dongmengdb_column_int(stmt, i));
+                        printf("%10i", dongmendb_column_int(stmt, i));
                 } else if (coltype == SQL_NULL) {
                     /* Print nothing */
                     if (ctx->mode == MODE_COLUMN)
@@ -150,7 +150,7 @@ int dongmengdb_shell_handle_sql(dongmengdb_shell_handle_sql_t *ctx, const char *
                         printf("ERROR: Column %i returned an invalid type.\n", i);
                         break;
                     }
-                    const char *text = dongmengdb_column_text(stmt, i);
+                    const char *text = dongmendb_column_text(stmt, i);
                     len = strlen(text);
                     if (len != (coltype - 13) / 2) {
                         printf("ERROR: THe length (%i) of the text in column %i does not match its type (%i).\n", len,
@@ -168,32 +168,32 @@ int dongmengdb_shell_handle_sql(dongmengdb_shell_handle_sql_t *ctx, const char *
         }
 
         switch (rc) {
-            case DONGMENGDB_ECONSTRAINT:
+            case DONGMENDB_ECONSTRAINT:
                 printf("ERROR: SQL statement failed because of a constraint violation.\n");
                 break;
-            case DONGMENGDB_EMISMATCH:
+            case DONGMENDB_EMISMATCH:
                 printf("ERROR: Data type mismatch.\n");
                 break;
-            case DONGMENGDB_EMISUSE:
+            case DONGMENDB_EMISUSE:
                 printf("ERROR: API used incorrectly.\n");
                 break;
-            case DONGMENGDB_ERROR_IO:
+            case DONGMENDB_ERROR_IO:
                 printf("ERROR: An I/O error has occurred when accessing the file.\n");
                 break;
         }
 
-        rc = dongmengdb_finalize(stmt);
-        if (rc == DONGMENGDB_EMISUSE)
+        rc = dongmendb_finalize(stmt);
+        if (rc == DONGMENDB_EMISUSE)
             printf("API used incorrectly.\n");
-    } else if (rc == DONGMENGDB_EINVALIDSQL)
+    } else if (rc == DONGMENDB_EINVALIDSQL)
         printf("SQL syntax error.\n");
-    else if (rc == DONGMENGDB_ENOMEM)
+    else if (rc == DONGMENDB_ENOMEM)
         printf("ERROR: Could not allocate memory.\n");
 
     return rc;
 }
 
-int dongmengdb_shell_handle_create_table(dongmengdb_shell_handle_sql_t *ctx, const char *sqlcreate) {
+int dongmendb_shell_handle_create_table(dongmendb_shell_handle_sql_t *ctx, const char *sqlcreate) {
     if (!ctx->db) {
         fprintf(stderr, "ERROR: No database is open.\n");
         return 1;
@@ -211,17 +211,17 @@ int dongmengdb_shell_handle_create_table(dongmengdb_shell_handle_sql_t *ctx, con
                                             sqlStmtCreate->tableInfo->fields,
                                             ctx->db->tx);
 
-    if (status == DONGMENGDB_OK) {
+    if (status == DONGMENDB_OK) {
         transaction_commit(ctx->db->tx);
         fprintf(stdout, "create  success!");
-        return DONGMENGDB_OK;
+        return DONGMENDB_OK;
     } else {
         fprintf(stderr, "create  failed!");
-        return DONGMENGDB_ERROR_IO;
+        return DONGMENDB_ERROR_IO;
     }
 };
 
-int dongmengdb_shell_handle_insert_table(dongmengdb_shell_handle_sql_t *ctx, const char *sqlinsert) {
+int dongmendb_shell_handle_insert_table(dongmendb_shell_handle_sql_t *ctx, const char *sqlinsert) {
     if (!ctx->db) {
         fprintf(stderr, "ERROR: No database is open.\n");
         return 1;
@@ -238,17 +238,17 @@ int dongmengdb_shell_handle_insert_table(dongmengdb_shell_handle_sql_t *ctx, con
                                      sqlStmtInsert->values,
                                      ctx->db->tx);
 
-    if (status == DONGMENGDB_OK) {
+    if (status == DONGMENDB_OK) {
         transaction_commit(ctx->db->tx);
         fprintf(stdout, "insert  success!");
-        return DONGMENGDB_OK;
+        return DONGMENDB_OK;
     } else {
         fprintf(stderr, "insert  failed!");
-        return DONGMENGDB_ERROR_IO;
+        return DONGMENDB_ERROR_IO;
     }
 };
 
-int dongmengdb_shell_handle_select_table(dongmengdb_shell_handle_sql_t *ctx, const char *sqlselect){
+int dongmendb_shell_handle_select_table(dongmendb_shell_handle_sql_t *ctx, const char *sqlselect){
     if (!ctx->db) {
         fprintf(stderr, "ERROR: No database is open.\n");
         return 1;
@@ -288,37 +288,37 @@ int dongmengdb_shell_handle_select_table(dongmengdb_shell_handle_sql_t *ctx, con
     }
 }
 
-int dongmengdb_shell_handle_cmd_open(dongmengdb_shell_handle_sql_t *ctx, struct handler_entry *e, const char **tokens,
+int dongmendb_shell_handle_cmd_open(dongmendb_shell_handle_sql_t *ctx, struct handler_entry *e, const char **tokens,
                                      int ntokens) {
     int rc;
-    dongmengdb *newdb = (dongmengdb *) calloc(sizeof(dongmengdb), 1);
+    dongmendb *newdb = (dongmendb *) calloc(sizeof(dongmendb), 1);
 
     if (ntokens != 2) {
         usage_error(e, "Invalid arguments");
         return 1;
     }
     char *token = strdup(tokens[1]);
-    rc = dongmengdb_open(token, newdb);
+    rc = dongmendb_open(token, newdb);
 
-    if (rc != DONGMENGDB_OK) {
+    if (rc != DONGMENDB_OK) {
         fprintf(stderr, "ERROR: Could not open file %s or file is not well formed.\n", tokens[1]);
         return rc;
     }
 
     if (ctx->db) {
-        dongmengdb_close(ctx->db);
+        dongmendb_close(ctx->db);
         free(ctx->dbfile);
     }
 
     ctx->db = newdb;
     ctx->dbfile = strdup(tokens[1]);
 
-    return DONGMENGDB_OK;
+    return DONGMENDB_OK;
 }
 
-int dongmengdb_shell_handle_cmd_parse(dongmengdb_shell_handle_sql_t *ctx, struct handler_entry *e, const char **tokens,
+int dongmendb_shell_handle_cmd_parse(dongmendb_shell_handle_sql_t *ctx, struct handler_entry *e, const char **tokens,
                                       int ntokens) {
-    dongmengsql_statement_t *sqlStmt;
+    dongmensql_statement_t *sqlStmt;
     int rc;
 
     if (ntokens != 2) {
@@ -326,26 +326,26 @@ int dongmengdb_shell_handle_cmd_parse(dongmengdb_shell_handle_sql_t *ctx, struct
         return 1;
     }
 
-    rc = dongmengsql_parser(tokens[1], &sqlStmt);
+    rc = dongmensql_parser(tokens[1], &sqlStmt);
 
-    if (rc != DONGMENGDB_OK) {
+    if (rc != DONGMENDB_OK) {
         return rc;
     }
 
-    dongmengsql_stmt_print(sqlStmt);
+    dongmensql_stmt_print(sqlStmt);
     printf("\n");
 
-    return DONGMENGDB_OK;
+    return DONGMENDB_OK;
 }
 
 /* Implemented in optimizer.c */
-int dongmengdb_stmt_optimize(dongmengdb *db,
-                             dongmengsql_statement_t *sqlStmt,
-                             dongmengsql_statement_t **sqlStmtOpt);
+int dongmendb_stmt_optimize(dongmendb *db,
+                             dongmensql_statement_t *sqlStmt,
+                             dongmensql_statement_t **sqlStmtOpt);
 
-int dongmengdb_shell_handle_cmd_opt(dongmengdb_shell_handle_sql_t *ctx, struct handler_entry *e, const char **tokens,
+int dongmendb_shell_handle_cmd_opt(dongmendb_shell_handle_sql_t *ctx, struct handler_entry *e, const char **tokens,
                                     int ntokens) {
-    dongmengsql_statement_t *sqlStmt, *sqlStmtOpt;
+    dongmensql_statement_t *sqlStmt, *sqlStmtOpt;
     int rc;
 
     if (ntokens != 2) {
@@ -358,29 +358,29 @@ int dongmengdb_shell_handle_cmd_opt(dongmengdb_shell_handle_sql_t *ctx, struct h
         return 1;
     }
 
-    rc = dongmengsql_parser(tokens[1], &sqlStmt);
+    rc = dongmensql_parser(tokens[1], &sqlStmt);
 
-    if (rc != DONGMENGDB_OK) {
+    if (rc != DONGMENDB_OK) {
         return rc;
     }
 
-    dongmengsql_stmt_print(sqlStmt);
+    dongmensql_stmt_print(sqlStmt);
     printf("\n\n");
 
-    rc = dongmengdb_stmt_optimize(ctx->db, sqlStmt, &sqlStmtOpt);
+    rc = dongmendb_stmt_optimize(ctx->db, sqlStmt, &sqlStmtOpt);
 
-    if (rc != DONGMENGDB_OK) {
+    if (rc != DONGMENDB_OK) {
         return rc;
     }
 
-    dongmengsql_stmt_print(sqlStmtOpt);
+    dongmensql_stmt_print(sqlStmtOpt);
     printf("\n");
 
-    return DONGMENGDB_OK;
+    return DONGMENDB_OK;
 }
 
 int
-dongmengdb_shell_handle_cmd_headers(dongmengdb_shell_handle_sql_t *ctx, struct handler_entry *e, const char **tokens,
+dongmendb_shell_handle_cmd_headers(dongmendb_shell_handle_sql_t *ctx, struct handler_entry *e, const char **tokens,
                                     int ntokens) {
     if (ntokens != 2) {
         usage_error(e, "Invalid arguments");
@@ -396,10 +396,10 @@ dongmengdb_shell_handle_cmd_headers(dongmengdb_shell_handle_sql_t *ctx, struct h
         return 1;
     }
 
-    return DONGMENGDB_OK;
+    return DONGMENDB_OK;
 }
 
-int dongmengdb_shell_handle_cmd_mode(dongmengdb_shell_handle_sql_t *ctx, struct handler_entry *e, const char **tokens,
+int dongmendb_shell_handle_cmd_mode(dongmendb_shell_handle_sql_t *ctx, struct handler_entry *e, const char **tokens,
                                      int ntokens) {
     if (ntokens != 2) {
         usage_error(e, "Invalid arguments");
@@ -415,11 +415,11 @@ int dongmengdb_shell_handle_cmd_mode(dongmengdb_shell_handle_sql_t *ctx, struct 
         return 1;
     }
 
-    return DONGMENGDB_OK;
+    return DONGMENDB_OK;
 }
 
 int
-dongmengdb_shell_handle_cmd_explain(dongmengdb_shell_handle_sql_t *ctx, struct handler_entry *e, const char **tokens,
+dongmendb_shell_handle_cmd_explain(dongmendb_shell_handle_sql_t *ctx, struct handler_entry *e, const char **tokens,
                                     int ntokens) {
     if (ntokens != 2) {
         usage_error(e, "Invalid arguments");
@@ -437,33 +437,33 @@ dongmengdb_shell_handle_cmd_explain(dongmengdb_shell_handle_sql_t *ctx, struct h
         return 1;
     }
 
-    return DONGMENGDB_OK;
+    return DONGMENDB_OK;
 }
 
-int dongmengdb_shell_handle_cmd_help(dongmengdb_shell_handle_sql_t *ctx, struct handler_entry *e, const char **tokens,
+int dongmendb_shell_handle_cmd_help(dongmendb_shell_handle_sql_t *ctx, struct handler_entry *e, const char **tokens,
                                      int ntokens) {
     for (int h = 0; handlers[h].name != NULL; h++) {
         fprintf(stderr, "%s\n", handlers[h].help);
     }
 
-    return DONGMENGDB_OK;
+    return DONGMENDB_OK;
 }
 
-int dongmengdb_shell_handle_cmd_exit(dongmengdb_shell_handle_sql_t *ctx, struct handler_entry *e, const char **tokens,
+int dongmendb_shell_handle_cmd_exit(dongmendb_shell_handle_sql_t *ctx, struct handler_entry *e, const char **tokens,
                                      int ntokens) {
     if (ctx->db) {
-        dongmengdb_close(ctx->db);
+        dongmendb_close(ctx->db);
         free(ctx->dbfile);
     }
 
     exit(0);
 };
 
-int dongmengdb_shell_handle_cmd_desc(dongmengdb_shell_handle_sql_t *ctx, struct handler_entry *e, const char **tokens,
+int dongmendb_shell_handle_cmd_desc(dongmendb_shell_handle_sql_t *ctx, struct handler_entry *e, const char **tokens,
                                      int ntokens) {
     if (!ctx->db) {
         fprintf(stderr, "ERROR: No database is open.\n");
-        return DONGMENGDB_ECANTOPEN;
+        return DONGMENDB_ECANTOPEN;
     }
     if (ctx->db) {
         char *token = new_id_name();
@@ -472,5 +472,5 @@ int dongmengdb_shell_handle_cmd_desc(dongmengdb_shell_handle_sql_t *ctx, struct 
         table_info_free(tableInfo);
         free(token);
     }
-    return DONGMENGDB_OK;
+    return DONGMENDB_OK;
 };

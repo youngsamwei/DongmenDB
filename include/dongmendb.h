@@ -2,30 +2,30 @@
 // Created by Sam on 2018/1/25.
 //
 
-#ifndef DONGMENDB_DONGMENGDB_H
-#define DONGMENDB_DONGMENGDB_H
+#ifndef DONGMENDB_DONGMENDB_H
+#define DONGMENDB_DONGMENDB_H
 
-#include "../src/dongmengdb/filemanager.h"
-#include "../src/dongmengdb/buffermanager.h"
+#include "../src/dongmendb/filemanager.h"
+#include "../src/dongmendb/buffermanager.h"
 
-#include "../src/dongmengdb/integritymanager.h"
-#include "../src/dongmengdb/logmanager.h"
-#include "../src/dongmengdb/metadatamanager.h"
-#include "../src/dongmengdb/securitymanager.h"
-#include "../src/dongmengdb/recordfile.h"
+#include "../src/dongmendb/integritymanager.h"
+#include "../src/dongmendb/logmanager.h"
+#include "../src/dongmendb/metadatamanager.h"
+#include "../src/dongmendb/securitymanager.h"
+#include "../src/dongmendb/recordfile.h"
 
 #define MAX_ID_NAME_LENGTH 32
 
 /* Forward declarations.
  * From the API's perspective's, these are opaque data types. */
 
-typedef struct dongmengdb_stmt dongmengdb_stmt;
+typedef struct dongmendb_stmt dongmendb_stmt;
 typedef struct buffer_manager_ buffer_manager;
 typedef struct file_manager_ file_manager;
 typedef struct metadata_manager_ metadata_manager;
 typedef struct transaction_ transaction;
 
-typedef struct dongmengdb_{
+typedef struct dongmendb_{
     char *dbName;
     file_manager *fileManager;
     buffer_manager *bufferManager;
@@ -34,60 +34,60 @@ typedef struct dongmengdb_{
     security_manager *securityManager;
     integrity_manager *integrityManager;
     transaction *tx;
-} dongmengdb;
+} dongmendb;
 
 /* API return codes */
-#define DONGMENGDB_OK (0)
-#define DONGMENGDB_EINVALIDSQL (1)
-#define DONGMENGDB_ENOMEM (2)
-#define DONGMENGDB_ECANTOPEN (3)
-#define DONGMENGDB_ECORRUPT (4)
-#define DONGMENGDB_ECONSTRAINT (5)
-#define DONGMENGDB_EMISMATCH (6)
-#define DONGMENGDB_ERROR_IO (7)
-#define DONGMENGDB_EMISUSE (8)
+#define DONGMENDB_OK (0)
+#define DONGMENDB_EINVALIDSQL (1)
+#define DONGMENDB_ENOMEM (2)
+#define DONGMENDB_ECANTOPEN (3)
+#define DONGMENDB_ECORRUPT (4)
+#define DONGMENDB_ECONSTRAINT (5)
+#define DONGMENDB_EMISMATCH (6)
+#define DONGMENDB_ERROR_IO (7)
+#define DONGMENDB_EMISUSE (8)
 
-#define DONGMENGDB_ROW (100)
-#define DONGMENGDB_DONE (101)
+#define DONGMENDB_ROW (100)
+#define DONGMENDB_DONE (101)
 
 
-/* Opens a dongmengdb file.
+/* Opens a dongmendb file.
  *
  * If the file does not exist, it will be created
  *
  * Parameters
- * - file: Filename of the dongmengdb file to open/create
- * - db: Out parameter. Returns a pointer to a dongmengdb struct. The dongmengdb
- *       struct is an opaque type representing a dongmengdb database. In
+ * - file: Filename of the dongmendb file to open/create
+ * - db: Out parameter. Returns a pointer to a dongmendb struct. The dongmendb
+ *       struct is an opaque type representing a dongmendb database. In
  *       other words, an API user should not be concerned with what
- *       is contained in a variable of type dongmengdb, and should simply
- *       use it as a representation of a dongmengdb database to pass along
+ *       is contained in a variable of type dongmendb, and should simply
+ *       use it as a representation of a dongmendb database to pass along
  *       to other API functions.
  *
  * Return
- * - DONGMENGDB_OK: Operation successful
- * - DONGMENGDB_ENOMEM: Could not allocate memory
- * - DONGMENGDB_ECANTOPEN: Unable to open the database file
- * - DONGMENGDB_ECORRUPT: The database file is not well formed
- * - DONGMENGDB_EIO: An I/O error has occurred when accessing the file
+ * - DONGMENDB_OK: Operation successful
+ * - DONGMENDB_ENOMEM: Could not allocate memory
+ * - DONGMENDB_ECANTOPEN: Unable to open the database file
+ * - DONGMENDB_ECORRUPT: The database file is not well formed
+ * - DONGMENDB_EIO: An I/O error has occurred when accessing the file
  */
-int dongmengdb_open(char *file, dongmengdb *db);
+int dongmendb_open(char *file, dongmendb *db);
 
 
 /* Prepares a SQL statement for execution
  *
  * Parameters
- * - db: dongmengdb database
+ * - db: dongmendb database
  * - sql: SQL statement
- * - stmt: Out parameter. Returns a pointer to a dongmengdb_stmt. The dongmengdb_stmt
+ * - stmt: Out parameter. Returns a pointer to a dongmendb_stmt. The dongmendb_stmt
  *         type is an opaque type representing a prepared SQL statement.
  *
  * Return
- * - DONGMENGDB_OK: Operation successful
- * - DONGMENGDB_EINVALIDSQL: Invalid SQL
- * - DONGMENGDB_ENOMEM: Could not allocate memory
+ * - DONGMENDB_OK: Operation successful
+ * - DONGMENDB_EINVALIDSQL: Invalid SQL
+ * - DONGMENDB_ENOMEM: Could not allocate memory
  */
-int dongmengdb_prepare(dongmengdb *db, const char *sql, dongmengdb_stmt **stmt);
+int dongmendb_prepare(dongmendb *db, const char *sql, dongmendb_stmt **stmt);
 
 
 /* Steps through a prepared SQL statement
@@ -97,22 +97,22 @@ int dongmengdb_prepare(dongmengdb *db, const char *sql, dongmengdb_stmt **stmt);
  * produce a result row (such as an INSERT statement)
  *
  * If the statement is a SELECT statement, this function returns
- * DONGMENGDB_ROW each time a result row is produced. The values of the
+ * DONGMENDB_ROW each time a result row is produced. The values of the
  * result row can be accessed using the column access functions
- * (dongmengdb_column_*). Thus, dongmengdb_step has to be called repeatedly
+ * (dongmendb_column_*). Thus, dongmendb_step has to be called repeatedly
  * to access all the rows returned by the queryplan. Once there are no
  * more rows left, or if the statement is not meant to produce any
- * results, then DONGMENGDB_DONE is returned (note that this function does
- * not return DONGMENGDB_OK).
+ * results, then DONGMENDB_DONE is returned (note that this function does
+ * not return DONGMENDB_OK).
  *
  * Parameters
  * - stmt: Prepared SQL statement
  *
  * Return
- * - DONGMENGDB_ROW: Statement returned a row.
- * - DONGMENGDB_DONE: Statement has finished executing.
+ * - DONGMENDB_ROW: Statement returned a row.
+ * - DONGMENDB_DONE: Statement has finished executing.
  */
-int dongmengdb_step(dongmengdb_stmt *stmt);
+int dongmendb_step(dongmendb_stmt *stmt);
 
 
 /* Finalizes a SQL statement, freeing all resources associated with it.
@@ -121,10 +121,10 @@ int dongmengdb_step(dongmengdb_stmt *stmt);
  * - stmt: Prepared SQL statement
  *
  * Return
- * - DONGMENGDB_OK: Operation successful
- * - DONGMENGDB_EMISUSE: Statement was already finalized
+ * - DONGMENDB_OK: Operation successful
+ * - DONGMENDB_EMISUSE: Statement was already finalized
  */
-int dongmengdb_finalize(dongmengdb_stmt *stmt);
+int dongmendb_finalize(dongmendb_stmt *stmt);
 
 
 /* Returns the number of columns returned by a SQL statement
@@ -137,7 +137,7 @@ int dongmengdb_finalize(dongmengdb_stmt *stmt);
  *   meant to produce any results (such as an INSERT statement), then 0
  *   is returned.
  */
-int dongmengdb_column_count(dongmengdb_stmt *stmt);
+int dongmendb_column_count(dongmendb_stmt *stmt);
 
 
 /* Returns the type of a column
@@ -147,9 +147,9 @@ int dongmengdb_column_count(dongmengdb_stmt *stmt);
  * - col: Column (columns are numbered from 0)
  *
  * Return
- * - Column type (see dongmengdb Architecture document for valid types)
+ * - Column type (see dongmendb Architecture document for valid types)
  */
-int dongmengdb_column_type(dongmengdb_stmt *stmt, int col);
+int dongmendb_column_type(dongmendb_stmt *stmt, int col);
 
 
 /* Returns the name of a column
@@ -163,7 +163,7 @@ int dongmengdb_column_type(dongmengdb_stmt *stmt, int col);
  *   client does not have to free() the returned string. It is the API's
  *   responsibility to allocate and free the memory for this string.
  */
-const char *dongmengdb_column_name(dongmengdb_stmt* stmt, int col);
+const char *dongmendb_column_name(dongmendb_stmt* stmt, int col);
 
 
 /* Returns the value of a column of integer type
@@ -175,7 +175,7 @@ const char *dongmengdb_column_name(dongmengdb_stmt* stmt, int col);
  * Return
  * - Integer value
  */
-int dongmengdb_column_int(dongmengdb_stmt *stmt, int col);
+int dongmendb_column_int(dongmendb_stmt *stmt, int col);
 
 
 /* Returns the value of a column of string type
@@ -188,19 +188,19 @@ int dongmengdb_column_int(dongmengdb_stmt *stmt, int col);
  * - Pointer to a null-terminated string with the value. The API client
  *   does not have to free() the returned string. It is the API's
  *   responsibility to allocate and free the memory for this string
- *   (note that this may happen after dongmengdb_step is called again)
+ *   (note that this may happen after dongmendb_step is called again)
  */
-const char *dongmengdb_column_text(dongmengdb_stmt *stmt, int col);
+const char *dongmendb_column_text(dongmendb_stmt *stmt, int col);
 
 
-/* Closes a dongmengdb database
+/* Closes a dongmendb database
  *
  * Parameters
- * - db: dongmengdb database
+ * - db: dongmendb database
  *
  * Return
- * - DONGMENGDB_OK: Operation successful
- * - DONGMENGDB_EMISUSE: Database that is already closed
+ * - DONGMENDB_OK: Operation successful
+ * - DONGMENDB_EMISUSE: Database that is already closed
  */
-int dongmengdb_close(dongmengdb *db);
-#endif //DONGMENDB_DONGMENGDB_H
+int dongmendb_close(dongmendb *db);
+#endif //DONGMENDB_DONGMENDB_H

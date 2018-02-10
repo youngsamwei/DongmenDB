@@ -2,10 +2,10 @@
 // Created by Sam on 2018/1/25.
 //
 
-#include "dongmengdb.h"
+#include "dongmendb.h"
 
 
-int dongmengdb_open(char *dbName, dongmengdb *db) {
+int dongmendb_open(char *dbName, dongmendb *db) {
 
     db->fileManager = (file_manager *)malloc(sizeof(file_manager));
 
@@ -25,24 +25,24 @@ int dongmengdb_open(char *dbName, dongmengdb *db) {
     metadata_manager_create(db->metadataManager, dbName, tx, db->fileManager->isNew);
 
     transaction_commit(tx);
-    return DONGMENGDB_OK;
+    return DONGMENDB_OK;
 };
 
 
-int dongmengdb_prepare(dongmengdb *db, const char *sql, dongmengdb_stmt **stmt) {};
+int dongmendb_prepare(dongmendb *db, const char *sql, dongmendb_stmt **stmt) {};
 
-int dongmengdb_step(dongmengdb_stmt *stmt) {};
+int dongmendb_step(dongmendb_stmt *stmt) {};
 
-int dongmengdb_finalize(dongmengdb_stmt *stmt) {};
+int dongmendb_finalize(dongmendb_stmt *stmt) {};
 
-int dongmengdb_column_count(dongmengdb_stmt *stmt) {};
+int dongmendb_column_count(dongmendb_stmt *stmt) {};
 
-int dongmengdb_column_type(dongmengdb_stmt *stmt, int col) {};
+int dongmendb_column_type(dongmendb_stmt *stmt, int col) {};
 
-const char *dongmengdb_column_name(dongmengdb_stmt *stmt, int col) {};
+const char *dongmendb_column_name(dongmendb_stmt *stmt, int col) {};
 
-int dongmengdb_column_int(dongmengdb_stmt *stmt, int col) {};
+int dongmendb_column_int(dongmendb_stmt *stmt, int col) {};
 
-const char *dongmengdb_column_text(dongmengdb_stmt *stmt, int col) {};
+const char *dongmendb_column_text(dongmendb_stmt *stmt, int col) {};
 
-int dongmengdb_close(dongmengdb *db) {};
+int dongmendb_close(dongmendb *db) {};

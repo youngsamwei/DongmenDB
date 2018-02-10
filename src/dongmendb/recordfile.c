@@ -102,7 +102,7 @@ int record_file_moveto(record_file *recordFile, int currentBlkNum) {
     record_page *recordPage = record_page_create(recordFile->tx, recordFile->tableInfo, diskBlock);
 
     recordFile->recordPage = recordPage;
-    return DONGMENGDB_OK;
+    return DONGMENDB_OK;
 }
 
 int record_file_atlast_block(record_file *recordFile) {
@@ -170,7 +170,7 @@ int table_info_free(table_info *tableInfo) {
     /*free hashmap offsets*/
     // free hashmap fields
     // free arraylist fieldsName
-    return DONGMENGDB_OK;
+    return DONGMENDB_OK;
 }
 
 int table_info_offset(table_info *tableInfo, char *fieldName) {

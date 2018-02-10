@@ -5,7 +5,7 @@
 #ifndef DONGMENDB_BUFFERMANAGER_H
 #define DONGMENDB_BUFFERMANAGER_H
 
-#include "dongmengdb.h"
+#include "dongmendb.h"
 
 /**
  * 缓存管理
