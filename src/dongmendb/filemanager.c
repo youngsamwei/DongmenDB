@@ -77,7 +77,7 @@ int file_manager_getfile(file_manager *fileManager, char *fileName, void_ptr *fi
             f = fopen(fname, "wb+");
             if (f == NULL) {
                 /*TODO:error*/
-                return DONGMENGDB_ERROR_IO;
+                return DONGMENDB_ERROR_IO;
             }
             fclose(f);
             f = fopen(fname, "rwb+");
@@ -87,7 +87,7 @@ int file_manager_getfile(file_manager *fileManager, char *fileName, void_ptr *fi
         *file = f;
     }
 
-    return DONGMENGDB_OK;
+    return DONGMENDB_OK;
 };
 
 int disk_block_new(char *fileName, int blockNum, table_info *tableInfo, disk_block *diskBlock) {

@@ -4,7 +4,7 @@
 
 #include "physical_scan_table.h"
 
-physical_scan *physical_scan_table_create(dongmengdb *db, char *tableName, transaction *tx) {
+physical_scan *physical_scan_table_create(dongmendb *db, char *tableName, transaction *tx) {
     physical_scan_table *physicalScanTable = (physical_scan_table *)calloc(sizeof(physical_scan_table),1);
     physicalScanTable->db = db;
     physicalScanTable->tableInfo = table_manager_get_tableinfo(db->metadataManager->tableManager, tableName, tx);

@@ -5,7 +5,7 @@
 #ifndef DONGMENDB_PHYSICAL_SCAN_TABLE_H
 #define DONGMENDB_PHYSICAL_SCAN_TABLE_H
 
-#include "../dongmengdb/recordfile.h"
+#include "../dongmendb/recordfile.h"
 #include "physicalscan.h"
 
 /*
@@ -15,13 +15,13 @@ typedef struct variant_ variant;
 typedef struct physical_scan_ physical_scan;
 
 typedef struct physical_scan_table_ {
-    dongmengdb *db;
+    dongmendb *db;
     record_file *recordFile;
     table_info *tableInfo;
     transaction *tx;
 } physical_scan_table;
 
-physical_scan *physical_scan_table_create(dongmengdb *db, char *tableName, transaction *tx);
+physical_scan *physical_scan_table_create(dongmendb *db, char *tableName, transaction *tx);
 
 void physical_scan_table_init_scan(physical_scan *scan);
 

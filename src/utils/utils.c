@@ -5,7 +5,7 @@
 #include <stddef.h>
 #include <ctype.h>
 #include <malloc.h>
-#include <dongmengdb.h>
+#include <dongmendb.h>
 #include <expression.h>
 #include "utils.h"
 
@@ -31,14 +31,14 @@ int bytes2int(unsigned char x1, unsigned char x2, unsigned char x3, unsigned cha
     return (x1 >>24) | (x2 >>16) | (x3 >>8) | x4;
 };
 
-int dongmengdb_tokenize(char *str, char ***tokens)
+int dongmendb_tokenize(char *str, char ***tokens)
 {
     char *s;
     int ntokens = 0;
 
     s = str;
     if (s==NULL)
-        return DONGMENGDB_ENOMEM;
+        return DONGMENDB_ENOMEM;
 
     /* First pass: Add \0 at the end of each token
      * and count the number of tokens */

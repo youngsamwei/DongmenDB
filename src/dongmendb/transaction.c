@@ -5,7 +5,7 @@
 #include <malloc.h>
 #include "transaction.h"
 
-transaction * transaction_create( dongmengdb *db) {
+transaction * transaction_create( dongmendb *db) {
     transaction *tx = (transaction *) malloc(sizeof(transaction));
     tx->bufferList = (buffer_list *) malloc(sizeof(buffer_list));
     tx->bufferList->bufferManager = db->bufferManager;

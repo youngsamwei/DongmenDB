@@ -4,7 +4,7 @@
 
 #include "physicalscan.h"
 
-physical_scan *physical_scan_generate(dongmengdb *db, SRA_t *sra, transaction *tx) {
+physical_scan *physical_scan_generate(dongmendb *db, SRA_t *sra, transaction *tx) {
     if (!sra) return NULL;
     switch (sra->t) {
         case SRA_TABLE: {

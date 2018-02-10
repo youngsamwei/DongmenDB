@@ -5,7 +5,7 @@
 #ifndef DONGMENDB_SQLEXPRESSION_H
 #define DONGMENDB_SQLEXPRESSION_H
 
-#include "dongmengsql.h"
+#include "dongmensql.h"
 
 /*
 typedef struct TablesExpr_ TablesExpr;

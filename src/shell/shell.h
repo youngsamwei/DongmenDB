@@ -1,7 +1,7 @@
 #ifndef SHELL_H_
 #define SHELL_H_
 
-#include <dongmengdb.h>
+#include <dongmendb.h>
 #include <stdbool.h>
 
 typedef enum shell_mode
@@ -10,18 +10,18 @@ typedef enum shell_mode
     MODE_COLUMN        = 1,
 } shell_mode_t;
 
-typedef struct dongmengdb_shell_handle_sql
+typedef struct dongmendb_shell_handle_sql
 {
     char *dbfile;
-    dongmengdb *db;
+    dongmendb *db;
 
     bool header;
     shell_mode_t mode;
 
-} dongmengdb_shell_handle_sql_t;
+} dongmendb_shell_handle_sql_t;
 
-void dongmengdb_shell_init_ctx(dongmengdb_shell_handle_sql_t *ctx);
-int dongmengdb_shell_opendb(dongmengdb_shell_handle_sql_t *ctx, char *file);
+void dongmendb_shell_init_ctx(dongmendb_shell_handle_sql_t *ctx);
+int dongmendb_shell_opendb(dongmendb_shell_handle_sql_t *ctx, char *file);
 
 
 

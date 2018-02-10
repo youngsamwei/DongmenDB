@@ -100,7 +100,7 @@ int table_manager_create_table(table_manager *tableManager, char *tableName, arr
         record_file_set_int(fcatFile, "offset", offset);
     }
     record_file_close(fcatFile);
-    return DONGMENGDB_OK;
+    return DONGMENDB_OK;
 };
 
 table_info *table_manager_get_tableinfo(table_manager *tableManager, char *tableName, transaction *tx) {
