@@ -16,6 +16,7 @@ typedef struct arraylist {
 arraylist *arraylist_create();
 void arraylist_destroy(arraylist **list);
 int arraylist_add(arraylist *list, void *element);
+int arraylist_add_all(arraylist *destlist, arraylist *srclist);
 int arraylist_remove_by_element(arraylist *list, void *element);
 int arraylist_remove(arraylist *list, size_t index);
 void *arraylist_get(arraylist *list, size_t index);

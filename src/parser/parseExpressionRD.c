@@ -168,7 +168,7 @@ Expression *parseReadBuiltin(ParserT *parser) {
             expr0->term = term;
             return expr0;
         } else {
-            /*此处是标识符处理: column_ref, 两种形式 student.sno,  sno */
+            /*此处是标识符处理: column_ref, 两种形式 student.*, student.sno,  sno */
             ColumnReference_t *columnReference = column_get_reference(text);
             expr0 = newExpression(TOKEN_WORD, NULL);
             TermExpr *term = newTermExpr();
@@ -176,6 +176,16 @@ Expression *parseReadBuiltin(ParserT *parser) {
             term->ref = columnReference;
             expr0->term = term;
         }
+    } else if (token->type == TOKEN_MULTIPLY){
+        /* 在select中的* */
+        char *text = strdup(token->text);
+        ColumnReference_t *columnReference = column_get_reference(text);
+        expr0 = newExpression(TOKEN_WORD, NULL);
+        TermExpr *term = newTermExpr();
+        term->t = TERM_COLREF;
+        term->ref = columnReference;
+        expr0->term = term;
+        parseEatAndNextToken(parser);
     } else {
         expr0 = parseReadLiteral(parser);
     }

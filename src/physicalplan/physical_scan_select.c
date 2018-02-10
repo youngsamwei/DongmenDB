@@ -27,6 +27,7 @@ void physical_scan_select_init_scan(physical_scan *scan){
     scan->getString = physical_scan_select_get_string;
     scan->getField = physical_scan_select_get_field;
     scan->hasField = physical_scan_select_has_field;
+    scan->getFieldsName = physical_scan_select_get_fields_name;
     scan->setInt = physical_scan_select_set_int;
     scan->setString = physical_scan_select_set_string;
     scan->delete  = physical_scan_select_delete;
@@ -98,6 +99,10 @@ int physical_scan_select_has_field(physical_scan *scan, char *tableName, char *f
 field_info *physical_scan_select_get_field(physical_scan *scan, char *tableName, char *fieldName){
     physical_scan *scan1  = scan->physicalScanSelect->scan;
     return scan1->getField(scan1, tableName, fieldName);
+};
+arraylist *physical_scan_select_get_fields_name(physical_scan *scan, char *tableName){
+    physical_scan *scan1  = scan->physicalScanSelect->scan;
+    return scan1->getFieldsName(scan1, tableName);
 };
 
 int physical_scan_select_set_int(physical_scan *scan, char *tableName, char *fieldName, int value){

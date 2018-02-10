@@ -1,3 +1,4 @@
+.open demodb
 create table student(sno char(10), sname char(20), sage integer);
 create table course(cno char(10), cname char(20), credit integer);
 create table sc(sno char(10), cno char(10), grade integer);
@@ -53,3 +54,18 @@ select student.sno, sc.cno,sname,grade, cname from student, sc, course where stu
 .open demodb
 select sno,cno,grade, cname from sc, course where sc.cno = course.cno and grade > 80
 select sno, cno,grade from sc where grade > 80
+
+
+select student.*, grade from student, sc where student.sno = sc.sno
+select student.*, sc.* from student, sc where student.sno = sc.sno
+
+select student.* from student, sc, course where student.sno = sc.sno and sc.cno = course.cno
+select student.*, course.* from student, sc, course where student.sno = sc.sno and sc.cno = course.cno
+select sc.*, course.* from student, sc, course where student.sno = sc.sno and sc.cno = course.cno
+select student.*, sc.*, course.* from student, sc, course where student.sno = sc.sno and sc.cno = course.cno
+
+/* 对系统表的查询 */
+select * from tablecat
+select * from fieldcat
+
+

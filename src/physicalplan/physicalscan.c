@@ -23,7 +23,10 @@ physical_scan *physical_scan_generate(dongmendb *db, SRA_t *sra, transaction *tx
             physicalScanProject->physicalScanProject->order_by = sra->project.order_by;
             physicalScanProject->physicalScanProject->group_by = sra->project.group_by;
             physicalScanProject->physicalScanProject->distinct = sra->project.distinct;
-            physicalScanProject->physicalScanProject->expr_list = sra->project.expr_list;
+            /*处理 形如student.*的字段表示 */
+            physicalScanProject->physicalScanProject->original_expr_list = sra->project.expr_list;
+            physicalScanProject->physicalScanProject->expr_list = arraylist_create();
+
             return physicalScanProject;
         }
         case SRA_UNION:

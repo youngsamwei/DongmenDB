@@ -53,6 +53,19 @@ int arraylist_add(arraylist *list, void *element)
     return 1;
 }
 
+int arraylist_add_all(arraylist *destlist, arraylist *srclist){
+    if (destlist == NULL || srclist == NULL){
+        return 0;
+    }
+    if (srclist->size == 0){
+        return 1;
+    }
+    for (int i = 0; i <= (srclist->size - 1); i++){
+        arraylist_add(destlist, srclist->data[i]);
+    }
+    return 1;
+};
+
 int arraylist_remove_by_element(arraylist *list, void *element){
     int i = 0 ;
     for (; i <=list->size-1;i++){

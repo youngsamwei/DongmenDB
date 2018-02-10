@@ -47,6 +47,8 @@ int physical_scan_table_has_field(physical_scan *scan, char *tableName, char *fi
 
 field_info *physical_scan_table_get_field(physical_scan *scan, char *tableName, char *fieldName);
 
+arraylist *physical_scan_table_get_fields_name(physical_scan *scan, char *tableName);
+
 int physical_scan_table_set_int(physical_scan *scan, char *tableName, char *fieldName, int value);
 
 int physical_scan_table_set_string(physical_scan *scan, char *tableName, char *fieldName, char *value);

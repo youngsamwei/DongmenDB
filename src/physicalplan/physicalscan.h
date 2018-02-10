@@ -59,6 +59,9 @@ typedef int (*physical_scan_has_field)(physical_scan *scan, char *tableName, cha
 
 typedef field_info *(*physical_scan_get_field)(physical_scan *scan, char *tableName, char *fieldName);
 
+/*获得指定表中字段名称，若tableName为NULL，则获得全部*/
+typedef arraylist *(*physical_scan_get_fields_name)(physical_scan *scan, char *tableName);
+
 typedef int (*physical_scan_set_int)(physical_scan *scan, char *tableName, char *fieldName, int value);
 
 typedef int (*physical_scan_set_string)(physical_scan *scan, char *tableName, char *fieldName, char *value);
@@ -90,6 +93,7 @@ typedef struct physical_scan_ {
     physical_scan_get_string getString;
     physical_scan_has_field hasField;
     physical_scan_get_field getField;
+    physical_scan_get_fields_name getFieldsName;
     physical_scan_set_int setInt;
     physical_scan_set_string setString;
     physical_scan_delete delete;

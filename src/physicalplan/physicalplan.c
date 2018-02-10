@@ -7,7 +7,12 @@
 #include "physical_scan_table.h"
 
 physical_scan *plan_execute_select(dongmendb *db, SRA_t *sra, transaction *tx){
-    return physical_scan_generate(db, sra, tx);
+    physical_scan *plan = physical_scan_generate(db, sra, tx);
+    if (plan->scanType == SCAN_TYPE_PROJECT) {
+        /*处理select 中形如 student.* */
+        physical_scan_project_generate_expr_list(plan);
+    }
+    return plan;
 };
 
 int plan_execute_delete(dongmendb *db, char *tableName, Expression *condition, transaction *tx){

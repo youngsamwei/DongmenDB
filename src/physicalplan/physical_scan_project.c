@@ -28,6 +28,7 @@ void physical_scan_project_init_scan(physical_scan *scan) {
     scan->getString = physical_scan_project_get_string;
     scan->getField = physical_scan_project_get_field;
     scan->hasField = physical_scan_project_has_field;
+    scan->getFieldsName = physical_scan_project_get_fields_name;
     scan->setInt = NULL;
     scan->setString = NULL;
     scan->delete = NULL;
@@ -104,6 +105,10 @@ int physical_scan_project_has_field(physical_scan *scan, char *tableName, char *
     /*TODO:判断是否包含在 scan->physicalScanProject->expr_list 中*/
     return scan1->hasField(scan1, tableName, fieldName);
 };
+arraylist *physical_scan_project_get_fields_name(physical_scan *scan, char *tableName){
+    physical_scan *scan1  = scan->physicalScanProject->scan;
+    return scan1->getFieldsName(scan1, tableName);
+};
 
 field_info *physical_scan_project_get_field(physical_scan *scan, char *tableName, char *fieldName){
     physical_scan *scan1 = scan->physicalScanProject->scan;
@@ -114,3 +119,36 @@ int physical_scan_project_get_rid(physical_scan *scan, record_id *recordId) {};
 
 int physical_scan_project_moveto_rid(physical_scan *scan, record_id *recordId) {};
 
+/**
+ * 处理select中形如student.*的字段列表表示
+ * @param scan
+ * @return
+ */
+int physical_scan_project_generate_expr_list(physical_scan *scan){
+    arraylist *srcExprList = scan->physicalScanProject->original_expr_list;
+    arraylist *dstExprList = scan->physicalScanProject->expr_list;
+    for (int i = 0; i <= srcExprList->size - 1; i++){
+        Expression *expr = arraylist_get(srcExprList, i);
+        if (expr->term !=NULL && expr->term->t == TERM_COLREF){
+            ColumnReference_t *columnReference = expr->term->ref;
+            if (stricmp(columnReference->columnName, "*")==0){
+                arraylist *names = scan->getFieldsName(scan, columnReference->tableName);
+                for (int j = 0; j <= names->size - 1; j ++){
+                    char *name = arraylist_get(names, j);
+                    ColumnReference_t *ref = column_get_reference(name);
+                    Expression *expr0 = newExpression(TOKEN_WORD, NULL);
+                    TermExpr *term = newTermExpr();
+                    term->t = TERM_COLREF;
+                    term->ref = ref;
+                    expr0->term = term;
+                    arraylist_add(dstExprList, expr0);
+                }
+
+            }else{
+                arraylist_add(dstExprList, expr);
+            }
+        }else{
+            arraylist_add(dstExprList, expr);
+        }
+    }
+};
