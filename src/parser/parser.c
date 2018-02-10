@@ -79,14 +79,14 @@ void *parseError(ParserT *parser, char *message) {
 };
 
 sql_stmt_create *parseCreate(ParserT *parser) { return NULL; };
-
+/*
 AlterStmt *parseAlter(ParserT *parser) { return NULL; };
 
 DeleteStmt *parseDelete(ParserT *parser) { return NULL; };
 
 UpdateStmt *parseUpdate(ParserT *parser) { return NULL; };
-
-
+*/
+/*
 TermExpr *parseTermExpr(ParserT *parser) { return NULL; };
 
 BinaryExpr *parseBinaryExpr(ParserT *parser) { return NULL; };
@@ -94,13 +94,13 @@ BinaryExpr *parseBinaryExpr(ParserT *parser) { return NULL; };
 UnaryExpr *parseUnaryExpr(ParserT *parser) { return NULL; };
 
 arraylist *parseGroupExpr(ParserT *parser) { return NULL; };
-
+*/
 arraylist *parseOrderExpr(ParserT *parser) { return NULL; };
-
+/*
 ColumnsExpr *parseColumnsExpr(ParserT *parser) { return NULL; };
 
 SetExpr *parseSetExpr(ParserT *parser) { return NULL; };
-
+*/
 int dongmengsql_parser(const char *sql, dongmengsql_statement_t **stmt){};
 int dongmengsql_stmt_print(dongmengsql_statement_t *stmt){};
 
