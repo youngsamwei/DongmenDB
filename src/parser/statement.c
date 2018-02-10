@@ -6,31 +6,15 @@
 #include <mem.h>
 #include "statement.h"
 
-SelectStmt *createSelectStmt(
-        FieldsExpr *fieldsExpr,
-        TablesExpr *tablesExpr,
-        Expression *whereExpr,
-        GroupExpr *groupExpr,
-        OrderExpr *orderExpr
-) {
-    SelectStmt *selectStmt = (SelectStmt *)malloc(sizeof(SelectStmt));
-    selectStmt->fieldsExpr=fieldsExpr;
-    selectStmt->tablesExpr =tablesExpr;
-    selectStmt->whereExpr = whereExpr;
-    selectStmt->groupExpr=groupExpr;
-    selectStmt->orderExpr=orderExpr;
-    return selectStmt;
-};
-
 sql_stmt_create *sql_stmt_create_create(char *tableName,
                             arraylist *fieldsName, hmap_t columns,
-                            Constraints *constraints) {
+                                        Constraint_t *constraints) {
     sql_stmt_create *sqlStmtCreate = (sql_stmt_create *)malloc(sizeof(sql_stmt_create));
     sqlStmtCreate->tableInfo =  table_info_create(tableName, fieldsName, columns);
     sqlStmtCreate->constraints = constraints;
     return sqlStmtCreate;
 };
-
+/*
 AlterStmt *createAlterStmt(char *tableName, enum AlterType type,
                           ColumnsExpr *columnsExpr) {};
 
@@ -42,3 +26,4 @@ UpdateStmt *createUpdateStmt(char *tableName,
                             Expression *whereExpr) {};
 
 
+*/
