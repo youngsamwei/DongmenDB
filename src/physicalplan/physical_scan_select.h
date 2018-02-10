@@ -7,6 +7,10 @@
 
 #include <expression.h>
 #include "physicalscan.h"
+
+/**
+ * 实现选择操作
+ */
 typedef struct physical_scan_ physical_scan;
 typedef struct physical_scan_select_{
     Expression *cond;

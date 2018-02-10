@@ -8,6 +8,9 @@
 #include "expression.h"
 #include "physicalscan.h"
 
+/**
+ * 采用嵌套循环算法实现笛卡尔积操作
+ */
 typedef struct variant_ variant;
 typedef struct physical_scan_ physical_scan;
 typedef struct physical_scan_join_nest_loop_{

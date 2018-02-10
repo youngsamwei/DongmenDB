@@ -8,6 +8,9 @@
 #include <recordfile.h>
 #include "physicalscan.h"
 
+/*
+ * 实现全表扫描操作
+ * */
 typedef struct variant_ variant;
 typedef struct physical_scan_ physical_scan;
 
