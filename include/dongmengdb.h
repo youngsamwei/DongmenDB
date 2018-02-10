@@ -5,14 +5,14 @@
 #ifndef DONGMENDB_DONGMENGDB_H
 #define DONGMENDB_DONGMENGDB_H
 
-#include "filemanager.h"
-#include "buffermanager.h"
+#include "../src/dongmengdb/filemanager.h"
+#include "../src/dongmengdb/buffermanager.h"
 
-#include "integritymanager.h"
-#include "logmanager.h"
-#include "metadatamanager.h"
-#include "securitymanager.h"
-#include "recordfile.h"
+#include "../src/dongmengdb/integritymanager.h"
+#include "../src/dongmengdb/logmanager.h"
+#include "../src/dongmengdb/metadatamanager.h"
+#include "../src/dongmengdb/securitymanager.h"
+#include "../src/dongmengdb/recordfile.h"
 
 #define MAX_ID_NAME_LENGTH 32
 
