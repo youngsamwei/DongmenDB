@@ -5,7 +5,7 @@
 #ifndef DONGMENDB_PHYSICALSCAN_H
 #define DONGMENDB_PHYSICALSCAN_H
 
-#include "../dongmendb/recordfile.h"
+#include "recordfile.h"
 #include <sra.h>
 #include "physical_scan_table.h"
 #include "physical_scan_join_nest_loop.h"

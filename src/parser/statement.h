@@ -6,7 +6,7 @@
 #define DONGMENDB_STATEMENT_H
 
 #include <arraylist.h>
-#include "../dongmendb/recordfile.h"
+#include "recordfile.h"
 #include "sqlexpression.h"
 #include "column.h"
 

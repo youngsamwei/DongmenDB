@@ -2,7 +2,7 @@
 // Created by Sam on 2018/2/2.
 //
 
-#include "../dongmendb/transaction.h"
+#include "transaction.h"
 #include <expression.h>
 #include <sra.h>
 #include "physicalscan.h"

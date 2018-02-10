@@ -4,14 +4,14 @@ set(CMAKE_C_STANDARD 11)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ./cmake-build-debug/)
 
 INCLUDE_DIRECTORIES(
-        include
+        include/dongmendb
+        include/dongmensql
         src/parser
         src/physicalplan
         src/queryplan
         src/shell
         src/utils
 )
-
 
 aux_source_directory(src/dongmendb DIR_SRCS)
 aux_source_directory( src/parser DIR_SRCS)

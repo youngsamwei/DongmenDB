@@ -39,14 +39,6 @@ int physical_scan_join_nest_loop_get_string(physical_scan *tableScan, char *tabl
 int physical_scan_join_nest_loop_has_field(physical_scan *tableScan, char *tableName, char *fieldName);
 field_info *physical_scan_join_nest_loop_get_field(physical_scan *scan, char *tableName, char *fieldName);
 
-int physical_scan_join_nest_loop_set_int(physical_scan *tableScan, char *tableName, char *fieldName, int value);
-
-int physical_scan_join_nest_loop_set_string(physical_scan *tableScan, char *tableName, char *fieldName, char *value);
-
-int physical_scan_join_nest_loop_delete(physical_scan *tableScan);
-
-int physical_scan_join_nest_loop_insert(physical_scan *tableScan);
-
 int physical_scan_join_nest_loop_get_rid(physical_scan *tableScan, record_id *recordId);
 
 int physical_scan_join_nest_loop_moveto_rid(physical_scan *tableScan, record_id *recordId);

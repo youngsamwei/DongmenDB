@@ -6,7 +6,7 @@
 #define DONGMENDB_PHYSICAL_SCAN_PROJECT_H
 
 #include <arraylist.h>
-#include "../dongmendb/transaction.h"
+#include "transaction.h"
 #include "physicalscan.h"
 
  /**
@@ -48,14 +48,6 @@ int physical_scan_project_get_string(physical_scan *scan, char *tableName, char 
 int physical_scan_project_has_field(physical_scan *scan, char *tableName, char *fieldName);
 
 field_info *physical_scan_project_get_field(physical_scan *scan, char *tableName, char *fieldName);
-
-int physical_scan_project_set_int(physical_scan *scan, char *tableName, char *fieldName, int value);
-
-int physical_scan_project_set_string(physical_scan *scan, char *tableName, char *fieldName, char *value);
-
-int physical_scan_project_delete(physical_scan *scan);
-
-int physical_scan_project_insert(physical_scan *scan);
 
 int physical_scan_project_get_rid(physical_scan *scan, record_id *recordId);
 
