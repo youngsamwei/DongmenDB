@@ -48,11 +48,14 @@ int physical_scan_project_get_string(physical_scan *scan, char *tableName, char 
 
 int physical_scan_project_has_field(physical_scan *scan, char *tableName, char *fieldName);
 
+arraylist *physical_scan_project_get_fields_name(physical_scan *scan, char *tableName);
+
 field_info *physical_scan_project_get_field(physical_scan *scan, char *tableName, char *fieldName);
 
 int physical_scan_project_get_rid(physical_scan *scan, record_id *recordId);
 
 int physical_scan_project_moveto_rid(physical_scan *scan, record_id *recordId);
 
+int physical_scan_project_generate_expr_list(physical_scan *scan);
 
 #endif //DONGMENDB_PHYSICAL_SCAN_PROJECT_H

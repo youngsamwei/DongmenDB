@@ -31,6 +31,7 @@ void physical_scan_table_init_scan(physical_scan *scan){
     scan->getString = physical_scan_table_get_string;
     scan->hasField = physical_scan_table_has_field;
     scan->getField = physical_scan_table_get_field;
+    scan->getFieldsName = physical_scan_table_get_fields_name;
     scan->setInt = physical_scan_table_set_int;
     scan->setString = physical_scan_table_set_string;
     scan->delete  = physical_scan_table_delete;
@@ -98,6 +99,15 @@ field_info *physical_scan_table_get_field(physical_scan *scan, char *tableName, 
     }else{
         return NULL;
     }
+};
+
+arraylist *physical_scan_table_get_fields_name(physical_scan *scan, char *tableName){
+
+    if (tableName == NULL || stricmp(tableName, scan->physicalScanTable->tableInfo->tableName) == 0){
+        return scan->physicalScanTable->tableInfo->fieldsName;
+    }
+    /*如果不是指定的tableName，则返回空的arraylist*/
+    return arraylist_create();
 };
 
 int physical_scan_table_set_int(physical_scan *scan, char *tableName, char *fieldName, int value) {

@@ -28,6 +28,7 @@ void physical_scan_join_nest_loop_init_scan(physical_scan *scan){
     scan->getString = physical_scan_join_nest_loop_get_string;
     scan->getField = physical_scan_join_nest_loop_get_field;
     scan->hasField = physical_scan_join_nest_loop_has_field;
+    scan->getFieldsName = physical_scan_join_nest_loop_get_fields_name;
     scan->setInt = NULL;
     scan->setString = NULL;
     scan->delete  = NULL;
@@ -108,6 +109,17 @@ field_info *physical_scan_join_nest_loop_get_field(physical_scan *scan, char *ta
     }else{
         return scan2->getField(scan2, tableName, fieldName);
     }
+};
+
+arraylist *physical_scan_join_nest_loop_get_fields_name(physical_scan *scan, char *tableName){
+    physical_scan *scan1  = scan->physicalScanJoinNestLoop->scan1;
+    physical_scan *scan2  = scan->physicalScanJoinNestLoop->scan2;
+    arraylist *scan1flds = scan1->getFieldsName(scan1, tableName);
+    arraylist *scan2flds = scan2->getFieldsName(scan2, tableName);
+    arraylist *all = arraylist_create();
+    arraylist_add_all(all, scan1flds);
+    arraylist_add_all(all, scan2flds);
+    return all;
 };
 
 int physical_scan_join_nest_loop_get_rid(physical_scan *scan, record_id *recordId){};
