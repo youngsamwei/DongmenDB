@@ -6,7 +6,7 @@
 #define DONGMENDB_PHYSICAL_SCAN_PROJECT_H
 
 #include <arraylist.h>
-#include <transaction.h>
+#include "../dongmengdb/transaction.h"
 #include "physicalscan.h"
 
  /**
