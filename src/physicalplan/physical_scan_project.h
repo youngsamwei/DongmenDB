@@ -13,7 +13,8 @@
   * 实现投影操作
   */
 typedef struct physical_scan_project_ {
-    arraylist *expr_list; //expression列表
+    arraylist *original_expr_list;//select语句中指定的原始表达式列表
+    arraylist *expr_list; //将 * 等解析后得到的表达式列表，在prepare时处理
     arraylist *order_by; //order_by_expr的列表
     int distinct;
     arraylist *group_by; // expression列表
