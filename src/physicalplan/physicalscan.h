@@ -12,6 +12,9 @@
 #include "physical_scan_select.h"
 #include "physical_scan_project.h"
 
+/**
+ * 定义物理计划的数据结构和接口函数.
+ */
 typedef struct variant_ {
     enum data_type type;
     union {

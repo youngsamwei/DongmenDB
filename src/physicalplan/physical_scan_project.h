@@ -9,6 +9,9 @@
 #include <transaction.h>
 #include "physicalscan.h"
 
+ /**
+  * 实现投影操作
+  */
 typedef struct physical_scan_project_ {
     arraylist *expr_list; //expression列表
     arraylist *order_by; //order_by_expr的列表
