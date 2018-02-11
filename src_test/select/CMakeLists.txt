@@ -20,14 +20,7 @@ endmacro (do_test)
 do_test (5 2 "is 7")
 do_test (10 5 "is 15")
 do_test (2 10 "is 12")
-
-# 测试程序是否成功运行
-# add_test (test_run1 my_test.elf)
-add_test (NAME test_run2 COMMAND test_select 1 2) #
-
-# 测试 1 + 3 , 是否输出打印'is 4'
-add_test (NAME test_1_plus_3 COMMAND test_select 1 3 ) #WORKING_DIRECTORY cmake-build-debug
-set_tests_properties (test_1_plus_3  PROPERTIES PASS_REGULAR_EXPRESSION "is 4")
+do_test (1 3 "is 4")
 
 # 产生mingw的make文件
 # cmake -G   "MinGW Makefiles" .
