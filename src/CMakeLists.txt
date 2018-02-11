@@ -1,7 +1,7 @@
 
 INCLUDE_DIRECTORIES(
-        include/dongmendb
-        include/dongmensql
+        ../include/dongmendb
+        ../include/dongmensql
         parser
         physicalplan
         queryplan
