@@ -32,22 +32,24 @@ macro (test_select index dbname result sql)
     add_test (NAME test_${dbname}_${index} COMMAND test_select ${dbname} ${sql} )
     set_tests_properties (test_${dbname}_${index}
             PROPERTIES PASS_REGULAR_EXPRESSION ${result})
-
 endmacro (test_select)
 
-# 使用该宏进行一系列的数据测试
-test_select (1 "demodb" "record count is 8" "select sno from student")
-test_select (2 "demodb" "record count is 5" "select sno from student where sage < 25")
-test_select (3 "demodb" "record count is 1" "select sno from student where sage = 25" )
-test_select (4 "demodb" "record count is 1" "select sno from student where sno =\"2012010106\"")
-test_select (5 "demodb" "record count is 2" "select sno from student where sage >= 25 and sage <= 26" )
 
-test_select (6 "demodb" "record count is 13" "select student.sno, sc.cno,sname,grade, cname from student, sc, course where student.sno = sc.sno and sc.cno = course.cno")
-test_select (7 "demodb" "record count is 6" "select sno,cno,grade, cname from sc, course where sc.cno = course.cno and grade > 80")
-test_select (8 "demodb" "record count is 13" "select student.*, grade from student, sc where student.sno = sc.sno")
-test_select (9 "demodb" "record count is 13" "select student.*, sc.* from student, sc where student.sno = sc.sno")
-test_select (10 "demodb" "record count is 13" "select student.* from student, sc, course where student.sno = sc.sno and sc.cno = course.cno")
-test_select (11 "demodb" "record count is 13" "select student.*, sc.*, course.* from student, sc, course where student.sno = sc.sno and sc.cno = course.cno")
+
+file(STRINGS test_cases.sql test_cases)
+set(_count 0)
+#如果每行包含多个参数且以分号隔开，自动识别为list，则自动拆分成多个参数传给add_test
+#怎么从_case中取出部分参数呢?
+foreach(_case ${test_cases})
+    list(GET _case 0 arg0)
+    list(GET _case 1 _dbname)
+    list(GET _case 2 _result)
+    list(GET _case 3 _sql)
+    add_test(NAME test_${_dbname}_${arg0} COMMAND test_select ${_dbname} ${_sql})
+    set_tests_properties (test_${_dbname}_${arg0}
+            PROPERTIES PASS_REGULAR_EXPRESSION ${_result})
+    math(EXPR _count "${_count} + 1")
+endforeach(_case)
 
 
 
