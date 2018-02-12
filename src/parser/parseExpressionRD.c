@@ -69,7 +69,19 @@ Expression *parseReadLiteral(ParserT *parser) {
         term->t = TERM_LITERAL;
         Literal_t *literal
                 = newLiteral(DATA_TYPE_CHAR);
-        literal->val.strval = strdup(token->text);
+
+        /*去掉引号*/
+        if (token->text[0] == '"') {
+            int len = strlen(token->text) - 1;
+            char *v = token->text + 1;
+            char *value = (char *) calloc(len, 1);
+            strcpy(value, v);
+            value[len - 1] = '\0';
+            literal->val.strval = value;
+        }else{
+            literal->val.strval = strdup(token->text);
+        }
+
         term->val = literal;
         expr0->term = term;
         parseEatToken(parser);
@@ -110,41 +122,41 @@ Expression *parseReadBuiltin(ParserT *parser) {
                 /*函数参数个数的检测*/
                 token = parseEatAndNextToken(parser);
                 /*如果紧跟着右括号，则丢失参数*/
-                if (token->type == TOKEN_CLOSE_PAREN){
+                if (token->type == TOKEN_CLOSE_PAREN) {
                     char message[PARSER_MESSAGE_LENTTH];
                     sprintf(message, "syntax error: function %s missing argument.", text);
-                    return parseError(parser,message);
+                    return parseError(parser, message);
                 }
                 Expression *param0 = parseReadArgument(parser);
                 token = parseNextToken(parser);
                 /*如果解析参数完毕，接下来是逗号，则太多参数*/
-                if (token->type == TOKEN_COMMA){
+                if (token->type == TOKEN_COMMA) {
                     char message[PARSER_MESSAGE_LENTTH];
                     sprintf(message, "syntax error: function %s too many  argument.", text);
-                    return parseError(parser,message);
+                    return parseError(parser, message);
                 }
                 expr0 = newExpression(TOKEN_FUN, param0);
             } else if (stricmp(text, "round") == 0) {
                 /*函数参数个数的检测*/
                 token = parseEatAndNextToken(parser);
-                if (token->type == TOKEN_CLOSE_PAREN){
+                if (token->type == TOKEN_CLOSE_PAREN) {
                     char message[PARSER_MESSAGE_LENTTH];
                     sprintf(message, "syntax error: function %s missing  argument.", text);
-                    return parseError(parser,message);
+                    return parseError(parser, message);
                 }
                 Expression *param0 = parseReadArgument(parser);
                 token = parseNextToken(parser);
-                if (token->type != TOKEN_COMMA){
+                if (token->type != TOKEN_COMMA) {
                     char message[PARSER_MESSAGE_LENTTH];
                     sprintf(message, "syntax error: function %s missing  argument.", text);
-                    return parseError(parser,message);
+                    return parseError(parser, message);
                 }
                 Expression *param1 = parseReadArgument(parser);
                 token = parseNextToken(parser);
-                if (token->type == TOKEN_COMMA){
+                if (token->type == TOKEN_COMMA) {
                     char message[PARSER_MESSAGE_LENTTH];
                     sprintf(message, "syntax error: function %s too many  argument.", text);
-                    return parseError(parser,message);
+                    return parseError(parser, message);
                 }
                 expr0 = concatExpression(param0, param1);
                 expr0 = newExpression(TOKEN_FUN, expr0);
@@ -176,7 +188,7 @@ Expression *parseReadBuiltin(ParserT *parser) {
             term->ref = columnReference;
             expr0->term = term;
         }
-    } else if (token->type == TOKEN_MULTIPLY){
+    } else if (token->type == TOKEN_MULTIPLY) {
         /* 在select中的* */
         char *text = strdup(token->text);
         ColumnReference_t *columnReference = column_get_reference(text);
