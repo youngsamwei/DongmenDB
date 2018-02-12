@@ -6,5 +6,10 @@
       <file path="$PROJECT_DIR$/src" />
       <file path="$PROJECT_DIR$/src_test" />
     </sourceRoots>
+    <excludeRoots>
+      <file path="$PROJECT_DIR$/bin" />
+      <file path="$PROJECT_DIR$/bin_test" />
+      <file path="$PROJECT_DIR$/Testing" />
+    </excludeRoots>
   </component>
 </project>

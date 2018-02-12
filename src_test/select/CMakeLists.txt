@@ -42,10 +42,6 @@ test_select (3 "demodb" "select sno from student where sage = 25" "record count 
 test_select (4 "demodb" "select sno from student where sno =\"2012010106\"" "record count is 1")
 test_select (5 "demodb" "select sno from student where sage >= 25 and sage <= 26" "record count is 2")
 
-#test_select (10 5 "is 15")
-#test_select (2 10 "is 12")
-#test_select (1 3 "is 4")
-
 
 # 产生mingw的make文件
 # cmake -G   "MinGW Makefiles" .
