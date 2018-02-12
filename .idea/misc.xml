@@ -9,6 +9,7 @@
     <excludeRoots>
       <file path="$PROJECT_DIR$/bin" />
       <file path="$PROJECT_DIR$/bin_test" />
+      <file path="$PROJECT_DIR$/output" />
       <file path="$PROJECT_DIR$/Testing" />
     </excludeRoots>
   </component>
