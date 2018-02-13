@@ -5,5 +5,4 @@ set(CMAKE_C_STANDARD 11)
 add_subdirectory(src output/bin)
 
 #测试文件夹，测试时使用终端Terminal进入 bin_test，运行 ctest 进行单元测试
-add_subdirectory(src_test/select output/bin_test)
-add_subdirectory(src_test/test_cases output/bin_test_cases)
+add_subdirectory(src_test/test_01_stmt_parser/test_01_03_select_cases output/bin_test_01_03_select_cases)

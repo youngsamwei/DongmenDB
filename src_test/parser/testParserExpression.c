@@ -6,7 +6,9 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <parseExpressionRD.h>
-#include "opstack.h"
+#include "../../src/parser/tokenizer.h"
+#include "../../src/parser/parser.h"
+#include "../../src/parser/parseExpressionRD.h"
 
 /*
  * main will have a string argument (in argv[1]).
