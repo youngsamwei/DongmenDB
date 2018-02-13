@@ -1,26 +1,33 @@
 1) 语句解析：
-    create table，drop table
-    create user，drop user
-    create index，drop index
-    create constraint, drop constraint
-    insert
-    update
-    delete
-    grant ， revoke
+    不带完整性约束的create table语句
+    简单的select
+    简单的insert，update，delete语句
 2) 完整性管理
+    解析带完整性约束的create table pk，fk，default，check，not null
+    实现insert，update，delete时进行完整性检查
 3）安全性管理
+    解析create user，grant ， revoke语句
+    实现安全性检查
 4）代数优化
+    条件规范化
+    条件下推
+    将条件与笛卡尔积结合产生自然连接
 5）索引实现
+    语句解析create [unique] index，drop index
+    分别实现普通索引，唯一索引，hash索引
+    索引更新（insert，update，delete时响应）
 6）物理操作实现
     投影操作：分组聚合函数，排序，
-    索引连接
-    hash连接
-    排序合并连接
-7）物理优化：选择合适的存取路径和操作算法
-8) 封锁管理与并发控制：死锁检测
-9）缓存管理：缓存替换算法
-10）日志管理：日志读写
-11）事务处理：事务提交与恢复
+    连接操作：索引连接，hash连接，排序合并连接
+7）物理优化：
+    选择合适的存取路径和操作算法
+8) 封锁管理与并发控制：
+    封锁协议：使用三级封锁协议
+    死锁检测：使用事务等待图法
+9）缓存管理：
+    缓存替换算法
+10）日志管理
+11）事务处理
 
 
 
