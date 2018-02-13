@@ -1,5 +1,3 @@
-# 测试select语句.以#开头的行为注释行。
-# 编号；数据库名称；要求的返回结果；测试语句
 1;demodb;record count is 8;select sno from student;
 2;demodb;record count is 5;select sno from student where sage < 25;
 3;demodb;record count is 1;select sno from student where sage = 25;
