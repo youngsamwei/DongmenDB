@@ -4,20 +4,20 @@ include(CheckLibraryExists)
 include(CPack)
 
 INCLUDE_DIRECTORIES(
-        ../../include/dongmendb
-        ../../include/dongmensql
-        ../../src/parser
-        ../../src/physicalplan
-        ../../src/queryplan
-        ../../src/shell
-        ../../src/utils
+        ../../../include/dongmendb
+        ../../../include/dongmensql
+        ../../../src/parser
+        ../../../src/physicalplan
+        ../../../src/queryplan
+        ../../../src/shell
+        ../../../src/utils
 )
 
-aux_source_directory(../../src/dongmendb DIR_TEST_SRCS)
-aux_source_directory(../../src/parser DIR_TEST_SRCS)
-aux_source_directory(../../src/physicalplan DIR_TEST_SRCS)
-aux_source_directory(../../src/queryplan DIR_TEST_SRCS)
-aux_source_directory(../../src/utils DIR_TEST_SRCS)
+aux_source_directory(../../../src/dongmendb DIR_TEST_SRCS)
+aux_source_directory(../../../src/parser DIR_TEST_SRCS)
+aux_source_directory(../../../src/physicalplan DIR_TEST_SRCS)
+aux_source_directory(../../../src/queryplan DIR_TEST_SRCS)
+aux_source_directory(../../../src/utils DIR_TEST_SRCS)
 
 aux_source_directory(. DIR_TEST_SRCS)
 
@@ -34,8 +34,6 @@ macro (test_select index dbname result sql)
             PROPERTIES PASS_REGULAR_EXPRESSION ${result})
 endmacro (test_select)
 
-
-
 file(STRINGS test_cases.sql test_cases)
 set(_count 0)
 #如果每行包含多个参数且以分号隔开，自动识别为list，则自动拆分成多个参数传给add_test
@@ -43,6 +41,10 @@ set(_count 0)
 #arg0;_dbname;_resutl;_sql;
 foreach(_case ${test_cases})
     list(GET _case 0 arg0)
+    #跳过注释行
+    if(arg0 MATCHES "#.*")
+         continue()
+    endif(arg0 MATCHES "#.*")
     list(GET _case 1 _dbname)
     list(GET _case 2 _result)
     list(GET _case 3 _sql)

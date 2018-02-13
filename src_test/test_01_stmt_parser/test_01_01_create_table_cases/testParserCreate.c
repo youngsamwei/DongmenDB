@@ -4,10 +4,12 @@
 
 
 #include <stdio.h>
-#include <statement.h>
-#include <parser.h>
-#include <parseSelectStmt.h>
+#include "../../../src/parser/statement.h"
+#include "../../../src/parser/parseSelectStmt.h"
 #include <mem.h>
+#include "../../../src/parser/tokenizer.h"
+#include "../../../src/parser/parser.h"
+#include "../../../src/parser/statement.h"
 
 
 int main(int argc, char **argv) {

@@ -4,12 +4,12 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "../../include/dongmendb/dongmendb.h"
-#include "../../src/parser/tokenizer.h"
-#include "../../src/parser/parser.h"
-#include "../../src/queryplan/sra.h"
-#include "../../src/parser/parseSelectStmt.h"
-#include "../../src/physicalplan/physicalplan.h"
+#include "dongmendb.h"
+#include "tokenizer.h"
+#include "parser.h"
+#include "sra.h"
+#include "parseSelectStmt.h"
+#include "physicalplan.h"
 
 
 int select(dongmendb *db, char *sqlselect) {
