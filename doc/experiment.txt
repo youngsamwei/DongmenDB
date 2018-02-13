@@ -1,0 +1,26 @@
+1) 语句解析：
+    create table，drop table
+    create user，drop user
+    create index，drop index
+    create constraint, drop constraint
+    insert
+    update
+    delete
+    grant ， revoke
+2) 完整性管理
+3）安全性管理
+4）代数优化
+5）索引实现
+6）物理操作实现
+    投影操作：分组聚合函数，排序，
+    索引连接
+    hash连接
+    排序合并连接
+7）物理优化：选择合适的存取路径和操作算法
+8) 封锁管理与并发控制：死锁检测
+9）缓存管理：缓存替换算法
+10）日志管理：日志读写
+11）事务处理：事务提交与恢复
+
+
+

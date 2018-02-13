@@ -6,9 +6,7 @@
 #include <stdio.h>
 
 int main(int argc, const char *argv[]) {
-    if (argc <= 4){
-        return 0;
-    }
+
 //    const char *delims = ";";
 //    char *index = strtok(test_case, delims);
 //    char *dbname = strtok(NULL, delims);
@@ -19,6 +17,9 @@ int main(int argc, const char *argv[]) {
     char *result = strdup(argv[3]);
     char *sql = strdup(argv[4]);
 
+    while(1){
+
+    }
     printf(dbname);
 
     return 0;

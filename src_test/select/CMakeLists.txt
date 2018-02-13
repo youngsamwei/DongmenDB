@@ -29,7 +29,7 @@ enable_testing()
 
 #用宏定义测试用例
 macro (test_select index dbname result sql)
-    add_test (NAME test_${dbname}_${index} COMMAND test_select ${dbname} ${sql} )
+    add_test (NAME test_${dbname}_${index} COMMAND test_select ${dbname} "1" ${sql} )
     set_tests_properties (test_${dbname}_${index}
             PROPERTIES PASS_REGULAR_EXPRESSION ${result})
 endmacro (test_select)
@@ -39,15 +39,17 @@ endmacro (test_select)
 file(STRINGS test_cases.sql test_cases)
 set(_count 0)
 #如果每行包含多个参数且以分号隔开，自动识别为list，则自动拆分成多个参数传给add_test
-#怎么从_case中取出部分参数呢?
+#怎么从_case中取出部分参数呢? 使用list(GET...)
+#arg0;_dbname;_resutl;_sql;
 foreach(_case ${test_cases})
     list(GET _case 0 arg0)
     list(GET _case 1 _dbname)
     list(GET _case 2 _result)
     list(GET _case 3 _sql)
     add_test(NAME test_${_dbname}_${arg0} COMMAND test_select ${_dbname} ${_sql})
+    #设置TIMEOUT为3秒,以应对死循环和段错误等异常,但返回信息成为timeout，异常根源无法看到.
     set_tests_properties (test_${_dbname}_${arg0}
-            PROPERTIES PASS_REGULAR_EXPRESSION ${_result})
+            PROPERTIES TIMEOUT 3 PASS_REGULAR_EXPRESSION ${_result})
     math(EXPR _count "${_count} + 1")
 endforeach(_case)
 
