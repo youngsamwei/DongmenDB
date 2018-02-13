@@ -4,20 +4,20 @@ include(CheckLibraryExists)
 include(CPack)
 
 INCLUDE_DIRECTORIES(
-        ../../../include/dongmendb
-        ../../../include/dongmensql
-        ../../../src/parser
-        ../../../src/physicalplan
-        ../../../src/queryplan
-        ../../../src/shell
-        ../../../src/utils
+        ${PROJECT_SOURCE_DIR}/include/dongmendb
+        ${PROJECT_SOURCE_DIR}/include/dongmensql
+        ${PROJECT_SOURCE_DIR}/src/parser
+        ${PROJECT_SOURCE_DIR}/src/physicalplan
+        ${PROJECT_SOURCE_DIR}/src/queryplan
+        ${PROJECT_SOURCE_DIR}/src/shell
+        ${PROJECT_SOURCE_DIR}/src/utils
 )
 
-aux_source_directory(../../../src/dongmendb DIR_TEST_SRCS)
-aux_source_directory(../../../src/parser DIR_TEST_SRCS)
-aux_source_directory(../../../src/physicalplan DIR_TEST_SRCS)
-aux_source_directory(../../../src/queryplan DIR_TEST_SRCS)
-aux_source_directory(../../../src/utils DIR_TEST_SRCS)
+aux_source_directory(${PROJECT_SOURCE_DIR}/src/dongmendb DIR_TEST_SRCS)
+aux_source_directory(${PROJECT_SOURCE_DIR}/src/parser DIR_TEST_SRCS)
+aux_source_directory(${PROJECT_SOURCE_DIR}/src/physicalplan DIR_TEST_SRCS)
+aux_source_directory(${PROJECT_SOURCE_DIR}/src/queryplan DIR_TEST_SRCS)
+aux_source_directory(${PROJECT_SOURCE_DIR}/src/utils DIR_TEST_SRCS)
 
 aux_source_directory(. DIR_TEST_SRCS)
 
@@ -27,13 +27,6 @@ add_executable(test_select ${DIR_TEST_SRCS})
 
 enable_testing()
 
-#用宏定义测试用例
-macro (test_select index dbname result sql)
-    add_test (NAME test_${dbname}_${index} COMMAND test_select ${dbname} "1" ${sql} )
-    set_tests_properties (test_${dbname}_${index}
-            PROPERTIES PASS_REGULAR_EXPRESSION ${result})
-endmacro (test_select)
-
 file(STRINGS test_cases.sql test_cases)
 set(_count 0)
 #如果每行包含多个参数且以分号隔开，自动识别为list，则自动拆分成多个参数传给add_test
@@ -41,7 +34,7 @@ set(_count 0)
 #arg0;_dbname;_resutl;_sql;
 foreach(_case ${test_cases})
     list(GET _case 0 arg0)
-    #跳过注释行
+    #跳过注释行,有错误呢
     if(arg0 MATCHES "#.*")
          continue()
     endif(arg0 MATCHES "#.*")
