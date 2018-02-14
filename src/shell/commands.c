@@ -1,11 +1,13 @@
 #include <unistd.h>
 #include <string.h>
-#include "shell.h"
-#include "commands.h"
+#include "shell/shell.h"
+#include "shell/commands.h"
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <dongmendb/dongmendb.h>
 #include <dongmensql/dongmensql.h>
+#include <dongmendb/recordfile.h>
 #include <utils/utils.h>
 #include <parser/statement.h>
 #include <parser/parseSelectStmt.h>

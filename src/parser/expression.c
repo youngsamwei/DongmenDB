@@ -91,6 +91,17 @@ TermExpr *newTermExpr() {
     return expr;
 }
 
+char *getExpressionNamesTitle(arraylist *exprs){
+    char *title = (char *)calloc(1024,1);
+
+    for (int i = 0; i <= exprs->size - 1;i++){
+        Expression *expr = arraylist_get(exprs, i);
+        expression_print(expr, title);
+        strcat(title, "\t");
+    }
+    return title;
+};
+
 int expression_free(Expression *expr) {};
 
 int expression_free_list(arraylist *expr) {};

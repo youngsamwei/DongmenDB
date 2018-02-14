@@ -9,17 +9,6 @@
 #include <parser/expression.h>
 #include "utils/utils.h"
 
-char *getExpressionNamesTitle(arraylist *exprs){
-    char *title = (char *)calloc(1024,1);
-
-    for (int i = 0; i <= exprs->size - 1;i++){
-        Expression *expr = arraylist_get(exprs, i);
-        expression_print(expr, title);
-        strcat(title, "\t");
-    }
-    return title;
-};
-
 char *new_id_name(){
     char *name = (char *) calloc(MAX_ID_NAME_LENGTH, sizeof(char *));
 //    char *name = (char *)malloc(MAX_ID_NAME_LENGTH);

@@ -110,6 +110,8 @@ Expression *newExpression(TokenType type, Expression *nextexpr);
 
 TermExpr *newTermExpr();
 
+char *getExpressionNamesTitle(arraylist *fields);
+
 int expression_free(Expression *expr);
 
 int expression_free_list(arraylist *exprlist);
