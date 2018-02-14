@@ -5,9 +5,9 @@
 #ifndef DONGMENDB_EXPRESSION_H
 #define DONGMENDB_EXPRESSION_H
 
-#include <literal.h>
+#include <dongmensql/literal.h>
 #include <utils/arraylist.h>
-#include <column.h>
+#include <dongmensql/column.h>
 #include "tokenizer.h"
 
 /**

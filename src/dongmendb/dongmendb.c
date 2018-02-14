@@ -2,7 +2,7 @@
 // Created by Sam on 2018/1/25.
 //
 
-#include "dongmendb.h"
+#include "dongmendb/dongmendb.h"
 
 
 int dongmendb_open(char *dbName, dongmendb *db) {

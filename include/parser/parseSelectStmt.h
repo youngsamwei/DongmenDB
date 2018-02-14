@@ -6,9 +6,9 @@
 #define DONGMENDB_PARSESELECTSTMT_H
 
 
-#include <sra.h>
+#include <dongmensql/sra.h>
 #include "parser.h"
-#include "dongmendb.h"
+#include "dongmendb/dongmendb.h"
 
 SRA_t *parse_sql_stmt_select(ParserT *parser);
 

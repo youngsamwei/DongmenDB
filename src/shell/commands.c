@@ -5,7 +5,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <dongmensql.h>
+#include <dongmensql/dongmensql.h>
 #include <utils/utils.h>
 #include <parser/statement.h>
 #include <parser/parseSelectStmt.h>

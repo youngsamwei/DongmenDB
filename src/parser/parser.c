@@ -5,8 +5,8 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include <dongmensql.h>
-#include <dongmendb.h>
+#include <dongmensql/dongmensql.h>
+#include <dongmendb/dongmendb.h>
 #include "parser/parser.h"
 #include "utils/opstack.h"
 #include "parser/parseExpressionRD.h"

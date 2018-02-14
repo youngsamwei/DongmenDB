@@ -2,7 +2,8 @@
 // Created by Sam on 2018/1/26.
 //
 
-#include "buffermanager.h"
+
+#include <dongmendb/buffermanager.h>
 
 int buffer_manager_create(buffer_manager *bufferManager, int bufferSize, file_manager *fileManager) {
 
