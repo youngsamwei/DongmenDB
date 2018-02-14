@@ -1,0 +1,3 @@
+http://blog.csdn.net/breaksoftware/article/details/50917733
+https://blog.jetbrains.com/clion/2015/10/clion-1-2-be-more-powerful/
+https://blog.jetbrains.com/clion/2015/10/new-clion-1-2-eap-build-brings-you-google-test/

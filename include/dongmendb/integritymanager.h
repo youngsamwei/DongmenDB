@@ -4,6 +4,9 @@
 
 #ifndef DONGMENDB_INTEGRITYMANAGER_H
 #define DONGMENDB_INTEGRITYMANAGER_H
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /**
  * 完整性管理
@@ -12,7 +15,10 @@
  */
 typedef struct integrity_manager_ {
 
-}integrity_manager;
+} integrity_manager;
+#ifdef __cplusplus
+}
+#endif
 
 
 #endif //DONGMENDB_INTEGRITYMANAGER_H

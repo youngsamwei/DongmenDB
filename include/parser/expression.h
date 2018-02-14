@@ -9,6 +9,9 @@
 #include <utils/arraylist.h>
 #include <dongmensql/column.h>
 #include "tokenizer.h"
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /**
  * 支持条件表达式和算术表达式
@@ -119,5 +122,8 @@ int expression_free_list(arraylist *exprlist);
 Expression *expression_print(Expression *expr, char *desc);
 
 int expression_print_list(arraylist *exprlist);
+#ifdef __cplusplus
+}
+#endif
 
 #endif //DONGMENDB_EXPRESSION_H

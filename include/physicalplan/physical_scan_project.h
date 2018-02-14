@@ -8,10 +8,13 @@
 #include <utils/arraylist.h>
 #include "dongmendb/transaction.h"
 #include "physicalscan.h"
+#ifdef __cplusplus
+extern "C" {
+#endif
 
- /**
-  * 实现投影操作
-  */
+/**
+ * 实现投影操作
+ */
 typedef struct physical_scan_project_ {
     arraylist *original_expr_list;//select语句中指定的原始表达式列表
     arraylist *expr_list; //将 * 等解析后得到的表达式列表，在prepare时处理
@@ -57,5 +60,8 @@ int physical_scan_project_get_rid(physical_scan *scan, record_id *recordId);
 int physical_scan_project_moveto_rid(physical_scan *scan, record_id *recordId);
 
 int physical_scan_project_generate_expr_list(physical_scan *scan);
+#ifdef __cplusplus
+}
+#endif
 
 #endif //DONGMENDB_PHYSICAL_SCAN_PROJECT_H

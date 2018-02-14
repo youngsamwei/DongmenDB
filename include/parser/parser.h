@@ -13,6 +13,9 @@
  * 定义parser的基础数据结构和共用的函数
  *
  * */
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #define PARSER_MESSAGE_LENTTH 128
 
@@ -23,7 +26,7 @@ typedef enum {
     PARSER_RESERVED_WORD
 } ParserStateType;
 
-typedef struct ParserT_{
+typedef struct ParserT_ {
 
     TokenizerT *tokenizer;
     TokenT *currToken;
@@ -32,7 +35,7 @@ typedef struct ParserT_{
 } ParserT;
 
 
-ParserT * newParser(TokenizerT *tokenizer);
+ParserT *newParser(TokenizerT *tokenizer);
 TokenT *parseNextToken(ParserT *parser);
 TokenT *parseEatToken(ParserT *parser);
 TokenT *parseEatAndNextToken(ParserT *parser);
@@ -57,5 +60,8 @@ ColumnsExpr *parseColumnsExpr(ParserT *parser);
 SetExpr *parseSetExpr(ParserT *parser);
 */
 int matchToken(ParserT *parser, TokenType type, char *text);
+#ifdef __cplusplus
+}
+#endif
 
 #endif //DONGMENDB_PARSER_H

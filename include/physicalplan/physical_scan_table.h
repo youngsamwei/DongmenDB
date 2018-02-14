@@ -7,6 +7,9 @@
 
 #include "dongmendb/recordfile.h"
 #include "physicalplan/physicalscan.h"
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /*
  * 实现全表扫描操作
@@ -60,5 +63,8 @@ int physical_scan_table_insert(physical_scan *scan);
 int physical_scan_table_get_rid(physical_scan *scan, record_id *recordId);
 
 int physical_scan_table_moveto_rid(physical_scan *scan, record_id *recordId);
+#ifdef __cplusplus
+}
+#endif
 
 #endif //DONGMENDB_PHYSICAL_SCAN_TABLE_H

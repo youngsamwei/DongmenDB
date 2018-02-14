@@ -9,6 +9,9 @@
 #include <dongmensql/sra.h>
 #include "parser.h"
 #include "dongmendb/dongmendb.h"
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 SRA_t *parse_sql_stmt_select(ParserT *parser);
 
@@ -19,5 +22,8 @@ sql_stmt_create *parse_sql_stmt_create(ParserT *parser);
 field_info *parse_sql_stmt_columnexpr(ParserT *parser);
 
 sql_stmt_insert *parse_sql_stmt_insert(ParserT *parser);
+#ifdef __cplusplus
+}
+#endif
 
 #endif //DONGMENDB_PARSESELECTSTMT_H

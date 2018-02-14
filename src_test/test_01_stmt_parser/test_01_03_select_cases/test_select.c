@@ -4,10 +4,10 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "dongmendb.h"
+#include "dongmendb/dongmendb.h"
 #include "parser/tokenizer.h"
 #include "parser/parser.h"
-#include "sra.h"
+#include "dongmensql/sra.h"
 #include "parser/parseSelectStmt.h"
 #include "physicalplan/physicalplan.h"
 

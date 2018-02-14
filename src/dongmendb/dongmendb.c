@@ -5,7 +5,7 @@
 #include "dongmendb/dongmendb.h"
 
 
-int dongmendb_open(char *dbName, dongmendb *db) {
+int dongmendb_open(const char *dbName, dongmendb *db) {
 
     db->fileManager = (file_manager *)malloc(sizeof(file_manager));
 

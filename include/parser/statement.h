@@ -9,6 +9,9 @@
 #include "dongmendb/recordfile.h"
 #include "dongmensql/column.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 typedef struct sql_stmt_create_ {
     table_info *tableInfo;
@@ -17,7 +20,7 @@ typedef struct sql_stmt_create_ {
 
 } sql_stmt_create;
 
-typedef struct sql_stmt_insert_{
+typedef struct sql_stmt_insert_ {
     char *tableName;
     arraylist *fields;
     arraylist *values;
@@ -63,4 +66,9 @@ UpdateStmt *createUpdateStmt(char *tableName,
                              Expression *whereExpr);
 
 */
+
+#ifdef __cplusplus
+}
+#endif
+
 #endif //DONGMENDB_STATEMENT_H

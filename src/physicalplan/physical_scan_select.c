@@ -30,7 +30,7 @@ void physical_scan_select_init_scan(physical_scan *scan){
     scan->getFieldsName = physical_scan_select_get_fields_name;
     scan->setInt = physical_scan_select_set_int;
     scan->setString = physical_scan_select_set_string;
-    scan->delete  = physical_scan_select_delete;
+    scan->deleterec  = physical_scan_select_delete;
     scan->insert = physical_scan_select_insert;
     scan->getRid = physical_scan_select_get_rid;
     scan->movetoRid = physical_scan_select_moveto_rid;
@@ -117,7 +117,7 @@ int physical_scan_select_set_string(physical_scan *scan, char *tableName, char *
 
 int physical_scan_select_delete(physical_scan *scan){
     physical_scan *scan1  = scan->physicalScanSelect->scan;
-    return scan1->delete(scan1);
+    return scan1->deleterec(scan1);
 };
 
 int physical_scan_select_insert(physical_scan *scan){};

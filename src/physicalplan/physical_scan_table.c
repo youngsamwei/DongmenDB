@@ -34,7 +34,7 @@ void physical_scan_table_init_scan(physical_scan *scan){
     scan->getFieldsName = physical_scan_table_get_fields_name;
     scan->setInt = physical_scan_table_set_int;
     scan->setString = physical_scan_table_set_string;
-    scan->delete  = physical_scan_table_delete;
+    scan->deleterec  = physical_scan_table_delete;
     scan->insert = physical_scan_table_insert;
     scan->getRid = physical_scan_table_get_rid;
     scan->movetoRid = physical_scan_table_moveto_rid;

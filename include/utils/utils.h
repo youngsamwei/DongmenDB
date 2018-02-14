@@ -6,6 +6,9 @@
 #define DONGMENDB_UTILS_H
 
 #include "arraylist.h"
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 int dongmendb_tokenize(char *str, char ***tokens);
 
@@ -17,5 +20,8 @@ int bytes2int(unsigned char b1, unsigned char b2, unsigned char b3, unsigned cha
  */
 char *new_id_name();
 
+#ifdef __cplusplus
+}
+#endif
 
 #endif //DONGMENDB_UTILS_H

@@ -8,7 +8,7 @@
 #include <utils/arraylist.h>
 #include "dongmendb/filemanager.h"
 
-int file_manager_new(file_manager *fileManager, char *directory, char *dbName) {
+int file_manager_new(file_manager *fileManager, char *directory, const char *dbName) {
     fileManager->isNew = 0;
     /*如果对应的文件夹不存在*/
     int exists = access(dbName, F_OK);
@@ -17,7 +17,7 @@ int file_manager_new(file_manager *fileManager, char *directory, char *dbName) {
         mkdir(dbName);
     }
 
-    fileManager->dbDirectoryName = dbName;
+    fileManager->dbDirectoryName = strdup(dbName);
     fileManager->dbDirectory = fopen(dbName, "rw");
     fileManager->openFiles = hashmap_create();
 };

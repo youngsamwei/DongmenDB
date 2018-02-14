@@ -7,15 +7,18 @@
 
 #include <parser/expression.h>
 #include "physicalscan.h"
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /**
  * 实现选择操作
  */
 typedef struct physical_scan_ physical_scan;
-typedef struct physical_scan_select_{
+typedef struct physical_scan_select_ {
     Expression *cond;
     physical_scan *scan;
-}physical_scan_select;
+} physical_scan_select;
 
 
 physical_scan *physical_scan_select_create(physical_scan *scan);
@@ -56,5 +59,8 @@ int physical_scan_select_insert(physical_scan *scan);
 int physical_scan_select_get_rid(physical_scan *scan, record_id *recordId);
 
 int physical_scan_select_moveto_rid(physical_scan *scan, record_id *recordId);
+#ifdef __cplusplus
+}
+#endif
 
 #endif //DONGMENDB_PHYSICAL_SCAN_SELECT_H

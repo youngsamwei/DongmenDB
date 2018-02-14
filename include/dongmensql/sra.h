@@ -48,90 +48,97 @@ data JoinCondition = On Condition
 #include <utils/arraylist.h>
 #include "create.h"
 #include "ra.h"
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /* Forward declarations */
 typedef struct SRA_s SRA_t;
 typedef struct JoinCondition_s JoinCondition_t;
 
 enum SRAType {
-   SRA_TABLE,
-   SRA_PROJECT,
-   SRA_SELECT,
-   SRA_NATURAL_JOIN,
-   SRA_JOIN,
-   SRA_FULL_OUTER_JOIN,
-   SRA_LEFT_OUTER_JOIN,
-   SRA_RIGHT_OUTER_JOIN,
-   SRA_UNION,
-   SRA_EXCEPT,
-   SRA_INTERSECT
+    SRA_TABLE,
+    SRA_PROJECT,
+    SRA_SELECT,
+    SRA_NATURAL_JOIN,
+    SRA_JOIN,
+    SRA_FULL_OUTER_JOIN,
+    SRA_LEFT_OUTER_JOIN,
+    SRA_RIGHT_OUTER_JOIN,
+    SRA_UNION,
+    SRA_EXCEPT,
+    SRA_INTERSECT
 };
 
-enum OJType { OJ_LEFT, OJ_RIGHT, OJ_FULL };
-enum OrderBy {ORDER_BY_ASC, ORDER_BY_DESC};
+enum OJType {
+    OJ_LEFT, OJ_RIGHT, OJ_FULL
+};
+enum OrderBy {
+    ORDER_BY_ASC, ORDER_BY_DESC
+};
 
 typedef struct SRA_Table_s {
-   TableReference_t *ref; /* TableReference_t defined in create.h */
+    TableReference_t *ref; /* TableReference_t defined in create.h */
 } SRA_Table_t;
 
-typedef struct order_by_expr_{
+typedef struct order_by_expr_ {
     Expression *expr;
     enum OrderBy asc_desc;
-}order_by_expr;
+} order_by_expr;
 
 typedef struct SRA_Project_s {
-   SRA_t *sra;
-   arraylist *expr_list; //expression列表
-   arraylist *order_by; //order_by_expr的列表
-   int distinct;
-   arraylist *group_by; // expression列表
+    SRA_t *sra;
+    arraylist *expr_list; //expression列表
+    arraylist *order_by; //order_by_expr的列表
+    int distinct;
+    arraylist *group_by; // expression列表
 } SRA_Project_t;
 
 typedef struct SRA_Select_s {
-   SRA_t *sra;
+    SRA_t *sra;
     Expression *cond;
 } SRA_Select_t;
 
 typedef struct SRA_Join_s {
-   SRA_t *sra1, *sra2;
-   JoinCondition_t *opt_cond;
+    SRA_t *sra1, *sra2;
+    JoinCondition_t *opt_cond;
 } SRA_Join_t;
 
 typedef struct SRA_Binary_s {
-   SRA_t *sra1, *sra2;
+    SRA_t *sra1, *sra2;
 } SRA_Binary_t;
 
 struct SRA_s {
-   enum SRAType t;
-   union {
-      SRA_Table_t table;
-      SRA_Project_t project;
-      SRA_Select_t select;
-      SRA_Join_t join;
-      SRA_Binary_t binary;
-   };
+    enum SRAType t;
+    union {
+        SRA_Table_t table;
+        SRA_Project_t project;
+        SRA_Select_t select;
+        SRA_Join_t join;
+        SRA_Binary_t binary;
+    };
 };
 
 typedef struct SRAList_s {
-   SRA_t *sra;
-   struct SRAList_s *next;
+    SRA_t *sra;
+    struct SRAList_s *next;
 } SRAList_t;
 
 enum JoinConditionType {
-   JOIN_COND_ON, JOIN_COND_USING
+    JOIN_COND_ON, JOIN_COND_USING
 };
 
 struct JoinCondition_s {
-   enum JoinConditionType t;
-   union {
-       Expression *on;
-      StrList_t *col_list;
-   };
+    enum JoinConditionType t;
+    union {
+        Expression *on;
+        StrList_t *col_list;
+    };
 };
 
 typedef struct ProjectOption_s {
-   arraylist *order_by, *group_by;
-   enum OrderBy asc_desc; /* not used by group by */
+    arraylist *order_by, *group_by;
+    enum OrderBy asc_desc; /* not used by group by */
 } ProjectOption_t;
 
 SRA_t *SRATable(TableReference_t *ref);
@@ -152,8 +159,8 @@ SRA_t *SRA_makeDistinct(SRA_t *sra);
 
 ProjectOption_t *OrderBy_make(arraylist *expr, enum OrderBy o);
 ProjectOption_t *GroupBy_make(arraylist *expr);
-ProjectOption_t *ProjectOption_combine(ProjectOption_t *order_by, 
-                                        ProjectOption_t *group_by);
+ProjectOption_t *ProjectOption_combine(ProjectOption_t *order_by,
+                                       ProjectOption_t *group_by);
 void ProjectOption_print(ProjectOption_t *sra);
 
 JoinCondition_t *On(Expression *cond);
@@ -166,5 +173,8 @@ void JoinCondition_print(JoinCondition_t *cond);
 void JoinCondition_free(JoinCondition_t *cond);
 
 RA_t *SRA_desugar(SRA_t *sra);
+#ifdef __cplusplus
+}
+#endif
 
 #endif

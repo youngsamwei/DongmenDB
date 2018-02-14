@@ -6,6 +6,9 @@
 #define DONGMENDB_ARRAYLISTB_H
 #include <stdio.h>
 #include <stdlib.h>
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 typedef struct arraylist {
     void **data;
@@ -23,5 +26,8 @@ void *arraylist_get(arraylist *list, size_t index);
 int arraylist_set(arraylist *list, size_t index, void *value);
 int arraylist_shrink(arraylist *list);
 int arraylist_clear(arraylist *list);
+#ifdef __cplusplus
+}
+#endif
 
 #endif //DONGMENDB_ARRAYLISTB_H

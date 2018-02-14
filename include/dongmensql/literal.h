@@ -2,18 +2,21 @@
 #define __LITERAL_H_
 
 #include "common.h"
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 union LitVal {
-   int ival;
-   double dval;
-   char cval;
-   char *strval;
+    int ival;
+    double dval;
+    char cval;
+    char *strval;
 };
 
 typedef struct Literal_t {
-   enum data_type t;
-   union LitVal val;
-   struct Literal_t *next; /* linked list */
+    enum data_type t;
+    union LitVal val;
+    struct Literal_t *next; /* linked list */
 } Literal_t;
 
 Literal_t *litInt(int i);
@@ -30,4 +33,9 @@ void Literal_printList(Literal_t *val);
 
 
 Literal_t *newLiteral(enum data_type t);
+
+#ifdef __cplusplus
+}
+#endif
+
 #endif
