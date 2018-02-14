@@ -5,7 +5,7 @@
 #ifndef DONGMENDB_STATEMENT_H
 #define DONGMENDB_STATEMENT_H
 
-#include <arraylist.h>
+#include <utils/arraylist.h>
 #include "recordfile.h"
 #include "column.h"
 

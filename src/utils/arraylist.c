@@ -3,7 +3,7 @@
 //
 
 #include <mem.h>
-#include "arraylist.h"
+#include "utils/arraylist.h"
 
 #define INITIAL_ARRAYLIST_SIZE 10
 

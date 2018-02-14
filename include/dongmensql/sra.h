@@ -45,7 +45,7 @@ data JoinCondition = On Condition
 
 */
 
-#include <arraylist.h>
+#include <utils/arraylist.h>
 #include "create.h"
 #include "ra.h"
 

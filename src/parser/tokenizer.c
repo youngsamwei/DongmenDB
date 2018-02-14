@@ -17,7 +17,7 @@
 #include <ctype.h>
 #include <string.h>
 #include <assert.h>
-#include "tokenizer.h"
+#include "parser/tokenizer.h"
 
 
 int isOctal(char curr) {

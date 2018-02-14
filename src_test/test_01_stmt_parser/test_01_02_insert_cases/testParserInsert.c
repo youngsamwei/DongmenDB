@@ -4,9 +4,9 @@
 
 
 #include <stdio.h>
-#include <statement.h>
-#include <parser.h>
-#include <parseSelectStmt.h>
+#include <parser/statement.h>
+#include <parser/parser.h>
+#include <parser/parseSelectStmt.h>
 #include <mem.h>
 
 

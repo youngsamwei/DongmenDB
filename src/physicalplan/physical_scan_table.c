@@ -2,7 +2,7 @@
 // Created by Sam on 2018/2/7.
 //
 
-#include "physical_scan_table.h"
+#include "physicalplan/physical_scan_table.h"
 
 physical_scan *physical_scan_table_create(dongmendb *db, char *tableName, transaction *tx) {
     physical_scan_table *physicalScanTable = (physical_scan_table *)calloc(sizeof(physical_scan_table),1);

@@ -1,7 +1,7 @@
 #ifndef __RA_H_
 #define __RA_H_
 
-#include "expression.h"
+#include "parser/expression.h"
 #include "column.h"
 
 /* Relation Algebra

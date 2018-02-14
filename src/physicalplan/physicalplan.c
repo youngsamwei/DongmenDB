@@ -2,9 +2,9 @@
 // Created by Sam on 2018/2/2.
 //
 
-#include "physicalplan.h"
-#include "physicalscan.h"
-#include "physical_scan_table.h"
+#include "physicalplan/physicalplan.h"
+#include "physicalplan/physicalscan.h"
+#include "physicalplan/physical_scan_table.h"
 
 physical_scan *plan_execute_select(dongmendb *db, SRA_t *sra, transaction *tx){
     physical_scan *plan = physical_scan_generate(db, sra, tx);

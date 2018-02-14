@@ -6,9 +6,9 @@
 #include <malloc.h>
 #include <mem.h>
 #include <stdio.h>
-#include <utils.h>
-#include "parseSelectStmt.h"
-#include "parseExpressionRD.h"
+#include <utils/utils.h>
+#include "parser/parseSelectStmt.h"
+#include "parser/parseExpressionRD.h"
 
 
 /**

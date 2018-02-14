@@ -4,7 +4,7 @@
 
 #include <malloc.h>
 #include <mem.h>
-#include "statement.h"
+#include "parser/statement.h"
 
 sql_stmt_create *sql_stmt_create_create(char *tableName,
                             arraylist *fieldsName, hmap_t columns,

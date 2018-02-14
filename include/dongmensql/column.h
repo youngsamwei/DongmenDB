@@ -2,7 +2,7 @@
 #define __COLUMN_H_
 
 #include "literal.h"
-#include "expression.h"
+#include "parser/expression.h"
 
 enum constraint_type {
    CONS_NOT_NULL,

@@ -3,9 +3,9 @@
 //
 
 #include <sys/stat.h>
-#include <utils.h>
+#include <utils/utils.h>
 #include <io.h>
-#include <arraylist.h>
+#include <utils/arraylist.h>
 #include "filemanager.h"
 
 int file_manager_new(file_manager *fileManager, char *directory, char *dbName) {

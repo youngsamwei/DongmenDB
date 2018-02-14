@@ -2,9 +2,9 @@
 // Created by Sam on 2018/1/17.
 //
 
-#include <utils.h>
+#include <utils/utils.h>
 #include "dongmensql.h"
-#include "expression.h"
+#include "parser/expression.h"
 
 /**
  * @brief 从后序表达式产生中序表达式字符串

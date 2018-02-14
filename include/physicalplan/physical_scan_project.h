@@ -5,7 +5,7 @@
 #ifndef DONGMENDB_PHYSICAL_SCAN_PROJECT_H
 #define DONGMENDB_PHYSICAL_SCAN_PROJECT_H
 
-#include <arraylist.h>
+#include <utils/arraylist.h>
 #include "transaction.h"
 #include "physicalscan.h"
 

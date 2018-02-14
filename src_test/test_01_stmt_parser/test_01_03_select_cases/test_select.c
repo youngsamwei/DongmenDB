@@ -5,11 +5,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "dongmendb.h"
-#include "tokenizer.h"
-#include "parser.h"
+#include "parser/tokenizer.h"
+#include "parser/parser.h"
 #include "sra.h"
-#include "parseSelectStmt.h"
-#include "physicalplan.h"
+#include "parser/parseSelectStmt.h"
+#include "physicalplan/physicalplan.h"
 
 
 int select(dongmendb *db, char *sqlselect) {
