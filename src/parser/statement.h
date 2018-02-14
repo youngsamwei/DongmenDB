@@ -7,7 +7,6 @@
 
 #include <arraylist.h>
 #include "recordfile.h"
-#include "sqlexpression.h"
 #include "column.h"
 
 
