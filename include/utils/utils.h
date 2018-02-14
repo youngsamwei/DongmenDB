@@ -17,6 +17,5 @@ int bytes2int(unsigned char b1, unsigned char b2, unsigned char b3, unsigned cha
  */
 char *new_id_name();
 
-char *getExpressionNamesTitle(arraylist *fields);
 
 #endif //DONGMENDB_UTILS_H

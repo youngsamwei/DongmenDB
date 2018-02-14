@@ -1,6 +1,6 @@
 #include <string.h>
 #include <utils/utils.h>
-#include "shell.h"
+#include "shell/shell.h"
 
 void dongmendb_shell_init_ctx(dongmendb_shell_handle_sql_t *ctx)
 {
