@@ -5,9 +5,9 @@
 #include <malloc.h>
 #include <mem.h>
 #include <stdio.h>
-#include <utils.h>
-#include "parseExpressionRD.h"
-#include "opstack.h"
+#include <utils/utils.h>
+#include "parser/parseExpressionRD.h"
+#include "utils/opstack.h"
 
 /*使用递归下降法解析表达式
  *

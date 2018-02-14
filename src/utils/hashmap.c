@@ -2,7 +2,7 @@
 // Created by Sam on 2018/1/28.
 //
 
-#include "hashmap.h"
+#include "utils/hashmap.h"
 /**
  * hashmap.c
  *   Generic hash map implementation.

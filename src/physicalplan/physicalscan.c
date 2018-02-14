@@ -2,7 +2,7 @@
 // Created by Sam on 2018/2/7.
 //
 
-#include "physicalscan.h"
+#include "physicalplan/physicalscan.h"
 
 physical_scan *physical_scan_generate(dongmendb *db, SRA_t *sra, transaction *tx) {
     if (!sra) return NULL;

@@ -2,7 +2,7 @@
 // Created by Sam on 2018/2/7.
 //
 
-#include "physical_scan_join_nest_loop.h"
+#include "physicalplan/physical_scan_join_nest_loop.h"
 
 physical_scan *physical_scan_join_nest_loop_create(physical_scan *scan1, physical_scan *scan2) {
     physical_scan_join_nest_loop *physicalScanJoinNestLoop = (physical_scan_join_nest_loop *)calloc(sizeof(physical_scan_join_nest_loop),1);

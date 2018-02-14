@@ -7,9 +7,9 @@
 #include <stdio.h>
 #include <dongmensql.h>
 #include <dongmendb.h>
-#include "parser.h"
-#include "opstack.h"
-#include "parseExpressionRD.h"
+#include "parser/parser.h"
+#include "utils/opstack.h"
+#include "parser/parseExpressionRD.h"
 
 /**
  * @brief 创建语法解析器

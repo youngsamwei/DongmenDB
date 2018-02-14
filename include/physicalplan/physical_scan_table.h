@@ -6,7 +6,7 @@
 #define DONGMENDB_PHYSICAL_SCAN_TABLE_H
 
 #include "recordfile.h"
-#include "physicalscan.h"
+#include "physicalplan/physicalscan.h"
 
 /*
  * 实现全表扫描操作

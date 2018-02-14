@@ -6,8 +6,8 @@
 #include <ctype.h>
 #include <malloc.h>
 #include <dongmendb.h>
-#include <expression.h>
-#include "utils.h"
+#include <parser/expression.h>
+#include "utils/utils.h"
 
 char *getExpressionNamesTitle(arraylist *exprs){
     char *title = (char *)calloc(1024,1);

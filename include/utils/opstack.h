@@ -7,7 +7,7 @@
 
 /*定义解析表达式时用到的公共结构和函数*/
 
-#include "tokenizer.h"
+#include "parser/tokenizer.h"
 
 /*操作符堆栈*/
 typedef  struct op_stack_ op_stack;

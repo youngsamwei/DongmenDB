@@ -6,7 +6,7 @@
 #define DONGMENDB_EXPRESSION_H
 
 #include <literal.h>
-#include <arraylist.h>
+#include <utils/arraylist.h>
 #include <column.h>
 #include "tokenizer.h"
 

@@ -6,10 +6,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <dongmensql.h>
-#include <utils.h>
-#include <statement.h>
-#include <parseSelectStmt.h>
-#include <physicalplan.h>
+#include <utils/utils.h>
+#include <parser/statement.h>
+#include <parser/parseSelectStmt.h>
+#include <physicalplan/physicalplan.h>
 
 
 #define COL_SEPARATOR "|"

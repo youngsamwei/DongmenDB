@@ -2,13 +2,13 @@
 // Created by Sam on 2018/1/20.
 //
 
-#include <tokenizer.h>
+#include <parser/tokenizer.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include <parseExpressionRD.h>
-#include "../../src/parser/tokenizer.h"
-#include "../../src/parser/parser.h"
-#include "../../src/parser/parseExpressionRD.h"
+#include <parser/parseExpressionRD.h>
+#include "parser/tokenizer.h"
+#include "parser/parser.h"
+#include "parser/parseExpressionRD.h"
 
 /*
  * main will have a string argument (in argv[1]).
