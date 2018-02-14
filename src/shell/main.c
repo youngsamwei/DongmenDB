@@ -8,7 +8,7 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <string.h>
-#include <dongmendb.h>
+#include <dongmendb/dongmendb.h>
 #include <stdio.h>
 #include "shell.h"
 #include "commands.h"

@@ -2,11 +2,11 @@
 // Created by Sam on 2018/1/25.
 //
 
-#include <dongmendb.h>
-#include <dongmensql.h>
+#include <dongmendb/dongmendb.h>
+#include <dongmensql/dongmensql.h>
 #include <mem.h>
 #include <malloc.h>
-#include "optimizer.h"
+#include "dongmensql/optimizer.h"
 
 
 int dongmendb_stmt_optimize(dongmendb *db,

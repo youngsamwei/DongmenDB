@@ -10,11 +10,11 @@
  * recordpage可以取消？
  */
 
-#include "filemanager.h"
+#include "dongmendb/filemanager.h"
 #include <malloc.h>
 #include <mem.h>
-#include "transaction.h"
-#include <common.h>
+#include "dongmendb/transaction.h"
+#include <dongmensql/common.h>
 
 #define RECORD_FILE_EXT ".tbl"
 

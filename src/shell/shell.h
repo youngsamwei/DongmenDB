@@ -1,7 +1,7 @@
 #ifndef SHELL_H_
 #define SHELL_H_
 
-#include <dongmendb.h>
+#include <dongmendb/dongmendb.h>
 #include <stdbool.h>
 
 typedef enum shell_mode

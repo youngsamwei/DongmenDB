@@ -6,8 +6,8 @@
 #define DONGMENDB_STATEMENT_H
 
 #include <utils/arraylist.h>
-#include "recordfile.h"
-#include "column.h"
+#include "dongmendb/recordfile.h"
+#include "dongmensql/column.h"
 
 
 typedef struct sql_stmt_create_ {
