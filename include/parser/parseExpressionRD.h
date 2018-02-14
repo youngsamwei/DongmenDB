@@ -9,6 +9,9 @@
 #include "tokenizer.h"
 #include "parser.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /*使用递归下降法解析表达式
  *
@@ -49,76 +52,80 @@ Expression *concatExpression(Expression *expr0, Expression *expr1);
  @param[in] parser ParserT结构的解析器
  @return 读到的参数表达式
  */
-Expression *parseReadArgument( ParserT *parser );
+Expression *parseReadArgument(ParserT *parser);
 
 /**
  @brief 解析函数, 如 sqrt(.), pow(.), 等
  @param[in] parser ParserT结构的解析器
  @return 函数表达式
 */
-Expression *parseReadBuiltin( ParserT *parser );
+Expression *parseReadBuiltin(ParserT *parser);
 
 /**
  @brief  解析括号内的表达式
  @param[in] parser ParserT结构的解析器
  @return 表达式
  */
-Expression *parseReadParen( ParserT *parser );
+Expression *parseReadParen(ParserT *parser);
 
 /**
  @brief 解析单目运算表达式
  @param[in] parser ParserT结构的解析器
  @return 表达式
 */
-Expression *parseReadUnary( ParserT *parser );
+Expression *parseReadUnary(ParserT *parser);
 
 /**
  @brief 解析指数表达式
  @param[in] parser ParserT结构的解析器
  @return 表达式
  */
-Expression *parseReadPower( ParserT *parser );
+Expression *parseReadPower(ParserT *parser);
 
 /**
  @brief 解析终结符表达式
  @param[in] parser  ParserT结构的解析器
  @return 表达式
  */
-Expression *parseReadTerm( ParserT *parser );
+Expression *parseReadTerm(ParserT *parser);
 
 /**
  @brief 解析算术表达式
  @param[in] parser ParserT结构的解析器
  @return 表达式
  */
-Expression *parseReadExpr( ParserT *parser );
+Expression *parseReadExpr(ParserT *parser);
 
 /**
  @brief 解析比较表达式
  @param[in] parser  ParserT结构的解析器
  @return 表达式
  */
-Expression *parseReadBooleanComparison( ParserT *parser );
+Expression *parseReadBooleanComparison(ParserT *parser);
 
 /**
  * @brief 解析等比较表达式
  * @param parser ParserT结构的解析器
  * @return  表达式
  */
-Expression *parseReadBooleanEquality( ParserT *parser );
+Expression *parseReadBooleanEquality(ParserT *parser);
 
 /**
  @brief 解析and比较表达式
  @param[in] parser  ParserT结构的解析器
  @return 表达式
 */
-Expression *parseReadBooleanAnd( ParserT *parser );
+Expression *parseReadBooleanAnd(ParserT *parser);
 
 /**
  @brief 解析or比较表达式
  @param[in] parser ParserT结构的解析器
  @return 表达式
 */
-Expression *parseReadBooleanOr( ParserT *parser );
+Expression *parseReadBooleanOr(ParserT *parser);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif //DONGMENDB_PARSEEXPRESSIONRD_H

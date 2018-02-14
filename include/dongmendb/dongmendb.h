@@ -13,6 +13,9 @@
 #include "metadatamanager.h"
 #include "securitymanager.h"
 #include "recordfile.h"
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #define MAX_ID_NAME_LENGTH 32
 
@@ -25,7 +28,7 @@ typedef struct file_manager_ file_manager;
 typedef struct metadata_manager_ metadata_manager;
 typedef struct transaction_ transaction;
 
-typedef struct dongmendb_{
+typedef struct dongmendb_ {
     char *dbName;
     file_manager *fileManager;
     buffer_manager *bufferManager;
@@ -71,7 +74,7 @@ typedef struct dongmendb_{
  * - DONGMENDB_ECORRUPT: The database file is not well formed
  * - DONGMENDB_EIO: An I/O error has occurred when accessing the file
  */
-int dongmendb_open(char *file, dongmendb *db);
+int dongmendb_open(const char *file, dongmendb *db);
 
 
 /* Prepares a SQL statement for execution
@@ -163,7 +166,7 @@ int dongmendb_column_type(dongmendb_stmt *stmt, int col);
  *   client does not have to free() the returned string. It is the API's
  *   responsibility to allocate and free the memory for this string.
  */
-const char *dongmendb_column_name(dongmendb_stmt* stmt, int col);
+const char *dongmendb_column_name(dongmendb_stmt *stmt, int col);
 
 
 /* Returns the value of a column of integer type
@@ -203,4 +206,9 @@ const char *dongmendb_column_text(dongmendb_stmt *stmt, int col);
  * - DONGMENDB_EMISUSE: Database that is already closed
  */
 int dongmendb_close(dongmendb *db);
+
+#ifdef __cplusplus
+}
+#endif
+
 #endif //DONGMENDB_DONGMENDB_H

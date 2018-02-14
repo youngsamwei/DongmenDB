@@ -15,6 +15,9 @@
 #include <mem.h>
 #include "dongmendb/transaction.h"
 #include <dongmensql/common.h>
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #define RECORD_FILE_EXT ".tbl"
 
@@ -45,7 +48,7 @@ typedef struct field_info_ {
 /**
  * 用于保存在hashmap中的key和value
  */
-typedef struct integer_{
+typedef struct integer_ {
     int val;
 } integer;
 
@@ -77,7 +80,7 @@ typedef struct record_id_ {
 } record_id;
 
 int record_file_create(record_file *recordFile, table_info *tableInfo,
-                    transaction *tx);
+                       transaction *tx);
 
 int record_file_close(record_file *recordFile);
 
@@ -111,7 +114,7 @@ int record_file_append_block(record_file *recordFile);
 
 int record_file_record_formatter(record_file *recordFile, memory_page *memoryPage);
 
-field_info *field_info_create( enum data_type type, int length);
+field_info *field_info_create(enum data_type type, int length);
 
 table_info *table_info_create(char *tableName, arraylist *fieldsName, hmap_t fields);
 
@@ -119,7 +122,7 @@ int table_info_free(table_info *tableInfo);
 
 int table_info_offset(table_info *tableInfo, char *fieldName);
 
-record_page *record_page_create( transaction *tx, table_info *tableInfo, disk_block *diskBlock);
+record_page *record_page_create(transaction *tx, table_info *tableInfo, disk_block *diskBlock);
 
 int record_page_close(record_page *recordPage);
 
@@ -146,4 +149,10 @@ int record_page_current_pos(record_page *recordPage);
 int record_page_fieldpos(record_page *recordPage, char *fieldName);
 
 int record_page_is_valid_slot(record_page *recordPage);
+
+
+#ifdef __cplusplus
+}
+#endif
+
 #endif //DONGMENDB_RECORDFILE_H

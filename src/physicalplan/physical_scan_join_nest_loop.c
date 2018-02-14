@@ -31,7 +31,7 @@ void physical_scan_join_nest_loop_init_scan(physical_scan *scan){
     scan->getFieldsName = physical_scan_join_nest_loop_get_fields_name;
     scan->setInt = NULL;
     scan->setString = NULL;
-    scan->delete  = NULL;
+    scan->deleterec = NULL;
     scan->insert = NULL;
     scan->getRid = physical_scan_join_nest_loop_get_rid;
     scan->movetoRid = physical_scan_join_nest_loop_moveto_rid;

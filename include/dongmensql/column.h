@@ -3,50 +3,53 @@
 
 #include "literal.h"
 #include "parser/expression.h"
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 enum constraint_type {
-   CONS_NOT_NULL,
-   CONS_UNIQUE,
-   CONS_PRIMARY_KEY,
-   CONS_FOREIGN_KEY,
-   CONS_DEFAULT,
-   CONS_AUTO_INCREMENT,
-   CONS_CHECK,
-   CONS_SIZE
+    CONS_NOT_NULL,
+    CONS_UNIQUE,
+    CONS_PRIMARY_KEY,
+    CONS_FOREIGN_KEY,
+    CONS_DEFAULT,
+    CONS_AUTO_INCREMENT,
+    CONS_CHECK,
+    CONS_SIZE
 };
 
 typedef struct ForeignKeyRef_t {
-   const char *col_name, *table_name, *table_col_name;
+    const char *col_name, *table_name, *table_col_name;
 } ForeignKeyRef_t;
 
 typedef struct Expression_ Expression;
 typedef struct Constraint_t {
-   enum constraint_type t;
-   union {
-      ForeignKeyRef_t ref;
-      Literal_t *default_val;
-      unsigned size;
-      Expression *check;
-   } constraint;
-   struct Constraint_t *next;
+    enum constraint_type t;
+    union {
+        ForeignKeyRef_t ref;
+        Literal_t *default_val;
+        unsigned size;
+        Expression *check;
+    } constraint;
+    struct Constraint_t *next;
 } Constraint_t;
 
 typedef struct Column_t {
-   char *name;
-   enum data_type type;
+    char *name;
+    enum data_type type;
     Constraint_t *constraints;
-   size_t offset; /* offset in bytes from the beginning of the row */
-   struct Column_t *next;
+    size_t offset; /* offset in bytes from the beginning of the row */
+    struct Column_t *next;
 } Column_t;
 
 typedef struct ColumnReference_s {
-   char *tableName, *columnName, *columnAlias, *allName;
+    char *tableName, *columnName, *columnAlias, *allName;
 } ColumnReference_t;
 
 /* constraints on single columns */
 ForeignKeyRef_t ForeignKeyRef_makeFull(const char *cname, ForeignKeyRef_t fkey);
 ForeignKeyRef_t ForeignKeyRef_make(const char *foreign_tname,
-                                      const char *foreign_cname);
+                                   const char *foreign_cname);
 
 Constraint_t *NotNull(void);
 Constraint_t *AutoIncrement(void);
@@ -77,5 +80,8 @@ void Column_freeList(Column_t *column);
 
 /* sets the size of the next column */
 void Column_setSize(ssize_t size);
+#ifdef __cplusplus
+}
+#endif
 
 #endif

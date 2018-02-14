@@ -11,6 +11,9 @@
 #include "physical_scan_join_nest_loop.h"
 #include "physical_scan_select.h"
 #include "physical_scan_project.h"
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /**
  * 定义物理计划的数据结构和接口函数.
@@ -96,7 +99,7 @@ typedef struct physical_scan_ {
     physical_scan_get_fields_name getFieldsName;
     physical_scan_set_int setInt;
     physical_scan_set_string setString;
-    physical_scan_delete delete;
+    physical_scan_delete deleterec;
     physical_scan_insert insert;
     physical_scan_get_rid getRid;
     physical_scan_moveto_rid movetoRid;
@@ -105,5 +108,8 @@ typedef struct physical_scan_ {
 physical_scan *physical_scan_generate(dongmendb *db, SRA_t *sra, transaction *tx);
 
 Expression *physical_scan_evaluate_expression(Expression *expr, physical_scan *scan, variant *var);
+#ifdef __cplusplus
+}
+#endif
 
 #endif //DONGMENDB_PHYSICALSCAN_H

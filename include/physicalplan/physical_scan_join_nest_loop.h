@@ -7,6 +7,9 @@
 
 #include "parser/expression.h"
 #include "physicalscan.h"
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /**
  * 采用嵌套循环算法实现笛卡尔积操作
@@ -45,5 +48,8 @@ arraylist *physical_scan_join_nest_loop_get_fields_name(physical_scan *scan, cha
 int physical_scan_join_nest_loop_get_rid(physical_scan *tableScan, record_id *recordId);
 
 int physical_scan_join_nest_loop_moveto_rid(physical_scan *tableScan, record_id *recordId);
+#ifdef __cplusplus
+}
+#endif
 
 #endif //DONGMENDB_PHYSICAL_SCAN_JOIN_NEST_LOOP_H

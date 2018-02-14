@@ -3,27 +3,12 @@ include(CheckCXXSourceCompiles)
 include(CheckLibraryExists)
 include(CPack)
 
-INCLUDE_DIRECTORIES(
-        ${PROJECT_SOURCE_DIR}/include/dongmendb
-        ${PROJECT_SOURCE_DIR}/include/dongmensql
-        ${PROJECT_SOURCE_DIR}/src/parser
-        ${PROJECT_SOURCE_DIR}/src/physicalplan
-        ${PROJECT_SOURCE_DIR}/src/dongmensql
-        ${PROJECT_SOURCE_DIR}/src/shell
-        ${PROJECT_SOURCE_DIR}/src/utils
-)
-
-aux_source_directory(${PROJECT_SOURCE_DIR}/src/dongmendb DIR_TEST_SRCS)
-aux_source_directory(${PROJECT_SOURCE_DIR}/src/parser DIR_TEST_SRCS)
-aux_source_directory(${PROJECT_SOURCE_DIR}/src/physicalplan DIR_TEST_SRCS)
-aux_source_directory(${PROJECT_SOURCE_DIR}/src/dongmensql DIR_TEST_SRCS)
-aux_source_directory(${PROJECT_SOURCE_DIR}/src/utils DIR_TEST_SRCS)
-
 aux_source_directory(. DIR_TEST_SRCS)
 
-# 启用测试
-
 add_executable(test_select ${DIR_TEST_SRCS})
+TARGET_LINK_LIBRARIES(test_select dongmendb parser dongmensql utils physicalplan)
+
+# 启用测试
 
 enable_testing()
 

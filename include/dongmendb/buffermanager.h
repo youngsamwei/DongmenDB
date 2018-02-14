@@ -6,6 +6,9 @@
 #define DONGMENDB_BUFFERMANAGER_H
 
 #include "dongmendb.h"
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /**
  * 缓存管理
@@ -20,25 +23,25 @@
  */
 #define BUFFER_MAX_SIZE 5
 
-typedef void* void_ptr;
+typedef void *void_ptr;
 
 typedef struct table_info_ table_info;
 typedef struct memory_page_ memory_page;
 typedef struct disk_block_ disk_block;
 typedef struct file_manager_ file_manager;
 
-typedef struct memory_buffer_{
+typedef struct memory_buffer_ {
     memory_page *contents;
     disk_block *block;
     int pins;
     int modifiedBy; //-1,负值表示未被修改
     int logSequenceNumber; // -1 ，负值表示没有对应的日志记录
-}memory_buffer;
+} memory_buffer;
 
-typedef struct buffer_manager_{
+typedef struct buffer_manager_ {
     memory_buffer *bufferPool[BUFFER_MAX_SIZE];
     int numAvailable;
-}buffer_manager;
+} buffer_manager;
 
 int buffer_manager_create(buffer_manager *bufferManager, int bufferSize, file_manager *fileManager);
 /**
@@ -73,5 +76,8 @@ int memory_buffer_is_modifiedby(memory_buffer *buffer, int txnum);
 
 int memory_buffer_assignto(memory_buffer *buffer, disk_block *block);
 int memory_buffer_assignto_new(memory_buffer *buffer, char *fileName, table_info *tableInfo);
+#ifdef __cplusplus
+}
+#endif
 
 #endif //DONGMENDB_BUFFERMANAGER_H

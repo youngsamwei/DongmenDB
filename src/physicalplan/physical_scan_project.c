@@ -31,7 +31,7 @@ void physical_scan_project_init_scan(physical_scan *scan) {
     scan->getFieldsName = physical_scan_project_get_fields_name;
     scan->setInt = NULL;
     scan->setString = NULL;
-    scan->delete = NULL;
+    scan->deleterec = NULL;
     scan->insert = NULL;
     scan->getRid = physical_scan_project_get_rid;
     scan->movetoRid = physical_scan_project_moveto_rid;

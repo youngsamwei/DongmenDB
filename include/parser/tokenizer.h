@@ -4,6 +4,9 @@
 
 #ifndef DONGMENDB_TOKENIZER_H
 #define DONGMENDB_TOKENIZER_H
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 
 /* 词法分析
@@ -11,7 +14,7 @@
  */
 
 /*与operators中的排序一致，方便按照顺序访问operators*/
-typedef enum TokenType_{
+typedef enum TokenType_ {
     TOKEN_OPEN_PAREN = 0,
     TOKEN_CLOSE_PAREN,
     TOKEN_POWER,
@@ -34,7 +37,7 @@ typedef enum TokenType_{
     TOKEN_FUN,
     TOKEN_COMMA,      /*以上是操作符，在表达式解析时使用*/
 
-    TOKEN_INVALID , //"invalid token"
+    TOKEN_INVALID, //"invalid token"
     TOKEN_RESERVED_WORD,
     TOKEN_WORD,
     TOKEN_UNENDED_SRING,
@@ -66,7 +69,7 @@ typedef struct TokenizerT_ {
 typedef struct TokenT_ {
     char *text;
     TokenType type;
-} TokenT ;
+} TokenT;
 
 
 int isOctal(char curr);
@@ -107,5 +110,8 @@ TokenT *_decimal(TokenizerT *tk);
 TokenT *_zero(TokenizerT *tk);
 TokenT *TKGetNextToken(TokenizerT *tk);
 
+#ifdef __cplusplus
+}
+#endif
 
 #endif //DONGMENDB_TOKENIZER_H
