@@ -10,8 +10,8 @@
 #include <string.h>
 #include <dongmendb/dongmendb.h>
 #include <stdio.h>
-#include "shell.h"
-#include "commands.h"
+#include "src/shell/shell.h"
+#include "src/shell/commands.h"
 
 #define  MAX_CMD 512
 

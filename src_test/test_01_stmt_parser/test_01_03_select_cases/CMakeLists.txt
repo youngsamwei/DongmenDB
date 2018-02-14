@@ -8,7 +8,7 @@ INCLUDE_DIRECTORIES(
         ${PROJECT_SOURCE_DIR}/include/dongmensql
         ${PROJECT_SOURCE_DIR}/src/parser
         ${PROJECT_SOURCE_DIR}/src/physicalplan
-        ${PROJECT_SOURCE_DIR}/src/queryplan
+        ${PROJECT_SOURCE_DIR}/src/dongmensql
         ${PROJECT_SOURCE_DIR}/src/shell
         ${PROJECT_SOURCE_DIR}/src/utils
 )
@@ -16,7 +16,7 @@ INCLUDE_DIRECTORIES(
 aux_source_directory(${PROJECT_SOURCE_DIR}/src/dongmendb DIR_TEST_SRCS)
 aux_source_directory(${PROJECT_SOURCE_DIR}/src/parser DIR_TEST_SRCS)
 aux_source_directory(${PROJECT_SOURCE_DIR}/src/physicalplan DIR_TEST_SRCS)
-aux_source_directory(${PROJECT_SOURCE_DIR}/src/queryplan DIR_TEST_SRCS)
+aux_source_directory(${PROJECT_SOURCE_DIR}/src/dongmensql DIR_TEST_SRCS)
 aux_source_directory(${PROJECT_SOURCE_DIR}/src/utils DIR_TEST_SRCS)
 
 aux_source_directory(. DIR_TEST_SRCS)

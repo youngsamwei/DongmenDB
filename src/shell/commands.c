@@ -20,7 +20,7 @@ struct handler_entry handlers[] =
                 HANDLER_ENTRY (parse, ".parse \"SQL\"       Show parse tree for statement SQL"),
                 HANDLER_ENTRY (opt,
                                ".optimizer \"SQL\"       Show parse tree and optimized parse tree for statement SQL"),
-                HANDLER_ENTRY (headers, ".headers on|off    Switch display of headers on or off in queryplan results"),
+                HANDLER_ENTRY (headers, ".headers on|off    Switch display of headers on or off in dongmensql results"),
                 HANDLER_ENTRY (mode, ".mode MODE         Switch display mode. MODE is one of:\n"
                         "                     column  Left-aligned columns\n"
                         "                     list    Values delimited by | (default)"),
