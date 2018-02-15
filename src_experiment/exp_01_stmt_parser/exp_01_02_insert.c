@@ -1,7 +1,6 @@
 //
 // Created by Sam on 2018/2/13.
 //
-#include "parser/parseSelectStmt.h"
 #include <parser/statement.h>
 #include <parser/parser.h>
 #include <utils/utils.h>

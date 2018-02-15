@@ -9,7 +9,6 @@
 #include <dongmendb/recordfile.h>
 #include <utils/utils.h>
 #include <parser/statement.h>
-#include <parser/parseSelectStmt.h>
 #include <physicalplan/physicalplan.h>
 
 
