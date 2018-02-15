@@ -4,11 +4,7 @@
 
 #include <utils/utils.h>
 #include "dongmensql/dongmensql.h"
-#include "parser/expression.h"
-#include <malloc.h>
-#include <mem.h>
-#include <stdio.h>
-#include "utils/opstack.h"
+
 
 /**
  * @brief 从后序表达式产生中序表达式字符串
