@@ -56,24 +56,6 @@ TokenT *parseEatToken(ParserT *parser);
 TokenT *parseEatAndNextToken(ParserT *parser);
 void *parseError(ParserT *parser, char *message);
 
-sql_stmt_create *parse_sql_stmt_create(ParserT *parser);
-/*
-AlterStmt *parseAlter(ParserT *parser);
-InsertStmt *parseInsert(ParserT *parser);
-DeleteStmt *parseDelete(ParserT *parser);
-UpdateStmt *parseUpdate(ParserT *parser);
-*/
-/*
-TermExpr *parseTermExpr(ParserT *parser);
-BinaryExpr *parseBinaryExpr(ParserT *parser);
-UnaryExpr *parseUnaryExpr(ParserT *parser);
-arraylist *parseGroupExpr(ParserT *parser);
- */
-arraylist *parseOrderExpr(ParserT *parser);
-/*
-ColumnsExpr *parseColumnsExpr(ParserT *parser);
-SetExpr *parseSetExpr(ParserT *parser);
-*/
 int matchToken(ParserT *parser, TokenType type, char *text);
 #ifdef __cplusplus
 }

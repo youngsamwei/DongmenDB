@@ -8,11 +8,12 @@
 #include <utils/arraylist.h>
 #include "dongmendb/recordfile.h"
 #include "dongmensql/column.h"
+#include "parser.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-
+typedef struct ParserT_  ParserT;
 typedef struct sql_stmt_create_ {
     table_info *tableInfo;
 
@@ -67,6 +68,24 @@ UpdateStmt *createUpdateStmt(char *tableName,
 
 */
 
+sql_stmt_create *parse_sql_stmt_create(ParserT *parser);
+/*
+AlterStmt *parseAlter(ParserT *parser);
+InsertStmt *parseInsert(ParserT *parser);
+DeleteStmt *parseDelete(ParserT *parser);
+UpdateStmt *parseUpdate(ParserT *parser);
+*/
+/*
+TermExpr *parseTermExpr(ParserT *parser);
+BinaryExpr *parseBinaryExpr(ParserT *parser);
+UnaryExpr *parseUnaryExpr(ParserT *parser);
+arraylist *parseGroupExpr(ParserT *parser);
+ */
+arraylist *parseOrderExpr(ParserT *parser);
+/*
+ColumnsExpr *parseColumnsExpr(ParserT *parser);
+SetExpr *parseSetExpr(ParserT *parser);
+*/
 #ifdef __cplusplus
 }
 #endif

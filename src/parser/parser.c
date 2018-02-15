@@ -78,32 +78,6 @@ void *parseError(ParserT *parser, char *message) {
     return NULL;
 };
 
-sql_stmt_create *parseCreate(ParserT *parser) { return NULL; };
-/*
-AlterStmt *parseAlter(ParserT *parser) { return NULL; };
-
-DeleteStmt *parseDelete(ParserT *parser) { return NULL; };
-
-UpdateStmt *parseUpdate(ParserT *parser) { return NULL; };
-*/
-/*
-TermExpr *parseTermExpr(ParserT *parser) { return NULL; };
-
-BinaryExpr *parseBinaryExpr(ParserT *parser) { return NULL; };
-
-UnaryExpr *parseUnaryExpr(ParserT *parser) { return NULL; };
-
-arraylist *parseGroupExpr(ParserT *parser) { return NULL; };
-*/
-arraylist *parseOrderExpr(ParserT *parser) { return NULL; };
-/*
-ColumnsExpr *parseColumnsExpr(ParserT *parser) { return NULL; };
-
-SetExpr *parseSetExpr(ParserT *parser) { return NULL; };
-*/
-int dongmensql_parser(const char *sql, dongmensql_statement_t **stmt){};
-int dongmensql_stmt_print(dongmensql_statement_t *stmt){};
-
 int matchToken(ParserT *parser, TokenType type, char *text){
     TokenT *token = parseNextToken(parser);
     if (token->type == type && stricmp(token->text, text) == 0) {
