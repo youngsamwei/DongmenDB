@@ -19,6 +19,21 @@ extern "C" {
 
 #define PARSER_MESSAGE_LENTTH 128
 
+typedef enum{
+    SQL_STMT_SELECT,
+    SQL_STMT_INSERT,
+    SQL_STMT_UPDATE,
+    SQL_STMT_DELETE,
+    SQL_STMT_CREATE_TABLE,
+    SQL_STMT_CREATE_USER,
+    SQL_STMT_CREATE_ROLE,
+    SQL_STMT_DROP_TABLE,
+    SQL_STMT_DROP_USER,
+    SQL_STMT_DROP_ROLE,
+    SQL_STMT_GRANT,
+    SQL_STMT_REVOKE
+}sql_stmt_type;
+
 /*语法分析状态类型*/
 typedef enum {
     PARSER_WRONG,
