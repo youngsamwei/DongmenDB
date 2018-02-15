@@ -9,11 +9,9 @@
 #include <parser/tokenizer.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include <parser/parseExpressionRD.h>
 #include <gtest/gtest.h>
-#include "parser/tokenizer.h"
 #include "parser/parser.h"
-#include "parser/parseExpressionRD.h"
+#include "parser/expression.h"
 
 int parse_expression(const char *sexpr){
     int result = 0;
