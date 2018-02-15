@@ -5,25 +5,39 @@
 #ifndef DONGMENDB_EXPRESSION_H
 #define DONGMENDB_EXPRESSION_H
 
-#include <dongmensql/literal.h>
-#include <utils/arraylist.h>
-#include "tokenizer.h"
-#include "parser.h"
 #include <malloc.h>
 #include <mem.h>
 #include <stdio.h>
+#include <dongmensql/literal.h>
+#include <utils/arraylist.h>
 #include <utils/utils.h>
-#include "parser/expression.h"
 #include "utils/opstack.h"
+#include "tokenizer.h"
+#include "parser.h"
+
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-/**
- * 支持条件表达式和算术表达式
+
+/*使用递归下降法解析表达式
  *
- */
+ * 支持：
+ * 算术运算 + - * /
+ * 比较运算: > < != <= >=
+ * 逻辑运算: NOT AND OR
+ * 函数:  round, ltrim （仅作为例子，没有实现）
+ * 字段变量: 类似student.sname
+ * 支持简单的语法检查。
+ * 支持的数据类型:数值，字符串
+ *
+ * 尚未支持的运算符： like， between..and 等
+ * 暂不支持函数
+ * 此功能属于语法检查，尚不支持语义检查。比如函数操作符操作数类型匹配，函数传参类型匹配检查等。
+ *
+ * 入口函数：parseExpressionRD
+ * */
 typedef enum {
     TERM_UNKNOWN = 0,
     TERM_LITERAL,
@@ -129,25 +143,6 @@ int expression_free_list(arraylist *exprlist);
 Expression *expression_print(Expression *expr, char *desc);
 
 int expression_print_list(arraylist *exprlist);
-
-
-/*使用递归下降法解析表达式
- *
- * 支持：
- * 算术运算 + - * /
- * 比较运算: > < != <= >=
- * 逻辑运算: NOT AND OR
- * 函数:  round, ltrim （仅作为例子，没有实现）
- * 字段变量: 类似student.sname
- * 支持简单的语法检查。
- * 支持的数据类型:数值，字符串
- *
- * 尚未支持的运算符： like， between..and 等
- * 暂不支持函数
- * 此功能属于语法检查，尚不支持语义检查。比如函数操作符操作数类型匹配，函数传参类型匹配检查等。
- *
- * 入口函数：parseExpressionRD
- * */
 
 
 /**
