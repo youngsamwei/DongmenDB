@@ -56,31 +56,12 @@ int main(int argc, char *argv[]) {
             wordcount++;
         }
         cmdstring[wordcount] = '\0';
-        /*is a buildin command*/
-        /*direct return*/
 
         if (cmdstring) {
             dongmendb_shell_handle_cmd(&shell_ctx, cmdstring);
         }
 
     }
-
-//    optind= 0;
-//    char *file = "demo.db";
-//    if (optind < argc)
-//    {
-//        rc = dongmendb_shell_opendb(&shell_ctx, file /*argv[optind]*/);
-//        if(rc)
-//        {
-//            fprintf(stderr, "ERROR: Could not open file %s or file is not well formed.\n", argv[optind]);
-//            exit(1);
-//        }
-//    }
-
-    /* If a command was specified as an argument, we just run that.
-     * Otherwise, we start the shell. */
-
-
 
     return 0;
 }
