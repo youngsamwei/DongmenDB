@@ -8,6 +8,9 @@ aux_source_directory(utils DIR_SRCS_UTILS)
 ADD_LIBRARY(utils ${DIR_SRCS_UTILS})
 
 aux_source_directory(dongmendb DIR_SRCS_DONGMENDB)
+aux_source_directory(../src_experiment/exp_04_security/exp_04_01_rights_manager.c DIR_SRCS_DONGMENDB)
+aux_source_directory(../src_experiment/exp_04_security/exp_04_02_rights_check.c DIR_SRCS_DONGMENDB)
+
 ADD_LIBRARY(dongmendb ${DIR_SRCS_DONGMENDB})
 TARGET_LINK_LIBRARIES(dongmendb utils)
 

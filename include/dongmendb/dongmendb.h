@@ -11,7 +11,6 @@
 #include "integritymanager.h"
 #include "logmanager.h"
 #include "metadatamanager.h"
-#include "securitymanager.h"
 #include "recordfile.h"
 #ifdef __cplusplus
 extern "C" {
@@ -23,6 +22,7 @@ extern "C" {
  * From the API's perspective's, these are opaque data types. */
 
 typedef struct dongmendb_stmt dongmendb_stmt;
+typedef struct security_manager_ security_manager;
 typedef struct buffer_manager_ buffer_manager;
 typedef struct file_manager_ file_manager;
 typedef struct metadata_manager_ metadata_manager;
