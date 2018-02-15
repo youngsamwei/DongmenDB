@@ -9,6 +9,12 @@
 #include <utils/arraylist.h>
 #include "tokenizer.h"
 #include "parser.h"
+#include <malloc.h>
+#include <mem.h>
+#include <stdio.h>
+#include <utils/utils.h>
+#include "parser/expression.h"
+#include "utils/opstack.h"
 
 #ifdef __cplusplus
 extern "C" {
