@@ -1,6 +1,6 @@
-cmake_minimum_required(VERSION 3.9)
-project(DongmenDB)
-set(CMAKE_C_STANDARD 11)
+CMAKE_MINIMUM_REQUIRED(VERSION 3.9)
+PROJECT(DongmenDB)
+SET(CMAKE_C_STANDARD 11)
 
 
 #设置执行文件输出目录
@@ -16,17 +16,20 @@ LINK_DIRECTORIES(lib)
 # 将用于google test的头文件gtest.h添加到include路径中
 INCLUDE_DIRECTORIES(googletest/include)
 
-# 编译google test
-add_subdirectory(googletest)
+# 编译google test ADD_SUBDIRECTORY
+ADD_SUBDIRECTORY(googletest)
 
 #增加项目的源代码文件夹
-add_subdirectory(src)
+ADD_SUBDIRECTORY(src)
 
 #设置被依赖的库
 SET(EXTRA_LIBS dongmendb dongmensql parser physicalplan shell utils)
 
 #包含实验题目和测试的文件夹
-add_subdirectory(src_experiment)
+ADD_SUBDIRECTORY(src_experiment)
+
+#测试代码
+ADD_SUBDIRECTORY(src_test)
 
 # main.c 的代码列表
 AUX_SOURCE_DIRECTORY(. MAIN_SRC_LIST)

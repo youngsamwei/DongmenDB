@@ -42,7 +42,7 @@ int isOctal(char curr) {
  *
  * You need to fill in this function as part of your implementation.
  */
-TokenizerT *TKCreate(char *ts) {
+TokenizerT *TKCreate(const char *ts) {
     // TODO: use strcpy to copy input stream ts
     TokenizerT *newTokenizer = (TokenizerT *) malloc(sizeof(TokenizerT));
 
