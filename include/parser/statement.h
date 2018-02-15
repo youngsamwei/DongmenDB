@@ -7,11 +7,11 @@
 
 #include <utils/arraylist.h>
 #include "dongmendb/recordfile.h"
-#include "dongmensql/column.h"
-#include "parser.h"
-#include <dongmensql/sra.h>
 #include "dongmendb/dongmendb.h"
 #include "dongmendb/securitymanager.h"
+#include "dongmensql/column.h"
+#include <dongmensql/sra.h>
+#include "parser.h"
 
 #ifdef __cplusplus
 extern "C" {

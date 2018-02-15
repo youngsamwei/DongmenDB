@@ -12,6 +12,7 @@
 #include "logmanager.h"
 #include "metadatamanager.h"
 #include "recordfile.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
