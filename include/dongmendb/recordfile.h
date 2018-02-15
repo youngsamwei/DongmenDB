@@ -45,6 +45,10 @@ typedef struct field_info_ {
     int length;
 } field_info;
 
+typedef struct record_value_{
+    arraylist *fieldsInfo; //field_info list
+    arraylist *value;      //variant list
+}record_value;
 /**
  * 用于保存在hashmap中的key和value
  */
