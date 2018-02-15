@@ -10,7 +10,8 @@ ADD_LIBRARY(utils ${DIR_SRCS_UTILS})
 aux_source_directory(dongmendb DIR_SRCS_DONGMENDB)
 #增加安全性管理的实验内容
 set(DIR_SRCS_DONGMENDB ${DIR_SRCS_DONGMENDB} ../src_experiment/exp_04_security/exp_04_02_rights_manager.c )
-message(${DIR_SRCS_DONGMENDB})
+#增加完整性检查的实验内容
+set(DIR_SRCS_DONGMENDB ${DIR_SRCS_DONGMENDB} ../src_experiment/exp_03_integrity/exp_03_01_integrity_check.c )
 
 ADD_LIBRARY(dongmendb ${DIR_SRCS_DONGMENDB})
 TARGET_LINK_LIBRARIES(dongmendb utils)
