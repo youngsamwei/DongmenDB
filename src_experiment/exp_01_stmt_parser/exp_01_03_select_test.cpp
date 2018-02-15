@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <gtest/gtest.h>
+#include <parser/statement.h>
 #include "dongmendb/dongmendb.h"
 #include "parser/tokenizer.h"
 #include "parser/parser.h"
