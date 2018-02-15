@@ -19,6 +19,17 @@ TARGET_LINK_LIBRARIES(dongmendb utils)
 aux_source_directory(parser DIR_SRCS_PARSER)
 #增加安全性管理的实验内容
 set(DIR_SRCS_PARSER ${DIR_SRCS_PARSER} ../src_experiment/exp_04_security/exp_04_01_security_parser.c )
+#增加create table语句解析的实验内容
+set(DIR_SRCS_PARSER ${DIR_SRCS_PARSER} ../src_experiment/exp_01_stmt_parser/exp_01_01_create_table.c )
+#增加insert语句解析的实验内容
+set(DIR_SRCS_PARSER ${DIR_SRCS_PARSER} ../src_experiment/exp_01_stmt_parser/exp_01_02_insert.c )
+#增加select语句解析的实验内容
+set(DIR_SRCS_PARSER ${DIR_SRCS_PARSER} ../src_experiment/exp_01_stmt_parser/exp_01_03_select.c )
+#增加update语句解析的实验内容
+set(DIR_SRCS_PARSER ${DIR_SRCS_PARSER} ../src_experiment/exp_01_stmt_parser/exp_01_04_update.c )
+#增加delete语句解析的实验内容
+set(DIR_SRCS_PARSER ${DIR_SRCS_PARSER} ../src_experiment/exp_01_stmt_parser/exp_01_05_delete.c )
+
 ADD_LIBRARY(parser ${DIR_SRCS_PARSER})
 
 aux_source_directory(physicalplan DIR_SRCS_PHYSICALPLAN)
