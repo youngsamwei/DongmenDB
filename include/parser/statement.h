@@ -11,6 +11,7 @@
 #include "parser.h"
 #include <dongmensql/sra.h>
 #include "dongmendb/dongmendb.h"
+#include "dongmendb/securitymanager.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -28,6 +29,21 @@ typedef struct sql_stmt_insert_ {
     arraylist *fields;
     arraylist *values;
 } sql_stmt_insert;
+
+typedef enum {
+    GRANT_REVOKE_TYPE_ROLE_USER,  //角色与用户
+    GRANT_REVOKE_TYPE_RIGHT_USER, //权限与用户
+    GRANT_REVOKE_TYPE_RIGHT_ROLE  //权限与角色
+}grant_revoke_type;
+
+typedef struct sql_stmt_grant_{
+    sql_stmt_type sqlStmtType;   //SQL_STMT_GRANT, SQL_STMT_REVOKE
+    grant_revoke_type grantType;
+    arraylist *roles;
+    arraylist *users;
+    arraylist *rights;
+}sql_stmt_grant_revoke;
+
 
 /*
 enum AlterType {
@@ -99,6 +115,13 @@ field_info *parse_sql_stmt_columnexpr(ParserT *parser);
 
 sql_stmt_insert *parse_sql_stmt_insert(ParserT *parser);
 
+user *parse_create_user(ParserT *parser);
+
+role *parse_create_role(ParserT *parser);
+
+sql_stmt_grant_revoke *parse_grant(ParserT *parser);
+
+sql_stmt_grant_revoke *parse_revoke(ParserT *parser);
 
 #ifdef __cplusplus
 }
