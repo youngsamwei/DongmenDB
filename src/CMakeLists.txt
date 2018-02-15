@@ -8,13 +8,12 @@ aux_source_directory(utils DIR_SRCS_UTILS)
 ADD_LIBRARY(utils ${DIR_SRCS_UTILS})
 
 aux_source_directory(dongmendb DIR_SRCS_DONGMENDB)
-aux_source_directory(../src_experiment/exp_04_security/exp_04_01_rights_manager.c DIR_SRCS_DONGMENDB)
-aux_source_directory(../src_experiment/exp_04_security/exp_04_02_rights_check.c DIR_SRCS_DONGMENDB)
-
+aux_source_directory(exp_04_security/exp_04_02_rights_manager.c DIR_SRCS_DONGMENDB)
 ADD_LIBRARY(dongmendb ${DIR_SRCS_DONGMENDB})
 TARGET_LINK_LIBRARIES(dongmendb utils)
 
 aux_source_directory(parser DIR_SRCS_PARSER)
+aux_source_directory(exp_04_security/exp_04_01_security_parser.c DIR_SRCS_PARSER)
 ADD_LIBRARY(parser ${DIR_SRCS_PARSER})
 
 aux_source_directory(physicalplan DIR_SRCS_PHYSICALPLAN)
