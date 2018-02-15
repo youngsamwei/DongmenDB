@@ -10,7 +10,6 @@
 #include "parser/tokenizer.h"
 #include "parser/parser.h"
 #include "dongmensql/sra.h"
-#include "parser/parseSelectStmt.h"
 #include "physicalplan/physicalplan.h"
 
 
