@@ -16,6 +16,7 @@ extern "C" {
 typedef struct integrity_manager_ {
 
 } integrity_manager;
+
 #ifdef __cplusplus
 }
 #endif
