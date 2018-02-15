@@ -73,7 +73,7 @@ typedef struct TokenT_ {
 
 
 int isOctal(char curr);
-TokenizerT *TKCreate(char *ts);
+TokenizerT *TKCreate(const char *ts);
 void clearBuffer(TokenizerT *tk);
 void TKDestroy(TokenizerT *tk);
 int nextChar(TokenizerT *tk);
