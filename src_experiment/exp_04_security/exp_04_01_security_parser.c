@@ -4,7 +4,7 @@
 
 #include <parser/parser.h>
 #include <dongmendb/securitymanager.h>
-#include "parser/parseSecurityManager.h"
+#include <parser/statement.h>
 /**
  * 实现以下语句的解析：
  * 1）create user | role ,
