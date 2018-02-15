@@ -11,7 +11,6 @@
 #include <dongmendb/dongmendb.h>
 #include <stdio.h>
 #include "shell/shell.h"
-#include "shell/commands.h"
 
 #define  MAX_CMD 512
 
