@@ -55,6 +55,7 @@ TokenT *parseEatAndNextToken(ParserT *parser);
 void *parseError(ParserT *parser, char *message);
 
 int matchToken(ParserT *parser, TokenType type, char *text);
+
 #ifdef __cplusplus
 }
 #endif
