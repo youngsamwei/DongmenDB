@@ -7,6 +7,8 @@
 
 #include "recordfile.h"
 #include "transaction.h"
+#include "utils/arraylist.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -23,6 +25,7 @@ extern "C" {
  *
  */
 
+typedef struct transaction_ transaction;
 typedef struct table_manager_ table_manager;
 typedef struct metadata_manager_ {
     table_manager *tableManager;
