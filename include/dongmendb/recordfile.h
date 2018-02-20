@@ -16,6 +16,7 @@
 #include "dongmendb/transaction.h"
 #include <dongmensql/common.h>
 #include "dongmendb/filemanager.h"
+#include "utils/arraylist.h"
 
 #ifdef __cplusplus
 extern "C" {
