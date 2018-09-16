@@ -4,6 +4,7 @@
 
 #include "physicalplan/physical_scan_select.h"
 
+/* 物理计划：选择的实现 */
 physical_scan *physical_scan_select_create(physical_scan *scan) {
     physical_scan_select *physicalScanSelect = (physical_scan_select *)calloc(sizeof(physical_scan_select),1);
     physicalScanSelect->scan = scan;

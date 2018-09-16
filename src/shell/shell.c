@@ -11,6 +11,10 @@
 #include <parser/statement.h>
 #include <physicalplan/physicalplan.h>
 
+/*
+ * 解析sql语句获得描述语句的结构，然后执行语句
+ *
+ * */
 
 #define COL_SEPARATOR "|"
 
@@ -202,6 +206,7 @@ int dongmendb_shell_handle_sql(dongmendb_shell_handle_sql_t *ctx, const char *sq
     return rc;
 }
 
+/*处理create table*/
 int dongmendb_shell_handle_create_table(dongmendb_shell_handle_sql_t *ctx, const char *sqlcreate) {
     if (!ctx->db) {
         fprintf(stderr, "ERROR: No database is open.\n");
@@ -230,6 +235,7 @@ int dongmendb_shell_handle_create_table(dongmendb_shell_handle_sql_t *ctx, const
     }
 };
 
+/* 处理insert table语句*/
 int dongmendb_shell_handle_insert_table(dongmendb_shell_handle_sql_t *ctx, const char *sqlinsert) {
     if (!ctx->db) {
         fprintf(stderr, "ERROR: No database is open.\n");
@@ -257,6 +263,7 @@ int dongmendb_shell_handle_insert_table(dongmendb_shell_handle_sql_t *ctx, const
     }
 };
 
+/*处理select语句*/
 int dongmendb_shell_handle_select_table(dongmendb_shell_handle_sql_t *ctx, const char *sqlselect){
     if (!ctx->db) {
         fprintf(stderr, "ERROR: No database is open.\n");
@@ -268,6 +275,7 @@ int dongmendb_shell_handle_select_table(dongmendb_shell_handle_sql_t *ctx, const
     ParserT *parser = newParser(tokenizer);
     memset(parser->parserMessage, 0, sizeof(parser->parserMessage));
 
+    /* 解析 select语句，获得SRA_t对象*/
     SRA_t *selectStmt = parse_sql_stmt_select(parser);
     if (selectStmt != NULL) {
         SRA_print(selectStmt);
@@ -275,6 +283,7 @@ int dongmendb_shell_handle_select_table(dongmendb_shell_handle_sql_t *ctx, const
         printf(parser->parserMessage);
     }
     if (selectStmt != NULL) {
+        /*执行select语句，获得物理扫描计划*/
         physical_scan *plan = plan_execute_select(ctx->db, selectStmt, ctx->db->tx);
         arraylist *exprs = plan->physicalScanProject->expr_list;
         printf("\n%s\n", getExpressionNamesTitle(exprs));
