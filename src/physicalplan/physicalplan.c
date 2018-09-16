@@ -6,6 +6,7 @@
 #include "physicalplan/physicalscan.h"
 #include "physicalplan/physical_scan_table.h"
 
+/*将关系代数表达式转换为物理扫描计划*/
 physical_scan *plan_execute_select(dongmendb *db, SRA_t *sra, transaction *tx){
     physical_scan *plan = physical_scan_generate(db, sra, tx);
     if (plan->scanType == SCAN_TYPE_PROJECT) {

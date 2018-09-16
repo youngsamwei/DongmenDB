@@ -4,6 +4,7 @@
 
 #include "physicalplan/physical_scan_join_nest_loop.h"
 
+/* 物理计划：连接实现：使用嵌套循环算法*/
 physical_scan *physical_scan_join_nest_loop_create(physical_scan *scan1, physical_scan *scan2) {
     physical_scan_join_nest_loop *physicalScanJoinNestLoop = (physical_scan_join_nest_loop *)calloc(sizeof(physical_scan_join_nest_loop),1);
     physicalScanJoinNestLoop->scan1 = scan1;

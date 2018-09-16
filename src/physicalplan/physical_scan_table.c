@@ -4,6 +4,7 @@
 
 #include "physicalplan/physical_scan_table.h"
 
+/*物理计划：表扫描*/
 physical_scan *physical_scan_table_create(dongmendb *db, char *tableName, transaction *tx) {
     physical_scan_table *physicalScanTable = (physical_scan_table *)calloc(sizeof(physical_scan_table),1);
     physicalScanTable->db = db;

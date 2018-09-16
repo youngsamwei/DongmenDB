@@ -4,7 +4,7 @@
 
 #include "physicalplan/physical_scan_project.h"
 
-
+/*物理计划：投影的实现*/
 physical_scan *physical_scan_project_create(physical_scan *scan) {
     physical_scan_project *physicalScanProject = (physical_scan_project *) calloc(sizeof(physical_scan_project), 1);
     physicalScanProject->scan = scan;
