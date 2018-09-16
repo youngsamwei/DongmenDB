@@ -1,0 +1,8 @@
+调用序列
+main.c  (命令行入口)
+    |---  src/shell/shell.c  (处理命令行输入，针对sql命令，先获得逻辑计划，再执行物理计划)
+                 |---  src_experiment\exp_01_stmt_parser\exp_01_01_create_table.c  (先调用parse_sql_stmt_create函数得到sql_stmt_create，再调用table_manager_create_table)
+                 |---  src_experiment\exp_01_stmt_parser\exp_01_02_insert.c  (先调用parse_sql_stmt_insert函数得到sql_stmt_insert，再调用plan_execute_insert)
+                 |---  src_experiment\exp_01_stmt_parser\exp_01_03_select.c  (先调用parse_sql_stmt_select函数得到SRA_t，再调用plan_execute_select获得physical_scan)
+                 |---  src\physicalplan\physicalplan.c  (包含plan_execute_insert, plan_execute_select等)
+                 |---  src\dongmendb\metadatamanager.c  （包含创建表的函数table_manager_create_table）
