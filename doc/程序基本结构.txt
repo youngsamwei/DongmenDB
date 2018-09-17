@@ -25,7 +25,9 @@ DongmenDB
             |----exp_08_physical_opt  （实验8：物理优化）
             |----exp_09_lock          （实验9：封锁）
             |----exp_10_buffer_manager  （实验10：缓存管理）
+            |----CMakeLists.ext (cmake文件)
     |--- main.c 程序入口
+    |----CMakeLists.ext (cmake文件)
 
 
 2 调用序列
