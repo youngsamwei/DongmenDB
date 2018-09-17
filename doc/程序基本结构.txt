@@ -1,4 +1,34 @@
-调用序列
+1.程序文件结构
+
+DongmenDB
+    |---- bin (编译产生的exe文件夹)
+    |---- doc (部分文档)
+    |---- googletest (google的c程序测试代码包)
+    |---- include (包含include文件)
+    |---- lib （产生的库文件）
+    |---- src
+            |----  dongmendb  (dongmendb系统管理模块)
+            |----  dongmensql （sql处理模块，定义了每种sql语句的数据结构）
+            |----  parser （sql解析模块，基础的sql语法解析模块）
+            |----  physicalplan （物理计划模块：当前实现了投影，选择，表扫描，以及使用嵌套循环算法的连接操作）
+            |----  shell （shell模块）
+            |----  utils （用到的部分复杂数据类型, arraylist, hashmap, opstack）
+            |----CMakeLists.ext (cmake文件)
+    |---- src_experiment  (需要实现的实验代码)
+            |----exp_01_stmt_parser  （实验1：sql语句解析,当前实现了create table，insert，select，待实现：update，delete）
+            |----exp_02_semantic      (实验2：语法语义检查）
+            |----exp_03_integrity     （实验3：完整性）
+            |----exp_04_security     （实验4：安全性）
+            |----exp_05_algebra_opt   （实验5：代数优化）
+            |----exp_06_index         （实验6：索引）
+            |----exp_07_physical_operate  （实验7）物理操作实现）
+            |----exp_08_physical_opt  （实验8：物理优化）
+            |----exp_09_lock          （实验9：封锁）
+            |----exp_10_buffer_manager  （实验10：缓存管理）
+    |--- main.c 程序入口
+
+
+2 调用序列
 main.c  (命令行入口)
     |---  src/shell/shell.c  (处理命令行输入，针对sql命令，先获得逻辑计划，再执行物理计划)
                  |---  src_experiment\exp_01_stmt_parser\exp_01_01_create_table.c  (先调用parse_sql_stmt_create函数得到sql_stmt_create，再调用table_manager_create_table)
