@@ -61,6 +61,7 @@ int physical_scan_select_close(physical_scan *scan){
     physical_scan *scan1  = scan->physicalScanSelect->scan;
     return scan1->close(scan1);
 };
+
 variant *physical_scan_select_get_val(physical_scan *scan, char *tableName, char *fieldName){
     physical_scan *scan1 = scan->physicalScanProject->scan;
     return scan1->getVal(scan1, tableName, fieldName);
