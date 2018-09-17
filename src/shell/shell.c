@@ -91,6 +91,10 @@ int dongmendb_shell_handle_cmd(dongmendb_shell_handle_sql_t *ctx, const char *cm
                 dongmendb_shell_handle_create_table(ctx, cmd);
             } else if (stricmp(tokens[0], "insert") == 0 && stricmp(tokens[1], "into") == 0) {
                 dongmendb_shell_handle_insert_table(ctx, cmd);
+            }else if (stricmp(tokens[0], "update") == 0){
+                dongmendb_shell_handle_update_data(ctx, cmd);
+            }else if (stricmp(tokens[0], "delete") == 0){
+                dongmendb_shell_handle_delete_data(ctx, cmd);
             } else {
                 fprintf(stderr, "ERROR: not support %s.\n", tokens[0]);
             }
@@ -304,6 +308,28 @@ int dongmendb_shell_handle_select_table(dongmendb_shell_handle_sql_t *ctx, const
     } else {
         printf(parser->parserMessage);
     }
+}
+
+/*处理sql：update语句*/
+int dongmendb_shell_handle_update_data(dongmendb_shell_handle_sql_t *ctx, const char *sqlupdate){
+    /**
+     *  1 初始化 TokenizerT和ParserT
+     *  2 解析update语句：parse_sql_stmt_update，在src_experiment\exp_01_stmt_parser\exp_01_04_update.c中实现
+     *  3 获得物理计划：plan_execute_update
+     *  4 执行物理计划
+     */
+    fprintf(stderr, "TODO: update is not implemented yet. \n");
+}
+
+/*处理sql：delete语句*/
+int dongmendb_shell_handle_delete_data(dongmendb_shell_handle_sql_t *ctx, const char *sqldelete){
+    /**
+     *  1 初始化 TokenizerT和ParserT
+     *  2 解析update语句：parse_sql_stmt_delete，在src_experiment\exp_01_stmt_parser\exp_01_05_delete.c中实现
+     *  3 获得物理计划：plan_execute_delete
+     *  4 执行物理计划
+     */
+    fprintf(stderr, "TODO: delete is not implemented yet.\n ");
 }
 
 int dongmendb_shell_handle_cmd_open(dongmendb_shell_handle_sql_t *ctx, struct handler_entry *e, const char **tokens,

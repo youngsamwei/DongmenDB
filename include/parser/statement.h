@@ -30,6 +30,18 @@ typedef struct sql_stmt_insert_ {
     arraylist *values;
 } sql_stmt_insert;
 
+typedef struct sql_stmt_update_ {
+    char *tableName;
+    arraylist *fields; //set fields 被更新的字段列表
+    arraylist *fieldsExpr;  //set fields expression 新值(表达式)列表
+    SRA_t *where;
+} sql_stmt_update;
+
+typedef struct sql_stmt_delete_{
+    char *tableName;
+    SRA_t *where;
+} sql_stmt_delete;
+
 typedef enum {
     GRANT_REVOKE_TYPE_ROLE_USER,  //角色与用户
     GRANT_REVOKE_TYPE_RIGHT_USER, //权限与用户
