@@ -39,7 +39,7 @@ ADD_SUBDIRECTORY(src_test)
 
 # main.c 的代码列表
 AUX_SOURCE_DIRECTORY(. MAIN_SRC_LIST)
-ADD_EXECUTABLE(dmdb ${MAIN_SRC_LIST})
+ADD_EXECUTABLE(dmdb ${MAIN_SRC_LIST} src_experiment/exp_07_physical_operate/exp_07_05_update.c)
 # 设置dmdb的依赖
 TARGET_LINK_LIBRARIES(dmdb ${EXTRA_LIBS})
 

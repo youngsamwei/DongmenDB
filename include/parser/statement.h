@@ -117,6 +117,7 @@ ColumnsExpr *parseColumnsExpr(ParserT *parser);
 SetExpr *parseSetExpr(ParserT *parser);
 */
 
+/* 在src_experiment\exp_01_stmt_parser\exp_01_03_select.c 中实现*/
 SRA_t *parse_sql_stmt_select(ParserT *parser);
 
 arraylist *parseFieldsExpr(ParserT *parser);
@@ -125,7 +126,14 @@ SRA_t *parseTablesExpr(ParserT *parser);
 sql_stmt_create *parse_sql_stmt_create(ParserT *parser);
 field_info *parse_sql_stmt_columnexpr(ParserT *parser);
 
+/*  在src_experiment\exp_01_stmt_parser\exp_01_02_insert.c 中实现*/;
 sql_stmt_insert *parse_sql_stmt_insert(ParserT *parser);
+
+/* 在src_experiment\exp_01_stmt_parser\exp_01_04_update.c 中实现*/
+sql_stmt_update *parse_sql_stmt_update(ParserT *parser);
+
+/* 在src_experiment\exp_01_stmt_parser\exp_01_05_delete.c 中实现*/
+sql_stmt_delete *parse_sql_stmt_delete(ParserT *parser);
 
 user *parse_create_user(ParserT *parser);
 

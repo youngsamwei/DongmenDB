@@ -4,8 +4,10 @@
 
 #include "dongmendb/transaction.h"
 #include <parser/expression.h>
+#include <parser/statement.h>
 #include <dongmensql/sra.h>
 #include "physicalscan.h"
+
 
 #ifndef DONGMENDB_PLAN_H
 #define DONGMENDB_PLAN_H
@@ -23,10 +25,9 @@ extern "C" {
  */
 physical_scan *plan_execute_select(dongmendb *db, SRA_t *sra, transaction *tx);
 
-int plan_execute_delete(dongmendb *db, char *tableName, Expression *condition, transaction *tx);
+int plan_execute_delete(dongmendb *db, sql_stmt_delete *sqlStmtDelete,  transaction *tx);
 
-int plan_execute_update(dongmendb *db, char *tableName, arraylist *fieldNames, hmap_t values, Expression *condition,
-                        transaction *tx);
+int plan_execute_update(dongmendb *db, sql_stmt_update *sqlStmtUpdate,       transaction *tx);
 
 int plan_execute_insert(dongmendb *db, char *tableName, arraylist *fieldNames, arraylist *values, transaction *tx);
 
