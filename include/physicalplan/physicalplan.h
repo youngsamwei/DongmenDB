@@ -25,8 +25,10 @@ extern "C" {
  */
 physical_scan *plan_execute_select(dongmendb *db, SRA_t *sra, transaction *tx);
 
+/* 在src_experiment\exp_07_physical_operate\exp_07_06_delete.c 中实现*/
 int plan_execute_delete(dongmendb *db, sql_stmt_delete *sqlStmtDelete,  transaction *tx);
 
+/* 在src_experiment\exp_07_physical_operate\exp_07_05_update.c 中实现*/
 int plan_execute_update(dongmendb *db, sql_stmt_update *sqlStmtUpdate,       transaction *tx);
 
 int plan_execute_insert(dongmendb *db, char *tableName, arraylist *fieldNames, arraylist *values, transaction *tx);
