@@ -11,5 +11,5 @@
  */
 
 sql_stmt_update *parse_sql_stmt_update(ParserT *parser){
-
+    fprintf(stderr, "TODO: update is not implemented yet. in parse_sql_stmt_update \n");
 };

@@ -318,7 +318,30 @@ int dongmendb_shell_handle_update_data(dongmendb_shell_handle_sql_t *ctx, const 
      *  3 获得物理计划：plan_execute_update
      *  4 执行物理计划
      */
-    fprintf(stderr, "TODO: update is not implemented yet. \n");
+
+    if (!ctx->db) {
+        fprintf(stderr, "ERROR: No database is open.\n");
+        return 1;
+    }
+    char *sql = (char *) calloc(strlen(sqlupdate), 1);
+    strcpy(sql, sqlupdate);
+    TokenizerT *tokenizer = TKCreate(sql);
+    ParserT *parser = newParser(tokenizer);
+    memset(parser->parserMessage, 0, sizeof(parser->parserMessage));
+
+    sql_stmt_update *sqlStmtUpdate = parse_sql_stmt_update(parser);
+
+    int status = plan_execute_update(ctx->db, sqlStmtUpdate,
+                                     ctx->db->tx);
+
+    if (status == DONGMENDB_OK) {
+        transaction_commit(ctx->db->tx);
+        fprintf(stdout, "update  success!");
+        return DONGMENDB_OK;
+    } else {
+        fprintf(stderr, "update  failed!");
+        return DONGMENDB_ERROR_IO;
+    }
 }
 
 /*处理sql：delete语句*/

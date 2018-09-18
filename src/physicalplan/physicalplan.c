@@ -16,13 +16,7 @@ physical_scan *plan_execute_select(dongmendb *db, SRA_t *sra, transaction *tx){
     return plan;
 };
 
-int plan_execute_delete(dongmendb *db, char *tableName, Expression *condition, transaction *tx){
 
-};
-
-int plan_execute_update(dongmendb *db, char *tableName, arraylist *fieldNames, hmap_t values, Expression *condition, transaction *tx){
-
-};
 
 /**
  * insert数据，一次一条
