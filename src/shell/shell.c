@@ -325,12 +325,16 @@ int dongmendb_shell_handle_update_data(dongmendb_shell_handle_sql_t *ctx, const 
     }
     char *sql = (char *) calloc(strlen(sqlupdate), 1);
     strcpy(sql, sqlupdate);
+    /* token解析 */
     TokenizerT *tokenizer = TKCreate(sql);
+    /* parser解析 */
     ParserT *parser = newParser(tokenizer);
     memset(parser->parserMessage, 0, sizeof(parser->parserMessage));
 
+    /*TODO: parse_sql_stmt_update， update语句解析*/
     sql_stmt_update *sqlStmtUpdate = parse_sql_stmt_update(parser);
 
+    /*TODO: plan_execute_update， update语句执行*/
     int status = plan_execute_update(ctx->db, sqlStmtUpdate,
                                      ctx->db->tx);
 
