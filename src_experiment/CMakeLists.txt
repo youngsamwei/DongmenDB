@@ -22,7 +22,7 @@ add_subdirectory(exp_04_security)
 #
 #add_subdirectory(exp_06_index)
 #
-#add_subdirectory(exp_07_physical_operate)
+add_subdirectory(exp_07_physical_operate)
 #
 #add_subdirectory(exp_08_physical_opt)
 #

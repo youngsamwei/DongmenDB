@@ -13,6 +13,7 @@ set(DIR_SRCS_DONGMENDB ${DIR_SRCS_DONGMENDB} ../src_experiment/exp_04_security/e
 #增加完整性检查的实验内容
 set(DIR_SRCS_DONGMENDB ${DIR_SRCS_DONGMENDB} ../src_experiment/exp_03_integrity/exp_03_01_integrity_check.c )
 
+
 ADD_LIBRARY(dongmendb ${DIR_SRCS_DONGMENDB})
 TARGET_LINK_LIBRARIES(dongmendb utils)
 
@@ -29,6 +30,10 @@ set(DIR_SRCS_PARSER ${DIR_SRCS_PARSER} ../src_experiment/exp_01_stmt_parser/exp_
 set(DIR_SRCS_PARSER ${DIR_SRCS_PARSER} ../src_experiment/exp_01_stmt_parser/exp_01_04_update.c )
 #增加delete语句解析的实验内容
 set(DIR_SRCS_PARSER ${DIR_SRCS_PARSER} ../src_experiment/exp_01_stmt_parser/exp_01_05_delete.c )
+
+#增加update和delete的执行的实验内容
+set(DIR_SRCS_PARSER ${DIR_SRCS_PARSER} ../src_experiment/exp_07_physical_operate/exp_07_05_update.c )
+set(DIR_SRCS_PARSER ${DIR_SRCS_PARSER} ../src_experiment/exp_07_physical_operate/exp_07_06_delete.c )
 
 ADD_LIBRARY(parser ${DIR_SRCS_PARSER})
 
