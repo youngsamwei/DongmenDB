@@ -69,3 +69,4 @@ select * from tablecat
 select * from fieldcat
 
 
+update student set sname = "tom" where sno = "001";

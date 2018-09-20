@@ -1,5 +1,11 @@
 #include "dongmensql/dongmensql.h"
 
+
+/*
+ * 暂时没有使用。
+ *
+ * */
+
 Delete_t *Delete_make(const char *table_name, Expression *where)
 {
     Delete_t *new_free = (Delete_t *)calloc(1, sizeof(Delete_t));

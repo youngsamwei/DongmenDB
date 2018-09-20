@@ -42,6 +42,12 @@ SetExpr *parseSetExpr(ParserT *parser) { return NULL; };
 int dongmensql_parser(const char *sql, dongmensql_statement_t **stmt){};
 int dongmensql_stmt_print(dongmensql_statement_t *stmt){};
 
+/* 打印 sql_stmt_update */
+int sql_stmt_update_print(sql_stmt_update *sqlStmtUpdate){
+    SRA_print(sqlStmtUpdate->where);
+};
+
+
 /*
 AlterStmt *createAlterStmt(char *tableName, enum AlterType type,
                           ColumnsExpr *columnsExpr) {};

@@ -8,7 +8,6 @@ CMAKE_MINIMUM_REQUIRED(VERSION 3.9)
 PROJECT(DongmenDB)
 SET(CMAKE_C_STANDARD 11)
 
-
 #设置执行文件输出目录
 SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
 #设置库输出路径
@@ -33,6 +32,7 @@ SET(EXTRA_LIBS dongmendb dongmensql parser physicalplan shell utils)
 
 #包含实验题目和测试的文件夹
 ADD_SUBDIRECTORY(src_experiment)
+
 
 #测试代码
 ADD_SUBDIRECTORY(src_test)

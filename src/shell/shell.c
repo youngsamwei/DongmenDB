@@ -333,7 +333,11 @@ int dongmendb_shell_handle_update_data(dongmendb_shell_handle_sql_t *ctx, const 
 
     /*TODO: parse_sql_stmt_update， update语句解析*/
     sql_stmt_update *sqlStmtUpdate = parse_sql_stmt_update(parser);
-
+    if (sqlStmtUpdate != NULL) {
+        sql_stmt_update_print(sqlStmtUpdate);
+    } else {
+        printf(parser->parserMessage);
+    }
     /*TODO: plan_execute_update， update语句执行*/
     int status = plan_execute_update(ctx->db, sqlStmtUpdate,
                                      ctx->db->tx);
