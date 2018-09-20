@@ -43,6 +43,9 @@ int main(int argc, char *argv[]) {
 
     char cmdstring[MAX_CMD];
     int n;
+
+    setbuf(stdout,0);
+
     while (1) {
         printf("\ndongmendb>");
 
