@@ -1,5 +1,9 @@
 #include <dongmensql/dongmensql.h>
 
+/*
+ * 暂时没有使用。
+ *
+ * */
 
 Insert_t *Insert_make(const char *table_name, StrList_t *opt_col_names, Literal_t *values)
 {

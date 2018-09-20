@@ -143,6 +143,10 @@ sql_stmt_grant_revoke *parse_grant(ParserT *parser);
 
 sql_stmt_grant_revoke *parse_revoke(ParserT *parser);
 
+
+/* 打印 sql_stmt_update */
+int sql_stmt_update_print(sql_stmt_update *sqlStmtUpdate);
+
 #ifdef __cplusplus
 }
 #endif
