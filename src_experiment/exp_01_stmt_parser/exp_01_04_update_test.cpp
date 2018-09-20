@@ -12,6 +12,7 @@
 #include "dongmensql/sra.h"
 #include "physicalplan/physicalplan.h"
 
+/* 这个测试用例设计的还是不完善，只能做简单的测试，尚不能准确的测试是否解析的正确.*/
 
 int update(dongmendb *db, const char *strupdate) {
     char *sql = (char *) calloc(strlen(strupdate), 1);
