@@ -13,6 +13,9 @@ set(DIR_SRCS_DONGMENDB ${DIR_SRCS_DONGMENDB} ../src_experiment/exp_04_security/e
 #增加完整性检查的实验内容
 set(DIR_SRCS_DONGMENDB ${DIR_SRCS_DONGMENDB} ../src_experiment/exp_03_integrity/exp_03_01_integrity_check.c )
 
+#增加语义检查的实验内容
+set(DIR_SRCS_DONGMENDB ${DIR_SRCS_DONGMENDB} ../src_experiment/exp_02_semantic/exp_02_01_table_exists.c )
+set(DIR_SRCS_DONGMENDB ${DIR_SRCS_DONGMENDB} ../src_experiment/exp_02_semantic/exp_02_02_field_exists.c )
 
 ADD_LIBRARY(dongmendb ${DIR_SRCS_DONGMENDB})
 TARGET_LINK_LIBRARIES(dongmendb utils)

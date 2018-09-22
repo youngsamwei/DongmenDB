@@ -8,3 +8,10 @@
  * 1. 执行select，update，insert，delete时调用，检查相关字段是否存在
  * 2  执行create index时检查相关字段是否存在
  * */
+
+
+int semantic_check_field_exists(char *tableName, char *fieldName){
+
+
+    return 0;
+}

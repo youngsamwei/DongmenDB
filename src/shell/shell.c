@@ -286,6 +286,9 @@ int dongmendb_shell_handle_select_table(dongmendb_shell_handle_sql_t *ctx, const
     } else {
         printf(parser->parserMessage);
     }
+
+    /*TODO: 语义检查：表与字段是否存在*/
+
     if (selectStmt != NULL) {
         /*执行select语句，获得物理扫描计划*/
         physical_scan *plan = plan_execute_select(ctx->db, selectStmt, ctx->db->tx);
@@ -334,12 +337,23 @@ int dongmendb_shell_handle_update_data(dongmendb_shell_handle_sql_t *ctx, const 
     /*TODO: parse_sql_stmt_update， update语句解析*/
     sql_stmt_update *sqlStmtUpdate = parse_sql_stmt_update(parser);
     if (sqlStmtUpdate != NULL) {
+        /* 显示update语句包含的查询计划*/
         sql_stmt_update_print(sqlStmtUpdate);
     } else {
         printf(parser->parserMessage);
     }
+
+    /*TODO: 语义检查：表与字段是否存在*/
+
+    int status = semantic_check_table_exists(sqlStmtUpdate->tableName);
+
+    if (status != DONGMENDB_OK){
+        fprintf(stdout, "table does not exist!");
+        return status;
+    }
+
     /*TODO: plan_execute_update， update语句执行*/
-    int status = plan_execute_update(ctx->db, sqlStmtUpdate,
+    status = plan_execute_update(ctx->db, sqlStmtUpdate,
                                      ctx->db->tx);
 
     if (status == DONGMENDB_OK) {

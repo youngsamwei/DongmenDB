@@ -43,6 +43,13 @@ int table_manager_create_table(table_manager *tableManager, char *tableName, arr
                                transaction *tx);
 table_info *table_manager_get_tableinfo(table_manager *tableManager, char *tableName, transaction *tx);
 
+/*语义检查：表是否存在，在src_experiment\exp_02_semantic\exp_02_01_table_exists.c中实现*/
+int semantic_check_table_exists(char *tableName);
+
+/*语义检查：字段是否存在，在src_experiment\exp_02_semantic\exp_02_01_field_exists.c中实现*/
+int semantic_check_field_exists(char *tableName, char *fieldName);
+
+
 #ifdef __cplusplus
 }
 #endif
