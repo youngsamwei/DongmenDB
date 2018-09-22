@@ -252,6 +252,10 @@ int dongmendb_shell_handle_insert_table(dongmendb_shell_handle_sql_t *ctx, const
     memset(parser->parserMessage, 0, sizeof(parser->parserMessage));
 
     sql_stmt_insert *sqlStmtInsert = parse_sql_stmt_insert(parser);
+
+    /* TODO: 语义检查:检查表和字段是否存在*/
+    /*TODO: 安全性检查 */
+
     int status = plan_execute_insert(ctx->db, sqlStmtInsert->tableName,
                                      sqlStmtInsert->fields,
                                      sqlStmtInsert->values,
@@ -288,6 +292,9 @@ int dongmendb_shell_handle_select_table(dongmendb_shell_handle_sql_t *ctx, const
     }
 
     /*TODO: 语义检查：表与字段是否存在*/
+
+    /*TODO: 逻辑优化：关系代数优化*/
+
 
     if (selectStmt != NULL) {
         /*执行select语句，获得物理扫描计划*/
