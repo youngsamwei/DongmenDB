@@ -4,6 +4,7 @@
 
 #include "physicalplan/physicalscan.h"
 
+/*物理操作选择：物理优化*/
 physical_scan *physical_scan_generate(dongmendb *db, SRA_t *sra, transaction *tx) {
     if (!sra) return NULL;
     switch (sra->t) {

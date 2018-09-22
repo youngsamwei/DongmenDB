@@ -38,6 +38,7 @@ int plan_execute_insert(dongmendb *db, char *tableName, arraylist *fieldNames, a
         hashmap_get(scan->physicalScanTable->tableInfo->fields, fieldName, ptr);
         field_info *fieldInfo = *ptr;
 
+        /* TODO: 完整性检查 */
         int type = fieldInfo->type;
         if (type == DATA_TYPE_INT) {
             integer *val = arraylist_get(values, i);
