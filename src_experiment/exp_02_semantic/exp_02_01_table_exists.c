@@ -14,7 +14,7 @@
  * */
 
 
-int semantic_check_table_exists(dongmendb *db, char *tableName, transaction *tx){
+int semantic_check_table_exists(table_manager *tableManager, char *tableName, transaction *tx){
 
     /*
      * 1. 调用 table_manager_get_tableinfo 获得 table_info
