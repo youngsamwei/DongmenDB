@@ -225,8 +225,13 @@ int dongmendb_shell_handle_create_table(dongmendb_shell_handle_sql_t *ctx, const
     sql_stmt_create *sqlStmtCreate = parse_sql_stmt_create(parser);
 
     /*TODO: 检查是否已经存在要创建的表 */
+    int status =  semantic_check_table_exists(ctx->db->metadataManager->tableManager, sqlStmtCreate->tableInfo->tableName, ctx->db->tx);
+    if (status){
+        fprintf(stderr, "table exists.");
+        return DONGMENDB_ERROR_IO;
+    }
 
-    int status = table_manager_create_table(ctx->db->metadataManager->tableManager,
+    status = table_manager_create_table(ctx->db->metadataManager->tableManager,
                                             sqlStmtCreate->tableInfo->tableName,
                                             sqlStmtCreate->tableInfo->fieldsName,
                                             sqlStmtCreate->tableInfo->fields,
@@ -257,9 +262,15 @@ int dongmendb_shell_handle_insert_table(dongmendb_shell_handle_sql_t *ctx, const
     sql_stmt_insert *sqlStmtInsert = parse_sql_stmt_insert(parser);
 
     /* TODO: 语义检查:检查表和字段是否存在*/
+    int status =  semantic_check_table_exists(ctx->db->metadataManager->tableManager, sqlStmtInsert->tableName, ctx->db->tx);
+    if (!status){
+        fprintf(stderr, "table does not exist.");
+        return DONGMENDB_ERROR_IO;
+    }
+
     /* TODO: 安全性检查 */
 
-    int status = plan_execute_insert(ctx->db, sqlStmtInsert->tableName,
+    status = plan_execute_insert(ctx->db, sqlStmtInsert->tableName,
                                      sqlStmtInsert->fields,
                                      sqlStmtInsert->values,
                                      ctx->db->tx);
@@ -356,9 +367,9 @@ int dongmendb_shell_handle_update_data(dongmendb_shell_handle_sql_t *ctx, const 
     }
 
     /*TODO: 语义检查：表与字段是否存在*/
-    int status = semantic_check_table_exists(sqlStmtUpdate->tableName);
+    int status = semantic_check_table_exists(ctx->db->metadataManager->tableManager, sqlStmtUpdate->tableName, ctx->db->tx);
 
-    if (status != DONGMENDB_OK){
+    if (!status){
         fprintf(stdout, "table does not exist!");
         return status;
     }
