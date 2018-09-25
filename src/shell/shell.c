@@ -223,6 +223,9 @@ int dongmendb_shell_handle_create_table(dongmendb_shell_handle_sql_t *ctx, const
     memset(parser->parserMessage, 0, sizeof(parser->parserMessage));
 
     sql_stmt_create *sqlStmtCreate = parse_sql_stmt_create(parser);
+
+    /*TODO: 检查是否已经存在要创建的表 */
+
     int status = table_manager_create_table(ctx->db->metadataManager->tableManager,
                                             sqlStmtCreate->tableInfo->tableName,
                                             sqlStmtCreate->tableInfo->fieldsName,
