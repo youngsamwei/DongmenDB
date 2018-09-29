@@ -3,7 +3,7 @@
 ## 2.1 update 语句的解析
 
 解析sql语句需要了解一些分词器和解析器
-### 2.1.1 分词器（tokenizer)和解析器（parser）  
+### 2.1.1 分词器（tokenizer)
 分词器（tokenizer）的主要作用就是将sql语句拆分为token（词），这样我们就可以逐词进行解析。分词器不仅会将sql语句拆分成词，还会判断词的属性（`TokenType`）: 
 词的全部属性（`TokenType`）定义在 `/include/parser/tokenizer.h` 中  
 ```
@@ -60,6 +60,7 @@ const char *reservedWords[] = {
 ```
 
 ---------------------------------------
+### 2.1.2 解析器（parser）
 解析器作用主要是获取token(词)，然后对token(词)进行解析，主要的函数在`src/parser/parser.c`中实现：  
 
 
@@ -80,7 +81,7 @@ const char *reservedWords[] = {
 
 
 
-### 2.1.2 解析 update 语句(parse_sql_stmt_update)
+### 2.1.3 解析 update 语句(parse_sql_stmt_update)
 `update student set sage=20[,fieldname=expr] where sage=22`
 update set where 全都是保留字类型
 ```
