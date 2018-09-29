@@ -100,6 +100,7 @@ typedef struct sql_stmt_update_ {
 4. 使用循环获得字段名（TOKEN_WORD类型），放入一个fields(arraylist类型)中；循环获得值（或者表达式）`parseExpressionRD(parse)`函数,fieldsExpr(arraylist类型)中 
 5. 匹配 `where` ,matchToken(parser,TOKEN_RESERVED_WORD,"where")
 6. 获得字段名(TOKEN_WORD类型)，使用`parseExpressionRD(parse)`获取字段值（或者表达式）
+（此处补充对where条件的继续处理：转换为SRASelect）
 7. 创建`sql_stmt_update`指针，开空间，对各字段进行赋值，返回`sql_stmt_update`结构体 
 
 
