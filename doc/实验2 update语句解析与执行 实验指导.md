@@ -8,38 +8,38 @@
 词的全部属性（`TokenType`）定义在 `/include/parser/tokenizer.h` 中  
 ```
 typedef enum TokenType_ {
-    TOKEN_OPEN_PAREN = 0,
-    TOKEN_CLOSE_PAREN,
-    TOKEN_POWER,
-    TOKEN_PLUS,
-    TOKEN_MINUS,
-    TOKEN_DIVIDE,
-    TOKEN_MULTIPLY,
-    TOKEN_LT,              //less-than operator 小于
-    TOKEN_GT,    //大于
-    TOKEN_EQ,   //等于
-    TOKEN_NOT_EQUAL,
-    TOKEN_LE,               //less-than-or-equal-to operator"
-    TOKEN_GE,
-    TOKEN_IN,
-    TOKEN_LIKE,
+    TOKEN_OPEN_PAREN = 0,    //左括号
+    TOKEN_CLOSE_PAREN,       //右括号
+    TOKEN_POWER,             //
+    TOKEN_PLUS,              //加号
+    TOKEN_MINUS,             //减号
+    TOKEN_DIVIDE,            //除
+    TOKEN_MULTIPLY,          //乘
+    TOKEN_LT,                //less-than operator 小于
+    TOKEN_GT,                //大于
+    TOKEN_EQ,                //等于
+    TOKEN_NOT_EQUAL,         //不等于
+    TOKEN_LE,                //小于等于 less-than-or-equal-to operator"
+    TOKEN_GE,                //大于等于
+    TOKEN_IN,                //in运算
+    TOKEN_LIKE,              //like运算
     TOKEN_AND,
     TOKEN_OR,
-    TOKEN_NOT,                  //匹配not
-    TOKEN_ASSIGNMENT,
-    TOKEN_FUN,
-    TOKEN_COMMA,      /*以上是操作符，在表达式解析时使用*/ //逗号
+    TOKEN_NOT,               //匹配not
+    TOKEN_ASSIGNMENT,        //赋值
+    TOKEN_FUN,               //函数
+    TOKEN_COMMA,             /*以上是操作符，在表达式解析时使用*/ //逗号
 
     TOKEN_INVALID, //"invalid token"
     TOKEN_RESERVED_WORD,  //sql中的保留字，比如create,set,where 等等
-    TOKEN_WORD,
-    TOKEN_UNENDED_SRING,
-    TOKEN_STRING,
-    TOKEN_MOD,
-    TOKEN_INCOMPLETE_CHAR,
-    TOKEN_CHAR,
-    TOKEN_INVALID_CHAR,
-    TOKEN_SEMICOLON,
+    TOKEN_WORD,           //非保留字的词
+    TOKEN_UNENDED_SRING,  //没有结尾的字符串
+    TOKEN_STRING,         //字符串
+    TOKEN_MOD,            //模
+    TOKEN_INCOMPLETE_CHAR,//不完整的字符
+    TOKEN_CHAR,           //字符
+    TOKEN_INVALID_CHAR,   //非法字符
+    TOKEN_SEMICOLON,      //分号
     TOKEN_EXP_FLOAT,
     TOKEN_FLOAT,
     TOKEN_OCTAL,               //"octal integer"
