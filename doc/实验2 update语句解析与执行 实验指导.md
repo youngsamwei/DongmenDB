@@ -53,8 +53,9 @@ typedef enum TokenType_ {
 ```
 //sql中的保留字
 const char *reservedWords[] = {
-            "select", "from", "where", "order", "by", "group", "create", "table", "index", "and", "not", "or", "null",
-            "like", "in", "grant", "integer", "int", "char", "values", "insert", "into", "update", "delete", "set", "on",
+            "select", "from", "where", "order", "by", "group", "create", "table", "index",
+            "and", "not", "or", "null",            "like", "in", "grant", "integer", "int",
+            "char", "values", "insert", "into", "update", "delete", "set", "on",
             "user", "view", "rule", "default", "check", "between", "trigger", "primary", "key", "foreign"
     };
 ```
