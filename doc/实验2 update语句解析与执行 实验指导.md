@@ -82,8 +82,7 @@ const char *reservedWords[] = {
 
 
 ### 2.1.3 解析 update 语句(parse_sql_stmt_update)
-`以update student set sage=20[,fieldname=expr] where sage=22`为例
-`其中update set where 全都是保留字类型
+`以update student set sage=20[,fieldname=expr] where sage=22`为例，其中update set where 全都是保留字类型
 ```
 typedef struct sql_stmt_update_ {
     char *tableName;         //保存上面update语句的student
