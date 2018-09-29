@@ -152,8 +152,11 @@ typedef struct physical_scan_ {
 
 主要思路：
 1. 使用 where条件的SRA_t构造执行计划；
-2. 遍历计划
-3. 计算表达式的值，计算需要修改字段的偏移量，使用setInt或setString修改；
-4. 提交事务。
+（参考src\shell\shell.c中的dongmendb_shell_handle_select_table函数中的写法）
+2. 遍历计划（循环）
+（参考src\shell\shell.c中的dongmendb_shell_handle_select_table函数中的写法）
+3. 在遍历计划过程的循环中，计算表达式的值，计算需要修改字段的偏移量，使用setInt或setString修改；
+(参考src\physicalplan\physicalplan.c中的plan_execute_insert函数的实现)
+
 
 针对Integer和String类型的字段修改数据主要是用两个函数`setInt`,`setString`,具体用哪个，未完待续
