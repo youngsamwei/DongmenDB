@@ -150,4 +150,10 @@ typedef struct physical_scan_ {
 ### 2.2.2 实现
 函数的具体实现在`src/physicalplan/physical_scan_*.c`中分别实现（ps:有的不需要实现，所以直接赋值为NULL。因为具体的实现不同，所以函数参数也不同）  
 
+主要思路：
+1. 使用 where条件的SRA_t构造执行计划；
+2. 遍历计划
+3. 计算表达式的值，计算需要修改字段的偏移量，使用setInt或setString修改；
+4. 提交事务。
+
 针对Integer和String类型的字段修改数据主要是用两个函数`setInt`,`setString`,具体用哪个，未完待续
