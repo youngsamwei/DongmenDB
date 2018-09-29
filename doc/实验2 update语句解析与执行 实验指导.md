@@ -92,20 +92,41 @@ typedef struct sql_stmt_update_ {
 } sql_stmt_update;
 ```
 
+其中，`where`是一个`SRA_t`（即`SRA_s`） 结构体的指针，该结构体定义在`include/dongmensql/sra.h`中，这个文件存放 SRA（sugar relation algebra）的定义和操作，这是一种关系代数的表示方法。
+```
+struct SRA_s {
+    enum SRAType t;  // Type of SRA_s
+    union {
+        SRA_Table_t table;
+        SRA_Select_t select;
+        // others...
+    };
+};
+
+// Constructors
+SRA_t *SRATable(TableReference_t *ref);
+SRA_t *SRASelect(SRA_t *sra, Expression *cond);
+// others...
+```
+
+`where`语句中，会用到两种`SRA_t`、`SRA_TABLE`和`SRA_SELECT`，其构造函数已在上面列出。
+
 简要流程：
 1. 首先匹配 `update`, 使用`matchToken(parser,TOKEN_RESERVED_WORD,"update")`匹配
-2. 获取表名 使用if判断是否是TOKEN_WORD类型，如果是，获得表名；给字符串指针开空间的时候可以使用`new_id_name()`函数
+2. 获取表名：使用if判断是否是TOKEN_WORD类型，如果是，获得表名；给字符串指针开空间的时候可以使用`new_id_name()`函数
 3. 匹配 `set` 使用matchToken(parser,TOKEN_RESERVED_WORD,"set")
 4. 使用循环获得字段名（TOKEN_WORD类型），放入一个fields(arraylist类型)中；循环获得值（或者表达式）`parseExpressionRD(parse)`函数,fieldsExpr(arraylist类型)中 
-5. 匹配 `where` ,matchToken(parser,TOKEN_RESERVED_WORD,"where")
-6. 获得字段名(TOKEN_WORD类型)，使用`parseExpressionRD(parse)`获取字段值（或者表达式）
+5. 匹配 `where`，matchToken(parser,TOKEN_RESERVED_WORD,"where")，注意不是所有`update`语句都伴随一个`where`表达式
+6. 使用`parseExpressionRD(parse)`获取值（或者表达式），并包裹在`SRA_t`中，作为`sql_stmt_update->where`的值。（语句若不伴随`where`表达式则需要以一个`SRA_TABLE`代替，具体实现可参考 exp_01_stmt_parser/exp_01_03_select.c） 
 7. 创建`sql_stmt_update`指针，开空间，对各字段进行赋值，返回`sql_stmt_update`结构体 
 
 
 常用函数：
-`arraylist_create()` //创建一个arraylist
-`int arraylist_add(arraylist *list, void *element)` //向 arraylist中添加元素
-`Expression *parseExpressionRD(ParserT *parser) ` //递归下降法解析表达式 详情看 src/parser/expression.c中
+- `arraylist_create()` //创建一个arraylist
+- `int arraylist_add(arraylist *list, void *element)` //向 arraylist中添加元素
+- `Expression *parseExpressionRD(ParserT *parser) ` //递归下降法解析表达式 详情看 src/parser/expression.c中
+- `SRA_t *SRATable(TableReference_t *ref);` // `SRA_t`构造函数
+- `SRA_t *SRASelect(SRA_t *sra, Expression *cond);` // `SRA_t`构造函数
 
 
 
