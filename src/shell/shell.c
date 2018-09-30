@@ -226,7 +226,7 @@ int dongmendb_shell_handle_create_table(dongmendb_shell_handle_sql_t *ctx, const
 
     /*TODO: 检查是否已经存在要创建的表 */
     int status =  semantic_check_table_exists(ctx->db->metadataManager->tableManager, sqlStmtCreate->tableInfo->tableName, ctx->db->tx);
-    if (status){
+    if (status != DONGMENDB_OK){
         fprintf(stderr, "table exists.");
         return DONGMENDB_ERROR_IO;
     }
@@ -263,7 +263,7 @@ int dongmendb_shell_handle_insert_table(dongmendb_shell_handle_sql_t *ctx, const
 
     /* TODO: 语义检查:检查表和字段是否存在*/
     int status =  semantic_check_table_exists(ctx->db->metadataManager->tableManager, sqlStmtInsert->tableName, ctx->db->tx);
-    if (!status){
+    if (status != DONGMENDB_OK){
         fprintf(stderr, "table does not exist.");
         return DONGMENDB_ERROR_IO;
     }
@@ -359,17 +359,18 @@ int dongmendb_shell_handle_update_data(dongmendb_shell_handle_sql_t *ctx, const 
 
     /*TODO: parse_sql_stmt_update， update语句解析*/
     sql_stmt_update *sqlStmtUpdate = parse_sql_stmt_update(parser);
-    if (sqlStmtUpdate != NULL) {
-        /* 显示update语句包含的查询计划*/
-        sql_stmt_update_print(sqlStmtUpdate);
-    } else {
+    if (sqlStmtUpdate == NULL) {
         printf(parser->parserMessage);
+        return 1;
     }
+    
+    /* 显示update语句包含的查询计划*/
+    sql_stmt_update_print(sqlStmtUpdate);
 
     /*TODO: 语义检查：表与字段是否存在*/
     int status = semantic_check_table_exists(ctx->db->metadataManager->tableManager, sqlStmtUpdate->tableName, ctx->db->tx);
 
-    if (!status){
+    if (status != DONGMENDB_OK){
         fprintf(stdout, "table does not exist!");
         return status;
     }
