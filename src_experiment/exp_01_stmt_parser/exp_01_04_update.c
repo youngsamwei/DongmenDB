@@ -16,6 +16,7 @@
  */
 
 /*TODO: parse_sql_stmt_update， update语句解析*/
-sql_stmt_update *parse_sql_stmt_update(ParserT *parser){
-    fprintf(stderr, "TODO: update is not implemented yet. in parse_sql_stmt_update \n");
+sql_stmt_update *parse_sql_stmt_update(ParserT *parser) {
+//    fprintf(stderr, "TODO: update is not implemented yet. in parse_sql_stmt_update \n");
+
 };
