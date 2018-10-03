@@ -82,7 +82,7 @@ int table_manager_create_table(table_manager *tableManager, char *tableName, arr
             record_file_close(tcatFile);
             return DONGMENDB_EINVALIDSQL;
         }
-        int value=record_file_get_int(tcatFile,"reclength");
+        //int value=record_file_get_int(tcatFile,"reclength");
     }
 
     /*使record_file中的指针再次指向文件开头*/
