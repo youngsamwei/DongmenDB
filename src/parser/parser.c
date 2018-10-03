@@ -75,7 +75,7 @@ void *parseError(ParserT *parser, char *message) {
 
 int matchToken(ParserT *parser, TokenType type, char *text){
     TokenT *token = parseNextToken(parser);
-    if (token->type == type && stricmp(token->text, text) == 0) {
+    if (token && token->type == type && stricmp(token->text, text) == 0) {
         parseEatAndNextToken(parser);
         return 1;
     } else {
