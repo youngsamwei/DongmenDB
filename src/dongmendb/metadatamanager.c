@@ -65,12 +65,31 @@ table_manager *table_manager_create(int isNew, transaction *tx) {
  */
 int table_manager_create_table(table_manager *tableManager, char *tableName, arraylist *fieldsName, hmap_t fields,
                                transaction *tx) {
-    table_info *tableInfo = table_info_create(tableName, fieldsName, fields);
+
 
     /*打开元数据表*/
     record_file *tcatFile = (record_file *) malloc(sizeof(record_file));
     record_file_create(tcatFile, tableManager->tcatInfo, tx);
 
+    /*遍历整个record_file,第一列是tablename,第二列是recordlen，
+     * 遍历第一列，判断表名是否已经存在*/
+    while(record_file_next(tcatFile)){
+        char *name=new_id_name();
+        record_file_get_string(tcatFile,"tablename",name);
+        if(strcmp(name,tableName)==0)
+        {
+            fprintf(stderr,"table already exists!\n");
+            record_file_close(tcatFile);
+            return DONGMENDB_EINVALIDSQL;
+        }
+        //int value=record_file_get_int(tcatFile,"reclength");
+    }
+
+    /*使record_file中的指针再次指向文件开头*/
+    record_file_before_first(tcatFile);
+
+
+    table_info *tableInfo = table_info_create(tableName, fieldsName, fields);
     /*增加元数据到table描述表中*/
     record_file_insert(tcatFile);
     record_file_set_string(tcatFile, "tablename", tableName);
