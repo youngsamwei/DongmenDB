@@ -23,12 +23,13 @@ int update(dongmendb *db, const char *strupdate) {
 
     sql_stmt_update *sqlStmtUpdate  = parse_sql_stmt_update(parser);
 
-    /*返回修改的记录条数*/
-    int count = plan_execute_update(db, sqlStmtUpdate, db->tx);
-
-    if (sqlStmtUpdate == NULL){
-        count = 0;
+    if(sqlStmtUpdate == NULL){
+        return -1;
     }
+    /*返回修改的记录条数*/
+    int count  = 0;
+    count = plan_execute_update(db, sqlStmtUpdate, db->tx);
+
     dongmendb_close(db);
     return count;
 }
@@ -45,10 +46,10 @@ protected:
     virtual void SetUp() {
         _m_list[0] = "update student set sname = 'Tom Cruise' where sno = '2012010101'";
         _m_list[1] = "update student set sname = 'zhang simith' where sname = 'li simith'";
-        _m_list[2] = "update student set sname = 'li simith', ssex='male'' where sname = 'zhang simith'";
-        _m_list[3] = "update student set sname = 'zhang simith', ssex='male', sage = sage + 1 where sname = 'li simith'";
+        _m_list[2] = "update student set sname = 'li simith', ssex= 'male'' where sname = 'zhang simith'";
+        _m_list[3] = "update student set sname = 'zhang simith', ssex= 'male', sage = sage + 1 where sname = 'li simith'";
         _m_list[4] = "update student set sname = 'li simith' where sname = 'zhang simith'";
-        _m_list[5] = "update student set sage = sage + 1 where sname ='li simith'";
+        _m_list[5] = "update student set sage = sage + 1 where sname = 'li simith'";
         _m_list[6] = "update student set sage = sage + 1 " ;
     }
     const char *_m_list[11];
