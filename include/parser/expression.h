@@ -77,6 +77,14 @@ static const OPERATOR operators[] = {
         {2, 12, 12, left2right, TOKEN_MINUS},     // 减
         {2, 13, 13, left2right, TOKEN_MULTIPLY},  // 乘
         {2, 13, 13, left2right, TOKEN_DIVIDE},    // 除
+
+        {2, 13, 13, left2right, TOKEN_MOD},       // 模
+        {2, 14, 14, left2right, TOKEN_POWER},     // 幂
+//        {1, 16, 15, right2left, TOKEN_POSITIVE},  // 正号
+//        {1, 16, 15, right2left, TOKEN_NEGATIVE},  // 负号
+//        {1, 16, 15, left2right, TOKEN_FACTORIAL}, // 阶乘
+//        {2, 12, 12, left2right, TOKEN_CONCAT},
+
         /* 关系运算 */
         {2, 10, 10, left2right, TOKEN_LT},        // 小于
         {2, 10, 10, left2right, TOKEN_GT},        // 大于
