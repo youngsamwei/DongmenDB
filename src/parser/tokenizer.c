@@ -142,10 +142,18 @@ int isReservedWord(char *word) {
 TokenT *makeToken(TokenizerT *tk, TokenType type) {
     TokenT *token = (TokenT *) malloc(sizeof(TokenT));
 
-    token->text = (char *) malloc(sizeof(char) * 1000);
-    strcpy(token->text, tk->tokenBuffer);
-
     token->type = type;
+    token->text = (char *) malloc(sizeof(char) * 1000);
+
+    /*如果是字符串，需要从token->text去掉单引号*/
+    if (type == TOKEN_STRING){
+        char *v = tk->tokenBuffer + 1;
+        int len = strlen(tk->tokenBuffer) - 1;
+        strcpy(token->text, v);
+        token->text[len-1] = '\0';
+    } else {
+        strcpy(token->text, tk->tokenBuffer);
+    }
 
     return token;
 }
