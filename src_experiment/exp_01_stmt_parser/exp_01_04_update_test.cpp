@@ -23,7 +23,8 @@ int update(dongmendb *db, const char *strupdate) {
 
     sql_stmt_update *sqlStmtUpdate  = parse_sql_stmt_update(parser);
 
-    int count = 1;
+    /*返回修改的记录条数*/
+    int count = plan_execute_update(db, sqlStmtUpdate, db->tx);
 
     if (sqlStmtUpdate == NULL){
         count = 0;
