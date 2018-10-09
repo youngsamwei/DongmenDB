@@ -256,7 +256,24 @@ TokenT *_mod(TokenizerT *tk) {
  * incomplete char literals end abruptly.
  * invalid char literals don't close properly or at all.
  */
+/* 使用单引号标注字符串*/
 TokenT *_single_quote(TokenizerT *tk) {
+    int atEndOfFile = nextChar(tk);
+    while (tk->inputIter[0] != '\'') {
+        if (tk->inputIter[0] == '\\') {
+            if (atEndOfFile) {
+                return makeToken(tk, TOKEN_UNENDED_SRING);
+            }
+            atEndOfFile = nextChar(tk);
+        }
+        if (atEndOfFile) {
+            return makeToken(tk, TOKEN_UNENDED_SRING);
+        }
+        atEndOfFile = nextChar(tk);
+    }
+    nextChar(tk);
+    return makeToken(tk, TOKEN_STRING);
+    /*
     int atEndOfFile = nextChar(tk);
     if (atEndOfFile) {
         return makeToken(tk, TOKEN_INCOMPLETE_CHAR);  // case: 'EOF
@@ -290,6 +307,7 @@ TokenT *_single_quote(TokenizerT *tk) {
             return makeToken(tk, TOKEN_INVALID_CHAR);  // case: '\cc
         }
     }
+     */
 }
 
 TokenT *_open_paren(TokenizerT *tk) {
