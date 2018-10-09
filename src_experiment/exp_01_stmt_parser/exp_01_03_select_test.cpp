@@ -50,22 +50,24 @@ protected:
         _m_list[9] = "select student.* from student, sc, course where student.sno = sc.sno and sc.cno = course.cno";
         _m_list[10] = "select student.*, sc.*, course.* from student, sc, course where student.sno = sc.sno and sc.cno = course.cno";
         _m_list[11] = "select sno from student where sname ='tom cruise'";
+        _m_list[12] = "select sno from student where sname = 'li simith' or sname='tom cruise'";
     }
-    const char *_m_list[12];
+    const char *_m_list[13];
     const char *dbname = "demodb";
 };
 
 TEST_F(Exp_01_03_SelectTest, Correct){
-    EXPECT_EQ(8, test(dbname, _m_list[0]));
+    EXPECT_EQ(9, test(dbname, _m_list[0]));
     EXPECT_EQ(5, test(dbname, _m_list[1]));
     EXPECT_EQ(1, test(dbname, _m_list[2]));
     EXPECT_EQ(1, test(dbname, _m_list[3]));
     EXPECT_EQ(2, test(dbname, _m_list[4]));
-    EXPECT_EQ(13, test(dbname, _m_list[5]));
+    EXPECT_EQ(14, test(dbname, _m_list[5]));
     EXPECT_EQ(6, test(dbname, _m_list[6]));
-    EXPECT_EQ(13, test(dbname, _m_list[7]));
-    EXPECT_EQ(13, test(dbname, _m_list[8]));
-    EXPECT_EQ(13, test(dbname, _m_list[9]));
-    EXPECT_EQ(13, test(dbname, _m_list[10]));
-    EXPECT_EQ(1, test(dbname, _m_list[11]));
+    EXPECT_EQ(14, test(dbname, _m_list[7]));
+    EXPECT_EQ(14, test(dbname, _m_list[8]));
+    EXPECT_EQ(14, test(dbname, _m_list[9]));
+    EXPECT_EQ(14, test(dbname, _m_list[10]));
+    EXPECT_EQ(0, test(dbname, _m_list[11]));
+    EXPECT_EQ(0, test(dbname, _m_list[12]));
 }
