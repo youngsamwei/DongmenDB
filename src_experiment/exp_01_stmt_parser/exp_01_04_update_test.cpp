@@ -20,12 +20,15 @@ int update(dongmendb *db, const char *strupdate) {
     TokenizerT *tokenizer = TKCreate(sql);
     ParserT *parser = newParser(tokenizer);
     memset(parser->parserMessage, 0, sizeof(parser->parserMessage));
-
     sql_stmt_update *sqlStmtUpdate  = parse_sql_stmt_update(parser);
 
     if(sqlStmtUpdate == NULL){
+        printf(parser->parserMessage);
         return -1;
     }
+
+    sql_stmt_update_print(sqlStmtUpdate);
+
     /*返回修改的记录条数*/
     int count  = 0;
     count = plan_execute_update(db, sqlStmtUpdate, db->tx);
@@ -44,25 +47,29 @@ int test(const char *dbname, const char *strupdate) {
 class Exp_01_04_UpdateTest : public testing::Test {
 protected:
     virtual void SetUp() {
-        _m_list[0] = "update student set sname = 'Tom Cruise' where sno = '2012010101'";
-        _m_list[1] = "update student set sname = 'zhang simith' where sname = 'li simith'";
-        _m_list[2] = "update student set sname = 'li simith', ssex= 'male'' where sname = 'zhang simith'";
+        _m_list[0] = "update student set sname = 'Tom Cruise' where sno = '2012010101' ";
+        _m_list[1] = "update student set sname = 'zhang simith' where sname = 'li simith' ";
+        _m_list[2] = "update student set sname = 'li simith', ssex= 'male' where sname = 'zhang simith'; "; //增加分号提示语法错误，缺少分号提示访问冲突
         _m_list[3] = "update student set sname = 'zhang simith', ssex= 'male', sage = sage + 1 where sname = 'li simith'";
         _m_list[4] = "update student set sname = 'li simith' where sname = 'zhang simith'";
         _m_list[5] = "update student set sage = sage + 1 where sname = 'li simith'";
         _m_list[6] = "update student set sage = sage + 1 " ;
+        _m_list[7] = "update student set sage = 20 where sno = '2012010101'";
+        _m_list[8] = "update student set sname = 'To mCruise' where sage > 30; ";//增加分号提示语法错误，缺少分号提示访问冲突
     }
     const char *_m_list[11];
     const char *dbname = "demodb";
 };
 
 TEST_F(Exp_01_04_UpdateTest, Correct){
-    EXPECT_EQ(1, test(dbname, _m_list[0]));
-    EXPECT_EQ(1, test(dbname, _m_list[1]));
-    EXPECT_EQ(1, test(dbname, _m_list[2]));
+    EXPECT_EQ(1, test(dbname, _m_list[0])); //parse error
+    EXPECT_EQ(1, test(dbname, _m_list[1])); //parse error
+    EXPECT_EQ(1, test(dbname, _m_list[2])); //parse error
     EXPECT_EQ(1, test(dbname, _m_list[3]));
     EXPECT_EQ(1, test(dbname, _m_list[4]));
     EXPECT_EQ(1, test(dbname, _m_list[5]));
     EXPECT_EQ(1, test(dbname, _m_list[6]));
+    EXPECT_EQ(1, test(dbname, _m_list[7]));
+    EXPECT_EQ(1, test(dbname, _m_list[8]));
 
 }
