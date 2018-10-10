@@ -51,8 +51,9 @@ protected:
         _m_list[10] = "select student.*, sc.*, course.* from student, sc, course where student.sno = sc.sno and sc.cno = course.cno";
         _m_list[11] = "select sno from student where sname ='tom cruise'";
         _m_list[12] = "select sno from student where sname = 'li simith' or sname='tom cruise'";
+        _m_list[13] = "select sno from student where sname = 'zhang simith'";
     }
-    const char *_m_list[13];
+    const char *_m_list[14];
     const char *dbname = "demodb";
 };
 
@@ -70,4 +71,5 @@ TEST_F(Exp_01_03_SelectTest, Correct){
     EXPECT_EQ(14, test(dbname, _m_list[10]));
     EXPECT_EQ(0, test(dbname, _m_list[11]));
     EXPECT_EQ(0, test(dbname, _m_list[12]));
+    EXPECT_EQ(0, test(dbname, _m_list[13]));
 }
