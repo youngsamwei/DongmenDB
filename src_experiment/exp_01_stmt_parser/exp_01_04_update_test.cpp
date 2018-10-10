@@ -56,6 +56,7 @@ protected:
         _m_list[6] = "update student set sage = sage + 1 " ;
         _m_list[7] = "update student set sage = 20 where sno = '2012010101'";
         _m_list[8] = "update student set sname = 'To mCruise' where sage > 30; ";
+        _m_list[9] = "update student set sage = sage + 1 where sage > 30 and ssex = 'male'; ";
     }
     const char *_m_list[11];
     const char *dbname = "demodb";
@@ -71,5 +72,6 @@ TEST_F(Exp_01_04_UpdateTest, Correct){
     EXPECT_EQ(9, test(dbname, _m_list[6]));
     EXPECT_EQ(1, test(dbname, _m_list[7]));
     EXPECT_EQ(0, test(dbname, _m_list[8]));
+    EXPECT_EQ(0, test(dbname, _m_list[9]));
 
 }
