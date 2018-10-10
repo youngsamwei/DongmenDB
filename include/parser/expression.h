@@ -73,13 +73,15 @@ static const OPERATOR operators[] = {
         /* 算数运算 */
         {2, 18, 1,  left2right, TOKEN_OPEN_PAREN},     // 左括号
         {2, 18, 18, left2right, TOKEN_CLOSE_PAREN},    // 右括号
+        {2, 14, 14, left2right, TOKEN_POWER},     // 幂
+
         {2, 12, 12, left2right, TOKEN_PLUS},      // 加
         {2, 12, 12, left2right, TOKEN_MINUS},     // 减
         {2, 13, 13, left2right, TOKEN_MULTIPLY},  // 乘
         {2, 13, 13, left2right, TOKEN_DIVIDE},    // 除
 
-        {2, 13, 13, left2right, TOKEN_MOD},       // 模
-        {2, 14, 14, left2right, TOKEN_POWER},     // 幂
+//        {2, 13, 13, left2right, TOKEN_MOD},       // 模
+
 //        {1, 16, 15, right2left, TOKEN_POSITIVE},  // 正号
 //        {1, 16, 15, right2left, TOKEN_NEGATIVE},  // 负号
 //        {1, 16, 15, left2right, TOKEN_FACTORIAL}, // 阶乘
