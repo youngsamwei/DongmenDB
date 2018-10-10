@@ -197,7 +197,8 @@ int expression_print_list(arraylist *exprlist) {
 Expression *parseExpressionRD(ParserT *parser) {
     Expression *expr = parseReadBooleanOr(parser);
     if (parser->parserStateType != PARSER_WRONG && parser->currToken != NULL
-        && parser->currToken->type != TOKEN_RESERVED_WORD && parser->currToken->type != TOKEN_COMMA) {
+        && parser->currToken->type != TOKEN_RESERVED_WORD && parser->currToken->type != TOKEN_COMMA &&
+        parser->currToken->type != TOKEN_SEMICOLON) {
         /*表达式没有处理完，比如只有右括号的情况。*/
         char message[PARSER_MESSAGE_LENTTH];
         sprintf(message, "syntax error: %s.", parser->currToken->text);
