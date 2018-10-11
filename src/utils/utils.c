@@ -17,7 +17,7 @@ char *new_id_name(){
 };
 
 int bytes2int(unsigned char x1, unsigned char x2, unsigned char x3, unsigned char x4){
-    return (x1 >>24) | (x2 >>16) | (x3 >>8) | x4;
+    return (x1 << 24) | (x2 << 16) | (x3 << 8) | x4;
 };
 
 int dongmendb_tokenize(char *str, char ***tokens)
