@@ -378,12 +378,12 @@ int dongmendb_shell_handle_update_data(dongmendb_shell_handle_sql_t *ctx, const 
     /*TODO: 安全性检查：用户是否有权限访问select中的数据表*/
 
     /*TODO: plan_execute_update， update语句执行*/
-    status = plan_execute_update(ctx->db, sqlStmtUpdate,
+    int count = plan_execute_update(ctx->db, sqlStmtUpdate,
                                      ctx->db->tx);
 
-    if (status == DONGMENDB_OK) {
+    if (count >= 0) {
         transaction_commit(ctx->db->tx);
-        fprintf(stdout, "update  success!");
+        fprintf(stdout, "update  success! %d line updated.", count);
         return DONGMENDB_OK;
     } else {
         fprintf(stderr, "update  failed!");
