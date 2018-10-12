@@ -381,7 +381,7 @@ int dongmendb_shell_handle_update_data(dongmendb_shell_handle_sql_t *ctx, const 
     int count = plan_execute_update(ctx->db, sqlStmtUpdate,
                                      ctx->db->tx);
 
-    if (status >= 0) {
+    if (count >= 0) {
         transaction_commit(ctx->db->tx);
         fprintf(stdout, "update  success! %d line updated.", count);
         return DONGMENDB_OK;
