@@ -123,8 +123,8 @@ order：若多字段索引，说明字段顺序；
 
 ### 5.11 封锁管理lock manager
 
-## 6 physicalplan
-### 6.1 物理计划
+## 6 实现物理计划physicalplan
+### 6.1 定义物理计划
 ### 6.2 表扫描table scan
 ### 6.3 嵌套循环 nest loop
 ### 6.4 投影 project
@@ -133,7 +133,7 @@ order：若多字段索引，说明字段顺序；
 ### 6.7 索引连接
 ### 6.8 哈希连接
 
-## 7 utils
+## 7 辅助数据结构utils
 ### 7.1 arraylist
 ### 7.2 hashmap
 ### 7.3 opstack
