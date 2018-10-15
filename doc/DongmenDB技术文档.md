@@ -19,7 +19,7 @@ DongmenDB实现关系数据库管理系统的基本功能：
 
 ## 2 shell
 
-## 3 dongmendql
+## 3 语言处理层dongmendql
 ### 3.1 create
 ### 3.2 insert
 ### 3.3 select
@@ -34,7 +34,7 @@ DongmenDB实现关系数据库管理系统的基本功能：
 ### 4.3 语句解析statement
 ### 4.4 表达式解析expression
 
-## 5 dongmendb
+## 5 系统管理dongmendb
 dongmendb的数据库以文件夹为单位，文件夹名称作为数据库名称，每个表保存在独立的文件中，以扩展名tbl作为结尾。
 系统表也保存在独立的文件中，也以扩展名tbl作为结尾。
 
