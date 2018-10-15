@@ -2,12 +2,12 @@
 # DongmenDB技术文档
 
 ## 1 概述
-'DongmenDB是一个用于教学的关系数据库管理系统。
-'DongmenDB实现关系数据库管理系统的基本功能：
-'1）基本SQL解析与执行：包括select，insert，update，delete，create table等语句；
-'2）安全性管理；
-'3）完整性管理；
-'4）索引管理。
+`DongmenDB是一个用于教学的关系数据库管理系统。
+`DongmenDB实现关系数据库管理系统的基本功能：
+`1）基本SQL解析与执行：包括select，insert，update，delete，create table等语句；
+`2）安全性管理；
+`3）完整性管理；
+`4）索引管理。
 
 从技术实现角度，DongmenDB包含以下模块：
 1）shell：与用户交互的cmd界面。
