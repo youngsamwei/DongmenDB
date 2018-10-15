@@ -188,6 +188,7 @@ typedef struct physical_scan_ {
    （参考 physicalplan/physical_scan_project.c 中 physical_scan_project_get_val_by_index 函数中的写法）
 4. 使用 setInt 或 setString 修改；
    (参考 src\physicalplan\physicalplan.c 中的 plan_execute_insert 函数的实现)
+5. 在循环中更新修改的记录条数，作为最终的返回值。
 
 针对 Integer 和 String 类型的字段修改数据主要是用两个函数`setInt`、`setString`，你可以
 
