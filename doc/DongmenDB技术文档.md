@@ -3,6 +3,7 @@
 
 ## 1 概述
 DongmenDB是一个用于教学的关系数据库管理系统。
+
 DongmenDB实现关系数据库管理系统的基本功能：
 1）基本SQL解析与执行：包括select，insert，update，delete，create table等语句；
 2）安全性管理；
@@ -31,7 +32,7 @@ DongmenDB实现关系数据库管理系统的基本功能：
 ### 3.6 relational algebra
 ### 3.7 关系代数查询优化
 
-## 4 parser
+## 4 词法语法分析parser
 ### 4.1 词法分析器tokenizer
 ### 4.2 语法分析器parser
 ### 4.3 语句解析statement
@@ -113,6 +114,12 @@ tablename:表名称；
 fieldname：字段名称；
 asc：是否升序；
 order：若多字段索引，说明字段顺序；
+
+索引数据文件以表名作为文件名，以idx作为扩展名。存储采用B+树结构。
+索引数据表indexdata(value, block, seq)
+value：索引字段值；
+block：对应记录的存储块编号；
+seq：块中顺序编号
 
 5.10.2 索引的维护
 在insert，update，delete时，更新索引表中的数据；
