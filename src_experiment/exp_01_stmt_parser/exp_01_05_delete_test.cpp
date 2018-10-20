@@ -21,7 +21,10 @@ int delete_(dongmendb *db, const char *strdelete) {
     memset(parser->parserMessage, 0, sizeof(parser->parserMessage));
 
     sql_stmt_delete *sqlStmtDelete  = parse_sql_stmt_delete(parser);
-    int count = 1;
+
+    /*返回修改的记录条数*/
+    int count  = 0;
+    count = plan_execute_delete(db, sqlStmtDelete, db->tx);
 
     dongmendb_close(db);
     return count;
