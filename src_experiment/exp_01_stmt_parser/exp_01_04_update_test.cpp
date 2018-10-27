@@ -15,36 +15,11 @@
 
 这个测试用例设计的还是不完善，只能做简单的测试，尚不能准确的测试是否解析的正确.*/
 
-int update(dongmendb *db, const char *strupdate) {
-    char *sql = (char *) calloc(strlen(strupdate), 1);
-    strcpy(sql, strupdate);
-    TokenizerT *tokenizer = TKCreate(sql);
-    ParserT *parser = newParser(tokenizer);
-    memset(parser->parserMessage, 0, sizeof(parser->parserMessage));
-    sql_stmt_update *sqlStmtUpdate  = parse_sql_stmt_update(parser);
-
-    if(sqlStmtUpdate == NULL){
-        printf(parser->parserMessage);
-        return -1;
-    }
-
-    sql_stmt_update_print(sqlStmtUpdate);
-
-    /*返回修改的记录条数*/
-    int count  = 0;
-    count = plan_execute_update(db, sqlStmtUpdate, db->tx);
-
-    return count;
-}
 
 class Exp_01_04_UpdateTest : public TestStmtParser {
 
 
 protected:
-    int test(const char * strupdate){
-        int count = update(test_db_ctx->db, strupdate);
-        return count;
-    };
 
     virtual void SetUp() {
         _m_list[0] = "update student set sname = 'Tom Cruise' where sno = '2012010101' ";
@@ -87,16 +62,16 @@ TEST_F(Exp_01_04_UpdateTest, Correct){
     insertData();
 
     /*执行测试，不能写成循环，因为无法清楚显示哪个测试用例失败了*/
-    EXPECT_EQ(_expect_list[0], test(_m_list[0]));
-    EXPECT_EQ(_expect_list[1], test(_m_list[1]));
-    EXPECT_EQ(_expect_list[2], test(_m_list[2]));
-    EXPECT_EQ(_expect_list[3], test(_m_list[3]));
-    EXPECT_EQ(_expect_list[4], test(_m_list[4]));
-    EXPECT_EQ(_expect_list[5], test(_m_list[5]));
-    EXPECT_EQ(_expect_list[6], test(_m_list[6]));
-    EXPECT_EQ(_expect_list[7], test(_m_list[7]));
-    EXPECT_EQ(_expect_list[8], test(_m_list[8]));
-    EXPECT_EQ(_expect_list[9], test(_m_list[9]));
+    EXPECT_EQ(_expect_list[0], update(_m_list[0]));
+    EXPECT_EQ(_expect_list[1], update(_m_list[1]));
+    EXPECT_EQ(_expect_list[2], update(_m_list[2]));
+    EXPECT_EQ(_expect_list[3], update(_m_list[3]));
+    EXPECT_EQ(_expect_list[4], update(_m_list[4]));
+    EXPECT_EQ(_expect_list[5], update(_m_list[5]));
+    EXPECT_EQ(_expect_list[6], update(_m_list[6]));
+    EXPECT_EQ(_expect_list[7], update(_m_list[7]));
+    EXPECT_EQ(_expect_list[8], update(_m_list[8]));
+    EXPECT_EQ(_expect_list[9], update(_m_list[9]));
 
     /*删除数据库*/
     dropDB();

@@ -10,6 +10,12 @@
 
 #include <dongmendb/dongmendb.h>
 #include <gtest/gtest.h>
+#include <utils/utils.h>
+#include <parser/tokenizer.h>
+#include <parser/parser.h>
+#include <dongmensql/sra.h>
+#include "physicalplan/physicalplan.h"
+
 
 
 class TestStmtParser : public testing::Test {
@@ -21,7 +27,9 @@ public:
     void createTable();
     void insertData();
     void dropDB();
-
+    int select(const char *sqlselect);
+    int delete_(const char *strdelete);
+    int update(const char *strupdate);
 
     const char *_create_table_list[3] = {
             "create table student(sno char(10), sname char(20), sage integer, ssex char(10));",
