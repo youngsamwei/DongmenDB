@@ -48,4 +48,9 @@ ADD_LIBRARY(dongmensql ${DIR_SRCS_DONGMENSQL})
 
 aux_source_directory(shell DIR_SRCS_SHELL)
 ADD_LIBRARY(shell ${DIR_SRCS_SHELL})
-TARGET_LINK_LIBRARIES(shell dongmendb parser dongmensql utils physicalplan)
+
+aux_source_directory(test_base DIR_SRCS_TEST_BASE)
+ADD_LIBRARY(test_base ${DIR_SRCS_TEST_BASE})
+
+
+TARGET_LINK_LIBRARIES(shell dongmendb parser dongmensql utils physicalplan test_base)

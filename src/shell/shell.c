@@ -15,6 +15,9 @@
  * 解析sql语句获得描述语句的结构，然后执行语句
  *
  * */
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #define COL_SEPARATOR "|"
 
@@ -216,12 +219,12 @@ int dongmendb_shell_handle_create_table(dongmendb_shell_handle_sql_t *ctx, const
         fprintf(stderr, "ERROR: No database is open.\n");
         return 1;
     }
-    char *sql = (char *) calloc(strlen(sqlcreate), 1);
-    strcpy(sql, sqlcreate);
-    TokenizerT *tokenizer = TKCreate(sql);
+
+    TokenizerT *tokenizer = TKCreate(sqlcreate);
     ParserT *parser = newParser(tokenizer);
     memset(parser->parserMessage, 0, sizeof(parser->parserMessage));
 
+//    int status = 0;
     sql_stmt_create *sqlStmtCreate = parse_sql_stmt_create(parser);
 
     /*TODO: 检查是否已经存在要创建的表 */
@@ -231,7 +234,7 @@ int dongmendb_shell_handle_create_table(dongmendb_shell_handle_sql_t *ctx, const
         return DONGMENDB_ERROR_IO;
     }
 
-    status = table_manager_create_table(ctx->db->metadataManager->tableManager,
+   status = table_manager_create_table(ctx->db->metadataManager->tableManager,
                                             sqlStmtCreate->tableInfo->tableName,
                                             sqlStmtCreate->tableInfo->fieldsName,
                                             sqlStmtCreate->tableInfo->fields,
@@ -253,9 +256,8 @@ int dongmendb_shell_handle_insert_table(dongmendb_shell_handle_sql_t *ctx, const
         fprintf(stderr, "ERROR: No database is open.\n");
         return 1;
     }
-    char *sql = (char *) calloc(strlen(sqlinsert), 1);
-    strcpy(sql, sqlinsert);
-    TokenizerT *tokenizer = TKCreate(sql);
+
+    TokenizerT *tokenizer = TKCreate(sqlinsert);
     ParserT *parser = newParser(tokenizer);
     memset(parser->parserMessage, 0, sizeof(parser->parserMessage));
 
@@ -291,9 +293,8 @@ int dongmendb_shell_handle_select_table(dongmendb_shell_handle_sql_t *ctx, const
         fprintf(stderr, "ERROR: No database is open.\n");
         return 1;
     }
-    char *sql = (char *) calloc(strlen(sqlselect), 1);
-    strcpy(sql, sqlselect);
-    TokenizerT *tokenizer = TKCreate(sql);
+
+    TokenizerT *tokenizer = TKCreate(sqlselect);
     ParserT *parser = newParser(tokenizer);
     memset(parser->parserMessage, 0, sizeof(parser->parserMessage));
 
@@ -349,10 +350,9 @@ int dongmendb_shell_handle_update_data(dongmendb_shell_handle_sql_t *ctx, const 
         fprintf(stderr, "ERROR: No database is open.\n");
         return 1;
     }
-    char *sql = (char *) calloc(strlen(sqlupdate), 1);
-    strcpy(sql, sqlupdate);
+
     /* token解析 */
-    TokenizerT *tokenizer = TKCreate(sql);
+    TokenizerT *tokenizer = TKCreate(sqlupdate);
     /* parser解析 */
     ParserT *parser = newParser(tokenizer);
     memset(parser->parserMessage, 0, sizeof(parser->parserMessage));
@@ -392,7 +392,7 @@ int dongmendb_shell_handle_update_data(dongmendb_shell_handle_sql_t *ctx, const 
 }
 
 /*处理sql：delete语句*/
-int dongmendb_shell_handle_delete_data(dongmendb_shell_handle_sql_t *ctx, const char *sqldelete){
+int dongmendb_shell_handle_delete_data(dongmendb_shell_handle_sql_t *ctx, const char *sqldelete) {
     /**
      *  1 初始化 TokenizerT和ParserT
      *  2 解析update语句：parse_sql_stmt_delete，在src_experiment\exp_01_stmt_parser\exp_01_05_delete.c中实现
@@ -401,7 +401,42 @@ int dongmendb_shell_handle_delete_data(dongmendb_shell_handle_sql_t *ctx, const 
      *  5 获得物理计划：plan_execute_delete
      *  6 执行物理计划
      */
-    fprintf(stderr, "TODO: delete is not implemented yet.\n ");
+    if (!ctx->db) {
+        fprintf(stderr, "ERROR: No database is open.\n");
+        return 1;
+    }
+
+    TokenizerT *tokenizer = TKCreate(sqldelete);
+    ParserT *parser = newParser(tokenizer);
+    memset(parser->parserMessage, 0, sizeof(parser->parserMessage));
+
+    sql_stmt_delete *sqlStmtDelete = parse_sql_stmt_delete(parser);
+    if (sqlStmtDelete == NULL) {
+        printf(parser->parserMessage);
+        return 1;
+    }
+
+    /*TODO: 语义检查：表与字段是否存在*/
+    int status = semantic_check_table_exists(ctx->db->metadataManager->tableManager, sqlStmtDelete->tableName,
+                                             ctx->db->tx);
+    if (status != DONGMENDB_OK) {
+        fprintf(stdout, "table does not exist!");
+        return status;
+    }
+
+    /*TODO: 安全性检查：用户是否有权限访问select中的数据表*/
+
+    int count = plan_execute_delete(ctx->db, sqlStmtDelete,
+                                    ctx->db->tx);
+
+    if (count >= 0) {
+        transaction_commit(ctx->db->tx);
+        fprintf(stdout, "delete  success! %d line deleted.", count);
+        return DONGMENDB_OK;
+    } else {
+        fprintf(stderr, "delete  failed!");
+        return DONGMENDB_ERROR_IO;
+    }
 }
 
 int dongmendb_shell_handle_cmd_open(dongmendb_shell_handle_sql_t *ctx, struct handler_entry *e, const char **tokens,
@@ -590,3 +625,7 @@ int dongmendb_shell_handle_cmd_desc(dongmendb_shell_handle_sql_t *ctx, struct ha
     }
     return DONGMENDB_OK;
 };
+
+#ifdef __cplusplus
+}
+#endif

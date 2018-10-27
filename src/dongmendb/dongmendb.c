@@ -4,10 +4,15 @@
 
 #include "dongmendb/dongmendb.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 
 int dongmendb_open(const char *dbName, dongmendb *db) {
 
     db->fileManager = (file_manager *)malloc(sizeof(file_manager));
+    db->dbName = strdup(dbName);
 
     /*初始化文件管理*/
     file_manager_new(db->fileManager, "", dbName);
@@ -45,4 +50,11 @@ int dongmendb_column_int(dongmendb_stmt *stmt, int col) {};
 
 const char *dongmendb_column_text(dongmendb_stmt *stmt, int col) {};
 
-int dongmendb_close(dongmendb *db) {};
+int dongmendb_close(dongmendb *db) {
+    file_manager_closeallfile(db->fileManager);
+};
+
+
+#ifdef __cplusplus
+}
+#endif

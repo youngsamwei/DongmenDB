@@ -90,6 +90,24 @@ int file_manager_getfile(file_manager *fileManager, char *fileName, void_ptr *fi
     return DONGMENDB_OK;
 };
 
+int file_manager_closefile(file_manager *fileManager, char *fileName){
+    void_ptr *file;
+    int found = hashmap_get(fileManager->openFiles, fileName, file);
+    if (found == HMAP_E_KEYUSED){
+        fclose((FILE *)file);
+    }
+    hashmap_remove(fileManager->openFiles, fileName, file);
+}
+
+void _iter_closefile(char * filename, void_ptr fnIterValue, void_ptr arg){
+    fclose((FILE *)fnIterValue);
+}
+
+int file_manager_closeallfile(file_manager *fileManager){
+    hashmap_iterate(fileManager->openFiles, _iter_closefile, NULL);
+    hashmap_clear(fileManager->openFiles);
+}
+
 int disk_block_new(char *fileName, int blockNum, table_info *tableInfo, disk_block *diskBlock) {
 
     diskBlock->fileName = fileName;

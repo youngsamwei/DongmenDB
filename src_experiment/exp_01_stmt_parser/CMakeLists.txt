@@ -12,7 +12,7 @@ add_executable(exp_01_03_select_test exp_01_03_select_test.cpp)
 target_link_libraries(exp_01_03_select_test ${TEST_LIBRARIES})
 
 
-add_executable(exp_01_04_update_test exp_01_04_update_test.cpp)
+add_executable(exp_01_04_update_test exp_01_04_update_test.cpp  ../../src/shell/shell.c)
 target_link_libraries(exp_01_04_update_test ${TEST_LIBRARIES})
 
 

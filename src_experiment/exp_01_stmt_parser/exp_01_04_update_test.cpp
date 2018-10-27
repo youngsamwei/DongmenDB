@@ -6,13 +6,14 @@
 #include <stdlib.h>
 #include <gtest/gtest.h>
 #include <parser/statement.h>
-#include "dongmendb/dongmendb.h"
-#include "parser/tokenizer.h"
-#include "parser/parser.h"
-#include "dongmensql/sra.h"
-#include "physicalplan/physicalplan.h"
 
-/* 这个测试用例设计的还是不完善，只能做简单的测试，尚不能准确的测试是否解析的正确.*/
+#include "physicalplan/physicalplan.h"
+#include "test/test_stmt_parser.h"
+
+/* 2018-10-27 测试类改进：每次测试都重新创建数据库，重新初始化数据。
+ * 测试类继承自 TestStmtParser
+
+这个测试用例设计的还是不完善，只能做简单的测试，尚不能准确的测试是否解析的正确.*/
 
 int update(dongmendb *db, const char *strupdate) {
     char *sql = (char *) calloc(strlen(strupdate), 1);
@@ -33,19 +34,18 @@ int update(dongmendb *db, const char *strupdate) {
     int count  = 0;
     count = plan_execute_update(db, sqlStmtUpdate, db->tx);
 
-    dongmendb_close(db);
     return count;
 }
 
-int test(const char *dbname, const char *strupdate) {
-    dongmendb *newdb = (dongmendb *) calloc(sizeof(dongmendb), 1);
-    int rc = dongmendb_open(dbname, newdb);
-    int count = update(newdb, strupdate);
-    return count;
-}
+class Exp_01_04_UpdateTest : public TestStmtParser {
 
-class Exp_01_04_UpdateTest : public testing::Test {
+
 protected:
+    int test(const char * strupdate){
+        int count = update(test_db_ctx->db, strupdate);
+        return count;
+    };
+
     virtual void SetUp() {
         _m_list[0] = "update student set sname = 'Tom Cruise' where sno = '2012010101' ";
         _m_list[1] = "update student set sname = 'zhang simith' where sname = 'li simith' ";
@@ -57,21 +57,48 @@ protected:
         _m_list[7] = "update student set sage = 20 where sno = '2012010101'";
         _m_list[8] = "update student set sname = 'To mCruise' where sage > 30; ";
         _m_list[9] = "update student set sage = sage + 1 where sage > 30 and ssex = 'male'; ";
+
+        _expect_list[0] = 1;
+        _expect_list[1] = 1;
+        _expect_list[2] = 1;
+        _expect_list[3] = 1;
+        _expect_list[4] = 1;
+        _expect_list[5] = 1;
+        _expect_list[6] = 9;
+        _expect_list[7] = 1;
+        _expect_list[8] = 0;
+        _expect_list[9] = 0;
     }
+    /* 测试用例*/
     const char *_m_list[11];
-    const char *dbname = "demodb";
+    /* 执行测试用例返回的影响记录条数*/
+    int _expect_list[11];
+    /*准备使用的测试数据库名称 */
+    const char *dbname = "test_demodb";
 };
 
 TEST_F(Exp_01_04_UpdateTest, Correct){
-    EXPECT_EQ(1, test(dbname, _m_list[0])); //parse error
-    EXPECT_EQ(1, test(dbname, _m_list[1])); //parse error
-    EXPECT_EQ(1, test(dbname, _m_list[2])); //parse error
-    EXPECT_EQ(1, test(dbname, _m_list[3]));
-    EXPECT_EQ(1, test(dbname, _m_list[4]));
-    EXPECT_EQ(1, test(dbname, _m_list[5]));
-    EXPECT_EQ(9, test(dbname, _m_list[6]));
-    EXPECT_EQ(1, test(dbname, _m_list[7]));
-    EXPECT_EQ(0, test(dbname, _m_list[8]));
-    EXPECT_EQ(0, test(dbname, _m_list[9]));
+
+    /*据指定的数据库名称创建数据库*/
+    createDB(dbname);
+/*创建表*/
+    createTable();
+/*增加数据*/
+    insertData();
+
+    /*执行测试，不能写成循环，因为无法清楚显示哪个测试用例失败了*/
+    EXPECT_EQ(_expect_list[0], test(_m_list[0]));
+    EXPECT_EQ(_expect_list[1], test(_m_list[1]));
+    EXPECT_EQ(_expect_list[2], test(_m_list[2]));
+    EXPECT_EQ(_expect_list[3], test(_m_list[3]));
+    EXPECT_EQ(_expect_list[4], test(_m_list[4]));
+    EXPECT_EQ(_expect_list[5], test(_m_list[5]));
+    EXPECT_EQ(_expect_list[6], test(_m_list[6]));
+    EXPECT_EQ(_expect_list[7], test(_m_list[7]));
+    EXPECT_EQ(_expect_list[8], test(_m_list[8]));
+    EXPECT_EQ(_expect_list[9], test(_m_list[9]));
+
+    /*删除数据库*/
+    dropDB();
 
 }

@@ -74,6 +74,10 @@ int file_manager_isnew(file_manager *fileManager);
 
 int file_manager_getfile(file_manager *fileManager, char *fileName, void_ptr *fp);
 
+int file_manager_closefile(file_manager *fileManager, char *fileName);
+
+int file_manager_closeallfile(file_manager *fileManager);
+
 int disk_block_new(char *fileName, int blockNum, table_info *tableInfo, disk_block *diskBlock);
 
 char *disk_block_get_num_string(disk_block *diskBlock);

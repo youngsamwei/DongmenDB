@@ -20,6 +20,9 @@ int bytes2int(unsigned char b1, unsigned char b2, unsigned char b3, unsigned cha
  */
 char *new_id_name();
 
+/* 删除指定文件夹以及其中文档*/
+int  removeDir(const char*  dirPath);
+
 #ifdef __cplusplus
 }
 #endif
