@@ -3,7 +3,6 @@
 //
 
 #include <test/test_stmt_parser.h>
-#include <utils/utils.h>
 
 void TestStmtParser :: createDB(const char *dbname){
 
@@ -48,4 +47,59 @@ void TestStmtParser ::dropDB() {
 
     removeDir(test_db_ctx->dbfile);
 
+}
+
+int TestStmtParser ::select(const char *sqlselect) {
+
+    TokenizerT *tokenizer = TKCreate(sqlselect);
+    ParserT *parser = newParser(tokenizer);
+    memset(parser->parserMessage, 0, sizeof(parser->parserMessage));
+
+    SRA_t *selectStmt = parse_sql_stmt_select(parser);
+    physical_scan *plan = plan_execute_select(test_db_ctx->db, selectStmt, test_db_ctx->db->tx);
+    plan->beforeFirst(plan);
+    int count = 0;
+    while (plan->next(plan)) {
+        count++;
+    }
+    plan->close(plan);
+
+    return count;
+}
+
+
+int TestStmtParser ::delete_( const char *strdelete) {
+
+    TokenizerT *tokenizer = TKCreate(strdelete);
+    ParserT *parser = newParser(tokenizer);
+    memset(parser->parserMessage, 0, sizeof(parser->parserMessage));
+
+    sql_stmt_delete *sqlStmtDelete  = parse_sql_stmt_delete(parser);
+
+    /*返回修改的记录条数*/
+    int count  = 0;
+    count = plan_execute_delete(test_db_ctx->db, sqlStmtDelete, test_db_ctx->db->tx);
+
+    return count;
+}
+
+int TestStmtParser ::update(const char *strupdate) {
+
+    TokenizerT *tokenizer = TKCreate(strupdate);
+    ParserT *parser = newParser(tokenizer);
+    memset(parser->parserMessage, 0, sizeof(parser->parserMessage));
+    sql_stmt_update *sqlStmtUpdate  = parse_sql_stmt_update(parser);
+
+    if(sqlStmtUpdate == NULL){
+        printf(parser->parserMessage);
+        return -1;
+    }
+
+    sql_stmt_update_print(sqlStmtUpdate);
+
+    /*返回修改的记录条数*/
+    int count  = 0;
+    count = plan_execute_update(test_db_ctx->db, sqlStmtUpdate, test_db_ctx->db->tx);
+
+    return count;
 }
