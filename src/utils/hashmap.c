@@ -296,15 +296,14 @@ int hashmap_get(hmap_t in, const char * key, void_ptr *value) {
  * argument and the hashmap element is the second.
  */
 int hashmap_iterate(hmap_t in, hmap_callback_func fnIterValue, void_ptr arg) {
-    int i;
     hashmap_elem_t *elem;
     hashmap_map_t *m = (hashmap_map_t*) in;
 
-    if (hashmap_size(m) <= 0) {
+    if (m->size <= 0) {
         return HMAP_E_NOTFOUND;
     }
 
-    for (i = 0; i < m->table_size; i++) {
+    for (int i = 0; i < m->table_size; i++) {
         elem = m->elems + i;
         if (elem->used == hashmap_used_1) {
             int status = fnIterValue(elem->key, elem->data, arg);
