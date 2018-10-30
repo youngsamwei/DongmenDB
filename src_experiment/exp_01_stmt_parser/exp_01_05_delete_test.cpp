@@ -2,17 +2,9 @@
 // Created by Sam on 2018/2/11.
 //
 
-#include <stdio.h>
 #include <stdlib.h>
 #include <gtest/gtest.h>
-#include <parser/statement.h>
 #include <test/test_stmt_parser.h>
-#include "dongmendb/dongmendb.h"
-#include "parser/tokenizer.h"
-#include "parser/parser.h"
-#include "dongmensql/sra.h"
-#include "physicalplan/physicalplan.h"
-
 
 
 class Exp_01_05_DeleteTest : public TestStmtParser {
