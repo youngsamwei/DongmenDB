@@ -10,7 +10,7 @@
 1. 首先匹配 `delete`, 使用`matchToken(parser,TOKEN_RESERVED_WORD,"delete")`匹配
 2. 匹配 `from` 使用 matchToken(parser,TOKEN_RESERVED_WORD,"from")
 3. 获取表名 使用 if 判断是否是 TOKEN_WORD 类型，如果是，获得表名；给字符串指针开空间的时候可以使用`new_id_name()`函数
-4. 匹配 `where`，matchToken(parser,TOKEN_RESERVED_WORD,"where")，注意不是所有`update`语句都伴随一个`where`表达式
+4. 匹配 `where`，matchToken(parser,TOKEN_RESERVED_WORD,"where")，注意不是所有`delete`语句都伴随一个`where`表达式
 6. 使用`parseExpressionRD(parse)`获取值（或者表达式），并包裹在`SRA_t`中（使用`SRA_SELECT`构造），
 作为`sql_stmt_delete->where`的值。（语句若不伴随`where`表达式则需要以一个`SRA_TABLE`代替，具体实现可参考 exp_01_stmt_parser/exp_01_03_select.c）
 7. 创建`sql_stmt_delete`指针，开空间，对各字段进行赋值，返回`sql_stmt_delete`结构体
