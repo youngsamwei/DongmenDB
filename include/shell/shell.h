@@ -8,6 +8,9 @@
 extern "C" {
 #endif
 
+
+#define  MAX_CMD 512
+
 typedef enum shell_mode
 {
     MODE_LIST          = 0,

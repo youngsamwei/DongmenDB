@@ -9,9 +9,10 @@
 extern "C" {
 #endif
 
-int dongmendb_stmt_optimize(dongmendb *db,
-                            dongmensql_statement_t *sqlStmt,
-                            dongmensql_statement_t **sqlStmtOpt);
+#include <dongmensql/sra.h>
+
+/*作为实验任务在src_experiment\exp_05_algebra_opt\exp_05_02_condition_push_down.c中实现*/
+SRA_t *dongmengdb_algebra_optimize_condition_pushdown(SRA_t *sra);
 
 #ifdef __cplusplus
 }

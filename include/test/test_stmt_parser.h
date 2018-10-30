@@ -17,18 +17,29 @@
 #include "physicalplan/physicalplan.h"
 
 
+/* 2018-10-27 测试sql语句的基础类。
+ * 每个测试都会重新创建数据库，初始化数据，执行测试，删除数据库。
+ *
+ * */
 
 class TestStmtParser : public testing::Test {
 
 public:
     dongmendb_shell_handle_sql_t *test_db_ctx;
 
+    /*创建数据库*/
     void createDB(const char *dbname);
+    /*创建数据表*/
     void createTable();
+    /*为数据表增加数据*/
     void insertData();
+    /*增加数据*/
     void dropDB();
+    /*执行select语句*/
     int select(const char *sqlselect);
+    /*执行delete语句*/
     int delete_(const char *strdelete);
+    /*执行update语句*/
     int update(const char *strupdate);
 
     const char *_create_table_list[3] = {

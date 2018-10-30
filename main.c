@@ -12,7 +12,6 @@
 #include <stdio.h>
 #include "shell/shell.h"
 
-#define  MAX_CMD 512
 
 int main(int argc, char *argv[]) {
     int opt;
