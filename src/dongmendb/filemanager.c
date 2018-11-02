@@ -99,7 +99,7 @@ int file_manager_closefile(file_manager *fileManager, char *fileName){
     hashmap_remove(fileManager->openFiles, fileName, file);
 }
 
-void _iter_closefile(char * filename, void_ptr fnIterValue, void_ptr arg){
+int _iter_closefile(char * filename, void_ptr fnIterValue, void_ptr arg){
     fclose((FILE *)fnIterValue);
 }
 
