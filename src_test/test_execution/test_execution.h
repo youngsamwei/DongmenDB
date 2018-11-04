@@ -7,11 +7,19 @@
 
 #include <cstddef>
 #include <utils/utils.h>
+#include <string>
 
 class TestExecution {
 
-    const char *cmake_exe = "\"D:/Program Files/JetBrains/CLion 2017.3.1/bin/cmake/bin/cmake.exe\" ";
-    char *current_dir;
+    const char *project_name = "dongmendb";
+    const char *cmake_build_type = " -DCMAKE_BUILD_TYPE=Debug ";
+    const char *cmake_files = "-G \"CodeBlocks - MinGW Makefiles\" ";
+    const char *cmake_build_dir = "cmake-build-debug";
+    const char *cmd_build  = " --build ";
+    const char *cmd_target_clean = " --target clean -- -j 2 ";
+    const char *cmd_target = " --target ";
+    const char *cmake_others_parameters = " -- -j 2";
+    const char *cmake_exe = "cmake.exe ";
     const int SIZE_RAND_STR_LEN = 32; //生成32 + 1位C Style字符串
     const char *CCH = "_0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_";
 
@@ -30,6 +38,7 @@ protected:
     /*从实验作业文件夹复制文件到目标文件夹*/
     int copy_exp_to_dongmendb(const char *from_dir_name, const char *dest_dir_name);
 
+    int cmd_cmake_refresh(const char*output_dir, const char *build_dir_name);
     /*在cmd中执行命令，清理cmake产生的文件*/
     int cmd_cmake_clean(const char *build_dir_name);
 
@@ -37,7 +46,7 @@ protected:
     int cmd_cmake_build(const char *build_dir_name, const char *exp_target);
 
     /*在cmd中执行命令，运行exe目标文件*/
-    int cmd_exp_target(const char *build_dir_name, const char *exp_target);
+    int cmd_exp_target(const char *bin_dir, const char *exp_target);
 
     /*获取测试结果*/
     int cmd_get_test_result();
@@ -48,8 +57,10 @@ private:
     char *rand_str();
     int copyDir(const char *src_dir, const char *dest_dir);
 
+public:
     /*执行cmd命令，并将执行结果写入result*/
     int executeCMD(const char *cmd, char *result);
+    int executeCMD();
 };
 
 #endif //DONGMENDB_TEST_EXECUTION_H
