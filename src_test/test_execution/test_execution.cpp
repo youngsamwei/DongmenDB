@@ -10,9 +10,9 @@
 
 int TestExecution::run(const char *exp_name, const char *exp_target, const char *exp_dir_name, const char *work_dir, const char *dongmendb_src_dir) {
 
-    const char *str = rand_str();
+    const char *str = rand_str(10);
     current_dir = strdup(work_dir);
-    strcat(current_dir, "_");
+    strcat(current_dir, "/dongmendb_");
     strcat(current_dir, str);
 
     int c  = init_dongmendb(work_dir, current_dir);
@@ -46,7 +46,7 @@ int TestExecution::cmd_cmake_clean(const char *build_dir_name) {
 
     chdir(build_dir_name);
     char cmd[250] = {0};
-    memset(cmd,0, sizeof(cmake_exe));
+    memset(cmd,0, strlen(cmake_exe));
     strcpy(cmd, cmake_exe);
     strcat(cmd, " --build ");
 
@@ -61,7 +61,7 @@ int TestExecution::cmd_cmake_build(const char *build_dir_name, const char *exp_t
 
     chdir(build_dir_name);
     char cmd[250];
-    memset(cmd,0, sizeof(cmake_exe));
+    memset(cmd,0, strlen(cmake_exe));
     strcpy(cmd, cmake_exe);
     strcat(cmd, " --build ");
 
@@ -91,14 +91,18 @@ int TestExecution::cmd_get_test_result() {
 char *TestExecution::rand_str(size_t len) {
     srand((unsigned)time(NULL));
     char *ch;
-    ch = (char *)malloc(len);
-    memset(ch, 0, len);
+    ch = (char *)malloc(len + 1);
+    memset(ch, 0, len + 1);
     for (int i = 0; i < len; ++i)
     {
-        int x = rand() / (RAND_MAX / (sizeof(CCH) - 1));
+        int x = rand();
+        int l = (strlen(CCH) - 1);
+        int p = RAND_MAX / l ;
+        x = x / p;
 
         ch[i] = CCH[x];
     }
+    ch[len + 1] = '\0';
     return ch;
 }
 
@@ -149,6 +153,7 @@ int TestExecution::copyDir(const char *src_dir, const char *dest_dir){
                 //属性值为16，则说明是文件夹，迭代
                 if (fb.attrib == 16)
                 {
+                    mkdir(dest_path);
                     copyDir(path, dest_path);
                 }  //非文件夹的文件，直接复制。对文件属性值的情况没做详细调查，可能还有其他情况。
                 else
