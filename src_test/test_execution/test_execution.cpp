@@ -1,7 +1,6 @@
 //
 // Created by sam on 2018/11/3.
 //
-
 #include <ctime>
 #include <io.h>
 #include <cstring>
@@ -9,23 +8,22 @@
 #include <afxres.h>
 #include <iostream>
 
-int TestExecution::run(string exp_name, string exp_target, string exp_dir_name,
-                       std::map<string, string> exp_files,
-                       string work_dir, string dongmendb_src_dir) {
-
-    string str = rand_str(10);
-    string current_dir = work_dir + "/" + project_name + "_" + str;
-    string build_dir = current_dir + "/" + cmake_build_dir;
-    string bin_dir = current_dir + "/bin";
+int TestExecution::run(wstring exp_name, wstring exp_target, wstring exp_dir_name,
+                       std::map<wstring, wstring> exp_files,
+                       wstring work_dir, wstring dongmendb_src_dir) {
+    wstring str = rand_str(10);
+    wstring current_dir = work_dir + L"/" + project_name + L"_" + str;
+    wstring build_dir = current_dir + L"/" + cmake_build_dir;
+    wstring bin_dir = current_dir + L"/bin";
 
     int c  = init_dongmendb(work_dir, current_dir);
 
     copy_dongmendb(dongmendb_src_dir, current_dir);
 
-    /*复制作业到工作目录*/
+    /*������ҵ������Ŀ¼*/
     int ret = copy_exp_to_dongmendb(exp_dir_name, current_dir, exp_files);
 
-    /*缺少实验任务文件*/
+    /*ȱ��ʵ�������ļ�*/
     if (ret < 0){
         return -1;
     }
@@ -41,28 +39,29 @@ int TestExecution::run(string exp_name, string exp_target, string exp_dir_name,
     return 0;
 }
 
-int TestExecution::init_dongmendb(string work_dir, string dir_name) {
-    chdir(work_dir.c_str());
-    mkdir(dir_name.c_str());
+int TestExecution::init_dongmendb(wstring work_dir, wstring dir_name) {
+    _wchdir(work_dir.c_str());
+    _wmkdir(dir_name.c_str());
 
-    int exists = access(dir_name.c_str(), F_OK);
+    int exists = _waccess(dir_name.c_str(), F_OK);
     if (exists != 0) {
         return -1;
     }
     return 0;
 }
 
-int TestExecution::copy_dongmendb(string from_dir_name, string dest_dir_name){
+int TestExecution::copy_dongmendb(wstring from_dir_name, wstring dest_dir_name){
 
     return copyDir(from_dir_name.c_str(), dest_dir_name.c_str());
 };
 
-int TestExecution::copy_exp_to_dongmendb(string exp_dir_name, string dest_dir_name,
-                                         std::map<string, string> exp_files) {
-    map<string, string>::iterator iter;
-    string slash = "/";
+int TestExecution::copy_exp_to_dongmendb(wstring exp_dir_name, wstring dest_dir_name,
+                                         std::map<wstring, wstring> exp_files) {
+    cout<<"\n";
+    map<wstring, wstring>::iterator iter;
+    wstring slash = L"/";
     for(iter = exp_files.begin(); iter != exp_files.end(); iter++){
-        string file_name =  exp_dir_name + slash + iter->first ;
+        wstring file_name =  exp_dir_name + slash + iter->first ;
 
         //        int exists = access(file_name, F_OK);
 //        if (exists != 0) {
@@ -70,23 +69,25 @@ int TestExecution::copy_exp_to_dongmendb(string exp_dir_name, string dest_dir_na
 //            return -1;
 //        }
 
-        string dest_file_name = dest_dir_name + slash + iter->second;
+        wstring dest_file_name = dest_dir_name + slash + iter->second;
 
-        CopyFile(file_name.c_str(), dest_file_name.c_str(), FALSE);
+        CopyFileW(file_name.c_str(), dest_file_name.c_str(), FALSE);
+        wcout<<"copy "<<file_name<<"  to "<< dest_file_name<<endl;
     }
 
+    cout<<"\n";
     return 0;
 }
 
-int TestExecution::cmd_cmake_refresh(string output_dir, string project_dir){
+int TestExecution::cmd_cmake_refresh(wstring output_dir, wstring project_dir){
 
-    string cmd = cmake_exe + cmake_build_type + cmake_files + project_dir;
+    wstring cmd = cmake_exe + cmake_build_type + cmake_files + project_dir;
 
-    removeDir(output_dir.c_str());
-    mkdir(output_dir.c_str());
-    chdir(output_dir.c_str());
+    removeDirW(output_dir.c_str());
+    _wmkdir(output_dir.c_str());
+    _wchdir(output_dir.c_str());
 
-    cout<<"\n"<<cmd<<"\n";
+    cout<<"\n"<<cmd.c_str()<<"\n";
 
     char result[1024] = {0};
     executeCMD(cmd, result);
@@ -96,13 +97,13 @@ int TestExecution::cmd_cmake_refresh(string output_dir, string project_dir){
     return 0;
 }
 
-int TestExecution::cmd_cmake_clean(string build_dir_name) {
+int TestExecution::cmd_cmake_clean(wstring build_dir_name) {
 
-    string cmd = cmake_exe + cmd_build + build_dir_name + cmd_target_clean;
+    wstring cmd = cmake_exe + cmd_build + build_dir_name + cmd_target_clean;
 
-    chdir(build_dir_name.c_str());
+    _wchdir(build_dir_name.c_str());
 
-    cout<<"\n"<<cmd<<"\n";
+    cout<<"\n"<<cmd.c_str()<<"\n";
 
     char result[1024] = {0};
     executeCMD(cmd, result);
@@ -110,13 +111,13 @@ int TestExecution::cmd_cmake_clean(string build_dir_name) {
     return 0;
 }
 
-int TestExecution::cmd_cmake_build(string build_dir_name, string exp_target) {
+int TestExecution::cmd_cmake_build(wstring build_dir_name, wstring exp_target) {
 
-    string cmd = cmake_exe + cmd_build + build_dir_name + cmd_target + exp_target + cmake_others_parameters;
+    wstring cmd = cmake_exe + cmd_build + build_dir_name + cmd_target + exp_target + cmake_others_parameters;
 
-    chdir(build_dir_name.c_str());
+    _wchdir(build_dir_name.c_str());
 
-    cout<<"\n"<<cmd<<"\n";
+    cout<<"\n"<<cmd.c_str()<<"\n";
 
     char result[1024] = {0};
 
@@ -126,11 +127,11 @@ int TestExecution::cmd_cmake_build(string build_dir_name, string exp_target) {
     return 0;
 }
 
-int TestExecution::cmd_exp_target(string bin_dir, string exp_target) {
+int TestExecution::cmd_exp_target(wstring bin_dir, wstring exp_target) {
 
-    chdir(bin_dir.c_str());
+    _wchdir(bin_dir.c_str());
 
-    cout<<"\n"<<exp_target<<"\n";
+    cout<<"\n"<<exp_target.c_str()<<"\n";
 
     char result[1024] = {0};
 
@@ -143,9 +144,9 @@ int TestExecution::cmd_get_test_result() {
     return 0;
 }
 
-char *TestExecution::rand_str(size_t len) {
+wchar_t *TestExecution::rand_str(size_t len) {
     srand((unsigned)time(NULL));
-    char *ch = (char *)malloc((len + 1)*sizeof(char*));
+    wchar_t *ch = (wchar_t *)malloc((len + 1)*sizeof(wchar_t*));
     memset(ch, 0, len + 1);
     for (int i = 0; i < len; ++i)
     {
@@ -160,75 +161,67 @@ char *TestExecution::rand_str(size_t len) {
     return ch;
 }
 
-char *TestExecution::rand_str() {
+wchar_t *TestExecution::rand_str() {
     return rand_str(SIZE_RAND_STR_LEN);
 }
 
 
-int TestExecution::copyDir(const char *src_dir, const char * dest_dir){
-    struct _finddata_t fb;   //查找相同属性文件的存储结构体
-    char  path[250];
-    char dest_path[250];
+int TestExecution::copyDir(wstring src_dir, wstring dest_dir){
+    struct _wfinddata_t fb;   //������ͬ�����ļ��Ĵ洢�ṹ��
+    wstring path;
+    wstring dest_path;
+
     long    handle;
     int  resultone = 0;
-    int   noFile;            //对系统隐藏文件的处理标记
+    int   noFile;            //��ϵͳ�����ļ��Ĵ�����
 
     noFile = 0;
     handle = 0;
 
-    strcpy(dest_path, dest_dir);
+    path = src_dir + L"/*";
+    //����·��
 
-    //制作路径
-    strcpy(path,src_dir);
-    strcat (path,"/*");
-
-    handle = _findfirst(path,&fb);
-    //找到第一个匹配的文件
+    handle = _wfindfirst(path.c_str(), &fb);
+    //�ҵ���һ��ƥ����ļ�
     if (handle != 0)
     {
-        //当可以继续找到匹配的文件，继续执行
-        while (0 == _findnext(handle,&fb))
+        //�����Լ����ҵ�ƥ����ļ�������ִ��
+        while (0 == _wfindnext(handle,&fb))
         {
-            //windows下，常有个系统文件，名为“..”,对它不做处理
-            noFile = strcmp(fb.name,"..");
+            //windows�£����и�ϵͳ�ļ�����Ϊ��..��,������������
+            noFile = wcscmp(fb.name,L"..");
 
             if (0 != noFile)
             {
-                memset(dest_path, 0, sizeof(dest_path));
-                strcpy(dest_path,dest_dir);
-                strcat(dest_path,"/");
-                strcat (dest_path,fb.name);
+                //��������·��
+                dest_path = dest_dir + L"/" + fb.name;
+                path = src_dir + L"/" + fb.name;
 
-                //制作完整路径
-                memset(path,0,sizeof(path));
-                strcpy(path,src_dir);
-                strcat(path,"/");
-                strcat (path,fb.name);
-                //属性值为16，则说明是文件夹，迭代
+                //����ֵΪ16����˵�����ļ��У�����
                 if (fb.attrib == 16)
                 {
-                    mkdir(dest_path);
+                    _wmkdir(dest_path.c_str());
                     copyDir(path, dest_path);
-                }  //非文件夹的文件，直接复制。对文件属性值的情况没做详细调查，可能还有其他情况。
+                }  //���ļ��е��ļ���ֱ�Ӹ��ơ����ļ�����ֵ�����û����ϸ���飬���ܻ������������
                 else
                 {
-                    CopyFile(path, dest_path, TRUE);
+                    CopyFileW(path.c_str(), dest_path.c_str(), FALSE);
                 }
             }
         }
-        //关闭文件夹。找这个函数找了很久，标准c中用的是closedir
-        //经验介绍：一般产生Handle的函数执行后，都要进行关闭的动作。
+        //�ر��ļ��С�������������˺ܾã���׼c���õ���closedir
+        //������ܣ�һ�����Handle�ĺ���ִ�к󣬶�Ҫ���йرյĶ�����
         _findclose(handle);
     }
     return  resultone;
 }
 
 
-int TestExecution::executeCMD(string cmd, char *result)
+int TestExecution::executeCMD(wstring cmd, char *result)
 {
     char buf_ps[1024]={0};
     FILE *ptr;
-    ptr = popen(cmd.c_str(), "rt");
+    ptr = _wpopen(cmd.c_str(), L"rt");
     if(ptr!=NULL)
     {
         while(fgets(buf_ps, 1024, ptr)!=NULL)
