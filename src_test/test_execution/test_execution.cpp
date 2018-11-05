@@ -7,34 +7,28 @@
 #include <cstring>
 #include "test_execution.h"
 #include <afxres.h>
+#include <iostream>
 
-int TestExecution::run(const char *exp_name, const char *exp_target, const char *exp_dir_name, const char *work_dir, const char *dongmendb_src_dir) {
+int TestExecution::run(string exp_name, string exp_target, string exp_dir_name,
+                       std::map<string, string> exp_files,
+                       string work_dir, string dongmendb_src_dir) {
 
-    const char *str = rand_str(10);
-    char *current_dir = (char *)malloc((strlen(work_dir) + strlen(project_name) + strlen(str) + 2)*sizeof(char));
-    strcpy(current_dir, work_dir);
-    strcat(current_dir, "/");
-    strcat(current_dir, project_name);
-    strcat(current_dir, "_");
-    strcat(current_dir, str);
-
-    int slen = strlen(current_dir) + strlen(cmake_build_dir) + 1;
-    char *build_dir = (char *)malloc(slen*sizeof(char));
-    strcpy(build_dir, current_dir);
-    strcat(build_dir, "/");
-    strcat(build_dir, cmake_build_dir);
-
-    slen = strlen(current_dir) + 4;
-    char *bin_dir = (char *)malloc(slen*sizeof(char));
-    strcpy(bin_dir, current_dir);
-    strcat(bin_dir, "/bin");
+    string str = rand_str(10);
+    string current_dir = work_dir + "/" + project_name + "_" + str;
+    string build_dir = current_dir + "/" + cmake_build_dir;
+    string bin_dir = current_dir + "/bin";
 
     int c  = init_dongmendb(work_dir, current_dir);
 
     copy_dongmendb(dongmendb_src_dir, current_dir);
 
     /*复制作业到工作目录*/
-    copy_exp_to_dongmendb(exp_dir_name, current_dir);
+    int ret = copy_exp_to_dongmendb(exp_dir_name, current_dir, exp_files);
+
+    /*缺少实验任务文件*/
+    if (ret < 0){
+        return -1;
+    }
 
     cmd_cmake_refresh(build_dir, current_dir);
 
@@ -47,101 +41,101 @@ int TestExecution::run(const char *exp_name, const char *exp_target, const char 
     return 0;
 }
 
-int TestExecution::init_dongmendb(const char *work_dir, const char *dir_name) {
-    chdir(work_dir);
-    mkdir(dir_name);
+int TestExecution::init_dongmendb(string work_dir, string dir_name) {
+    chdir(work_dir.c_str());
+    mkdir(dir_name.c_str());
 
-    int exists = access(dir_name, F_OK);
+    int exists = access(dir_name.c_str(), F_OK);
     if (exists != 0) {
         return -1;
     }
     return 0;
 }
 
-int TestExecution::copy_dongmendb(const char *from_dir_name, const char *dest_dir_name){
+int TestExecution::copy_dongmendb(string from_dir_name, string dest_dir_name){
 
-    return copyDir(from_dir_name, dest_dir_name);
+    return copyDir(from_dir_name.c_str(), dest_dir_name.c_str());
 };
 
-int TestExecution::copy_exp_to_dongmendb(const char *from_dir_name, const char *dest_dir_name) {
+int TestExecution::copy_exp_to_dongmendb(string exp_dir_name, string dest_dir_name,
+                                         std::map<string, string> exp_files) {
+    map<string, string>::iterator iter;
+    string slash = "/";
+    for(iter = exp_files.begin(); iter != exp_files.end(); iter++){
+        string file_name =  exp_dir_name + slash + iter->first ;
+
+        //        int exists = access(file_name, F_OK);
+//        if (exists != 0) {
+//            printf("\nerror:%s not exists.\n", exp_file_names[i]);
+//            return -1;
+//        }
+
+        string dest_file_name = dest_dir_name + slash + iter->second;
+
+        CopyFile(file_name.c_str(), dest_file_name.c_str(), FALSE);
+    }
+
     return 0;
 }
 
-int TestExecution::cmd_cmake_refresh(const char*output_dir, const char *project_dir){
+int TestExecution::cmd_cmake_refresh(string output_dir, string project_dir){
 
-    int slen = strlen(cmake_exe) + strlen(cmake_build_type) + strlen(cmake_files) + strlen(project_dir);
-    char *cmd = (char *)malloc(sizeof(char) * slen);
-    strcpy(cmd, cmake_exe);
-    strcat(cmd, cmake_build_type);
-    strcat(cmd, cmake_files);
-    strcat(cmd, project_dir);
+    string cmd = cmake_exe + cmake_build_type + cmake_files + project_dir;
 
-    removeDir(output_dir);
-    mkdir(output_dir);
-    chdir(output_dir);
+    removeDir(output_dir.c_str());
+    mkdir(output_dir.c_str());
+    chdir(output_dir.c_str());
+
+    cout<<"\n"<<cmd<<"\n";
+
     char result[1024] = {0};
     executeCMD(cmd, result);
-    printf("\n");
-    printf(cmd);
-    printf(result);
-    printf("\n");
+
+    cout<<result<<"\n";
+
     return 0;
 }
 
-int TestExecution::cmd_cmake_clean(const char *build_dir_name) {
+int TestExecution::cmd_cmake_clean(string build_dir_name) {
 
-    int slen = strlen(cmake_exe) + strlen(cmd_build) + strlen(build_dir_name) + strlen(cmd_target_clean);
-    char *cmd = (char *)malloc(sizeof(char) * slen);
-    strcpy(cmd, cmake_exe);
-    strcat(cmd, cmd_build);
-    strcat(cmd, build_dir_name);
-    strcat(cmd, cmd_target_clean);
+    string cmd = cmake_exe + cmd_build + build_dir_name + cmd_target_clean;
 
-    chdir(build_dir_name);
+    chdir(build_dir_name.c_str());
+
+    cout<<"\n"<<cmd<<"\n";
 
     char result[1024] = {0};
-    printf("\n");
-    printf(cmd);
     executeCMD(cmd, result);
-    printf(result);
-    printf("\n");
+    cout<<result<<"\n";
     return 0;
 }
 
-int TestExecution::cmd_cmake_build(const char *build_dir_name, const char *exp_target) {
+int TestExecution::cmd_cmake_build(string build_dir_name, string exp_target) {
 
-    int slen = strlen(cmake_exe) + strlen(cmd_build)
-               + strlen(build_dir_name) + strlen(cmd_target)
-               + strlen(exp_target) + strlen(cmake_others_parameters);
-    char *cmd = (char *)malloc(sizeof(char) * slen);
-    strcpy(cmd, cmake_exe);
-    strcat(cmd, cmd_build);
-    strcat(cmd, build_dir_name);
-    strcat(cmd, cmd_target);
-    strcat(cmd, exp_target);
-    strcat(cmd, cmake_others_parameters);
+    string cmd = cmake_exe + cmd_build + build_dir_name + cmd_target + exp_target + cmake_others_parameters;
 
-    chdir(build_dir_name);
+    chdir(build_dir_name.c_str());
+
+    cout<<"\n"<<cmd<<"\n";
 
     char result[1024] = {0};
-    printf("\n");
-    printf(cmd);
+
     executeCMD(cmd, result);
-    printf(result);
-    printf("\n");
+
+    cout<<result<<"\n";
     return 0;
 }
 
-int TestExecution::cmd_exp_target(const char *bin_dir, const char *exp_target) {
+int TestExecution::cmd_exp_target(string bin_dir, string exp_target) {
 
-    chdir(bin_dir);
+    chdir(bin_dir.c_str());
+
+    cout<<"\n"<<exp_target<<"\n";
 
     char result[1024] = {0};
-    printf("\n");
-    printf(exp_target);
+
     executeCMD(exp_target, result);
-    printf(result);
-    printf("\n");
+    cout<<result<<"\n";
     return 0;
 }
 
@@ -171,7 +165,7 @@ char *TestExecution::rand_str() {
 }
 
 
-int TestExecution::copyDir(const char *src_dir, const char *dest_dir){
+int TestExecution::copyDir(const char *src_dir, const char * dest_dir){
     struct _finddata_t fb;   //查找相同属性文件的存储结构体
     char  path[250];
     char dest_path[250];
@@ -230,19 +224,21 @@ int TestExecution::copyDir(const char *src_dir, const char *dest_dir){
 }
 
 
-int TestExecution::executeCMD(const char *cmd, char *result)
+int TestExecution::executeCMD(string cmd, char *result)
 {
     char buf_ps[1024]={0};
     FILE *ptr;
-    ptr = popen(cmd, "rt");
+    ptr = popen(cmd.c_str(), "rt");
     if(ptr!=NULL)
     {
         while(fgets(buf_ps, 1024, ptr)!=NULL)
         {
-            if(strlen(result)>1024)
-                continue;
-            else
-                strcat(result, buf_ps);
+            cout<<buf_ps;
+//            int buf_len = strlen(buf_ps);
+//            if(strlen(result) + buf_len >=1024)
+//                continue;
+//            else
+//                strcat(result, buf_ps);
         }
         pclose(ptr);
         ptr = NULL;
