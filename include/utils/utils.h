@@ -22,6 +22,7 @@ char *new_id_name();
 
 /* 删除指定文件夹以及其中文档*/
 int  removeDir(const char*  dirPath);
+int  removeDirW(const wchar_t*  dirPath);
 
 #ifdef __cplusplus
 }
