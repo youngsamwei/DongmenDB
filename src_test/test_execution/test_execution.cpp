@@ -7,11 +7,55 @@
 #include "test_execution.h"
 #include <afxres.h>
 #include <iostream>
+#include <assert.h>
+
+using namespace std;
+
+int  TestExecution::batchrun(wstring exp_name, wstring exp_target, wstring exp_dir_name,
+             std::map<wstring, wstring> exp_files,
+             wstring work_dir, wstring dongmendb_src_dir,
+                             wstring output_dir){
+
+    struct _wfinddata_t fb;   //查找相同属性文件的存储结构体
+
+    long    handle;
+    int  resultone = 0;
+    int   noFile;            //对系统隐藏文件的处理标记
+
+    handle = _wfindfirst((exp_dir_name + L"/*").c_str(),&fb);
+    //找到第一个匹配的文件
+    if (handle != 0)
+    {
+        //当可以继续找到匹配的文件，继续执行
+        while (0 == _wfindnext(handle,&fb))
+        {
+            //windows下，常有个系统文件，名为“..”,对它不做处理
+            noFile = wcscmp(fb.name, L"..");
+
+            if (0 != noFile)
+            {
+                //属性值为16，则说明是文件夹，调用任务处理
+                if (fb.attrib == 16)
+                {
+                    wstring dir = exp_dir_name + L"/" + fb.name;
+                   run(exp_name, exp_target, dir,
+                            exp_files, work_dir, dongmendb_src_dir, output_dir);
+                }
+
+            }
+        }
+        //关闭文件夹
+        _findclose(handle);
+    }
+
+    return  resultone;
+};
 
 int TestExecution::run(wstring exp_name, wstring exp_target, wstring exp_dir_name,
                        std::map<wstring, wstring> exp_files,
-                       wstring work_dir, wstring dongmendb_src_dir) {
-    wstring str = rand_str(10);
+                       wstring work_dir, wstring dongmendb_src_dir,
+                       wstring output_dir) {
+    wstring str = s2ws(string(rand_str(10)));
     wstring current_dir = work_dir + L"/" + project_name + L"_" + str;
     wstring build_dir = current_dir + L"/" + cmake_build_dir;
     wstring bin_dir = current_dir + L"/bin";
@@ -20,23 +64,72 @@ int TestExecution::run(wstring exp_name, wstring exp_target, wstring exp_dir_nam
 
     copy_dongmendb(dongmendb_src_dir, current_dir);
 
-    /*������ҵ������Ŀ¼*/
-    int ret = copy_exp_to_dongmendb(exp_dir_name, current_dir, exp_files);
-
-    /*ȱ��ʵ�������ļ�*/
-    if (ret < 0){
-        return -1;
+    int pos = exp_dir_name.find_last_of(L"/");
+    if (pos <0){
+        pos = exp_dir_name.find_last_of(L"\\");
     }
+    wstring exp_student_name = exp_dir_name.substr(pos, exp_dir_name.length());
+
+    ofstream xout;
+
+    /*复制文件开始*/
+    string copy_log_file_name = ws2s(output_dir + L"/" + exp_student_name) + "_copy_files_failed.txt";
+    xout.open(copy_log_file_name);
+    assert(xout.is_open());
+    /*复制实验任务的文件:*/
+    int ret = copy_exp_to_dongmendb(exp_dir_name, current_dir, exp_files, xout);
+    xout.close();
+    xout.clear();
+    if (ret < 0){
+        clear_dongmendb(work_dir, current_dir);
+        /*若文件不存在*/
+        return -1;
+    } else {
+        string copy_log_file_name_passed = ws2s(output_dir + L"/" + exp_student_name) + "_copy_files_passed.txt";
+        rename(copy_log_file_name.c_str(), copy_log_file_name_passed.c_str());
+    }
+    /*复制文件结束*/
 
     cmd_cmake_refresh(build_dir, current_dir);
 
     cmd_cmake_clean(build_dir);
 
-    cmd_cmake_build(build_dir, exp_target);
+    /*build开始*/
+    string build_log_file_name = ws2s(output_dir + L"/" + exp_student_name) + "_build_failed.txt";
+    xout.open(build_log_file_name);
 
-    cmd_exp_target(bin_dir, exp_target);
+    ret = cmd_cmake_build(build_dir, exp_target, xout);
+    xout.close();
+    xout.clear();
 
-    return 0;
+    /*检测exe文件是否产生，若产生则编译成功*/
+    wstring bin_exe_name = bin_dir + L"/" + exp_target + L".exe";
+    int exists = _waccess(bin_exe_name.c_str(), F_OK);
+    if (exists != 0) {
+        clear_dongmendb(work_dir, current_dir);
+        return -1;
+    }else{
+        string build_log_file_name_passed = ws2s(output_dir + L"/" + exp_student_name) + "_build_passed.txt";
+        rename(build_log_file_name.c_str(), build_log_file_name_passed.c_str());
+    }
+    /*build结束*/
+
+    string test_cases_execution_log_file_name = ws2s(output_dir + L"/" + exp_student_name) + "_test_cases_execution_failed.txt";
+    xout.open(test_cases_execution_log_file_name);
+
+    string test_cased_execution_passed_flag = "[  PASSED  ]";
+    ret = cmd_exp_target(bin_dir, exp_target, xout, test_cased_execution_passed_flag);
+    xout.close();
+    xout.clear();
+
+    if (ret >= 0) {
+        string test_cases_execution_log_file_name_passed = ws2s(output_dir + L"/" + exp_student_name) + "_test_cases_execution_passed.txt";
+        rename(test_cases_execution_log_file_name.c_str(), test_cases_execution_log_file_name_passed.c_str());
+    }else {
+        clear_dongmendb(work_dir, current_dir);
+        return -1;
+    }
+    clear_dongmendb(work_dir, current_dir);
 }
 
 int TestExecution::init_dongmendb(wstring work_dir, wstring dir_name) {
@@ -50,32 +143,38 @@ int TestExecution::init_dongmendb(wstring work_dir, wstring dir_name) {
     return 0;
 }
 
+int TestExecution::clear_dongmendb(wstring work_dir, wstring dir_name){
+    cout<<"deleting "<<ws2s(dir_name);
+    _wchdir(work_dir.c_str());
+    removeDirW(dir_name.c_str());
+};
+
 int TestExecution::copy_dongmendb(wstring from_dir_name, wstring dest_dir_name){
 
     return copyDir(from_dir_name.c_str(), dest_dir_name.c_str());
 };
 
 int TestExecution::copy_exp_to_dongmendb(wstring exp_dir_name, wstring dest_dir_name,
-                                         std::map<wstring, wstring> exp_files) {
-    cout<<"\n";
+                                         std::map<wstring, wstring> exp_files, ofstream& xout) {
+    xout<<endl;
+    xout<<ws2s(L"开始复制文件..")<<endl;
     map<wstring, wstring>::iterator iter;
     wstring slash = L"/";
     for(iter = exp_files.begin(); iter != exp_files.end(); iter++){
-        wstring file_name =  exp_dir_name + slash + iter->first ;
-
-        //        int exists = access(file_name, F_OK);
-//        if (exists != 0) {
-//            printf("\nerror:%s not exists.\n", exp_file_names[i]);
-//            return -1;
-//        }
-
+        wstring find_file = findFileNameEndWith(exp_dir_name, iter->first);
+        if (find_file.length() == 0){
+            /*若没有找到需要复制的文件*/
+            xout<<ws2s(L"缺少文件:")<<ws2s(iter->first)<<endl;
+            return -1;
+        }
+        wstring file_name =  exp_dir_name + slash + find_file ;
         wstring dest_file_name = dest_dir_name + slash + iter->second;
 
         CopyFileW(file_name.c_str(), dest_file_name.c_str(), FALSE);
-        wcout<<"copy "<<file_name<<"  to "<< dest_file_name<<endl;
+        xout<<ws2s(L"复制 ")<<ws2s(file_name)<<"  to "<< ws2s(dest_file_name)<<endl;
     }
-
-    cout<<"\n";
+    xout<<ws2s(L"复制文件完成");
+    xout<<endl;
     return 0;
 }
 
@@ -87,12 +186,9 @@ int TestExecution::cmd_cmake_refresh(wstring output_dir, wstring project_dir){
     _wmkdir(output_dir.c_str());
     _wchdir(output_dir.c_str());
 
-    cout<<"\n"<<cmd.c_str()<<"\n";
+    cout<<endl<<ws2s(cmd)<<endl;
 
-    char result[1024] = {0};
-    executeCMD(cmd, result);
-
-    cout<<result<<"\n";
+    executeCMD(cmd);
 
     return 0;
 }
@@ -103,50 +199,43 @@ int TestExecution::cmd_cmake_clean(wstring build_dir_name) {
 
     _wchdir(build_dir_name.c_str());
 
-    cout<<"\n"<<cmd.c_str()<<"\n";
+    cout<<endl<<ws2s(cmd)<<endl;
 
-    char result[1024] = {0};
-    executeCMD(cmd, result);
-    cout<<result<<"\n";
+    executeCMD(cmd);
+
     return 0;
 }
 
-int TestExecution::cmd_cmake_build(wstring build_dir_name, wstring exp_target) {
+int TestExecution::cmd_cmake_build(wstring build_dir_name, wstring exp_target, std::ofstream& xout) {
 
     wstring cmd = cmake_exe + cmd_build + build_dir_name + cmd_target + exp_target + cmake_others_parameters;
 
     _wchdir(build_dir_name.c_str());
 
-    cout<<"\n"<<cmd.c_str()<<"\n";
+    xout<<endl<<ws2s(cmd)<<endl;
 
-    char result[1024] = {0};
+    executeCMD(cmd, xout);
 
-    executeCMD(cmd, result);
-
-    cout<<result<<"\n";
     return 0;
 }
 
-int TestExecution::cmd_exp_target(wstring bin_dir, wstring exp_target) {
+int TestExecution::cmd_exp_target(wstring bin_dir, wstring exp_target, ofstream& xout, string contents) {
 
     _wchdir(bin_dir.c_str());
 
-    cout<<"\n"<<exp_target.c_str()<<"\n";
+    xout<<endl<<ws2s(exp_target)<<endl;
 
-    char result[1024] = {0};
+    return executeCMD(exp_target, xout, contents);
 
-    executeCMD(exp_target, result);
-    cout<<result<<"\n";
-    return 0;
 }
 
 int TestExecution::cmd_get_test_result() {
     return 0;
 }
 
-wchar_t *TestExecution::rand_str(size_t len) {
+char *TestExecution::rand_str(size_t len) {
     srand((unsigned)time(NULL));
-    wchar_t *ch = (wchar_t *)malloc((len + 1)*sizeof(wchar_t*));
+    char *ch = (char *)malloc((len + 1)*sizeof(char*));
     memset(ch, 0, len + 1);
     for (int i = 0; i < len; ++i)
     {
@@ -161,63 +250,104 @@ wchar_t *TestExecution::rand_str(size_t len) {
     return ch;
 }
 
-wchar_t *TestExecution::rand_str() {
+char *TestExecution::rand_str() {
     return rand_str(SIZE_RAND_STR_LEN);
 }
 
 
 int TestExecution::copyDir(wstring src_dir, wstring dest_dir){
-    struct _wfinddata_t fb;   //������ͬ�����ļ��Ĵ洢�ṹ��
+    struct _wfinddata_t fb;   //查找相同属性文件的存储结构体
     wstring path;
     wstring dest_path;
 
     long    handle;
     int  resultone = 0;
-    int   noFile;            //��ϵͳ�����ļ��Ĵ�����
+    int   noFile;             //对系统隐藏文件的处理标记
 
     noFile = 0;
     handle = 0;
 
     path = src_dir + L"/*";
-    //����·��
+    //制作路径
 
     handle = _wfindfirst(path.c_str(), &fb);
-    //�ҵ���һ��ƥ����ļ�
+    //找到第一个匹配的文件
     if (handle != 0)
     {
-        //�����Լ����ҵ�ƥ����ļ�������ִ��
+        //当可以继续找到匹配的文件，继续执行
         while (0 == _wfindnext(handle,&fb))
         {
-            //windows�£����и�ϵͳ�ļ�����Ϊ��..��,������������
+            //windows下，常有个系统文件，名为“..”,对它不做处理
             noFile = wcscmp(fb.name,L"..");
 
             if (0 != noFile)
             {
-                //��������·��
+                //制作完整路径
                 dest_path = dest_dir + L"/" + fb.name;
                 path = src_dir + L"/" + fb.name;
 
-                //����ֵΪ16����˵�����ļ��У�����
+                //属性值为16，则说明是文件夹，迭代
                 if (fb.attrib == 16)
                 {
                     _wmkdir(dest_path.c_str());
                     copyDir(path, dest_path);
-                }  //���ļ��е��ļ���ֱ�Ӹ��ơ����ļ�����ֵ�����û����ϸ���飬���ܻ������������
+                }  //非文件夹的文件，直接复制。对文件属性值的情况没做详细调查，可能还有其他情况。
                 else
                 {
                     CopyFileW(path.c_str(), dest_path.c_str(), FALSE);
                 }
             }
         }
-        //�ر��ļ��С�������������˺ܾã���׼c���õ���closedir
-        //������ܣ�һ�����Handle�ĺ���ִ�к󣬶�Ҫ���йرյĶ�����
+        //关闭文件夹。找这个函数找了很久，标准c中用的是closedir
+        //经验介绍：一般产生Handle的函数执行后，都要进行关闭的动作。
         _findclose(handle);
     }
     return  resultone;
 }
 
+wstring  TestExecution::findFileNameEndWith(wstring dir, wstring name){
+    struct _wfinddata_t fb;   //查找相同属性文件的存储结构体
+    wstring path;
+    wstring resultone = L"";
 
-int TestExecution::executeCMD(wstring cmd, char *result)
+    long    handle;
+    int   noFile;             //对系统隐藏文件的处理标记
+
+    noFile = 0;
+    handle = 0;
+
+    path = dir + L"/*";
+    //制作路径
+
+    handle = _wfindfirst(path.c_str(), &fb);
+    //找到第一个匹配的文件
+    if (handle != 0)
+    {
+        //当可以继续找到匹配的文件，继续执行
+        while (0 == _wfindnext(handle,&fb))
+        {
+            //属性值为16，则说明是文件夹
+            if (fb.attrib != 16){
+                wstring fb_name = fb.name;
+                if (fb_name.length() >= name.length()){
+                    wstring px = fb_name.substr(fb_name.length()- name.length(), fb_name.length());
+                    int r = wcscmp(px.c_str(), name.c_str());
+                    if (r == 0){
+                        resultone = fb.name;
+                        break;
+                    }
+                }
+            }
+
+        }
+        //关闭文件夹。找这个函数找了很久，标准c中用的是closedir
+        //经验介绍：一般产生Handle的函数执行后，都要进行关闭的动作。
+        _findclose(handle);
+    }
+    return  resultone;
+};
+
+int TestExecution::executeCMD(wstring cmd, ofstream& xout, string contents)
 {
     char buf_ps[1024]={0};
     FILE *ptr;
@@ -226,12 +356,30 @@ int TestExecution::executeCMD(wstring cmd, char *result)
     {
         while(fgets(buf_ps, 1024, ptr)!=NULL)
         {
-            cout<<buf_ps;
-//            int buf_len = strlen(buf_ps);
-//            if(strlen(result) + buf_len >=1024)
-//                continue;
-//            else
-//                strcat(result, buf_ps);
+            xout << buf_ps;
+        }
+        pclose(ptr);
+        ptr = NULL;
+    }
+    else
+    {
+        printf("popen %s error\n", cmd);
+    }
+    string last_buf(buf_ps);
+
+    return last_buf.find(contents);
+}
+
+int TestExecution::executeCMD(wstring cmd)
+{
+    char buf_ps[1024]={0};
+    FILE *ptr;
+    ptr = _wpopen(cmd.c_str(), L"rt");
+    if(ptr!=NULL)
+    {
+        while(fgets(buf_ps, 1024, ptr)!=NULL)
+        {
+                cout<<buf_ps;
         }
         pclose(ptr);
         ptr = NULL;
@@ -243,33 +391,60 @@ int TestExecution::executeCMD(wstring cmd, char *result)
     return 0;
 }
 
-int TestExecution::executeCMD(){
-    char   psBuffer[128];
-    FILE   *pPipe;
-
-    /* Run DIR so that it writes its output to a pipe. Open this
-     * pipe with read text attribute so that we can read it
-     * like a text file.
-     */
-
-    if( (pPipe = _popen( "dir ", "rt" )) == NULL )
-        exit( 1 );
-
-    /* Read pipe until end of file, or an error occurs. */
-
-    while(fgets(psBuffer, 128, pPipe))
+int TestExecution::executeCMD(wstring cmd, ofstream& xout)
+{
+    char buf_ps[1024]={0};
+    FILE *ptr;
+    ptr = _wpopen(cmd.c_str(), L"rt");
+    if(ptr!=NULL)
     {
-        printf(psBuffer);
-    }
-
-    /* Close pipe and print return value of pPipe. */
-    if (feof( pPipe))
-    {
-        printf( "\nProcess returned %d\n", _pclose( pPipe ) );
+        while(fgets(buf_ps, 1024, ptr)!=NULL)
+        {
+            xout << buf_ps;
+        }
+        pclose(ptr);
+        ptr = NULL;
     }
     else
     {
-        printf( "Error: Failed to read the pipe to the end.\n");
+        printf("popen %s error\n", cmd);
     }
+    return 0;
+}
 
+
+string  TestExecution::ws2s(const wstring& ws)
+{
+    string curLocale = setlocale(LC_ALL, NULL); // curLocale = "C";
+
+    setlocale(LC_ALL, "chs");
+
+    const wchar_t* _Source = ws.c_str();
+    size_t _Dsize = 2 * ws.size() + 1;
+    char *_Dest = new char[_Dsize];
+    memset(_Dest,0,_Dsize);
+    wcstombs(_Dest,_Source,_Dsize);
+    string result = _Dest;
+    delete []_Dest;
+
+    setlocale(LC_ALL, curLocale.c_str());
+
+    return result;
+}
+
+wstring  TestExecution::s2ws(const string& s)
+{
+    setlocale(LC_ALL, "chs");
+
+    const char* _Source = s.c_str();
+    size_t _Dsize = s.size() + 1;
+    wchar_t *_Dest = new wchar_t[_Dsize];
+    wmemset(_Dest, 0, _Dsize);
+    mbstowcs(_Dest,_Source,_Dsize);
+    wstring result = _Dest;
+    delete []_Dest;
+
+    setlocale(LC_ALL, "C");
+
+    return result;
 }
