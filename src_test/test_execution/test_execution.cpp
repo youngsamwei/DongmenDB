@@ -8,6 +8,10 @@
 #include <afxres.h>
 #include <iostream>
 #include <assert.h>
+#include <process.h>
+#include <tlhelp32.h>
+#include <unistd.h>
+#include <thread>
 
 using namespace std;
 
@@ -118,7 +122,8 @@ int TestExecution::run(wstring exp_name, wstring exp_target, wstring exp_dir_nam
     xout.open(test_cases_execution_log_file_name);
 
     string test_cased_execution_passed_flag = "[  PASSED  ]";
-    ret = cmd_exp_target(bin_dir, exp_target, xout, test_cased_execution_passed_flag);
+    wstring exe_file_name = exp_target + L".exe";
+    ret = cmd_exp_target(bin_dir, exe_file_name, xout, test_cased_execution_passed_flag);
     xout.close();
     xout.clear();
 
@@ -130,6 +135,7 @@ int TestExecution::run(wstring exp_name, wstring exp_target, wstring exp_dir_nam
         return -1;
     }
     clear_dongmendb(work_dir, current_dir);
+    return 0;
 }
 
 int TestExecution::init_dongmendb(wstring work_dir, wstring dir_name) {
@@ -147,6 +153,7 @@ int TestExecution::clear_dongmendb(wstring work_dir, wstring dir_name){
     cout<<"deleting "<<ws2s(dir_name);
     _wchdir(work_dir.c_str());
     removeDirW(dir_name.c_str());
+    return 0;
 };
 
 int TestExecution::copy_dongmendb(wstring from_dir_name, wstring dest_dir_name){
@@ -347,6 +354,61 @@ wstring  TestExecution::findFileNameEndWith(wstring dir, wstring name){
     return  resultone;
 };
 
+void find_process_and_kill(const char* strFilename) {
+    HANDLE hProcessSnap = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+    if (hProcessSnap == INVALID_HANDLE_VALUE){
+        return ;
+    }
+
+    PROCESSENTRY32 pe32 = {0};
+    pe32.dwSize = sizeof(PROCESSENTRY32);
+    if (Process32First(hProcessSnap, &pe32)){
+        do{
+
+            if(strcmp(pe32.szExeFile, strFilename) == 0){
+                HANDLE hprocess = OpenProcess(PROCESS_ALL_ACCESS, false, pe32.th32ProcessID);
+                TerminateProcess(hprocess, 0);
+                CloseHandle(hprocess);
+                break;
+            }
+        }
+        while (Process32Next(hProcessSnap, &pe32));
+    }
+
+    CloseHandle(hProcessSnap);
+}
+/*监控执行测试用例的exe程序是否出现异常导致程序无法终止。
+ * 参数：
+ * exe_file_name ：被监控的进程名称
+ * timeout：超时阈值，以秒为单位*/
+
+void monitor_test_cases_execution(string exe_file_name, int timeout, int& recieving_chars_count ){
+
+    int prev_receiving_chars = -1;
+    clock_t prev_time;
+    prev_time=clock();
+    while (recieving_chars_count >= 0){
+        sleep(1);
+        if (prev_receiving_chars == recieving_chars_count){
+            if ((clock() - prev_time) > timeout * 1000) {
+                find_process_and_kill(exe_file_name.c_str());
+                /*终止进程*/
+                cout<<endl<<exe_file_name<<" will be stopped."<<endl;
+                break;
+            }
+
+        }else{
+            prev_time=clock();
+            prev_receiving_chars = recieving_chars_count;
+        }
+
+    }
+
+    /*关闭弹出的appcrash窗口，如果有的话*/
+    const char* werfault= "WerFault.exe";
+    find_process_and_kill(werfault);
+}
+
 int TestExecution::executeCMD(wstring cmd, ofstream& xout, string contents)
 {
     char buf_ps[1024]={0};
@@ -354,11 +416,22 @@ int TestExecution::executeCMD(wstring cmd, ofstream& xout, string contents)
     ptr = _wpopen(cmd.c_str(), L"rt");
     if(ptr!=NULL)
     {
+        recieving_chars_count = 0;
+        string exe_file_name = ws2s(cmd).c_str();
+        int tm = 10;
+        std::thread t(monitor_test_cases_execution, exe_file_name, tm, std::ref(recieving_chars_count));
+
         while(fgets(buf_ps, 1024, ptr)!=NULL)
         {
             xout << buf_ps;
+            recieving_chars_count++;
         }
         pclose(ptr);
+
+        t.join();
+        recieving_chars_count = -1;
+
+
         ptr = NULL;
     }
     else
@@ -448,3 +521,5 @@ wstring  TestExecution::s2ws(const string& s)
 
     return result;
 }
+
+

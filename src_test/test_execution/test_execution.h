@@ -11,6 +11,7 @@
 #include <map>
 #include <list>
 #include <fstream>
+#include <thread>
 
 using namespace std;
 
@@ -97,6 +98,16 @@ private:
 
     string  ws2s(const wstring& ws);
     wstring  s2ws(const string& s);
+
+
+    /*利用接收到的字符数作为监控标识，
+     * recieving_chars_count < 0 表示测试用例程序没有开始工作；
+     * recieving_chars_count > 0 表示正在工作
+     * 若>0时且超过10秒recieving_chars_count不改变，则认为出现异常，应该被终止。*/
+public:
+    int recieving_chars_count = -1;
+    /* 若monitor_stop_flag > 0 则认为应该终止监控线程 */
+    int monitor_stop_flag = 0;
 };
 
 #endif //DONGMENDB_TEST_EXECUTION_H
