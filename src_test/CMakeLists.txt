@@ -5,4 +5,3 @@ set(TEST_LIBRARIES
         )
 
 add_subdirectory(test_parser)
-add_subdirectory(test_execution)
