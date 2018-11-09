@@ -18,7 +18,7 @@ add_subdirectory(exp_01_stmt_parser)
 #
 add_subdirectory(exp_04_security)
 #
-#add_subdirectory(exp_05_algebra_opt)
+add_subdirectory(exp_05_algebra_opt)
 #
 #add_subdirectory(exp_06_index)
 #

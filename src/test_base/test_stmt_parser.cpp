@@ -3,10 +3,11 @@
 //
 
 #include <test/test_stmt_parser.h>
+#include <dongmensql/optimizer.h>
 
-void TestStmtParser :: createDB(const char *dbname){
+void TestStmtParser::createDB(const char *dbname) {
 
-    test_db_ctx = (dongmendb_shell_handle_sql_t *)calloc(sizeof(dongmendb_shell_handle_sql_t),1);
+    test_db_ctx = (dongmendb_shell_handle_sql_t *) calloc(sizeof(dongmendb_shell_handle_sql_t), 1);
     dongmendb_shell_init_ctx(test_db_ctx);
 
     dongmendb *newdb = (dongmendb *) calloc(sizeof(dongmendb), 1);
@@ -21,27 +22,27 @@ void TestStmtParser :: createDB(const char *dbname){
 
 }
 
-void TestStmtParser ::createTable(){
-    int length=sizeof(_create_table_list)/sizeof(0);
+void TestStmtParser::createTable() {
+    int length = sizeof(_create_table_list) / sizeof(0);
 
-    for (int i =0 ; i< length; i++){
+    for (int i = 0; i < length; i++) {
         dongmendb_shell_handle_create_table(test_db_ctx, _create_table_list[i]);
     }
 
 };
 
 /*为db增加数据*/
-void TestStmtParser ::insertData() {
-    int length=sizeof(_insert_list)/sizeof(0);
+void TestStmtParser::insertData() {
+    int length = sizeof(_insert_list) / sizeof(0);
 
-    for (int i =0 ; i< length; i++){
+    for (int i = 0; i < length; i++) {
         dongmendb_shell_handle_insert_table(test_db_ctx, _insert_list[i]);
     }
 }
 
 
 /*删除 db 指向的数据库*/
-void TestStmtParser ::dropDB() {
+void TestStmtParser::dropDB() {
 
     dongmendb_close(test_db_ctx->db);
 
@@ -49,7 +50,73 @@ void TestStmtParser ::dropDB() {
 
 }
 
-int TestStmtParser ::select(const char *sqlselect) {
+/*检查SRA_Select操作的条件：
+ * 若是单条件，则返回0；
+ * 若是and连接的多条件，则返回1*/
+int opt_expr_test(Expression *expr) {
+    /*term不为空，则表示expr是term，可以终止*/
+    if (expr->term != NULL) {
+        return 0;
+    } else if (expr->opType == TOKEN_AND) {
+        return 1;
+    }
+    return 0;
+
+}
+
+/*检查关系代数表达式中的select是否存在多个and条件串接的情况
+ * 若存在，返回1
+ * 若不存在，返回0*/
+int opt_condition_test(SRA_t *sra) {
+    switch (sra->t) {
+        case SRA_SELECT: {
+            SRA_Select_t select = sra->select;
+            Expression *expr = select.cond;
+            return opt_expr_test(expr);
+        };
+        case SRA_TABLE: {
+            return 0;
+        }
+        case SRA_JOIN: {
+
+            int ret = opt_condition_test(sra->join.sra1);
+            if (ret) {
+                return ret;
+            }
+            return opt_condition_test(sra->join.sra2);
+
+        }
+        case SRA_PROJECT:
+            return opt_condition_test(sra->project.sra);
+        default:/*其他操作*/
+            return 0;
+    }
+}
+
+int TestStmtParser::opt_condition_pushdown_test(const char *sqlselect) {
+    TokenizerT *tokenizer = TKCreate(sqlselect);
+    ParserT *parser = newParser(tokenizer);
+    memset(parser->parserMessage, 0, sizeof(parser->parserMessage));
+
+    SRA_t *selectStmt = parse_sql_stmt_select(parser);
+
+    SRA_t *optimizedStmt = dongmengdb_algebra_optimize_condition_pushdown(selectStmt);
+
+    /*检查思路：查找每个SRA_Select， 检查：
+     * 1 是否多条件且and连接，若是则返回1 */
+
+    int ret = opt_condition_test(optimizedStmt);
+    if (ret) {
+        return ret;
+    }
+
+    /* 2 检查每个SRA_Select 是否在最优位置,若不是则给出提示，返回0*/
+    /*TODO */
+
+    return 0;
+}
+
+int TestStmtParser::select(const char *sqlselect) {
 
     TokenizerT *tokenizer = TKCreate(sqlselect);
     ParserT *parser = newParser(tokenizer);
@@ -68,29 +135,29 @@ int TestStmtParser ::select(const char *sqlselect) {
 }
 
 
-int TestStmtParser ::delete_( const char *strdelete) {
+int TestStmtParser::delete_(const char *strdelete) {
 
     TokenizerT *tokenizer = TKCreate(strdelete);
     ParserT *parser = newParser(tokenizer);
     memset(parser->parserMessage, 0, sizeof(parser->parserMessage));
 
-    sql_stmt_delete *sqlStmtDelete  = parse_sql_stmt_delete(parser);
+    sql_stmt_delete *sqlStmtDelete = parse_sql_stmt_delete(parser);
 
     /*返回修改的记录条数*/
-    int count  = 0;
+    int count = 0;
     count = plan_execute_delete(test_db_ctx->db, sqlStmtDelete, test_db_ctx->db->tx);
 
     return count;
 }
 
-int TestStmtParser ::update(const char *strupdate) {
+int TestStmtParser::update(const char *strupdate) {
 
     TokenizerT *tokenizer = TKCreate(strupdate);
     ParserT *parser = newParser(tokenizer);
     memset(parser->parserMessage, 0, sizeof(parser->parserMessage));
-    sql_stmt_update *sqlStmtUpdate  = parse_sql_stmt_update(parser);
+    sql_stmt_update *sqlStmtUpdate = parse_sql_stmt_update(parser);
 
-    if(sqlStmtUpdate == NULL){
+    if (sqlStmtUpdate == NULL) {
         printf(parser->parserMessage);
         return -1;
     }
@@ -98,7 +165,7 @@ int TestStmtParser ::update(const char *strupdate) {
     sql_stmt_update_print(sqlStmtUpdate);
 
     /*返回修改的记录条数*/
-    int count  = 0;
+    int count = 0;
     count = plan_execute_update(test_db_ctx->db, sqlStmtUpdate, test_db_ctx->db->tx);
 
     return count;
