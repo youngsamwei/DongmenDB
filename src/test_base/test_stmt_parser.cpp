@@ -100,7 +100,7 @@ int TestStmtParser::opt_condition_pushdown_test(const char *sqlselect) {
 
     SRA_t *selectStmt = parse_sql_stmt_select(parser);
 
-    SRA_t *optimizedStmt = dongmengdb_algebra_optimize_condition_pushdown(selectStmt);
+    SRA_t *optimizedStmt = dongmengdb_algebra_optimize_condition_pushdown(selectStmt, test_db_ctx->db->metadataManager->tableManager);
 
     /*检查思路：查找每个SRA_Select， 检查：
      * 1 是否多条件且and连接，若是则返回1 */
