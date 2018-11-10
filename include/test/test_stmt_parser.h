@@ -36,11 +36,6 @@ public:
     /*增加数据*/
     void dropDB();
 
-    /*关系代数优化之查询条件优化的测试
-     * 参数：select语句
-     * 返回：若检查通过则返回1，失败则返回0*/
-    int opt_condition_pushdown_test(const char *sqlselect);
-
     /*执行select语句*/
     int select(const char *sqlselect);
     /*执行delete语句*/
