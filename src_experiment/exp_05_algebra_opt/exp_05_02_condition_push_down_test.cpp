@@ -2,9 +2,9 @@
 // Created by sam on 2018/11/9.
 //
 
-#include <test/test_stmt_parser.h>
+#include <test/test_stmt_optimized.h>
 
-class Exp_05_02_ConditionPushdownTest : public TestStmtParser {
+class Exp_05_02_ConditionPushdownTest : public TestStmtOptimized {
 protected:
     virtual void SetUp() {
 
