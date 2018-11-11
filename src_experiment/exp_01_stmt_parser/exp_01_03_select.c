@@ -16,34 +16,41 @@
  */
 SRA_t *parse_sql_stmt_select(ParserT *parser) {
     TokenT *token = parseNextToken(parser);
+    /*匹配select关键词*/
     if(!matchToken(parser, TOKEN_RESERVED_WORD, "select")){
         strcpy(parser->parserMessage, "语法错误.");
         return NULL;
     }
+    /*解析select子句中的表达式列表*/
     arraylist *fieldsExpr = parseFieldsExpr(parser);
     if (parser->parserStateType == PARSER_WRONG) {
         return NULL;
     }
+    /*匹配from关键词*/
     token = parseNextToken(parser);
     if(!matchToken(parser, TOKEN_RESERVED_WORD, "from")){
         strcpy(parser->parserMessage, "语法错误.");
         return NULL;
     }
+    /*解析from子句中的数据表列表*/
     token = parseNextToken(parser);
     SRA_t *tablesExpr = parseTablesExpr(parser);
     if (parser->parserStateType == PARSER_WRONG) {
         return NULL;
     }
+    /*若select语句结束了,则将select语句转化为关系代数表达式，并返回*/
     token = parseNextToken(parser);
     if (token == NULL || token->type == TOKEN_SEMICOLON) {
         SRA_t *project = SRAProject(tablesExpr, fieldsExpr);
         return project;
     }
+    /*若没有结束，则继续匹配where子句*/
     token = parseNextToken(parser);
     if(!matchToken(parser, TOKEN_RESERVED_WORD, "where")){
         strcpy(parser->parserMessage, "语法错误.");
         return NULL;
     }
+    /*解析where子句中的条件表达式*/
     token = parseNextToken(parser);
     Expression *whereExpr = parseExpressionRD(parser);
     if (parser->parserStateType == PARSER_WRONG) {
@@ -52,10 +59,12 @@ SRA_t *parse_sql_stmt_select(ParserT *parser) {
     SRA_t *select = SRASelect(tablesExpr, whereExpr);
     SRA_t *project = SRAProject(select, fieldsExpr);
     token = parseNextToken(parser);
+    /*若select语句结束了，则构造关系代数表达式，并返回*/
     if (token == NULL || token->type == TOKEN_SEMICOLON) {
         return project;
     }
     token = parseNextToken(parser);
+    /*如果未结束，则尝试匹配group子句*/
     if(!matchToken(parser, TOKEN_RESERVED_WORD, "group")){
         strcpy(parser->parserMessage, "语法错误.");
         return NULL;
@@ -77,6 +86,7 @@ SRA_t *parse_sql_stmt_select(ParserT *parser) {
         return project;
     }
     token = parseNextToken(parser);
+    /*如果未结束，则尝试匹配order子句*/
     if(!matchToken(parser, TOKEN_RESERVED_WORD, "order")){
         strcpy(parser->parserMessage, "语法错误.");
         return NULL;
@@ -92,7 +102,8 @@ SRA_t *parse_sql_stmt_select(ParserT *parser) {
     if (parser->parserStateType == PARSER_WRONG) {
         return NULL;
     }
-    token = parseNextToken(parser);;
+    token = parseNextToken(parser);
+    /*select语句终于结束了,返回构造的关系代数表达式*/
     if (token == NULL || token->type == TOKEN_SEMICOLON) {
         return project;
     } else {
@@ -122,6 +133,12 @@ arraylist *parseFieldsExpr(ParserT *parser) {
     return exprs;
 };
 
+/*解析from子句的数据表，并转换为笛卡尔积构成的关系代数表达式。
+ * 比如from student 转换为 SRATable(student)
+ * from student, sc 转换为 SRAJoin(SRATable(studnet), SRATable(sc))
+ * from studnet, sc, course 转换为 SRAJoin(SRATable(student), SRAJoin(SRATable(sc), SRATable(course)))*
+ *
+ * */
 SRA_t *parseTablesExpr(ParserT *parser) {
     TokenT *token = parseNextToken(parser);
     if (token->type == TOKEN_WORD) {
