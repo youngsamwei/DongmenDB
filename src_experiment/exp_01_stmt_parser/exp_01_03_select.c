@@ -5,13 +5,11 @@
 
 
 #include <dongmensql/sra.h>
-#include <parser/parser.h>
-#include <parser/expression.h>
 #include <parser/statement.h>
 
 /**
- * @brief 解析select语句
- * @param parser 解析器
+ * @brief 解析select语句，对select语句进行语法分析,并将select语句转换为关系代数表达式
+ * @param parser 词法解析器
  * @return select语句
  */
 SRA_t *parse_sql_stmt_select(ParserT *parser) {
@@ -119,10 +117,12 @@ SRA_t *parse_sql_stmt_select(ParserT *parser) {
  */
 arraylist *parseFieldsExpr(ParserT *parser) {
     arraylist *exprs = arraylist_create();
+    /*解析from子句中第一个表达式*/
     Expression *expr0 = parseExpressionRD(parser);
     arraylist_add(exprs, expr0);
 
     TokenT *token = parseNextToken(parser);
+    /*若还有其他表达式则进入循环，否则返回*/
     while (token != NULL && token->type == TOKEN_COMMA) {
         parseEatAndNextToken(parser);
         Expression *expr1 = parseExpressionRD(parser);
@@ -135,25 +135,28 @@ arraylist *parseFieldsExpr(ParserT *parser) {
 
 /*解析from子句的数据表，并转换为笛卡尔积构成的关系代数表达式。
  * 比如from student 转换为 SRATable(student)
- * from student, sc 转换为 SRAJoin(SRATable(studnet), SRATable(sc))
- * from studnet, sc, course 转换为 SRAJoin(SRATable(student), SRAJoin(SRATable(sc), SRATable(course)))*
+ * from student, sc 转换为 SRAJoin(SRATable(sc), SRATable(student))
+ * from studnet, sc, course 转换为 SRAJoin(SRATable(course), SRAJoin(SRATable(student), SRATable(sc)))*
  *
  * */
 SRA_t *parseTablesExpr(ParserT *parser) {
     TokenT *token = parseNextToken(parser);
     if (token->type == TOKEN_WORD) {
 
+        /*解析from子句第一个数据表*/
         char *tableName = strdup(token->text);
         TableReference_t *ref =   TableReference_make(tableName, NULL);
         SRA_t *table =  SRATable(ref);
 
         TokenT *token = parseEatAndNextToken(parser);
+        /*若还有其他数据表，则进入循环继续解析，否则返回*/
         while (token != NULL && token->type == TOKEN_COMMA) {
             token = parseEatAndNextToken(parser);/*跳过comma*/
             char *tableName = strdup(token->text);
             TableReference_t *ref1 =   TableReference_make(tableName, NULL);
             SRA_t *table1 =  SRATable(ref1);
 
+            /*将当前解析的数据表与上一个关系代数表达式通过笛卡尔积操作结合*/
             table = SRAJoin(table, table1, NULL);
             token = parseEatAndNextToken(parser);
         }
