@@ -39,12 +39,6 @@ TEST_F(Exp_05_02_ConditionPushdownTest, Correct) {
     EXPECT_EQ(0, opt_condition_pushdown_test(_m_list[5]));
     EXPECT_EQ(0, opt_condition_pushdown_test(_m_list[6]));
     EXPECT_EQ(0, opt_condition_pushdown_test(_m_list[7]));
-//EXPECT_EQ(0, opt_condition_pushdown_test(_m_list[8]));
-//EXPECT_EQ(0, opt_condition_pushdown_test(_m_list[9]));
-//EXPECT_EQ(0, opt_condition_pushdown_test(_m_list[10]));
-//EXPECT_EQ(0, opt_condition_pushdown_test(_m_list[11]));
-//EXPECT_EQ(0, opt_condition_pushdown_test(_m_list[12]));
-//EXPECT_EQ(0, opt_condition_pushdown_test(_m_list[13]));
 
 /*删除数据库*/
     dropDB();
