@@ -3,7 +3,6 @@
 //
 
 #include <test/test_stmt_parser.h>
-#include <dongmensql/optimizer.h>
 
 void TestStmtParser::createDB(const char *dbname) {
 
