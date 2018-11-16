@@ -122,7 +122,7 @@ int table_manager_create_table(table_manager *tableManager, char *tableName, arr
     return DONGMENDB_OK;
 };
 
-table_info *table_manager_get_tableinfo(table_manager *tableManager, char *tableName, transaction *tx) {
+table_info *table_manager_get_tableinfo(table_manager *tableManager, const char *tableName, transaction *tx) {
     record_file *tcatFile = (record_file *) malloc(sizeof(record_file));
     record_file_create(tcatFile, tableManager->tcatInfo, tx);
 

@@ -97,13 +97,13 @@ int record_file_next(record_file *recordFile);
 
 int record_file_atlast(record_file *recordFile);
 
-int record_file_get_int(record_file *recordFile, char *fieldName);
+int record_file_get_int(record_file *recordFile, const char *fieldName);
 
-int record_file_get_string(record_file *recordFile, char *fieldName, char *value);
+int record_file_get_string(record_file *recordFile, const char *fieldName, char *value);
 
-int record_file_set_int(record_file *recordFile, char *fieldName, int value);
+int record_file_set_int(record_file *recordFile, const char *fieldName, int value);
 
-int record_file_set_string(record_file *recordFile, char *fieldName, char *value);
+int record_file_set_string(record_file *recordFile, const char *fieldName, const char *value);
 
 int record_file_delete(record_file *recordFile);
 

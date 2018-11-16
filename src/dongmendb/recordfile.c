@@ -49,19 +49,19 @@ int record_file_atlast(record_file *recordFile) {
     return recordFile->currentBlkNum == transaction_size(recordFile->tx, recordFile->fileName) - 1;
 }
 
-int record_file_get_int(record_file *recordFile, char *fieldName) {
+int record_file_get_int(record_file *recordFile, const char *fieldName) {
     return record_page_getint(recordFile->recordPage, fieldName);
 }
 
-int record_file_get_string(record_file *recordFile, char *fieldName, char *value) {
+int record_file_get_string(record_file *recordFile, const char *fieldName, char *value) {
     return record_page_getstring(recordFile->recordPage, fieldName, value);
 }
 
-int record_file_set_int(record_file *recordFile, char *fieldName, int value) {
+int record_file_set_int(record_file *recordFile, const char *fieldName, int value) {
     return record_page_setint(recordFile->recordPage, fieldName, value);
 }
 
-int record_file_set_string(record_file *recordFile, char *fieldName, char *value) {
+int record_file_set_string(record_file *recordFile, const char *fieldName, const char *value) {
     return record_page_setstring(recordFile->recordPage, fieldName, value);
 }
 

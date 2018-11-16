@@ -35,6 +35,11 @@ int plan_execute_insert(dongmendb *db, char *tableName, arraylist *fieldNames, a
 
 int plan_execute_create_table(char *tableName, table_info *tableInfo, transaction *tx);
 
+
+physical_scan *physical_scan_generate(dongmendb *db, SRA_t *sra, transaction *tx);
+
+Expression *physical_scan_evaluate_expression(Expression *expr, physical_scan *scan, variant *var);
+
 #ifdef __cplusplus
 }
 #endif

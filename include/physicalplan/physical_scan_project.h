@@ -37,7 +37,7 @@ int physical_scan_project_next(physical_scan *scan);
 
 int physical_scan_project_close(physical_scan *scan);
 
-variant *physical_scan_project_get_val(physical_scan *scan, char *tableName, char *fieldName);
+variant *physical_scan_project_get_val(physical_scan *scan, const char *tableName, const char *fieldName);
 
 variant *physical_scan_project_get_val_by_index(physical_scan *scan, int index);
 
@@ -45,15 +45,15 @@ int physical_scan_project_get_int_by_index(physical_scan *scan, int index);
 
 int physical_scan_project_get_string_by_index(physical_scan *scan, int index, char *value);
 
-int physical_scan_project_get_int(physical_scan *scan, char *tableName, char *fieldName);
+int physical_scan_project_get_int(physical_scan *scan, const char *tableName, const char *fieldName);
 
-int physical_scan_project_get_string(physical_scan *scan, char *tableName, char *fieldName, char *value);
+int physical_scan_project_get_string(physical_scan *scan, const char *tableName, const char *fieldName, char *value);
 
-int physical_scan_project_has_field(physical_scan *scan, char *tableName, char *fieldName);
+int physical_scan_project_has_field(physical_scan *scan, const char *tableName, const char *fieldName);
 
-arraylist *physical_scan_project_get_fields_name(physical_scan *scan, char *tableName);
+arraylist *physical_scan_project_get_fields_name(physical_scan *scan, const char *tableName);
 
-field_info *physical_scan_project_get_field(physical_scan *scan, char *tableName, char *fieldName);
+field_info *physical_scan_project_get_field(physical_scan *scan, const char *tableName, const char *fieldName);
 
 int physical_scan_project_get_rid(physical_scan *scan, record_id *recordId);
 

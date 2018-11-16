@@ -52,22 +52,22 @@ typedef int (*physical_scan_get_int_by_index)(physical_scan *scan, int index);
 
 typedef int (*physical_scan_get_string_by_index)(physical_scan *scan, int index, char *value);
 
-typedef variant *( *physical_scan_get_val)(physical_scan *scan, char *tableName, char *fieldName);
+typedef variant *( *physical_scan_get_val)(physical_scan *scan, const char *tableName, const char *fieldName);
 
-typedef int (*physical_scan_get_int)(physical_scan *scan, char *tableName, char *fieldName);
+typedef int (*physical_scan_get_int)(physical_scan *scan, const char *tableName, const char *fieldName);
 
-typedef int (*physical_scan_get_string)(physical_scan *scan, char *tableName, char *fieldName, char *value);
+typedef int (*physical_scan_get_string)(physical_scan *scan, const char *tableName, const char *fieldName, char *value);
 
-typedef int (*physical_scan_has_field)(physical_scan *scan, char *tableName, char *fieldName);
+typedef int (*physical_scan_has_field)(physical_scan *scan, const char *tableName, const char *fieldName);
 
-typedef field_info *(*physical_scan_get_field)(physical_scan *scan, char *tableName, char *fieldName);
+typedef field_info *(*physical_scan_get_field)(physical_scan *scan, const char *tableName, const char *fieldName);
 
 /*获得指定表中字段名称，若tableName为NULL，则获得全部*/
-typedef arraylist *(*physical_scan_get_fields_name)(physical_scan *scan, char *tableName);
+typedef arraylist *(*physical_scan_get_fields_name)(physical_scan *scan, const char *tableName);
 
-typedef int (*physical_scan_set_int)(physical_scan *scan, char *tableName, char *fieldName, int value);
+typedef int (*physical_scan_set_int)(physical_scan *scan, const char *tableName, const char *fieldName, int value);
 
-typedef int (*physical_scan_set_string)(physical_scan *scan, char *tableName, char *fieldName, char *value);
+typedef int (*physical_scan_set_string)(physical_scan *scan, const char *tableName, const char *fieldName, const char *value);
 
 typedef int (*physical_scan_delete)(physical_scan *scan);
 
@@ -105,9 +105,7 @@ typedef struct physical_scan_ {
     physical_scan_moveto_rid movetoRid;
 } physical_scan;
 
-physical_scan *physical_scan_generate(dongmendb *db, SRA_t *sra, transaction *tx);
 
-Expression *physical_scan_evaluate_expression(Expression *expr, physical_scan *scan, variant *var);
 #ifdef __cplusplus
 }
 #endif

@@ -41,7 +41,7 @@ int metadata_manager_create(metadata_manager *metadataManager, const char *file,
 table_manager *table_manager_create(int isNew, transaction *tx);
 int table_manager_create_table(table_manager *tableManager, char *tableName, arraylist *fieldsName, hmap_t fields,
                                transaction *tx);
-table_info *table_manager_get_tableinfo(table_manager *tableManager, char *tableName, transaction *tx);
+table_info *table_manager_get_tableinfo(table_manager *tableManager, const char *tableName, transaction *tx);
 
 /*语义检查：表是否存在，在src_experiment\exp_02_semantic\exp_02_01_table_exists.c中实现*/
 int semantic_check_table_exists(table_manager *tableManager, char *tableName, transaction *tx);
