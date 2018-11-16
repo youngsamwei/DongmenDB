@@ -48,9 +48,6 @@ data JoinCondition = On Condition
 #include <utils/arraylist.h>
 #include "create.h"
 #include "ra.h"
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 /* Forward declarations */
 typedef struct SRA_s SRA_t;
@@ -173,8 +170,6 @@ void JoinCondition_print(JoinCondition_t *cond);
 void JoinCondition_free(JoinCondition_t *cond);
 
 RA_t *SRA_desugar(SRA_t *sra);
-#ifdef __cplusplus
-}
-#endif
+
 
 #endif

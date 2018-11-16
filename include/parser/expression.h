@@ -16,9 +16,6 @@
 #include "parser.h"
 
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 
 /*使用递归下降法解析表达式
@@ -246,8 +243,6 @@ Expression *parseReadBooleanAnd(ParserT *parser);
  @return 表达式
 */
 Expression *parseReadBooleanOr(ParserT *parser);
-#ifdef __cplusplus
-}
-#endif
+
 
 #endif //DONGMENDB_EXPRESSION_H

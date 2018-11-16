@@ -95,7 +95,7 @@ char *getExpressionNamesTitle(arraylist *exprs){
     char *title = (char *)calloc(1024,1);
 
     for (int i = 0; i <= exprs->size - 1;i++){
-        Expression *expr = arraylist_get(exprs, i);
+        Expression *expr = (Expression*)arraylist_get(exprs, i);
         expression_print(expr, title);
         strcat(title, "\t");
     }
@@ -163,12 +163,12 @@ Expression *expression_print(Expression *expr, char *desc) {
 };
 
 int expression_print_list(arraylist *exprlist) {
-    Expression *expr1 = arraylist_get(exprlist, 0);
+    Expression *expr1 = (Expression*)arraylist_get(exprlist, 0);
     printf("[");
     expression_print(expr1, NULL);
 
     for (int i = 1; i <= exprlist->size - 1; i++) {
-        expr1 = arraylist_get(exprlist, i);
+        expr1 = (Expression*)arraylist_get(exprlist, i);
         printf(", ");
         expression_print(expr1, NULL);
     }
@@ -202,8 +202,9 @@ Expression *parseExpressionRD(ParserT *parser) {
         /*表达式没有处理完，比如只有右括号的情况。*/
         char message[PARSER_MESSAGE_LENTTH];
         sprintf(message, "syntax error: %s.", parser->currToken->text);
-        return parseError(parser, message);
-    }
+        parseError(parser, message);
+        return NULL;
+}
 
     return expr;
 };
@@ -213,7 +214,8 @@ Expression *parseReadLiteral(ParserT *parser) {
     Expression *expr0 = NULL;
     TokenT *token = parseNextToken(parser);
     if (token == NULL) {
-        return parseError(parser, "syntax error: missing number.");
+        parseError(parser, "syntax error: missing number.");
+        return NULL;
     }
     if ((token->type == TOKEN_FLOAT || token->type == TOKEN_DECIMAL
          || token->type == TOKEN_EXP_FLOAT)) {
@@ -256,7 +258,8 @@ Expression *parseReadLiteral(ParserT *parser) {
     } else {
         char message[PARSER_MESSAGE_LENTTH];
         sprintf(message, "syntax error: unenabled data type :%s.", token->text);
-        return parseError(parser, message);
+        parseError(parser, message);
+        return NULL;
     }
 };
 
@@ -264,7 +267,8 @@ Expression *parseReadArgument(ParserT *parser) {
     Expression *expr0 = NULL;
     TokenT *token = parseNextToken(parser);
     if (token == NULL) {
-        return parseError(parser, "syntax error: missing argument.");
+         parseError(parser, "syntax error: missing argument.");
+        return NULL;
     }
     if (token->type == TOKEN_COMMA) {
         parseEatToken(parser);
@@ -277,7 +281,8 @@ Expression *parseReadBuiltin(ParserT *parser) {
     Expression *expr0 = NULL, *expr1 = NULL;
     TokenT *token = parseNextToken(parser);
     if (token == NULL) {
-        return parseError(parser, "syntax error: missing id or number.");
+         parseError(parser, "syntax error: missing id or number.");
+        return NULL;
     }
     if (token->type == TOKEN_WORD) {
         char *text = strdup(token->text);
@@ -292,7 +297,9 @@ Expression *parseReadBuiltin(ParserT *parser) {
                 if (token->type == TOKEN_CLOSE_PAREN) {
                     char message[PARSER_MESSAGE_LENTTH];
                     sprintf(message, "syntax error: function %s missing argument.", text);
-                    return parseError(parser, message);
+
+                     parseError(parser, message);
+                    return NULL;
                 }
                 Expression *param0 = parseReadArgument(parser);
                 token = parseNextToken(parser);
@@ -300,7 +307,8 @@ Expression *parseReadBuiltin(ParserT *parser) {
                 if (token->type == TOKEN_COMMA) {
                     char message[PARSER_MESSAGE_LENTTH];
                     sprintf(message, "syntax error: function %s too many  argument.", text);
-                    return parseError(parser, message);
+                     parseError(parser, message);
+                    return NULL;
                 }
                 expr0 = newExpression(TOKEN_FUN, param0);
             } else if (stricmp(text, "round") == 0) {
@@ -309,33 +317,38 @@ Expression *parseReadBuiltin(ParserT *parser) {
                 if (token->type == TOKEN_CLOSE_PAREN) {
                     char message[PARSER_MESSAGE_LENTTH];
                     sprintf(message, "syntax error: function %s missing  argument.", text);
-                    return parseError(parser, message);
+                     parseError(parser, message);
+                    return NULL;
                 }
                 Expression *param0 = parseReadArgument(parser);
                 token = parseNextToken(parser);
                 if (token->type != TOKEN_COMMA) {
                     char message[PARSER_MESSAGE_LENTTH];
                     sprintf(message, "syntax error: function %s missing  argument.", text);
-                    return parseError(parser, message);
+                     parseError(parser, message);
+                    return NULL;
                 }
                 Expression *param1 = parseReadArgument(parser);
                 token = parseNextToken(parser);
                 if (token->type == TOKEN_COMMA) {
                     char message[PARSER_MESSAGE_LENTTH];
                     sprintf(message, "syntax error: function %s too many  argument.", text);
-                    return parseError(parser, message);
+                     parseError(parser, message);
+                    return NULL;
                 }
                 expr0 = concatExpression(param0, param1);
                 expr0 = newExpression(TOKEN_FUN, expr0);
             } else {
                 char message[PARSER_MESSAGE_LENTTH];
                 sprintf(message, "syntax error: unsupported function  :%s.", text);
-                return parseError(parser, message);
+                 parseError(parser, message);
+                return NULL;
             }
             token = parseNextToken(parser);
 
             if (token == NULL || token->type != TOKEN_CLOSE_PAREN) {
-                return parseError(parser, "syntax error: syntax error: missing ')'.");
+                 parseError(parser, "syntax error: syntax error: missing ')'.");
+                return NULL;
             } else {
                 /*处理掉右括号*/
                 parseEatToken(parser);
@@ -375,14 +388,16 @@ Expression *parseReadParen(ParserT *parser) {
     Expression *expr0 = NULL;
     TokenT *token = parseNextToken(parser);
     if (token == NULL) {
-        return parseError(parser, "syntax error.");
+         parseError(parser, "syntax error.");
+        return NULL;
     }
     if (token->type == TOKEN_OPEN_PAREN) {
         parseEatAndNextToken(parser);
         expr0 = parseReadBooleanOr(parser);
         token = parseNextToken(parser);
         if (token == NULL || (token != NULL && token->type != TOKEN_CLOSE_PAREN)) {
-            return parseError(parser, "syntax error: missing ')'.");
+             parseError(parser, "syntax error: missing ')'.");
+            return NULL;
         } else {
             parseEatToken(parser);
         }
@@ -396,7 +411,8 @@ Expression *parseReadUnary(ParserT *parser) {
     Expression *expr0 = NULL, *expr1 = NULL;
     TokenT *token = parseNextToken(parser);
     if (token == NULL) {
-        return parseError(parser, "syntax error.");
+         parseError(parser, "syntax error.");
+        return NULL;
     }
     if (token != NULL && (token->type == TOKEN_NOT || token->type == TOKEN_MINUS
                           || token->type == TOKEN_PLUS)) {
@@ -461,7 +477,8 @@ Expression *parseReadExpr(ParserT *parser) {
     Expression *expr0 = NULL, *expr1 = NULL, *expr2 = NULL;
     TokenT *token = parseNextToken(parser);
     if (token == NULL) {
-        return parseError(parser, "syntax error.");
+         parseError(parser, "syntax error.");
+        return NULL;
     }
     if (token->type == TOKEN_PLUS || token->type == TOKEN_MINUS) {
         /*处理正负号*/

@@ -14,9 +14,6 @@ data RA_t = Table String
         | Cross RA_t RA
         | Rename String [String] RA
 */
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 enum RA_Type {
     RA_TABLE,
@@ -69,8 +66,6 @@ RA_t *RA_RhoTable(RA_t *ra, const char *new_name);
 RA_t *RA_RhoExpr(RA_t *ra, Expression *expr, const char *new_name);
 
 void RA_free(RA_t *ra);
-#ifdef __cplusplus
-}
-#endif
+
 
 #endif

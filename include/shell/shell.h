@@ -6,10 +6,6 @@
 #include <physicalplan/ExecutionPlan.h>
 #include <physicalplan/Project.h>
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 
 #define  MAX_CMD 512
 
@@ -67,9 +63,6 @@ int dongmendb_shell_handle_select_table(dongmendb_shell_handle_sql_t *ctx, const
 int dongmendb_shell_handle_update_data(dongmendb_shell_handle_sql_t *ctx, const char *sqlupdate);
 int dongmendb_shell_handle_delete_data(dongmendb_shell_handle_sql_t *ctx, const char *sqldelete);
 
-#ifdef __cplusplus
-}
-#endif
 
 
 #endif

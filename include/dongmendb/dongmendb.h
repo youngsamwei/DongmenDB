@@ -13,9 +13,6 @@
 #include "metadatamanager.h"
 #include "recordfile.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 #define MAX_ID_NAME_LENGTH 32
 
@@ -92,7 +89,7 @@ int dongmendb_open(const char *file, dongmendb *db);
  * - DONGMENDB_EINVALIDSQL: Invalid SQL
  * - DONGMENDB_ENOMEM: Could not allocate memory
  */
-int dongmendb_prepare(dongmendb *db, const char *sql, dongmendb_stmt **stmt);
+extern int dongmendb_prepare(dongmendb *db, const char *sql, dongmendb_stmt **stmt);
 
 
 /* Steps through a prepared SQL statement
@@ -209,8 +206,6 @@ const char *dongmendb_column_text(dongmendb_stmt *stmt, int col);
  */
 int dongmendb_close(dongmendb *db);
 
-#ifdef __cplusplus
-}
-#endif
+
 
 #endif //DONGMENDB_DONGMENDB_H

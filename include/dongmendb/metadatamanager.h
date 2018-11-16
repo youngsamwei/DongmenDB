@@ -9,9 +9,6 @@
 #include "transaction.h"
 #include "utils/arraylist.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 /**
  * 元数据管理
@@ -50,8 +47,6 @@ int semantic_check_table_exists(table_manager *tableManager, char *tableName, tr
 int semantic_check_field_exists(table_manager *tableManager, char *tableName, char *fieldName, transaction *tx);
 
 
-#ifdef __cplusplus
-}
-#endif
+
 
 #endif //DONGMENDB_METADATA_MANAGER_H

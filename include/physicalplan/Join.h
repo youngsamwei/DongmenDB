@@ -7,6 +7,7 @@
 
 #include <physicalplan/Scan.h>
 
+
 class Join : public Scan {
     public:
     Scan *scan1, *scan2;

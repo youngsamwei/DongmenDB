@@ -2,9 +2,6 @@
 #define __CREATE_H_
 
 #include "column.h"
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 typedef struct Table_s {
     char *name;
@@ -66,8 +63,6 @@ Create_t *Create_fromTable(Table_t *table);
 Create_t *Create_fromIndex(Index_t *idx);
 void Create_print(Create_t *cre);
 void Create_free(Create_t *cre);
-#ifdef __cplusplus
-}
-#endif
+
 
 #endif

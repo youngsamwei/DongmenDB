@@ -13,9 +13,6 @@
 #include "utils/arraylist.h"
 #include "dongmendb.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 typedef enum{
     RIGHT_SELECT = 0,
@@ -163,8 +160,6 @@ int security_manager_init(security_manager *securityManager);
  */
 security_manager *security_manager_create(dongmendb *db);
 
-#ifdef __cplusplus
-}
-#endif
+
 
 #endif //DONGMENDB_SECURITYMANAGER_H

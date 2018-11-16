@@ -2,6 +2,7 @@
 // Created by sam on 2018/11/16.
 //
 #include <physicalplan/Scan.h>
+#include <dongmensql/column.h>
 
 Expression * Scan::evaluateExpression(Expression *expr, Scan *scan, variant *var){
     if (!expr) return NULL;

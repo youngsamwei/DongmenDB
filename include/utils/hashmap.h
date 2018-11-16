@@ -65,7 +65,7 @@ extern int hashmap_iterate(hmap_t in, hmap_callback_func fnIterValue,
   * Add an element to the hashmap.
   * Return HMAP_S_OK, HMAP_E_KEYUSED or HMAP_E_OUTMEM.
   */
-extern int hashmap_put(hmap_t in, char * key, void_ptr elem);
+extern int hashmap_put(hmap_t in, const char * key, void_ptr elem);
 
 /**
  * Get an element from the hashmap. Return HMAP_S_OK or HMAP_E_NOTFOUND.

@@ -6,9 +6,6 @@
 #define DONGMENDB_UTILS_H
 
 #include "arraylist.h"
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 int dongmendb_tokenize(char *str, char ***tokens);
 
@@ -25,8 +22,6 @@ int  removeDir(const char*  dirPath);
 
 int  removeDirW(const wchar_t*  dirPath);
 
-#ifdef __cplusplus
-}
-#endif
+
 
 #endif //DONGMENDB_UTILS_H

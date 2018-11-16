@@ -6,9 +6,6 @@
 #define DONGMENDB_BUFFERMANAGER_H
 
 #include "dongmendb.h"
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 /**
  * 缓存管理
@@ -76,8 +73,6 @@ int memory_buffer_is_modifiedby(memory_buffer *buffer, int txnum);
 
 int memory_buffer_assignto(memory_buffer *buffer, disk_block *block);
 int memory_buffer_assignto_new(memory_buffer *buffer, char *fileName, table_info *tableInfo);
-#ifdef __cplusplus
-}
-#endif
+
 
 #endif //DONGMENDB_BUFFERMANAGER_H

@@ -8,9 +8,6 @@
 #include "sra.h"
 #include "delete.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 #define SQL_NOTVALID (-1)
 #define SQL_NULL (0)
@@ -42,8 +39,6 @@ int dongmensql_parser(const char *sql, dongmensql_statement_t **stmt);
 
 int dongmensql_stmt_print(dongmensql_statement_t *stmt);
 
-#ifdef __cplusplus
-}
-#endif
+
 
 #endif /* SQL_TYPES_H_ */

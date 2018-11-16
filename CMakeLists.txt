@@ -6,6 +6,7 @@
 
 CMAKE_MINIMUM_REQUIRED(VERSION 3.9)
 PROJECT(DongmenDB)
+
 SET(CMAKE_C_STANDARD 11)
 SET(CMAKE_CXX_STANDARD 11)
 
@@ -29,7 +30,7 @@ ADD_SUBDIRECTORY(googletest)
 ADD_SUBDIRECTORY(src)
 
 #设置被依赖的库
-SET(EXTRA_LIBS dongmendb dongmensql parser physicalplan shell utils)
+SET(EXTRA_LIBS shell dongmendb dongmensql parser physicalplan utils)
 
 #包含实验题目和测试的文件夹
 ADD_SUBDIRECTORY(src_experiment)

@@ -97,7 +97,7 @@ static unsigned long crc32_tab[] = { 0x00000000L, 0x77073096L, 0xee0e612cL,
 /**
  * Return a 32-bit CRC of the contents of the buffer.
  */
-static unsigned long crc32(const unsigned char *s, unsigned int len) {
+static unsigned long crc32(const char *s, unsigned int len) {
     unsigned int i;
     unsigned long crc32val = 0;
     for (i = 0; i < len; i++) {
@@ -110,7 +110,7 @@ static unsigned long crc32(const unsigned char *s, unsigned int len) {
  * Hashing function for a string
  */
 static unsigned int _find_hash_index(hashmap_map_t * m, const char* keystring) {
-    unsigned long key = crc32(keystring, strlen(keystring));
+    unsigned long key = crc32(keystring, strlen((char*)keystring));
 
     /* Robert Jenkins' 32 bit Mix Function */
     key += (key << 12);
@@ -132,7 +132,7 @@ static unsigned int _find_hash_index(hashmap_map_t * m, const char* keystring) {
  * Return the integer of the location in data to store the point to the item,
  *   or HMAP_E_OVERFLOW.
  */
-static int _hashmap_hash(hmap_t in, char* key) {
+static int _hashmap_hash(hmap_t in, const char* key) {
     int curr;
     int i;
     hashmap_elem_t *elem;
@@ -153,7 +153,7 @@ static int _hashmap_hash(hmap_t in, char* key) {
             return curr;
         }
 
-        if (elem->used == hashmap_used_1 && (!strcmp(elem->key, key))) {
+        if (elem->used == hashmap_used_1 && (!strcmp(elem->key, (char*)key))) {
             return curr;
         }
 
@@ -230,7 +230,7 @@ hmap_t hashmap_create() {
 /**
  * Add a pair of key-value to the hashmap
  */
-int hashmap_put(hmap_t in, char * key, void_ptr value) {
+int hashmap_put(hmap_t in, const char * key, void_ptr value) {
     int index;
     hashmap_map_t *m;
     hashmap_elem_t *elem;
@@ -253,7 +253,8 @@ int hashmap_put(hmap_t in, char * key, void_ptr value) {
         return HMAP_E_KEYUSED;
     }
     elem->data = value;
-    elem->key = key; /* only set to a reference */
+    strcpy(elem->key, key);
+//    elem->key = key; /* only set to a reference */
     elem->used = hashmap_used_1;
     m->size++;
 
@@ -376,7 +377,7 @@ void hashmap_destroy(hmap_t in, hmap_callback_func fnFreeValue, void_ptr arg) {
             elem->data = NULL;
 
             if (fnFreeValue) {
-                fnFreeValue(key, data, arg);
+                fnFreeValue((char*)key, data, arg);
             }
         }
     }

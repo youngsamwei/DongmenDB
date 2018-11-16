@@ -55,7 +55,7 @@ int dongmendb_tokenize(char *str, char ***tokens)
 
 
     /* Second pass: Create the array of tokens */
-    *tokens = malloc(sizeof(char**) * ntokens);
+    *tokens = (char**)malloc(sizeof(char**) * ntokens);
 
     s = str;
     while(isspace(*s)) s++;

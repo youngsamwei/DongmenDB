@@ -80,7 +80,7 @@ int transaction_append(transaction *tx, char *fileName, table_info *tableInfo) {
     void_ptr *pblock = (void_ptr *) malloc(sizeof(void_ptr *));
     buffer_list_pin_new(tx->bufferList, fileName, pblock, tableInfo);
 
-    disk_block *block = *pblock;
+    disk_block *block = (disk_block *)*pblock;
     transaction_unpin(tx, block);
     return 1;
 }
@@ -89,7 +89,7 @@ int buffer_list_pin(buffer_list *bufferList, disk_block *block) {
     char *blockName = disk_block_get_num_string(block);
     void_ptr *pbuf = (void_ptr *) malloc(sizeof(void_ptr *));
     buffer_manager_pin(bufferList->bufferManager, block, pbuf);
-    memory_buffer *buffer = *pbuf;
+    memory_buffer *buffer = (memory_buffer *)*pbuf;
     buffer->block = block;
     hashmap_put(bufferList->buffers, blockName, buffer);
     arraylist_add(bufferList->pins, block);
@@ -104,7 +104,7 @@ int buffer_list_unpin(buffer_list *bufferList, disk_block *block) {
     char *blockName = disk_block_get_num_string(block);
     void_ptr *pbuf = (void_ptr *) malloc(sizeof(void_ptr *));
     hashmap_remove(bufferList->buffers, blockName, pbuf);
-    memory_buffer *buffer = *pbuf;
+    memory_buffer *buffer = (memory_buffer *)*pbuf;
     //buffer->block = NULL;
     buffer_manager_unpin(bufferList->bufferManager, buffer);
     arraylist_remove_by_element(bufferList->pins, block);
@@ -114,12 +114,12 @@ int buffer_list_unpin(buffer_list *bufferList, disk_block *block) {
 int buffer_list_unpin_all(buffer_list *bufferList) {
     int size = bufferList->pins->size - 1;
     for (int i = 0; i <= size; i++) {
-        disk_block *diskBlock = arraylist_get(bufferList->pins, i);
+        disk_block *diskBlock = (disk_block *)arraylist_get(bufferList->pins, i);
 
         char *blockName = disk_block_get_num_string(diskBlock);
         void_ptr *pbuf = (void_ptr *) malloc(sizeof(void_ptr *));
         hashmap_get(bufferList->buffers, blockName, pbuf);
-        memory_buffer *buffer = *pbuf;
+        memory_buffer *buffer = (memory_buffer *)*pbuf;
 
         buffer_manager_unpin(bufferList->bufferManager, buffer);
     }
@@ -131,7 +131,7 @@ memory_buffer *buffer_list_get_buffer(buffer_list *bufferList, disk_block *block
     char *blockName = disk_block_get_num_string(block);
     void_ptr *buffer1 = (void_ptr *) malloc(sizeof(void_ptr *));
     hashmap_get(bufferList->buffers, blockName, buffer1);
-    return *buffer1;
+    return (memory_buffer *)*buffer1;
 };
 
 int buffer_list_pin_new(buffer_list *bufferList, char *fileName, void_ptr *pblock, table_info *tableInfo) {
@@ -139,7 +139,7 @@ int buffer_list_pin_new(buffer_list *bufferList, char *fileName, void_ptr *pbloc
     int r = buffer_manager_pinnew(bufferList->bufferManager, fileName, pbuffer, tableInfo);
     memory_buffer *buffer;
     if (r) {
-        buffer = *pbuffer;
+        buffer = (memory_buffer *)*pbuffer;
     }
 
     disk_block *diskBlock = buffer->block;

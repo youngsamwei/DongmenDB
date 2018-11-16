@@ -7,9 +7,6 @@
 
 #include "recordfile.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 /**
  * 完整性管理
@@ -33,9 +30,7 @@ int integrity_manager_check_constraint_check(integrity_manager *integrityManager
 int integrity_manager_null_constraint_check(integrity_manager *integrityManager, table_info *tableInfo, record_value *recordValue);
 
 
-#ifdef __cplusplus
-}
-#endif
+
 
 
 #endif //DONGMENDB_INTEGRITYMANAGER_H

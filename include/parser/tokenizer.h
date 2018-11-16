@@ -4,9 +4,6 @@
 
 #ifndef DONGMENDB_TOKENIZER_H
 #define DONGMENDB_TOKENIZER_H
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 
 /* 词法分析
@@ -110,8 +107,6 @@ TokenT *_decimal(TokenizerT *tk);
 TokenT *_zero(TokenizerT *tk);
 TokenT *TKGetNextToken(TokenizerT *tk);
 
-#ifdef __cplusplus
-}
-#endif
+
 
 #endif //DONGMENDB_TOKENIZER_H

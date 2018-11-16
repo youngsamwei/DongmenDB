@@ -4,9 +4,6 @@
 
 #ifndef DONGMENDB_FILEMANAGER_H
 #define DONGMENDB_FILEMANAGER_H
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 /**
  * 以block为单位的数据管理。但meemorypage属于缓存管理。
@@ -94,10 +91,8 @@ int memory_page_getint(memory_page *memoryPage, int offset);
 int memory_page_setint(memory_page *memoryPage, int offset, int val);
 
 int memory_page_getstring(memory_page *memoryPage, int offset, char *val);
-int memory_page_setstring(memory_page *memoryPage, int offset, char *val);
+int memory_page_setstring(memory_page *memoryPage, int offset, const char *val);
 
-#ifdef __cplusplus
-}
-#endif
+
 
 #endif //DONGMENDB_FILEMANAGER_H

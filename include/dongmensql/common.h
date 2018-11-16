@@ -6,9 +6,6 @@
 #include <string.h>
 #include <stdarg.h>
 #include <stdbool.h>
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 enum query_type {
     SELECT_Q, CREATE_T_Q, CREATE_I_Q, INSERT_Q, DELETE_Q
@@ -61,8 +58,6 @@ void downInd(void);
 void indent_print(const char *format, ...);
 
 void Query_free(Query_t *query);
-#ifdef __cplusplus
-}
-#endif
+
 
 #endif

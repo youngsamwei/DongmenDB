@@ -1,8 +1,5 @@
 #include "common.h"
 #include "column.h"
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 typedef struct DBTable_s {
 
@@ -28,6 +25,4 @@ int Row_matchByDouble(Row_t *row, double d);
 
 int Row_matchByString(Row_t *row, const char *str);
 
-#ifdef __cplusplus
-}
-#endif
+

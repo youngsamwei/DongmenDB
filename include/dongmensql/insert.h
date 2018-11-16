@@ -4,9 +4,6 @@
 #include "common.h"
 #include "ra.h"
 #include "create.h"
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 typedef struct Insert_s {
     char *table_name;
@@ -20,8 +17,6 @@ void Insert_print(Insert_t *insert);
 
 void Insert_free(Insert_t *insert);
 
-#ifdef __cplusplus
-}
-#endif
+
 
 #endif

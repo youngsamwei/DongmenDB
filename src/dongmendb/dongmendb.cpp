@@ -4,9 +4,6 @@
 
 #include "dongmendb/dongmendb.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 
 int dongmendb_open(const char *dbName, dongmendb *db) {
@@ -34,7 +31,7 @@ int dongmendb_open(const char *dbName, dongmendb *db) {
 };
 
 
-int dongmendb_prepare(dongmendb *db, const char *sql, dongmendb_stmt **stmt) {};
+extern int dongmendb_prepare(dongmendb *db, const char *sql, dongmendb_stmt **stmt) {};
 
 int dongmendb_step(dongmendb_stmt *stmt) {};
 
@@ -55,6 +52,4 @@ int dongmendb_close(dongmendb *db) {
 };
 
 
-#ifdef __cplusplus
-}
-#endif
+

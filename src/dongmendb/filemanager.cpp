@@ -25,7 +25,7 @@ int file_manager_new(file_manager *fileManager, char *directory, const char *dbN
 int file_manager_read(file_manager *fileManager, memory_page *memoryPage, disk_block *diskBlock) {
     void_ptr *pfile = (void_ptr *) malloc(sizeof(void_ptr *));
     file_manager_getfile(fileManager, diskBlock->fileName, pfile);
-    FILE *fp = *pfile;
+    FILE *fp = (FILE*)*pfile;
     //memset(memoryPage->contents, 0, sizeof(memoryPage->contents));
     fseek(fp, diskBlock->blkNum * DISK_BOLCK_SIZE, SEEK_SET);
     fread(memoryPage->contents, sizeof(char), sizeof(memoryPage->contents), fp);
@@ -34,7 +34,7 @@ int file_manager_read(file_manager *fileManager, memory_page *memoryPage, disk_b
 int file_manager_write(file_manager *fileManager, memory_page *memoryPage, disk_block *diskBlock) {
     void_ptr *pfile = (void_ptr *) calloc(sizeof(void_ptr *), 1);
     file_manager_getfile(fileManager, diskBlock->fileName, pfile);
-    FILE *fp = *pfile;
+    FILE *fp = (FILE*)*pfile;
     fseek(fp, diskBlock->blkNum * DISK_BOLCK_SIZE, SEEK_SET);
     int size = sizeof(memoryPage->contents);
     fwrite(memoryPage->contents, sizeof(char), size, fp);
@@ -50,10 +50,10 @@ int file_manager_append(file_manager *fileManager, memory_buffer *memoryBuffer, 
 };
 
 int file_manager_size(file_manager *fileManager, char *fileName) {
-    void_ptr *pfile = (void_ptr)malloc(sizeof(void_ptr));
+    void_ptr *pfile = (void_ptr*)malloc(sizeof(void_ptr));
     file_manager_getfile(fileManager, fileName, pfile);
 
-    FILE *file = *pfile;
+    FILE *file = (FILE*)*pfile;
 
     fseek(file,0L,SEEK_END); /* 定位到文件末尾 */
     int flen=ftell(file); /* 得到文件大小 */
@@ -170,7 +170,7 @@ int memory_page_record_formatter(memory_page *contents, table_info *tableInfo) {
 
             void_ptr *fielddesc = (void_ptr *) malloc(sizeof(void_ptr *));
             hashmap_get(tableInfo->fields, fieldName, fielddesc);
-            field_info *fieldInfo = *fielddesc;
+            field_info *fieldInfo = (field_info *)*fielddesc;
 
             int offset = table_info_offset(tableInfo, fieldName);
 
@@ -224,7 +224,7 @@ int memory_page_getstring(memory_page *memoryPage, int offset, char *val) {
  * @param val 要写的值
  * @return 返回状态
  */
-int memory_page_setstring(memory_page *memoryPage, int offset, char *val) {
+int memory_page_setstring(memory_page *memoryPage, int offset, const char *val) {
     int len = strlen(val);
     /*先写字符串长度*/
     memory_page_setint(memoryPage, offset, len);

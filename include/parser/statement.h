@@ -13,9 +13,6 @@
 #include <dongmensql/sra.h>
 #include "parser.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 typedef struct ParserT_  ParserT;
 typedef struct sql_stmt_create_ {
     table_info *tableInfo;
@@ -147,8 +144,6 @@ sql_stmt_grant_revoke *parse_revoke(ParserT *parser);
 /* 打印 sql_stmt_update */
 int sql_stmt_update_print(sql_stmt_update *sqlStmtUpdate);
 
-#ifdef __cplusplus
-}
-#endif
+
 
 #endif //DONGMENDB_STATEMENT_H

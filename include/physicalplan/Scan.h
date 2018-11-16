@@ -6,9 +6,10 @@
 #define DONGMENDB_SCAN_H
 
 #include <string>
+#include <dongmendb/dongmendb.h>
+#include <parser/expression.h>
 
-#ifdef __cplusplus
-
+using namespace std;
 
 class Scan {
 public:
@@ -55,6 +56,6 @@ public:
 
 };
 
-#endif
+
 
 #endif //DONGMENDB_SCAN_H

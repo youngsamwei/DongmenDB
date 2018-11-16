@@ -20,8 +20,8 @@ table_manager *table_manager_create(int isNew, transaction *tx) {
     hashmap_put(tableDescfields, "reclength", fieldInfo);
 
     arraylist *tableMetaFieldsName = arraylist_create();
-    arraylist_add(tableMetaFieldsName, "tablename");
-    arraylist_add(tableMetaFieldsName, "reclength");
+    arraylist_add(tableMetaFieldsName, (void*)"tablename");
+    arraylist_add(tableMetaFieldsName, (void*)"reclength");
 
     tableManager->tcatInfo = table_info_create("tablecat", tableMetaFieldsName, tableDescfields);
 
@@ -38,11 +38,11 @@ table_manager *table_manager_create(int isNew, transaction *tx) {
     hashmap_put(fieldDescfields, "offset", fieldInfo);
 
     arraylist *fieldMetaFieldsName = arraylist_create();
-    arraylist_add(fieldMetaFieldsName, "tablename");
-    arraylist_add(fieldMetaFieldsName, "fieldname");
-    arraylist_add(fieldMetaFieldsName, "type");
-    arraylist_add(fieldMetaFieldsName, "length");
-    arraylist_add(fieldMetaFieldsName, "offset");
+    arraylist_add(fieldMetaFieldsName, (void*)"tablename");
+    arraylist_add(fieldMetaFieldsName, (void*)"fieldname");
+    arraylist_add(fieldMetaFieldsName, (void*)"type");
+    arraylist_add(fieldMetaFieldsName, (void*)"length");
+    arraylist_add(fieldMetaFieldsName, (void*)"offset");
 
     tableManager->fcatInfo =
             table_info_create("fieldcat", fieldMetaFieldsName, fieldDescfields);
@@ -103,11 +103,11 @@ int table_manager_create_table(table_manager *tableManager, char *tableName, arr
     /*增加元数据到field描述表中*/
     int count = tableInfo->fieldsName->size - 1;
     for (int i = 0; i <= count; i++) {
-        char *fieldName = arraylist_get(tableInfo->fieldsName, i);
+        char *fieldName = (char*)arraylist_get(tableInfo->fieldsName, i);
 
         void_ptr *ptr = (void_ptr *) malloc(sizeof(void_ptr *));
         hashmap_get(tableInfo->fields, fieldName, ptr);
-        field_info *fieldInfo = *ptr;
+        field_info *fieldInfo = (field_info *)*ptr;
 
         int offset = table_info_offset(tableInfo, fieldName);
 
@@ -140,15 +140,15 @@ table_info *table_manager_get_tableinfo(table_manager *tableManager, const char 
     record_file *fcatFile = (record_file *) malloc(sizeof(record_file));
     record_file_create(fcatFile, tableManager->fcatInfo, tx);
     arraylist *fieldsName = arraylist_create();
-    hmap_t *fields = hashmap_create();
-    hmap_t *offsets = hashmap_create();
+    hmap_t *fields = ( hmap_t *)hashmap_create();
+    hmap_t *offsets = (hmap_t *)hashmap_create();
     while (record_file_next(fcatFile)) {
         char *name = new_id_name();
         record_file_get_string(fcatFile, "tablename", name);
         if (stricmp(tableName, name) == 0) {
             char *fieldName = new_id_name();
             record_file_get_string(fcatFile, "fieldname", fieldName);
-            int type = record_file_get_int(fcatFile, "type");
+            enum data_type type = (data_type)record_file_get_int(fcatFile, "type");
             int length = record_file_get_int(fcatFile, "length");
             int offset = record_file_get_int(fcatFile, "offset");
             integer *soffset = (integer *) malloc(sizeof(integer));

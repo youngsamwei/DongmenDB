@@ -2,9 +2,6 @@
 #define __LITERAL_H_
 
 #include "common.h"
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 union LitVal {
     int ival;
@@ -34,8 +31,6 @@ void Literal_printList(Literal_t *val);
 
 Literal_t *newLiteral(enum data_type t);
 
-#ifdef __cplusplus
-}
-#endif
+
 
 #endif

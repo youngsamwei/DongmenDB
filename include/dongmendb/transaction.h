@@ -9,9 +9,6 @@
 #include <utils/arraylist.h>
 #include "utils/hashmap.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 #define  END_OF_FILE -1
 
@@ -61,8 +58,6 @@ int buffer_list_unpin_all(buffer_list *bufferList);
 memory_buffer *buffer_list_get_buffer(buffer_list *bufferList, disk_block *block);
 int buffer_list_pin_new(buffer_list *bufferList, char *fileName, void_ptr *block, table_info *tableInfo);
 
-#ifdef __cplusplus
-}
-#endif
+
 
 #endif //DONGMENDB_TRANSACTION_H

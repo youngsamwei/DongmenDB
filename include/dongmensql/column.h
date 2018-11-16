@@ -3,9 +3,6 @@
 
 #include "literal.h"
 #include "parser/expression.h"
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 enum constraint_type {
     CONS_NOT_NULL,
@@ -80,8 +77,6 @@ void Column_freeList(Column_t *column);
 
 /* sets the size of the next column */
 void Column_setSize(ssize_t size);
-#ifdef __cplusplus
-}
-#endif
+
 
 #endif

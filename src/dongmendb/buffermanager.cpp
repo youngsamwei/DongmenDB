@@ -17,13 +17,13 @@ int buffer_manager_create(buffer_manager *bufferManager, int bufferSize, file_ma
 int buffer_manager_pin(buffer_manager *bufferManager, disk_block *block, void_ptr *buffer) {
     /*先查找block是否已经在缓存中*/
     buffer_manager_find_existing(bufferManager, block, buffer);
-    memory_buffer *buf = *buffer;
+    memory_buffer *buf = (memory_buffer *)*buffer;
     if (*buffer == NULL) {
         buffer_manager_find_choose_unpinned_buffer(bufferManager, buffer);
         if (*buffer == NULL) {
             return -1;
         }
-        buf = *buffer;
+        buf = (memory_buffer *)*buffer;
         memory_buffer_assignto(buf, block);
     }
     if (!memory_buffer_is_pinned(buf)) {
@@ -37,7 +37,7 @@ int buffer_manager_pinnew(buffer_manager *bufferManager, char *fileName, void_pt
     if (*buffer == NULL) {
         return -1;
     }
-    memory_buffer *buf = *buffer;
+    memory_buffer *buf = (memory_buffer *)*buffer;
     memory_buffer_assignto_new(buf, fileName, tableInfo);
     bufferManager->numAvailable--;
     memory_buffer_pin(buf);

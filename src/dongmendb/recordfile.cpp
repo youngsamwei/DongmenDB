@@ -148,7 +148,7 @@ table_info *table_info_create(const char *tableName, arraylist *fieldsName, hmap
 
         void_ptr *value = (void_ptr *) malloc(sizeof(void_ptr *));
         hashmap_get(tableInfo->fields, fieldName, value);
-        field_info *fieldInfo = *value;
+        field_info *fieldInfo = (field_info *)*value;
 
         integer *ipos = (integer *) malloc(sizeof(integer));
         ipos->val = pos;
@@ -174,9 +174,9 @@ int table_info_free(table_info *tableInfo) {
 }
 
 int table_info_offset(table_info *tableInfo, const char *fieldName) {
-    void_ptr *ptr = (void_ptr) malloc(sizeof(void_ptr));
+    void_ptr *ptr = (void_ptr*) malloc(sizeof(void_ptr));
     hashmap_get(tableInfo->offsets, fieldName, ptr);
-    integer *ipos = *ptr;
+    integer *ipos = (integer *)*ptr;
     return ipos->val;
 };
 

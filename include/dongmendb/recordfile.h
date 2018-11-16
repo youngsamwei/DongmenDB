@@ -18,9 +18,6 @@
 #include "dongmendb/filemanager.h"
 #include "utils/arraylist.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 #define RECORD_FILE_EXT ".tbl"
 
@@ -158,8 +155,6 @@ int record_page_fieldpos(record_page *recordPage,const  char *fieldName);
 int record_page_is_valid_slot(record_page *recordPage);
 
 
-#ifdef __cplusplus
-}
-#endif
+
 
 #endif //DONGMENDB_RECORDFILE_H
