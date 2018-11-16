@@ -49,6 +49,10 @@ int Select::getInt(string tableName, string fieldName) {
     return scan->getInt( tableName.c_str(), fieldName.c_str());
 }
 
+variant* Select::getValue(string fieldName){
+    return NULL;
+};
+
 string Select::getString(string tableName, string fieldName) {
     field_info *fi = getField(tableName, fieldName);
     char *value = (char *) calloc(fi->length, 1);
@@ -79,3 +83,14 @@ int Select::deleteRecord() {
     return scan->deleteRecord();
 };
 
+ int Select::insertRecord(){
+
+ };
+
+ int Select::getRID(record_id *recordID){
+
+ };
+
+ int Select::moveTo(record_id *recordID){
+
+ };

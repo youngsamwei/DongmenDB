@@ -30,7 +30,7 @@ public:
 
     int getInt(string tableName, string fieldName);
 
-    variant getValue(string fieldName);
+    variant* getValue(string fieldName);
 
     string getString(string tableName, string fieldName);
 

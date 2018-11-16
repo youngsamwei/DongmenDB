@@ -27,7 +27,9 @@ int TableScan::close() {
     return record_file_close(m_recordFile);
 };
 
-
+variant * TableScan::getValueByIndex(int index){
+    return NULL;
+};
 
 int TableScan::getIntByIndex(int index) {
     return -1;
@@ -43,6 +45,10 @@ int TableScan::getInt(string tableName, string fieldName) {
     }
     return record_file_get_int(m_recordFile, fieldName.c_str());
 }
+
+variant* TableScan::getValue(string fieldName){
+    return NULL;
+};
 
 string TableScan::getString(string tableName, string fieldName) {
     if (!tableName.empty() && stricmp(m_tableInfo->tableName, tableName.c_str()) != 0) {

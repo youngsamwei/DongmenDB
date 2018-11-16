@@ -30,7 +30,7 @@ public:
 
     virtual int getInt(string tableName, string fieldName) = 0;
 
-    virtual variant getValue(string fieldName)=0;
+    virtual variant* getValue(string fieldName)=0;
 
     virtual string getString(string tableName, string fieldName)=0;
 
