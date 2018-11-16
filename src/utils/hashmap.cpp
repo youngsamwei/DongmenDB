@@ -253,8 +253,8 @@ int hashmap_put(hmap_t in, const char * key, void_ptr value) {
         return HMAP_E_KEYUSED;
     }
     elem->data = value;
-    strcpy(elem->key, key);
-//    elem->key = key; /* only set to a reference */
+//    strcpy(elem->key, key);
+    elem->key = (char*)key; /* only set to a reference */
     elem->used = hashmap_used_1;
     m->size++;
 

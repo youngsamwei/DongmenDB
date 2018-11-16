@@ -15,9 +15,9 @@
 
 class ExecutionPlan {
     public :
-    Scan *generateSelect(dongmendb *db, SRA_t *sra, transaction *tx);
+    Scan& generateSelect(dongmendb *db, SRA_t *sra, transaction *tx);
 
-    Scan *generateScan(dongmendb *db, SRA_t *sra, transaction *tx);
+    Scan& generateScan(dongmendb *db, SRA_t *sra, transaction *tx);
 
     int executeInsert(dongmendb *db, char *tableName, arraylist *fieldNames, arraylist *values, transaction *tx);
     int executeUpdate(dongmendb *db, sql_stmt_update *sqlStmtUpdate, transaction *tx);

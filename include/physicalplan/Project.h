@@ -18,9 +18,9 @@ class Project : public Scan {
     int distinct;
     arraylist *group_by; // expression列表
 
-    Scan *scan;
+    Scan& scan;
 
-    Project(Scan *scan);
+    Project(Scan& scan) : scan(scan){};
 
     int beforeFirst();
 

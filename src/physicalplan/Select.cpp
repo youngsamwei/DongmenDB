@@ -8,16 +8,12 @@
 
 using namespace std;
 
-Select::Select(Scan *scan){
-    this->scan = scan;
-};
-
 int Select::beforeFirst() {
-    return scan->beforeFirst();
+    return scan.beforeFirst();
 };
 
 int Select::next() {
-    while (scan->next()){
+    while (scan.next()){
         variant *var = (variant *)calloc(sizeof(variant),1);
         evaluateExpression(cond, scan, var);
         if (var->type == DATA_TYPE_BOOLEAN && var->booleanValue){
@@ -29,15 +25,15 @@ int Select::next() {
 };
 
 int Select::close() {
-    return scan->close();
+    return scan.close();
 };
 
 variant* Select::getValueByIndex(int index) {
-    return scan->getValueByIndex(index);
+    return scan.getValueByIndex(index);
 };
 
 int Select::getIntByIndex(int index) {
-    return scan->getIntByIndex( index);
+    return scan.getIntByIndex( index);
 };
 
 string Select::getStringByIndex(int index) {
@@ -46,7 +42,7 @@ string Select::getStringByIndex(int index) {
 };
 
 int Select::getInt(string tableName, string fieldName) {
-    return scan->getInt( tableName.c_str(), fieldName.c_str());
+    return scan.getInt( tableName.c_str(), fieldName.c_str());
 }
 
 variant* Select::getValue(string fieldName){
@@ -56,31 +52,31 @@ variant* Select::getValue(string fieldName){
 string Select::getString(string tableName, string fieldName) {
     field_info *fi = getField(tableName, fieldName);
     char *value = (char *) calloc(fi->length, 1);
-    return scan->getString( tableName.c_str(), fieldName.c_str());
+    return scan.getString( tableName.c_str(), fieldName.c_str());
 };
 
 int Select::hasField(string tableName,string fieldName) {
-    return scan->hasField( tableName.c_str(), fieldName.c_str());
+    return scan.hasField( tableName.c_str(), fieldName.c_str());
 };
 
 field_info* Select::getField(string tableName, string fieldName) {
-    return scan->getField( tableName.c_str(), fieldName.c_str());
+    return scan.getField( tableName.c_str(), fieldName.c_str());
 };
 
 arraylist* Select::getFieldsName(string tableName) {
-    return scan->getFieldsName( tableName.c_str());
+    return scan.getFieldsName( tableName.c_str());
 };
 
 int Select::setInt(string tableName, string fieldName, int value) {
-    return scan->setInt( tableName.c_str(), fieldName.c_str(), value);
+    return scan.setInt( tableName.c_str(), fieldName.c_str(), value);
 };
 
 int Select::setString(string tableName, string fieldName, string value) {
-    return scan->setString( tableName.c_str(), fieldName.c_str(), value.c_str());
+    return scan.setString( tableName.c_str(), fieldName.c_str(), value.c_str());
 };
 
 int Select::deleteRecord() {
-    return scan->deleteRecord();
+    return scan.deleteRecord();
 };
 
  int Select::insertRecord(){

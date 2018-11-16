@@ -135,7 +135,8 @@ field_info *field_info_create(enum data_type type, int length) {
 
 table_info *table_info_create(const char *tableName, arraylist *fieldsName, hmap_t fields) {
     table_info *tableInfo = (table_info *) malloc(sizeof(table_info));
-    strcpy(tableInfo->tableName, tableName);
+    tableInfo->tableName = new_id_name();
+    strcpy( tableInfo->tableName, tableName);
     tableInfo->fieldsName = fieldsName;
     tableInfo->fields = fields;
     tableInfo->offsets = hashmap_create();

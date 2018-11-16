@@ -328,14 +328,14 @@ int dongmendb_shell_handle_select_table(dongmendb_shell_handle_sql_t *ctx, const
     if (optmiziedSelectStmt != NULL) {
         ExecutionPlan plan;
         /*执行select语句，获得物理扫描计划*/
-        Scan *scan = plan.generateSelect(ctx->db, optmiziedSelectStmt, ctx->db->tx);
-        Project *project = (Project *)scan;
-        arraylist *exprs =project->expr_list;
+        Scan& scan = plan.generateSelect(ctx->db, optmiziedSelectStmt, ctx->db->tx);
+        Project project = (Project )scan;
+        arraylist *exprs =project.expr_list;
         printf("\n%s\n", getExpressionNamesTitle(exprs));
-        scan->beforeFirst();
-        while (scan->next()){
+        scan.beforeFirst();
+        while (scan.next()){
             for (int i = 0; i <= exprs->size - 1; i++) {
-                variant *var = scan->getValueByIndex( i);
+                variant *var = scan.getValueByIndex( i);
                 if (var->type == DATA_TYPE_CHAR){
                     printf("%s\t", var->strValue);
                 }else if(var->type == DATA_TYPE_INT){
@@ -345,7 +345,7 @@ int dongmendb_shell_handle_select_table(dongmendb_shell_handle_sql_t *ctx, const
             printf("\n");
         }
         printf("\nsuccess.");
-        scan->close();
+        scan.close();
     } else {
         printf(parser->parserMessage);
     }

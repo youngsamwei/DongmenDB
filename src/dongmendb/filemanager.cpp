@@ -32,7 +32,7 @@ int file_manager_read(file_manager *fileManager, memory_page *memoryPage, disk_b
 };
 
 int file_manager_write(file_manager *fileManager, memory_page *memoryPage, disk_block *diskBlock) {
-    void_ptr *pfile = (void_ptr *) calloc(sizeof(void_ptr *), 1);
+    void_ptr *pfile = (void_ptr *) malloc(sizeof(void_ptr *));
     file_manager_getfile(fileManager, diskBlock->fileName, pfile);
     FILE *fp = (FILE*)*pfile;
     fseek(fp, diskBlock->blkNum * DISK_BOLCK_SIZE, SEEK_SET);
@@ -49,8 +49,9 @@ int file_manager_append(file_manager *fileManager, memory_buffer *memoryBuffer, 
     file_manager_write(fileManager, memoryBuffer->contents, diskBlock);
 };
 
+/*获取文件大小*/
 int file_manager_size(file_manager *fileManager, char *fileName) {
-    void_ptr *pfile = (void_ptr*)malloc(sizeof(void_ptr));
+    void_ptr *pfile = (void_ptr *)malloc(sizeof(void_ptr *));
     file_manager_getfile(fileManager, fileName, pfile);
 
     FILE *file = (FILE*)*pfile;
@@ -170,7 +171,7 @@ int memory_page_record_formatter(memory_page *contents, table_info *tableInfo) {
 
             void_ptr *fielddesc = (void_ptr *) malloc(sizeof(void_ptr *));
             hashmap_get(tableInfo->fields, fieldName, fielddesc);
-            field_info *fieldInfo = (field_info *)*fielddesc;
+            field_info *fieldInfo = (field_info *)fielddesc;
 
             int offset = table_info_offset(tableInfo, fieldName);
 
