@@ -59,14 +59,14 @@ int TestStmtParser::select(const char *sqlselect) {
 
     SRA_t *selectStmt = parse_sql_stmt_select(parser);
     ExecutionPlan plan;
-    Scan& scan = plan.generateSelect(test_db_ctx->db, selectStmt, test_db_ctx->db->tx);
-    Project project = (Project) scan;
-    project.beforeFirst();
+    Scan* scan = plan.generateSelect(test_db_ctx->db, selectStmt, test_db_ctx->db->tx);
+    Project *project = (Project*) scan;
+    project->beforeFirst();
     int count = 0;
-    while (project.next()) {
+    while (project->next()) {
         count++;
     }
-    project.close();
+    project->close();
 
     return count;
 }

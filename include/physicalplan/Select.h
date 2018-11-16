@@ -10,9 +10,9 @@
 class Select : public Scan {
     public:
     Expression *cond;
-    Scan& scan;
+    Scan* scan;
 
-    Select(Scan& scan) : scan(scan){};
+    Select(Scan* scan) : scan(scan){};
 
     int beforeFirst();
 

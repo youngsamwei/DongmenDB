@@ -10,11 +10,11 @@
 
 class Join : public Scan {
     public:
-    Scan& scan1;
-    Scan& scan2;
+    Scan* scan1;
+    Scan* scan2;
     Expression *cond;
 
-    Join(Scan& scan1, Scan& scan2) : scan1(scan1), scan2(scan2){};
+    Join(Scan* scan1, Scan* scan2) : scan1(scan1), scan2(scan2){};
 
     int beforeFirst();
 

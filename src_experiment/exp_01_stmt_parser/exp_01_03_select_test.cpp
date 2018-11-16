@@ -39,7 +39,7 @@ TEST_F(Exp_01_03_SelectTest, Correct){
     insertData();
 
     EXPECT_EQ(9, select( _m_list[0]));
-//    EXPECT_EQ(5, select(_m_list[1]));
+    EXPECT_EQ(5, select(_m_list[1]));
 //    EXPECT_EQ(1, select(_m_list[2]));
 //    EXPECT_EQ(1, select(_m_list[3]));
 //    EXPECT_EQ(2, select(_m_list[4]));
