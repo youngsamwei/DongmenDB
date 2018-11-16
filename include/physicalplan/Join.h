@@ -9,10 +9,10 @@
 
 class Join : public Scan {
     public:
-    physical_scan *scan1, *scan2;
+    Scan *scan1, *scan2;
     Expression *cond;
 
-    Join(physical_scan *scan1, physical_scan *scan2);
+    Join(Scan *scan1, Scan *scan2);
 
     int beforeFirst();
 

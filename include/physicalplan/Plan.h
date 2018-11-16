@@ -10,9 +10,11 @@
 #include <physicalplan/Scan.h>
 
 class Plan {
-    public :
-    Scan generateSelect(dongmendb *db, SRA_t *sra, transaction *tx);
-    Scan generateScan(dongmendb *db, SRA_t *sra, transaction *tx);
+public :
+    Scan *generateSelect(dongmendb *db, SRA_t *sra, transaction *tx);
 
+    Scan *generateScan(dongmendb *db, SRA_t *sra, transaction *tx);
+
+    Expression *evaluateExpression(Expression *expr, physical_scan *scan, variant *var);
 };
 #endif //DONGMENDB_PLAN_H

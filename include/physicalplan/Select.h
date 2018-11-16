@@ -10,9 +10,9 @@
 class Select : public Scan {
     public:
     Expression *cond;
-    physical_scan *scan;
+    Scan *scan;
 
-    Select(physical_scan *scan);
+    Select(Scan *scan);
 
     int beforeFirst();
 

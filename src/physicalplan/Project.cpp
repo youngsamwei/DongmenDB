@@ -10,38 +10,33 @@
 
 using namespace std;
 
-Project::Project(physical_scan *scan){
+Project::Project(Scan *scan){
     this->scan = scan;
 };
 
 int Project::beforeFirst() {
-    physical_scan *scan1  = scan->physicalScanSelect->scan;
-    return scan1->beforeFirst(scan1);
+    return scan->beforeFirst();
 };
 
 int Project::next() {
-    physical_scan *scan1 = scan->physicalScanProject->scan;
-    return scan1->next(scan1);
+    return scan->next();
 };
 
 int Project::close() {
-    physical_scan *scan1  = scan->physicalScanSelect->scan;
-    return scan1->close(scan1);
+    return scan->close();
 };
 
 variant* Project::getValueByIndex(int index) {
-    arraylist *exprs = scan->physicalScanProject->expr_list;
-    Expression *expr = (Expression *)arraylist_get(exprs, index);
+    Expression *expr = (Expression *)arraylist_get(expr_list, index);
     variant *var = (variant *)calloc(sizeof(variant),1);
-    physical_scan_evaluate_expression(expr,scan, var);
+    evaluateExpression(expr,scan, var);
     return var;
 };
 
 int Project::getIntByIndex(int index) {
-    arraylist *exprs = scan->physicalScanProject->expr_list;
-    Expression *expr = (Expression *)arraylist_get(exprs, index);
+    Expression *expr = (Expression *)arraylist_get(expr_list, index);
     variant *var = (variant *)calloc(sizeof(variant),1);
-    physical_scan_evaluate_expression(expr,scan, var);
+    evaluateExpression(expr,scan, var);
     if (var->type == DATA_TYPE_INT){
         return var->intValue;
     }else{
@@ -50,10 +45,9 @@ int Project::getIntByIndex(int index) {
 };
 
 string Project::getStringByIndex(int index) {
-    arraylist *exprs = scan->physicalScanProject->expr_list;
-    Expression *expr = (Expression *)arraylist_get(exprs, index);
+    Expression *expr = (Expression *)arraylist_get(expr_list, index);
     variant *var = (variant *)calloc(sizeof(variant),1);
-    physical_scan_evaluate_expression(expr,scan, var);
+    evaluateExpression(expr,scan, var);
     if (var->type == DATA_TYPE_CHAR){
         return string(var->strValue);
     }else{
@@ -62,39 +56,31 @@ string Project::getStringByIndex(int index) {
 };
 
 int Project::getInt(string tableName, string fieldName) {
-    physical_scan *scan1  = scan->physicalScanSelect->scan;
-    return scan1->getInt(scan1, tableName.c_str(), fieldName.c_str());
+    return scan->getInt( tableName.c_str(), fieldName.c_str());
 }
 
 string Project::getString(string tableName, string fieldName) {
-    physical_scan *scan1  = scan->physicalScanSelect->scan;
     field_info *fi = getField(tableName, fieldName);
     char *value = (char *) calloc(fi->length, 1);
-    scan1->getString(scan1, tableName.c_str(), fieldName.c_str(), value);
-    return string(value);
+    return scan->getString( tableName.c_str(), fieldName.c_str());
 };
 
 int Project::hasField(string tableName,string fieldName) {
-    physical_scan *scan1  = scan->physicalScanSelect->scan;
-    return scan1->hasField(scan1, tableName.c_str(), fieldName.c_str());
+    return scan->hasField( tableName.c_str(), fieldName.c_str());
 };
 
 field_info* Project::getField(string tableName, string fieldName) {
-    physical_scan *scan1  = scan->physicalScanSelect->scan;
-    return scan1->getField(scan1, tableName.c_str(), fieldName.c_str());
+    return scan->getField( tableName.c_str(), fieldName.c_str());
 };
 
 arraylist* Project::getFieldsName(string tableName) {
-    physical_scan *scan1  = scan->physicalScanSelect->scan;
-    return scan1->getFieldsName(scan1, tableName.c_str());
+    return scan->getFieldsName( tableName.c_str());
 };
 
 int Project::setInt(string tableName, string fieldName, int value) {
-    physical_scan *scan1  = scan->physicalScanSelect->scan;
-    return scan1->setInt(scan1, tableName.c_str(), fieldName.c_str(), value);
+    return scan->setInt( tableName.c_str(), fieldName.c_str(), value);
 };
 
 int Project::setString(string tableName, string fieldName, string value) {
-    physical_scan *scan1  = scan->physicalScanSelect->scan;
-    return scan1->setString(scan1, tableName.c_str(), fieldName.c_str(), value.c_str());
+    return scan->setString( tableName.c_str(), fieldName.c_str(), value.c_str());
 };

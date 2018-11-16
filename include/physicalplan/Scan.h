@@ -52,6 +52,7 @@ public:
 
     virtual int moveTo(record_id *recordID)=0;
 
+    Expression * evaluateExpression(Expression *expr, Scan *scan, variant *var);
 
 };
 
