@@ -5,7 +5,6 @@
 #include <string>
 
 #include <physicalplan/Select.h>
-#include <physicalplan/physicalplan.h>
 
 using namespace std;
 

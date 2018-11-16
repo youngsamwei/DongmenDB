@@ -7,6 +7,9 @@
 
 #include <physicalplan/Scan.h>
 
+
+#ifdef __cplusplus
+
 class Project : public Scan {
     public:
     arraylist *original_expr_list;//select语句中指定的原始表达式列表
@@ -55,5 +58,7 @@ class Project : public Scan {
 
     int moveTo(record_id *recordID);
 };
+
+#endif
 
 #endif //DONGMENDB_PROJECT_H

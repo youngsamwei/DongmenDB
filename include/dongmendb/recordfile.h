@@ -123,11 +123,11 @@ int record_file_record_formatter(record_file *recordFile, memory_page *memoryPag
 
 field_info *field_info_create(enum data_type type, int length);
 
-table_info *table_info_create(char *tableName, arraylist *fieldsName, hmap_t fields);
+table_info *table_info_create(const char *tableName, arraylist *fieldsName, hmap_t fields);
 
 int table_info_free(table_info *tableInfo);
 
-int table_info_offset(table_info *tableInfo, char *fieldName);
+int table_info_offset(table_info *tableInfo, const char *fieldName);
 
 record_page *record_page_create(transaction *tx, table_info *tableInfo, disk_block *diskBlock);
 
@@ -139,13 +139,13 @@ int record_page_moveto_id(record_page *recordPage, int id);
 
 int record_page_next(record_page *recordPage);
 
-int record_page_getint(record_page *recordPage, char *fieldName);
+int record_page_getint(record_page *recordPage,const  char *fieldName);
 
-int record_page_getstring(record_page *recordPage, char *fieldName, char *value);
+int record_page_getstring(record_page *recordPage, const char *fieldName, char *value);
 
-int record_page_setint(record_page *recordPage, char *fieldName, int value);
+int record_page_setint(record_page *recordPage, const char *fieldName, int value);
 
-int record_page_setstring(record_page *recordPage, char *fieldName, char *value);
+int record_page_setstring(record_page *recordPage,const  char *fieldName, const char *value);
 
 int record_page_delete(record_page *recordPage);
 
@@ -153,7 +153,7 @@ int record_page_searchfor(record_page *recordPage, record_page_status status);
 
 int record_page_current_pos(record_page *recordPage);
 
-int record_page_fieldpos(record_page *recordPage, char *fieldName);
+int record_page_fieldpos(record_page *recordPage,const  char *fieldName);
 
 int record_page_is_valid_slot(record_page *recordPage);
 

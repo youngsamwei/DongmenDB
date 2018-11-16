@@ -1,24 +1,26 @@
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <string.h>
 #include <utils/utils.h>
-#include "shell/shell.h"
 
-#include <stdio.h>
-#include <stdlib.h>
 #include <dongmendb/dongmendb.h>
 #include <dongmensql/dongmensql.h>
 #include <dongmendb/recordfile.h>
 #include <utils/utils.h>
 #include <parser/statement.h>
-#include <physicalplan/physicalplan.h>
 #include <dongmensql/optimizer.h>
+#include <physicalplan/ExecutionPlan.h>
+#include <physicalplan/Scan.h>
+#include <physicalplan/Project.h>
+#include "shell/shell.h"
 
 /*
  * 解析sql语句获得描述语句的结构，然后执行语句
  *
  * */
-#ifdef __cplusplus
-extern "C" {
-#endif
+
 
 #define COL_SEPARATOR "|"
 
@@ -273,10 +275,17 @@ int dongmendb_shell_handle_insert_table(dongmendb_shell_handle_sql_t *ctx, const
 
     /* TODO: 安全性检查 */
 
-    status = plan_execute_insert(ctx->db, sqlStmtInsert->tableName,
-                                     sqlStmtInsert->fields,
-                                     sqlStmtInsert->values,
-                                     ctx->db->tx);
+//    status = plan_execute_insert(ctx->db, sqlStmtInsert->tableName,
+//                                     sqlStmtInsert->fields,
+//                                     sqlStmtInsert->values,
+//                                     ctx->db->tx);
+
+    ExecutionPlan plan;
+   status  = plan.executeInsert(ctx->db, sqlStmtInsert->tableName,
+                                    sqlStmtInsert->fields,
+                                    sqlStmtInsert->values,
+                                    ctx->db->tx);
+
 
     if (status == DONGMENDB_OK) {
         transaction_commit(ctx->db->tx);
@@ -320,14 +329,16 @@ int dongmendb_shell_handle_select_table(dongmendb_shell_handle_sql_t *ctx, const
     }
 
     if (optmiziedSelectStmt != NULL) {
+        ExecutionPlan plan;
         /*执行select语句，获得物理扫描计划*/
-        physical_scan *plan = plan_execute_select(ctx->db, optmiziedSelectStmt, ctx->db->tx);
-        arraylist *exprs = plan->physicalScanProject->expr_list;
+        Scan *scan = plan.generateSelect(ctx->db, optmiziedSelectStmt, ctx->db->tx);
+        Project *project = (Project *)scan;
+        arraylist *exprs =project>expr_list;
         printf("\n%s\n", getExpressionNamesTitle(exprs));
-        plan->beforeFirst(plan);
-        while (plan->next(plan)){
+        scan->beforeFirst();
+        while (scan->next()){
             for (int i = 0; i <= exprs->size - 1; i++) {
-                variant *var = plan->getValByIndex(plan, i);
+                variant *var = scan->getValByIndex( i);
                 if (var->type == DATA_TYPE_CHAR){
                     printf("%s\t", var->strValue);
                 }else if(var->type == DATA_TYPE_INT){
@@ -337,7 +348,7 @@ int dongmendb_shell_handle_select_table(dongmendb_shell_handle_sql_t *ctx, const
             printf("\n");
         }
         printf("\nsuccess.");
-        plan->close(plan);
+        scan->close();
     } else {
         printf(parser->parserMessage);
     }
@@ -384,8 +395,13 @@ int dongmendb_shell_handle_update_data(dongmendb_shell_handle_sql_t *ctx, const 
     /*TODO: 安全性检查：用户是否有权限访问select中的数据表*/
 
     /*TODO: plan_execute_update， update语句执行*/
-    int count = plan_execute_update(ctx->db, sqlStmtUpdate,
-                                     ctx->db->tx);
+//    int count = plan_execute_update(ctx->db, sqlStmtUpdate,
+//                                     ctx->db->tx);
+
+    ExecutionPlan plan;
+
+    int count = plan.executeUpdate(ctx->db, sqlStmtUpdate,
+                                    ctx->db->tx);
 
     if (count >= 0) {
         transaction_commit(ctx->db->tx);
@@ -432,7 +448,9 @@ int dongmendb_shell_handle_delete_data(dongmendb_shell_handle_sql_t *ctx, const 
 
     /*TODO: 安全性检查：用户是否有权限访问select中的数据表*/
 
-    int count = plan_execute_delete(ctx->db, sqlStmtDelete,
+    ExecutionPlan plan;
+
+    int count = plan.executeDelete(ctx->db, sqlStmtDelete,
                                     ctx->db->tx);
 
     if (count >= 0) {

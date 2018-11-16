@@ -33,6 +33,18 @@ enum data_type {
     DATA_TYPE_BOOLEAN
 };
 
+/**
+ * 定义物理计划的数据结构和接口函数.
+ */
+typedef struct variant_ {
+    enum data_type type;
+    union {
+        int intValue;
+        char *strValue;
+        int booleanValue;
+    };
+} variant;
+
 typedef struct StrList_t {
     char *str;
     struct StrList_t *next;

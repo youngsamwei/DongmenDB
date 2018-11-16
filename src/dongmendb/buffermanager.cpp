@@ -112,7 +112,7 @@ int memory_buffer_setint(memory_buffer *buffer, int offset, int val, int txnum, 
     memory_page_setint(buffer->contents, offset, val);
 };
 
-int memory_buffer_setstring(memory_buffer *buffer, int offset, char *val, int txnum, int lsn) {
+int memory_buffer_setstring(memory_buffer *buffer, int offset, const char *val, int txnum, int lsn) {
     buffer->modifiedBy = txnum;
     if (lsn >= 0) {
         buffer->logSequenceNumber = lsn;

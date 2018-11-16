@@ -14,7 +14,6 @@
 #include <parser/tokenizer.h>
 #include <parser/parser.h>
 #include <dongmensql/sra.h>
-#include "physicalplan/physicalplan.h"
 
 
 class TestStmtOptimized : public TestStmtParser {

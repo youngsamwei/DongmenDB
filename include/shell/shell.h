@@ -3,6 +3,8 @@
 
 #include <dongmendb/dongmendb.h>
 #include <stdbool.h>
+#include <physicalplan/ExecutionPlan.h>
+#include <physicalplan/Project.h>
 
 #ifdef __cplusplus
 extern "C" {

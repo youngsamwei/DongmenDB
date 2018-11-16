@@ -48,7 +48,7 @@ int transaction_unpin(transaction *transaction, disk_block *block);
 int transaction_getint(transaction *transaction, disk_block *block, int offset);
 int transaction_setint(transaction *transaction, disk_block *block, int offset, int value);
 int transaction_getstring(transaction *transaction, disk_block *block, int offset, char *value);
-int transaction_setstring(transaction *transaction, disk_block *block, int offset, char *value);
+int transaction_setstring(transaction *transaction, disk_block *block, int offset, const char *value);
 
 int transaction_size(transaction *tx, char *fileName);
 int transaction_append(transaction *tx, char *fileName, table_info *tableInfo);

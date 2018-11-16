@@ -4,6 +4,7 @@
 
 #include <test/test_stmt_optimized.h>
 #include <dongmensql/optimizer.h>
+#include <parser/statement.h>
 
 
 /*检查SRA_Select操作的条件：

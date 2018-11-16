@@ -34,7 +34,7 @@ typedef struct dongmensql_statement {
         Create_t *create;
         SRA_t *select;
         Insert_t *insert;
-        Delete_t *delete;
+        Delete_t *_delete;
     } stmt;
 } dongmensql_statement_t;
 

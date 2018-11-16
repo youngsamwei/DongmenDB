@@ -1,23 +1,24 @@
 //
-// Created by sam on 2018/11/15.
+// Created by sam on 2018/11/16.
 //
 
-#include <physicalplan/Plan.h>
+
+#include <physicalplan/ExecutionPlan.h>
 #include <physicalplan/TableScan.h>
 #include <physicalplan/Select.h>
 #include <physicalplan/Project.h>
 #include <physicalplan/Join.h>
 
-Scan* Plan::generateSelect(dongmendb *db, SRA_t *sra, transaction *tx){
+Scan* ExecutionPlan::generateSelect(dongmendb *db, SRA_t *sra, transaction *tx){
     Scan *plan = generateScan(db, sra, tx);
 //    if (typeid(*plan) == typeid(Project)) {
-        /*处理select 中形如 student.* */
+    /*处理select 中形如 student.* */
 //        physical_scan_project_generate_expr_list(plan);
 //    }
     return plan;
 };
 
-Scan* Plan::generateScan(dongmendb *db, SRA_t *sra, transaction *tx){
+Scan* ExecutionPlan::generateScan(dongmendb *db, SRA_t *sra, transaction *tx){
     if (!sra) return NULL;
     switch (sra->t) {
         case SRA_TABLE: {
@@ -68,3 +69,40 @@ Scan* Plan::generateScan(dongmendb *db, SRA_t *sra, transaction *tx){
 
 };
 
+int ExecutionPlan::executeInsert(dongmendb *db, char *tableName, arraylist *fieldNames, arraylist *values, transaction *tx){
+    TableScan tableScan(db, tableName, tx);
+    tableScan.insertRecord();
+    for (size_t i = 0; i < fieldNames->size; i++){
+
+        char *fieldName = (char *)arraylist_get(fieldNames, i);
+
+        void_ptr *ptr = (void_ptr *) calloc(sizeof(void_ptr *), 1);
+        hashmap_get(tableScan.m_tableInfo->fields, fieldName, ptr);
+        field_info *fieldInfo = (field_info *)*ptr;
+
+        /* TODO: 完整性检查 */
+        int type = fieldInfo->type;
+        if (type == DATA_TYPE_INT) {
+            integer *val = (integer *)arraylist_get(values, i);
+            tableScan.setInt(tableName, fieldName, val->val);
+        }else if (type == DATA_TYPE_CHAR){
+            char *val = (char *)arraylist_get(values, i);
+            /*字符串超出定义时的长度，则截断字符串.*/
+            if(fieldInfo->length<strlen(val)){
+                val[fieldInfo->length] = '\0';
+            }
+            tableScan.setString(tableName, fieldName, val);
+        }else{
+            return DONGMENDB_EINVALIDSQL;
+        }
+    }
+    return DONGMENDB_OK;
+};
+
+int ExecutionPlan::executeUpdate(dongmendb *db, sql_stmt_update *sqlStmtUpdate, transaction *tx){
+
+    return -1;
+};
+int ExecutionPlan::executeDelete(dongmendb *db, sql_stmt_delete *sqlStmtDelete, transaction *tx){
+    return -1;
+};

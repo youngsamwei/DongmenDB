@@ -66,7 +66,7 @@ int memory_buffer_create(memory_buffer *buffer, file_manager *fileManager);
 int memory_buffer_getint(memory_buffer *buffer, int offset);
 int memory_buffer_getstring(memory_buffer *buffer, int offset, char *val);
 int memory_buffer_setint(memory_buffer *buffer, int offset, int val, int txnum, int lsn);
-int memory_buffer_setstring(memory_buffer *buffer, int offset, char *val, int txnum, int lsn);
+int memory_buffer_setstring(memory_buffer *buffer, int offset, const char *val, int txnum, int lsn);
 
 int memory_buffer_flush(memory_buffer *buffer);
 int memory_buffer_pin(memory_buffer *buffer);

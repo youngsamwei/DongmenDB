@@ -5,9 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <gtest/gtest.h>
-#include <parser/statement.h>
 #include <test/test_stmt_parser.h>
-#include "physicalplan/physicalplan.h"
 
 
 class Exp_01_03_SelectTest : public TestStmtParser {

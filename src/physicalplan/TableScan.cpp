@@ -3,7 +3,6 @@
 //
 
 #include <physicalplan/TableScan.h>
-#include <physicalplan/physicalscan.h>
 #include <string>
 
 using namespace std;

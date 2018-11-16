@@ -14,8 +14,7 @@
 #include <parser/tokenizer.h>
 #include <parser/parser.h>
 #include <dongmensql/sra.h>
-#include "physicalplan/physicalplan.h"
-
+#include <physicalplan/ExecutionPlan.h>
 
 /* 2018-10-27 测试sql语句的基础类。
  * 每个测试都会重新创建数据库，初始化数据，执行测试，删除数据库。

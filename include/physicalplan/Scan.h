@@ -5,11 +5,9 @@
 #ifndef DONGMENDB_SCAN_H
 #define DONGMENDB_SCAN_H
 
-#include <string>
-#include "dongmendb/recordfile.h"
-#include "physicalplan/physicalscan.h"
+#ifdef __cplusplus
 
-using namespace std;
+#include <string>
 
 class Scan {
 public:
@@ -55,5 +53,7 @@ public:
     Expression * evaluateExpression(Expression *expr, Scan *scan, variant *var);
 
 };
+
+#endif
 
 #endif //DONGMENDB_SCAN_H

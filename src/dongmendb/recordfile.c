@@ -133,9 +133,9 @@ field_info *field_info_create(enum data_type type, int length) {
     return fieldInfo;
 };
 
-table_info *table_info_create(char *tableName, arraylist *fieldsName, hmap_t fields) {
+table_info *table_info_create(const char *tableName, arraylist *fieldsName, hmap_t fields) {
     table_info *tableInfo = (table_info *) malloc(sizeof(table_info));
-    tableInfo->tableName = tableName;
+    strcpy(tableInfo->tableName, tableName);
     tableInfo->fieldsName = fieldsName;
     tableInfo->fields = fields;
     tableInfo->offsets = hashmap_create();
@@ -173,7 +173,7 @@ int table_info_free(table_info *tableInfo) {
     return DONGMENDB_OK;
 }
 
-int table_info_offset(table_info *tableInfo, char *fieldName) {
+int table_info_offset(table_info *tableInfo, const char *fieldName) {
     void_ptr *ptr = (void_ptr) malloc(sizeof(void_ptr));
     hashmap_get(tableInfo->offsets, fieldName, ptr);
     integer *ipos = *ptr;
@@ -218,22 +218,22 @@ int record_page_next(record_page *recordPage) {
     record_page_searchfor(recordPage, RECORD_PAGE_INUSE);
 };
 
-int record_page_getint(record_page *recordPage, char *fieldName) {
+int record_page_getint(record_page *recordPage, const char *fieldName) {
     int position = record_page_fieldpos(recordPage, fieldName);
     return transaction_getint(recordPage->tx, recordPage->diskBlock, position);
 };
 
-int record_page_getstring(record_page *recordPage, char *fieldName, char *value) {
+int record_page_getstring(record_page *recordPage, const char *fieldName, char *value) {
     int position = record_page_fieldpos(recordPage, fieldName);
     return transaction_getstring(recordPage->tx, recordPage->diskBlock, position, value);
 };
 
-int record_page_setint(record_page *recordPage, char *fieldName, int value) {
+int record_page_setint(record_page *recordPage, const char *fieldName, int value) {
     int position = record_page_fieldpos(recordPage, fieldName);
     return transaction_setint(recordPage->tx, recordPage->diskBlock, position, value);
 };
 
-int record_page_setstring(record_page *recordPage, char *fieldName, char *value) {
+int record_page_setstring(record_page *recordPage, const char *fieldName, const char *value) {
     int position = record_page_fieldpos(recordPage, fieldName);
     return transaction_setstring(recordPage->tx, recordPage->diskBlock, position, value);
 };
@@ -268,7 +268,7 @@ int record_page_current_pos(record_page *recordPage) {
  * @param fieldName
  * @return
  */
-int record_page_fieldpos(record_page *recordPage, char *fieldName) {
+int record_page_fieldpos(record_page *recordPage, const char *fieldName) {
     int offset = table_info_offset(recordPage->tableInfo, fieldName);
 
     return recordPage->currentSlot * recordPage->slotSize + offset + INT_SIZE;

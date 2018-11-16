@@ -63,7 +63,7 @@ int transaction_getstring(transaction *transaction, disk_block *block, int offse
     return memory_buffer_getstring(buffer, offset, value);
 };
 
-int transaction_setstring(transaction *transaction, disk_block *block, int offset, char *value) {
+int transaction_setstring(transaction *transaction, disk_block *block, int offset, const char *value) {
     //concurrency_manager_xlock(transaction->concurrencyManager, block);
     memory_buffer *buffer =
             buffer_list_get_buffer(transaction->bufferList, block);
