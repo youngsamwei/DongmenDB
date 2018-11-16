@@ -1,6 +1,3 @@
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 #include <string.h>
 #include <utils/utils.h>
@@ -644,6 +641,5 @@ int dongmendb_shell_handle_cmd_desc(dongmendb_shell_handle_sql_t *ctx, struct ha
     return DONGMENDB_OK;
 };
 
-#ifdef __cplusplus
-}
-#endif
+
+

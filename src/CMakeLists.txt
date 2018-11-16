@@ -9,34 +9,34 @@ ADD_LIBRARY(utils ${DIR_SRCS_UTILS})
 
 aux_source_directory(dongmendb DIR_SRCS_DONGMENDB)
 #增加安全性管理的实验内容
-set(DIR_SRCS_DONGMENDB ${DIR_SRCS_DONGMENDB} ../src_experiment/exp_04_security/exp_04_02_rights_manager.c )
+set(DIR_SRCS_DONGMENDB ${DIR_SRCS_DONGMENDB} exp_04_security/exp_04_02_rights_manager.cpp)
 #增加完整性检查的实验内容
-set(DIR_SRCS_DONGMENDB ${DIR_SRCS_DONGMENDB} ../src_experiment/exp_03_integrity/exp_03_01_integrity_check.c )
+set(DIR_SRCS_DONGMENDB ${DIR_SRCS_DONGMENDB} exp_03_integrity/exp_03_01_integrity_check.cpp)
 
 #增加语义检查的实验内容
-set(DIR_SRCS_DONGMENDB ${DIR_SRCS_DONGMENDB} ../src_experiment/exp_02_semantic/exp_02_01_table_exists.c )
-set(DIR_SRCS_DONGMENDB ${DIR_SRCS_DONGMENDB} ../src_experiment/exp_02_semantic/exp_02_02_field_exists.c )
+set(DIR_SRCS_DONGMENDB ${DIR_SRCS_DONGMENDB} exp_02_semantic/exp_02_01_table_exists.cpp)
+set(DIR_SRCS_DONGMENDB ${DIR_SRCS_DONGMENDB} exp_02_semantic/exp_02_02_field_exists.cpp)
 
 ADD_LIBRARY(dongmendb ${DIR_SRCS_DONGMENDB})
 TARGET_LINK_LIBRARIES(dongmendb utils)
 
 aux_source_directory(parser DIR_SRCS_PARSER)
 #增加安全性管理的实验内容
-set(DIR_SRCS_PARSER ${DIR_SRCS_PARSER} ../src_experiment/exp_04_security/exp_04_01_security_parser.c )
+set(DIR_SRCS_PARSER ${DIR_SRCS_PARSER} exp_04_security/exp_04_01_security_parser.cpp)
 #增加create table语句解析的实验内容
-set(DIR_SRCS_PARSER ${DIR_SRCS_PARSER} ../src_experiment/exp_01_stmt_parser/exp_01_01_create_table.c )
+set(DIR_SRCS_PARSER ${DIR_SRCS_PARSER} exp_01_stmt_parser/exp_01_01_create_table.cpp)
 #增加insert语句解析的实验内容
-set(DIR_SRCS_PARSER ${DIR_SRCS_PARSER} ../src_experiment/exp_01_stmt_parser/exp_01_02_insert.c )
+set(DIR_SRCS_PARSER ${DIR_SRCS_PARSER} exp_01_stmt_parser/exp_01_02_insert.cpp)
 #增加select语句解析的实验内容
-set(DIR_SRCS_PARSER ${DIR_SRCS_PARSER} ../src_experiment/exp_01_stmt_parser/exp_01_03_select.c )
+set(DIR_SRCS_PARSER ${DIR_SRCS_PARSER} exp_01_stmt_parser/exp_01_03_select.cpp)
 #增加update语句解析的实验内容
-set(DIR_SRCS_PARSER ${DIR_SRCS_PARSER} ../src_experiment/exp_01_stmt_parser/exp_01_04_update.c )
+set(DIR_SRCS_PARSER ${DIR_SRCS_PARSER} exp_01_stmt_parser/exp_01_04_update.cpp)
 #增加delete语句解析的实验内容
-set(DIR_SRCS_PARSER ${DIR_SRCS_PARSER} ../src_experiment/exp_01_stmt_parser/exp_01_05_delete.c )
+set(DIR_SRCS_PARSER ${DIR_SRCS_PARSER} exp_01_stmt_parser/exp_01_05_delete.cpp)
 
 #增加update和delete的执行的实验内容
-set(DIR_SRCS_PARSER ${DIR_SRCS_PARSER} ../src_experiment/exp_07_physical_operate/exp_07_05_update.c )
-set(DIR_SRCS_PARSER ${DIR_SRCS_PARSER} ../src_experiment/exp_07_physical_operate/exp_07_06_delete.c )
+set(DIR_SRCS_PARSER ${DIR_SRCS_PARSER} exp_07_physical_operate/exp_07_05_update.cpp)
+set(DIR_SRCS_PARSER ${DIR_SRCS_PARSER} exp_07_physical_operate/exp_07_06_delete.cpp)
 
 ADD_LIBRARY(parser ${DIR_SRCS_PARSER})
 
@@ -46,7 +46,7 @@ ADD_LIBRARY(physicalplan ${DIR_SRCS_PHYSICALPLAN})
 aux_source_directory(dongmensql DIR_SRCS_DONGMENSQL)
 
 #增加代数优化的实验内容
-set(DIR_SRCS_DONGMENSQL ${DIR_SRCS_DONGMENSQL} ../src_experiment/exp_05_algebra_opt/exp_05_02_condition_push_down.c )
+set(DIR_SRCS_DONGMENSQL ${DIR_SRCS_DONGMENSQL} exp_05_algebra_opt/exp_05_02_condition_push_down.cpp)
 
 ADD_LIBRARY(dongmensql ${DIR_SRCS_DONGMENSQL})
 

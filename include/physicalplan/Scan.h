@@ -5,9 +5,10 @@
 #ifndef DONGMENDB_SCAN_H
 #define DONGMENDB_SCAN_H
 
+#include <string>
+
 #ifdef __cplusplus
 
-#include <string>
 
 class Scan {
 public:
