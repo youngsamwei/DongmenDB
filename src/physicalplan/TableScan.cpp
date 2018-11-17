@@ -52,7 +52,7 @@ variant* TableScan::getValue(string fieldName){
 
 string TableScan::getString(string tableName, string fieldName) {
     if (!tableName.empty() && stricmp(m_tableInfo->tableName, tableName.c_str()) != 0) {
-        return NULL;
+        return "";
     }
     field_info *fi = getField(tableName, fieldName);
     char *value = (char *) calloc(fi->length, 1);

@@ -189,11 +189,14 @@ Expression *Scan::evaluateExpression(Expression *expr, Scan *scan, variant *var)
                         var->intValue = scan->getInt(tableName, fieldName);
                         return expr->nextexpr;
                     case DATA_TYPE_CHAR:
-                    case DATA_TYPE_TEXT:
+                    case DATA_TYPE_TEXT: {
                         var->type = DATA_TYPE_CHAR;
                         var->strValue = (char *) calloc(fi->length, 1);
-                        strcpy(var->strValue, scan->getString(tableName, fieldName).c_str());
+                        string v = scan->getString(tableName, fieldName);
+//                        const char*v = scan->getString(tableName, fieldName).c_str();
+                        strcpy(var->strValue, v.c_str());
                         return expr->nextexpr;
+                    }
                     case DATA_TYPE_BOOLEAN:
                         var->type = DATA_TYPE_BOOLEAN;
                         var->booleanValue = scan->getInt(tableName, fieldName);

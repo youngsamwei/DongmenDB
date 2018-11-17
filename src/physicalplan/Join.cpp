@@ -47,10 +47,10 @@ string Join::getStringByIndex(int index){
 
 int Join::getInt(string tableName, string fieldName) {
 
-    if (scan1->hasField( tableName.c_str(), fieldName.c_str())) {
-        return scan1->getInt( tableName.c_str(), fieldName.c_str());
+    if (scan1->hasField( tableName, fieldName)) {
+        return scan1->getInt( tableName, fieldName);
     } else {
-        return scan2->getInt( tableName.c_str(), fieldName.c_str());
+        return scan2->getInt( tableName, fieldName);
     };
 }
 
@@ -59,32 +59,32 @@ variant* Join::getValue(string fieldName){
 }
 
 string Join::getString(string tableName, string fieldName) {
-    if (scan1->hasField( tableName.c_str(), fieldName.c_str())) {
-         return scan1->getString( tableName.c_str(), fieldName.c_str());
+    if (scan1->hasField( tableName, fieldName)) {
+         return scan1->getString( tableName, fieldName);
     } else {
-        return scan1->getString( tableName.c_str(), fieldName.c_str());
+        return scan1->getString( tableName, fieldName);
     };
 };
 
 int Join::hasField(string tableName, string fieldName) {
-    return (scan1->hasField( tableName.c_str(), fieldName.c_str()))
-           || (scan2->hasField( tableName.c_str(), fieldName.c_str()));
+    return (scan1->hasField( tableName, fieldName))
+           || (scan2->hasField( tableName, fieldName));
 };
 
 field_info *Join::getField(string tableName, string fieldName) {
 
-    field_info *fi = scan1->getField( tableName.c_str(), fieldName.c_str());
+    field_info *fi = scan1->getField( tableName, fieldName);
     if (fi) {
         return fi;
     } else {
-        return scan2->getField( tableName.c_str(), fieldName.c_str());
+        return scan2->getField( tableName, fieldName);
     }
 };
 
 arraylist *Join::getFieldsName(string tableName) {
 
-    arraylist *scan1flds = scan1->getFieldsName( tableName.c_str());
-    arraylist *scan2flds = scan2->getFieldsName( tableName.c_str());
+    arraylist *scan1flds = scan1->getFieldsName( tableName);
+    arraylist *scan2flds = scan2->getFieldsName( tableName);
     arraylist *all = arraylist_create();
     arraylist_add_all(all, scan1flds);
     arraylist_add_all(all, scan2flds);
