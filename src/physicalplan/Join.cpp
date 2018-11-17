@@ -62,7 +62,7 @@ string Join::getString(string tableName, string fieldName) {
     if (scan1->hasField( tableName, fieldName)) {
          return scan1->getString( tableName, fieldName);
     } else {
-        return scan1->getString( tableName, fieldName);
+        return scan2->getString( tableName, fieldName);
     };
 };
 

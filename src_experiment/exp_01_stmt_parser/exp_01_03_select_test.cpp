@@ -25,8 +25,9 @@ protected:
         _m_list[11] = "select sno from student where sname ='tom cruise'";
         _m_list[12] = "select sno from student where sname = 'li simith' or sname='tom cruise'";
         _m_list[13] = "select sno from student where sname = 'zhang simith'";
+        _m_list[14] = "select sno from sc where sno = '2012010101'";
     }
-    const char *_m_list[14];
+    const char *_m_list[15];
     const char *dbname = "test_demodb";
 };
 
@@ -44,17 +45,19 @@ TEST_F(Exp_01_03_SelectTest, Correct){
     EXPECT_EQ(1, select(_m_list[3]));
     EXPECT_EQ(2, select(_m_list[4]));
 
-//    EXPECT_EQ(14, select(_m_list[5]));
+    EXPECT_EQ(14, select(_m_list[5]));
 
-//    EXPECT_EQ(6, select(_m_list[6]));
-//    EXPECT_EQ(14, select(_m_list[7]));
-//    EXPECT_EQ(14, select(_m_list[8]));
-//    EXPECT_EQ(14, select(_m_list[9]));
-//    EXPECT_EQ(14, select(_m_list[10]));
+    EXPECT_EQ(6, select(_m_list[6]));
+    EXPECT_EQ(14, select(_m_list[7]));
+    EXPECT_EQ(14, select(_m_list[8]));
+    EXPECT_EQ(14, select(_m_list[9]));
+    EXPECT_EQ(14, select(_m_list[10]));
+
     EXPECT_EQ(0, select(_m_list[11]));
     EXPECT_EQ(1, select(_m_list[12]));
     EXPECT_EQ(0, select(_m_list[13]));
 
+    EXPECT_EQ(2, select(_m_list[14]));
     /*删除数据库*/
     dropDB();
 }
