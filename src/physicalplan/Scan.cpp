@@ -4,7 +4,7 @@
 #include <physicalplan/Scan.h>
 #include <dongmensql/column.h>
 
-Expression * Scan::evaluateExpression(Expression *expr, Scan* scan, variant *var){
+Expression *Scan::evaluateExpression(Expression *expr, Scan *scan, variant *var) {
     if (!expr) return NULL;
     switch (expr->opType) {
         case TOKEN_NOT: {
@@ -168,27 +168,38 @@ Expression * Scan::evaluateExpression(Expression *expr, Scan* scan, variant *var
             /*两种情况：函数和字段名*/
             TermType type = expr->term->t;
             if (type == TERM_COLREF) {
-                char *fieldName = expr->term->ref->columnName;/*包含表名的字段名全称*/
-                char *tableName = expr->term->ref->tableName;
-                field_info *fi = scan->getField( tableName, fieldName);
+                string tableName, fieldName;
+
+                if (expr->term->ref->tableName) {
+                    tableName = expr->term->ref->tableName;
+                } else {
+                    tableName = "";
+                }
+                if (expr->term->ref->columnName) {
+                    fieldName = expr->term->ref->columnName;
+                } else {
+                    fieldName = "";
+                }
+
+                field_info *fi = scan->getField(tableName, fieldName);
                 switch (fi->type) {
                     case DATA_TYPE_INT:
                     case DATA_TYPE_DOUBLE:
                         var->type = DATA_TYPE_INT;
-                        var->intValue = scan->getInt( tableName, fieldName);
+                        var->intValue = scan->getInt(tableName, fieldName);
                         return expr->nextexpr;
                     case DATA_TYPE_CHAR:
                     case DATA_TYPE_TEXT:
                         var->type = DATA_TYPE_CHAR;
                         var->strValue = (char *) calloc(fi->length, 1);
-                        strcpy(var->strValue, scan->getString( tableName, fieldName).c_str());
+                        strcpy(var->strValue, scan->getString(tableName, fieldName).c_str());
                         return expr->nextexpr;
                     case DATA_TYPE_BOOLEAN:
                         var->type = DATA_TYPE_BOOLEAN;
-                        var->booleanValue = scan->getInt( tableName, fieldName);
+                        var->booleanValue = scan->getInt(tableName, fieldName);
                         return expr->nextexpr;
                 }
-            } else if (type == TERM_FUNC){
+            } else if (type == TERM_FUNC) {
                 /*函数*/
             }
             return expr->nextexpr;
