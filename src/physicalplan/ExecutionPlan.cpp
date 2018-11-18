@@ -11,10 +11,7 @@
 
 Scan* ExecutionPlan::generateSelect(dongmendb *db, SRA_t *sra, transaction *tx){
     Scan* plan = generateScan(db, sra, tx);
-//    if (typeid(*plan) == typeid(Project)) {
-//    /*处理select 中形如 student.* */
-//        physical_scan_project_generate_expr_list(plan);
-//    }
+
     return plan;
 };
 
@@ -101,6 +98,7 @@ int ExecutionPlan::executeUpdate(dongmendb *db, sql_stmt_update *sqlStmtUpdate, 
 
     return -1;
 };
+
 int ExecutionPlan::executeDelete(dongmendb *db, sql_stmt_delete *sqlStmtDelete, transaction *tx){
     return -1;
 };

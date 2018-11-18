@@ -7,9 +7,7 @@
 
 #include <physicalplan/Scan.h>
 
-
-#ifdef __cplusplus
-
+/*投影操作实现*/
 class Project : public Scan {
 private:
     arraylist *original_expr_list;//select语句中指定的原始表达式列表
@@ -64,7 +62,5 @@ private:
 
     int moveTo(record_id *recordID);
 };
-
-#endif
 
 #endif //DONGMENDB_PROJECT_H

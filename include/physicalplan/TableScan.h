@@ -8,6 +8,7 @@
 
 #include <physicalplan/Scan.h>
 
+/*表扫描*/
 class TableScan : public Scan {
 
 public:

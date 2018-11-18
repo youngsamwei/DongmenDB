@@ -7,7 +7,7 @@
 
 #include <physicalplan/Scan.h>
 
-
+/*笛卡尔积操作实现*/
 class Join : public Scan {
     public:
     Scan* scan1;

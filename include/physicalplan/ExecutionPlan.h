@@ -5,14 +5,12 @@
 #ifndef DONGMENDB_EXECUTIONPLAN_H
 #define DONGMENDB_EXECUTIONPLAN_H
 
-
-#ifdef __cplusplus
-
 #include <dongmendb/dongmendb.h>
 #include <dongmensql/sra.h>
 #include <parser/statement.h>
 #include <physicalplan/Scan.h>
 
+/*执行计划实现*/
 class ExecutionPlan {
     public :
     Scan* generateSelect(dongmendb *db, SRA_t *sra, transaction *tx);
@@ -24,6 +22,5 @@ class ExecutionPlan {
     int executeDelete(dongmendb *db, sql_stmt_delete *sqlStmtDelete, transaction *tx);
 };
 
-#endif
 
 #endif //DONGMENDB_EXECUTIONPLAN_H

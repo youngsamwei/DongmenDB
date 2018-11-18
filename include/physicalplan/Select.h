@@ -7,6 +7,7 @@
 
 #include <physicalplan/Scan.h>
 
+/*选择操作实现*/
 class Select : public Scan {
     public:
     Expression *cond;

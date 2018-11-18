@@ -11,6 +11,7 @@
 
 using namespace std;
 
+/*扫描接口*/
 class Scan {
 public:
     dongmendb *m_db;
