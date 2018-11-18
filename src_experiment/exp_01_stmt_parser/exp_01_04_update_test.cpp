@@ -7,7 +7,6 @@
 #include <gtest/gtest.h>
 #include <parser/statement.h>
 
-#include "physicalplan/physicalplan.h"
 #include "test/test_stmt_parser.h"
 
 /* 2018-10-27 测试类改进：每次测试都重新创建数据库，重新初始化数据。

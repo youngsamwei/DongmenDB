@@ -12,7 +12,7 @@
 Scan* ExecutionPlan::generateSelect(dongmendb *db, SRA_t *sra, transaction *tx){
     Scan* plan = generateScan(db, sra, tx);
 //    if (typeid(*plan) == typeid(Project)) {
-    /*处理select 中形如 student.* */
+//    /*处理select 中形如 student.* */
 //        physical_scan_project_generate_expr_list(plan);
 //    }
     return plan;
@@ -37,9 +37,8 @@ Scan* ExecutionPlan::generateScan(dongmendb *db, SRA_t *sra, transaction *tx){
             project->order_by = sra->project.order_by;
             project->group_by = sra->project.group_by;
             project->distinct = sra->project.distinct;
-            /*处理 形如student.*的字段表示 */
-            project->original_expr_list = sra->project.expr_list;
-            project->expr_list = arraylist_create();
+            /*设置表达式列表 */
+            project->setOriginalExprList(sra->project.expr_list);
 
             return project;
         }

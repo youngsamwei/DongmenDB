@@ -11,8 +11,12 @@
 #ifdef __cplusplus
 
 class Project : public Scan {
-    public:
+private:
     arraylist *original_expr_list;//select语句中指定的原始表达式列表
+    int processExpressionList();
+
+    public:
+
     arraylist *expr_list; //将 * 等解析后得到的表达式列表，在prepare时处理
     arraylist *order_by; //order_by_expr的列表
     int distinct;
@@ -21,6 +25,8 @@ class Project : public Scan {
     Scan* scan;
 
     Project(Scan* scan) : scan(scan){};
+
+    int setOriginalExprList(arraylist * exprList);
 
     int beforeFirst();
 

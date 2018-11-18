@@ -6,8 +6,51 @@
 #include <string>
 
 #include <physicalplan/Project.h>
+#include <dongmensql/column.h>
 
 using namespace std;
+
+int Project::setOriginalExprList(arraylist * exprList){
+    this->original_expr_list = exprList;
+    this->expr_list = arraylist_create();
+    processExpressionList();
+};
+
+int Project::processExpressionList(){
+   /* 处理 形如student.*的字段表示*/
+    arraylist_clear(this->expr_list);
+    for (int i = 0; i <= this->original_expr_list->size - 1; i++){
+        Expression *expr = (Expression *)arraylist_get(this->original_expr_list, i);
+        if (expr->term !=NULL && expr->term->t == TERM_COLREF){
+            ColumnReference_t *columnReference = expr->term->ref;
+            if (stricmp(columnReference->columnName, "*")==0){
+                string tablename;
+                if (columnReference->tableName){
+                    tablename = columnReference->tableName;
+                }else{
+                    tablename = "";
+                }
+                arraylist *names = (arraylist *)this->getFieldsName(tablename);
+                for (int j = 0; j <= names->size - 1; j ++){
+                    char *name = (char*)arraylist_get(names, j);
+                    ColumnReference_t *ref = column_get_reference(name);
+                    Expression *expr0 = newExpression(TOKEN_WORD, NULL);
+                    TermExpr *term = newTermExpr();
+                    term->t = TERM_COLREF;
+                    term->ref = ref;
+                    expr0->term = term;
+                    arraylist_add(this->expr_list, expr0);
+                }
+
+            }else{
+                arraylist_add(this->expr_list, expr);
+            }
+        }else{
+            arraylist_add(this->expr_list, expr);
+        }
+    }
+    return 1;
+};
 
 int Project::beforeFirst() {
     return scan->beforeFirst();
