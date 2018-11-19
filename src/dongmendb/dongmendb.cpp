@@ -2,6 +2,7 @@
 // Created by Sam on 2018/1/25.
 //
 
+#include <iostream>
 #include "dongmendb/dongmendb.h"
 
 
@@ -13,6 +14,7 @@ int dongmendb_open(const char *dbName, dongmendb *db) {
 
     /*初始化文件管理*/
     file_manager_new(db->fileManager, "", dbName);
+
     /*初始日志*/
     //log_manager_new(db->fileManager, file);
     db->bufferManager = (buffer_manager *) malloc(sizeof(buffer_manager));

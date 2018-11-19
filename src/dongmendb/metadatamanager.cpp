@@ -3,6 +3,7 @@
 //
 
 #include <utils/utils.h>
+#include <iostream>
 #include "dongmendb/metadatamanager.h"
 
 int metadata_manager_create(metadata_manager *metadataManager, const char *file, transaction *tx, int isNew) {

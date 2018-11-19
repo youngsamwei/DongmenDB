@@ -75,19 +75,19 @@ int ExecutionPlan::executeInsert(dongmendb *db, char *tableName,  vector<char*> 
         void_ptr *ptr = (void_ptr *) calloc(sizeof(void_ptr *), 1);
         hashmap_get(tableScan.m_tableInfo->fields, fieldName, ptr);
         field_info *fieldInfo = (field_info *)*ptr;
+        variant *val = (variant *)values.at(i);
 
         /* TODO: 完整性检查 */
         int type = fieldInfo->type;
         if (type == DATA_TYPE_INT) {
-            integer *val = (integer *)values.at(i);
-            tableScan.setInt(tableName, fieldName, val->val);
+            tableScan.setInt(tableName, fieldName, val->intValue);
         }else if (type == DATA_TYPE_CHAR){
-            char *val = (char *)values.at(i);
+
             /*字符串超出定义时的长度，则截断字符串.*/
-            if(fieldInfo->length<strlen(val)){
-                val[fieldInfo->length] = '\0';
+            if(fieldInfo->length<strlen(val->strValue)){
+                val->strValue[fieldInfo->length] = '\0';
             }
-            tableScan.setString(tableName, fieldName, val);
+            tableScan.setString(tableName, fieldName, val->strValue);
         }else{
             return DONGMENDB_EINVALIDSQL;
         }

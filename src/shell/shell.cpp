@@ -11,6 +11,7 @@
 #include <physicalplan/ExecutionPlan.h>
 #include <physicalplan/Scan.h>
 #include <physicalplan/Project.h>
+#include <iostream>
 #include "shell/shell.h"
 
 /*

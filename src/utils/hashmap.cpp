@@ -11,6 +11,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <iostream>
 
 #define HMAP_INITIAL_SIZE (256)
 #define HMAP_CHAIN_LENGTH (8)
@@ -209,6 +210,7 @@ static int _hashmap_rehash(hmap_t in) {
  * Create an empty hashmap
  */
 hmap_t hashmap_create() {
+
     hashmap_map_t* m = (hashmap_map_t*) malloc(sizeof(hashmap_map_t));
     if (!m) {
         exit(HMAP_E_OUTMEM);
