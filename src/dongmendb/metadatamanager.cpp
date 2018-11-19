@@ -19,9 +19,9 @@ table_manager *table_manager_create(int isNew, transaction *tx) {
     fieldInfo = field_info_create(DATA_TYPE_INT, INT_SIZE);
     hashmap_put(tableDescfields, "reclength", fieldInfo);
 
-    arraylist *tableMetaFieldsName = arraylist_create();
-    arraylist_add(tableMetaFieldsName, (void*)"tablename");
-    arraylist_add(tableMetaFieldsName, (void*)"reclength");
+    vector<char*> *tableMetaFieldsName;
+    tableMetaFieldsName->push_back("tablename");
+    tableMetaFieldsName->push_back("reclength");
 
     tableManager->tcatInfo = table_info_create("tablecat", tableMetaFieldsName, tableDescfields);
 
@@ -37,12 +37,12 @@ table_manager *table_manager_create(int isNew, transaction *tx) {
     fieldInfo = field_info_create(DATA_TYPE_INT, INT_SIZE);
     hashmap_put(fieldDescfields, "offset", fieldInfo);
 
-    arraylist *fieldMetaFieldsName = arraylist_create();
-    arraylist_add(fieldMetaFieldsName, (void*)"tablename");
-    arraylist_add(fieldMetaFieldsName, (void*)"fieldname");
-    arraylist_add(fieldMetaFieldsName, (void*)"type");
-    arraylist_add(fieldMetaFieldsName, (void*)"length");
-    arraylist_add(fieldMetaFieldsName, (void*)"offset");
+    vector<char*> *fieldMetaFieldsName ;
+    fieldMetaFieldsName->push_back("tablename");
+    fieldMetaFieldsName->push_back("fieldname");
+    fieldMetaFieldsName->push_back("type");
+    fieldMetaFieldsName->push_back("length");
+    fieldMetaFieldsName->push_back("offset");
 
     tableManager->fcatInfo =
             table_info_create("fieldcat", fieldMetaFieldsName, fieldDescfields);
@@ -63,7 +63,7 @@ table_manager *table_manager_create(int isNew, transaction *tx) {
  * @param tx
  * @return
  */
-int table_manager_create_table(table_manager *tableManager, char *tableName, arraylist *fieldsName, hmap_t fields,
+int table_manager_create_table(table_manager *tableManager, char *tableName, vector<char*> *fieldsName, hmap_t fields,
                                transaction *tx) {
 
 
@@ -101,9 +101,9 @@ int table_manager_create_table(table_manager *tableManager, char *tableName, arr
     record_file_create(fcatFile, tableManager->fcatInfo, tx);
 
     /*增加元数据到field描述表中*/
-    int count = tableInfo->fieldsName->size - 1;
+    int count = tableInfo->fieldsName->size() - 1;
     for (int i = 0; i <= count; i++) {
-        char *fieldName = (char*)arraylist_get(tableInfo->fieldsName, i);
+        char *fieldName = tableInfo->fieldsName->at( i);
 
         void_ptr *ptr = (void_ptr *) malloc(sizeof(void_ptr *));
         hashmap_get(tableInfo->fields, fieldName, ptr);
@@ -139,7 +139,7 @@ table_info *table_manager_get_tableinfo(table_manager *tableManager, const char 
 
     record_file *fcatFile = (record_file *) malloc(sizeof(record_file));
     record_file_create(fcatFile, tableManager->fcatInfo, tx);
-    arraylist *fieldsName = arraylist_create();
+    vector<char*> *fieldsName ;
     hmap_t *fields = ( hmap_t *)hashmap_create();
     hmap_t *offsets = (hmap_t *)hashmap_create();
     while (record_file_next(fcatFile)) {
@@ -156,7 +156,7 @@ table_info *table_manager_get_tableinfo(table_manager *tableManager, const char 
             field_info *fi = field_info_create(type, length);
             hashmap_put(fields, fieldName, fi);
             hashmap_put(offsets, fieldName, soffset);
-            arraylist_add(fieldsName, fieldName);
+            fieldsName->push_back(fieldName);
         }
         // free(name);
     }

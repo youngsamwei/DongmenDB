@@ -51,10 +51,10 @@ int opt_condition_test(SRA_t *sra) {
 }
 
 /*查找指定的columnName是否在fieldsName中，若在则返回1，否则返回0*/
-int opt_search_in_fields(arraylist *fieldsName, const char *columnName){
+int opt_search_in_fields(vector<char*> *fieldsName, const char *columnName){
 
-    for (int i = 0 ; i <=fieldsName->size-1;i++){
-        const char *cf = (const char*)fieldsName->data[i];
+    for (int i = 0 ; i <fieldsName->size();i++){
+        const char *cf = fieldsName->at(i);
         if (! strcmp(cf, columnName)){
             /*若相等*/
             return 1;
@@ -69,7 +69,7 @@ int opt_field_test(SRA_t *sra, const char *tableName, const char * columnName, t
         case SRA_TABLE:{
             if (tableName == NULL){
                 table_info *ti = table_manager_get_tableinfo(tableManager, sra->table.ref->table_name, NULL);
-                arraylist *fieldsName = ti->fieldsName;
+                vector<char*> *fieldsName = ti->fieldsName;
                 /*在fieldsName中查找columnName*/
                 return opt_search_in_fields(fieldsName, columnName);
             }

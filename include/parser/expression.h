@@ -9,12 +9,15 @@
 #include <mem.h>
 #include <stdio.h>
 #include <dongmensql/literal.h>
-#include <utils/arraylist.h>
+
 #include <utils/utils.h>
 #include "utils/opstack.h"
 #include "tokenizer.h"
 #include "parser.h"
 
+#include <vector>
+
+using namespace std;
 
 
 
@@ -141,15 +144,15 @@ Expression *newExpression(TokenType type, Expression *nextexpr);
 
 TermExpr *newTermExpr();
 
-char *getExpressionNamesTitle(arraylist *fields);
+char *getExpressionNamesTitle(vector<Expression*> *fields);
 
 int expression_free(Expression *expr);
 
-int expression_free_list(arraylist *exprlist);
+int expression_free_list(vector<Expression*> *exprlist);
 
 Expression *expression_print(Expression *expr, char *desc);
 
-int expression_print_list(arraylist *exprlist);
+int expression_print_list(vector<Expression*> *exprlist);
 
 
 /**

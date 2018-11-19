@@ -10,7 +10,7 @@
  * 数据保存在元数据表user,role, userrole, userright, roleright中。
  *
  */
-#include "utils/arraylist.h"
+
 #include "dongmendb.h"
 
 
@@ -26,11 +26,13 @@ typedef struct security_manager_ {
 
 } security_manager;
 
+typedef struct role_ role;
+typedef struct right_ right;
 typedef struct user_{
     char *userName;
     char *password;
-    arraylist *roles;
-    arraylist *rights;
+    vector<role*> *roles;
+    vector<right*> *rights;
 }user;
 
 typedef struct right_{
@@ -40,8 +42,8 @@ typedef struct right_{
 
 typedef struct role_{
     char *roleName;
-    arraylist *roles;
-    arraylist *rights;
+    vector<role*> *roles;
+    vector<right*> *rights;
 }role;
 
 /**

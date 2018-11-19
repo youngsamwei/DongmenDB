@@ -81,14 +81,13 @@ field_info *Join::getField(string tableName, string fieldName) {
     }
 };
 
-arraylist *Join::getFieldsName(string tableName) {
+vector<char*> *Join::getFieldsName(string tableName) {
 
-    arraylist *scan1flds = scan1->getFieldsName( tableName);
-    arraylist *scan2flds = scan2->getFieldsName( tableName);
-    arraylist *all = arraylist_create();
-    arraylist_add_all(all, scan1flds);
-    arraylist_add_all(all, scan2flds);
-    return all;
+    vector<char*> *scan1flds = scan1->getFieldsName( tableName);
+    vector<char*> *scan2flds = scan2->getFieldsName( tableName);
+
+    scan1flds->insert(scan1flds->end(), scan2flds->begin(), scan2flds->end());
+    return scan1flds;
 };
 
 int Join::setInt(string tableName, string fieldName, int value){

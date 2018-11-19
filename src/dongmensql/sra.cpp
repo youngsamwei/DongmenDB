@@ -10,7 +10,7 @@ SRA_t *SRATable(TableReference_t *ref)
     return sra;
 }
 
-SRA_t *SRAProject(SRA_t *sra, arraylist *exprlist)
+SRA_t *SRAProject(SRA_t *sra,  vector<Expression*> *exprlist)
 {
     SRA_t *new_sra = (SRA_t *)calloc(1, sizeof(SRA_t));
     new_sra->t = SRA_PROJECT;
@@ -269,7 +269,7 @@ void ProjectOption_free(ProjectOption_t *opt)
     free(opt);
 }
 
-ProjectOption_t *OrderBy_make(arraylist *expr, enum OrderBy asc_desc)
+ProjectOption_t *OrderBy_make( vector<Expression*> *expr, enum OrderBy asc_desc)
 {
     ProjectOption_t *ob = (ProjectOption_t *)calloc(1, sizeof(ProjectOption_t));
     ob->asc_desc = asc_desc;
@@ -277,7 +277,7 @@ ProjectOption_t *OrderBy_make(arraylist *expr, enum OrderBy asc_desc)
     return ob;
 }
 
-ProjectOption_t *GroupBy_make(arraylist *expr)
+ProjectOption_t *GroupBy_make( vector<Expression*> *expr)
 {
     ProjectOption_t *gb = (ProjectOption_t *)calloc(1, sizeof(ProjectOption_t));
     gb->group_by = expr;

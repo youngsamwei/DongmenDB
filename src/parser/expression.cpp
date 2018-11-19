@@ -4,7 +4,9 @@
 
 #include <utils/utils.h>
 #include "dongmensql/dongmensql.h"
+#include <vector>
 
+using namespace std;
 
 /**
  * @brief 从后序表达式产生中序表达式字符串
@@ -91,11 +93,11 @@ TermExpr *newTermExpr() {
     return expr;
 }
 
-char *getExpressionNamesTitle(arraylist *exprs){
+char *getExpressionNamesTitle(vector<Expression*> *exprs){
     char *title = (char *)calloc(1024,1);
 
-    for (int i = 0; i <= exprs->size - 1;i++){
-        Expression *expr = (Expression*)arraylist_get(exprs, i);
+    for (int i = 0; i < exprs->size(); i++){
+        Expression* expr = exprs->at(i);
         expression_print(expr, title);
         strcat(title, "\t");
     }
@@ -104,7 +106,7 @@ char *getExpressionNamesTitle(arraylist *exprs){
 
 int expression_free(Expression *expr) {};
 
-int expression_free_list(arraylist *expr) {};
+int expression_free_list(vector<Expression*> *expr) {};
 
 Expression *expression_print(Expression *expr, char *desc) {
     if (!expr) return NULL;
@@ -162,13 +164,14 @@ Expression *expression_print(Expression *expr, char *desc) {
     return result;
 };
 
-int expression_print_list(arraylist *exprlist) {
-    Expression *expr1 = (Expression*)arraylist_get(exprlist, 0);
+int expression_print_list(vector<Expression*> *exprlist) {
+
+    Expression *expr1 = exprlist->at(0);
     printf("[");
     expression_print(expr1, NULL);
 
-    for (int i = 1; i <= exprlist->size - 1; i++) {
-        expr1 = (Expression*)arraylist_get(exprlist, i);
+    for (int i = 1; i <= exprlist->size(); i++) {
+        expr1 = exprlist->at(i);
         printf(", ");
         expression_print(expr1, NULL);
     }

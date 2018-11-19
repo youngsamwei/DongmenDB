@@ -10,21 +10,21 @@
 /*投影操作实现*/
 class Project : public Scan {
 private:
-    arraylist *original_expr_list;//select语句中指定的原始表达式列表
+    vector<Expression*> *original_expr_list;//select语句中指定的原始表达式列表
     int processExpressionList();
 
     public:
 
-    arraylist *expr_list; //将 * 等解析后得到的表达式列表，在prepare时处理
-    arraylist *order_by; //order_by_expr的列表
+    vector<Expression*> *expr_list; //将 * 等解析后得到的表达式列表，在prepare时处理
+    vector<Expression*> *order_by; //order_by_expr的列表
     int distinct;
-    arraylist *group_by; // expression列表
+    vector<Expression*> *group_by; // expression列表
 
     Scan* scan;
 
     Project(Scan* scan) : scan(scan){};
 
-    int setOriginalExprList(arraylist * exprList);
+    int setOriginalExprList( vector<Expression*> * exprList);
 
     int beforeFirst();
 
@@ -48,7 +48,7 @@ private:
 
     field_info *getField(string tableName, string fieldName);
 
-    arraylist *getFieldsName(string tableName);
+    vector<char*> *getFieldsName(string tableName);
 
     int setInt(string tableName, string fieldName, int value);
 

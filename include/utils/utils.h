@@ -5,7 +5,7 @@
 #ifndef DONGMENDB_UTILS_H
 #define DONGMENDB_UTILS_H
 
-#include "arraylist.h"
+
 
 int dongmendb_tokenize(char *str, char ***tokens);
 

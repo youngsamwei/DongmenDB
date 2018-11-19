@@ -6,8 +6,11 @@
 #define DONGMENDB_TRANSACTION_H
 
 #include "dongmendb.h"
-#include <utils/arraylist.h>
+
 #include "utils/hashmap.h"
+#include <vector>
+
+using namespace std;
 
 
 #define  END_OF_FILE -1
@@ -30,7 +33,7 @@ typedef struct transaction_ {
 
 typedef struct buffer_list_ {
     hmap_t buffers;
-    arraylist *pins;
+    vector<disk_block*> *pins;
     buffer_manager *bufferManager;
 } buffer_list;
 

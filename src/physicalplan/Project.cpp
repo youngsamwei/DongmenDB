@@ -10,17 +10,16 @@
 
 using namespace std;
 
-int Project::setOriginalExprList(arraylist * exprList){
+int Project::setOriginalExprList(vector<Expression*> * exprList){
     this->original_expr_list = exprList;
-    this->expr_list = arraylist_create();
     processExpressionList();
 };
 
 int Project::processExpressionList(){
    /* 处理 形如student.*的字段表示*/
-    arraylist_clear(this->expr_list);
-    for (int i = 0; i <= this->original_expr_list->size - 1; i++){
-        Expression *expr = (Expression *)arraylist_get(this->original_expr_list, i);
+    this->expr_list->clear();
+    for (int i = 0; i < this->original_expr_list->size(); i++){
+        Expression *expr = this->original_expr_list->at(i);
         if (expr->term !=NULL && expr->term->t == TERM_COLREF){
             ColumnReference_t *columnReference = expr->term->ref;
             if (stricmp(columnReference->columnName, "*")==0){
@@ -30,23 +29,23 @@ int Project::processExpressionList(){
                 }else{
                     tablename = "";
                 }
-                arraylist *names = (arraylist *)this->getFieldsName(tablename);
-                for (int j = 0; j <= names->size - 1; j ++){
-                    char *name = (char*)arraylist_get(names, j);
+                vector<char*> *names = this->getFieldsName(tablename);
+                for (int j = 0; j < names->size(); j ++){
+                    char *name = names->at(j);
                     ColumnReference_t *ref = column_get_reference(name);
                     Expression *expr0 = newExpression(TOKEN_WORD, NULL);
                     TermExpr *term = newTermExpr();
                     term->t = TERM_COLREF;
                     term->ref = ref;
                     expr0->term = term;
-                    arraylist_add(this->expr_list, expr0);
+                    this->expr_list->push_back(expr0);
                 }
 
             }else{
-                arraylist_add(this->expr_list, expr);
+                this->expr_list->push_back(expr);
             }
         }else{
-            arraylist_add(this->expr_list, expr);
+            this->expr_list->push_back(expr);
         }
     }
     return 1;
@@ -65,14 +64,14 @@ int Project::close() {
 };
 
 variant *Project::getValueByIndex(int index) {
-    Expression *expr = (Expression *) arraylist_get(expr_list, index);
+    Expression *expr =  expr_list->at(index);
     variant *var = (variant *) calloc(sizeof(variant), 1);
     evaluateExpression(expr, scan, var);
     return var;
 };
 
 int Project::getIntByIndex(int index) {
-    Expression *expr = (Expression *) arraylist_get(expr_list, index);
+    Expression *expr = expr_list->at(index);
     variant *var = (variant *) calloc(sizeof(variant), 1);
     evaluateExpression(expr, scan, var);
     if (var->type == DATA_TYPE_INT) {
@@ -83,7 +82,7 @@ int Project::getIntByIndex(int index) {
 };
 
 string Project::getStringByIndex(int index) {
-    Expression *expr = (Expression *) arraylist_get(expr_list, index);
+    Expression *expr = expr_list->at(index);
     variant *var = (variant *) calloc(sizeof(variant), 1);
     evaluateExpression(expr, scan, var);
     if (var->type == DATA_TYPE_CHAR) {
@@ -115,7 +114,7 @@ field_info *Project::getField(string tableName, string fieldName) {
     return scan->getField(tableName, fieldName);
 };
 
-arraylist *Project::getFieldsName(string tableName) {
+vector<char*> *Project::getFieldsName(string tableName) {
     return scan->getFieldsName(tableName);
 };
 

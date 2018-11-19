@@ -13,7 +13,7 @@
 sql_stmt_create *parse_sql_stmt_create(ParserT *parser) {
     char *tableName = NULL;
     hmap_t columns = hashmap_create();
-    arraylist *fieldsName = arraylist_create();
+    vector<char*> *fieldsName ;
     if (!matchToken(parser, TOKEN_RESERVED_WORD, "create")) {
         return NULL;
     }
@@ -42,7 +42,7 @@ sql_stmt_create *parse_sql_stmt_create(ParserT *parser) {
             break;
         } else {
             hashmap_put(columns, field->fieldName, field);
-            arraylist_add(fieldsName, field->fieldName);
+            fieldsName->push_back(field->fieldName);
         }
         token = parseNextToken(parser);
         if (token->type == TOKEN_COMMA) {

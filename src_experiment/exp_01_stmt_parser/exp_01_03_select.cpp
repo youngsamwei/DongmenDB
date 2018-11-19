@@ -20,7 +20,7 @@ SRA_t *parse_sql_stmt_select(ParserT *parser) {
         return NULL;
     }
     /*解析select子句中的表达式列表*/
-    arraylist *fieldsExpr = parseFieldsExpr(parser);
+    vector<Expression*> *fieldsExpr = parseFieldsExpr(parser);
     if (parser->parserStateType == PARSER_WRONG) {
         return NULL;
     }
@@ -73,7 +73,7 @@ SRA_t *parse_sql_stmt_select(ParserT *parser) {
         return NULL;
     }
     token = parseNextToken(parser);
-    arraylist *groupExpr = parseFieldsExpr(parser);
+    vector<Expression*> *groupExpr = parseFieldsExpr(parser);
     project->project.group_by = groupExpr;
     project->project.group_by = groupExpr;
     if (parser->parserStateType == PARSER_WRONG) {
@@ -95,7 +95,7 @@ SRA_t *parse_sql_stmt_select(ParserT *parser) {
         return NULL;
     }
     token = parseNextToken(parser);
-    arraylist *orderExpr = parseOrderExpr(parser);
+    vector<Expression*> *orderExpr = parseOrderExpr(parser);
     project->project.order_by = orderExpr;
     if (parser->parserStateType == PARSER_WRONG) {
         return NULL;
@@ -115,18 +115,18 @@ SRA_t *parse_sql_stmt_select(ParserT *parser) {
  * @param parser 语法分析器
  * @return 表达式列表
  */
-arraylist *parseFieldsExpr(ParserT *parser) {
-    arraylist *exprs = arraylist_create();
+vector<Expression*> *parseFieldsExpr(ParserT *parser) {
+    vector<Expression*> *exprs ;
     /*解析from子句中第一个表达式*/
     Expression *expr0 = parseExpressionRD(parser);
-    arraylist_add(exprs, expr0);
+    exprs->push_back(expr0);
 
     TokenT *token = parseNextToken(parser);
     /*若还有其他表达式则进入循环，否则返回*/
     while (token != NULL && token->type == TOKEN_COMMA) {
         parseEatAndNextToken(parser);
         Expression *expr1 = parseExpressionRD(parser);
-        arraylist_add(exprs, expr1);
+        exprs->push_back(expr1);
         token = parseNextToken(parser);
     }
 

@@ -86,12 +86,13 @@ field_info* TableScan::getField(string tableName, string fieldName) {
     }
 };
 
-arraylist* TableScan::getFieldsName(string tableName) {
+vector<char*>* TableScan::getFieldsName(string tableName) {
     if (tableName.empty() || stricmp(tableName.c_str(), m_tableInfo->tableName) == 0){
         return m_tableInfo->fieldsName;
     }
+    vector<char*> *v;
     /*如果不是指定的tableName，则返回空的arraylist*/
-    return arraylist_create();
+    return v;
 };
 
 int TableScan::setInt(string tableName, string fieldName, int value) {

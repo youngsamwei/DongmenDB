@@ -3,13 +3,13 @@
 //
 
 #include <malloc.h>
+#include <algorithm>
 #include "dongmendb/transaction.h"
 
-transaction * transaction_create( dongmendb *db) {
+transaction *transaction_create(dongmendb *db) {
     transaction *tx = (transaction *) malloc(sizeof(transaction));
     tx->bufferList = (buffer_list *) malloc(sizeof(buffer_list));
     tx->bufferList->bufferManager = db->bufferManager;
-    tx->bufferList->pins = arraylist_create();
     tx->bufferList->buffers = hashmap_create();
     tx->db = db;
     tx->txNum = transaction_next_txnum(tx);
@@ -80,7 +80,7 @@ int transaction_append(transaction *tx, char *fileName, table_info *tableInfo) {
     void_ptr *pblock = (void_ptr *) malloc(sizeof(void_ptr *));
     buffer_list_pin_new(tx->bufferList, fileName, pblock, tableInfo);
 
-    disk_block *block = (disk_block *)*pblock;
+    disk_block *block = (disk_block *) *pblock;
     transaction_unpin(tx, block);
     return 1;
 }
@@ -89,14 +89,14 @@ int buffer_list_pin(buffer_list *bufferList, disk_block *block) {
     char *blockName = disk_block_get_num_string(block);
     void_ptr *pbuf = (void_ptr *) malloc(sizeof(void_ptr *));
     buffer_manager_pin(bufferList->bufferManager, block, pbuf);
-    memory_buffer *buffer = (memory_buffer *)*pbuf;
+    memory_buffer *buffer = (memory_buffer *) *pbuf;
     buffer->block = block;
     hashmap_put(bufferList->buffers, blockName, buffer);
-    arraylist_add(bufferList->pins, block);
+    bufferList->pins->push_back(block);
     return 1;
 };
 
-int transaction_next_txnum(transaction *tx){
+int transaction_next_txnum(transaction *tx) {
     return next_tx_num++;
 };
 
@@ -104,34 +104,40 @@ int buffer_list_unpin(buffer_list *bufferList, disk_block *block) {
     char *blockName = disk_block_get_num_string(block);
     void_ptr *pbuf = (void_ptr *) malloc(sizeof(void_ptr *));
     hashmap_remove(bufferList->buffers, blockName, pbuf);
-    memory_buffer *buffer = (memory_buffer *)*pbuf;
+    memory_buffer *buffer = (memory_buffer *) *pbuf;
     //buffer->block = NULL;
     buffer_manager_unpin(bufferList->bufferManager, buffer);
-    arraylist_remove_by_element(bufferList->pins, block);
+//    bufferList->pins->erase(block, bufferList->pins->begin(), bufferList->pins->end());
+
+    vector<disk_block *>::iterator s=find(bufferList->pins->begin(),bufferList->pins->end(),block);
+    if( s !=bufferList->pins->end()){
+        bufferList->pins->erase(s);
+    }
+
     return 1;
 };
 
 int buffer_list_unpin_all(buffer_list *bufferList) {
-    int size = bufferList->pins->size - 1;
+    int size = bufferList->pins->size() - 1;
     for (int i = 0; i <= size; i++) {
-        disk_block *diskBlock = (disk_block *)arraylist_get(bufferList->pins, i);
+        disk_block *diskBlock = bufferList->pins->at(i);
 
         char *blockName = disk_block_get_num_string(diskBlock);
         void_ptr *pbuf = (void_ptr *) malloc(sizeof(void_ptr *));
         hashmap_get(bufferList->buffers, blockName, pbuf);
-        memory_buffer *buffer = (memory_buffer *)*pbuf;
+        memory_buffer *buffer = (memory_buffer *) *pbuf;
 
         buffer_manager_unpin(bufferList->bufferManager, buffer);
     }
     hashmap_clear(bufferList->buffers);
-    arraylist_clear(bufferList->pins);
+    bufferList->pins->clear();
 };
 
 memory_buffer *buffer_list_get_buffer(buffer_list *bufferList, disk_block *block) {
     char *blockName = disk_block_get_num_string(block);
     void_ptr *buffer1 = (void_ptr *) malloc(sizeof(void_ptr *));
     hashmap_get(bufferList->buffers, blockName, buffer1);
-    return (memory_buffer *)*buffer1;
+    return (memory_buffer *) *buffer1;
 };
 
 int buffer_list_pin_new(buffer_list *bufferList, char *fileName, void_ptr *pblock, table_info *tableInfo) {
@@ -139,7 +145,7 @@ int buffer_list_pin_new(buffer_list *bufferList, char *fileName, void_ptr *pbloc
     int r = buffer_manager_pinnew(bufferList->bufferManager, fileName, pbuffer, tableInfo);
     memory_buffer *buffer;
     if (r) {
-        buffer = (memory_buffer *)*pbuffer;
+        buffer = (memory_buffer *) *pbuffer;
     }
 
     disk_block *diskBlock = buffer->block;
@@ -147,6 +153,6 @@ int buffer_list_pin_new(buffer_list *bufferList, char *fileName, void_ptr *pbloc
 
     char *blockName = disk_block_get_num_string(diskBlock);
     hashmap_put(bufferList->buffers, blockName, buffer);
-    arraylist_add(bufferList->pins, diskBlock);
+    bufferList->pins->push_back(diskBlock);
     return 1;
 };

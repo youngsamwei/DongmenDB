@@ -16,8 +16,10 @@
 #include "dongmendb/transaction.h"
 #include <dongmensql/common.h>
 #include "dongmendb/filemanager.h"
-#include "utils/arraylist.h"
 
+#include <vector>
+
+using namespace std;
 
 #define RECORD_FILE_EXT ".tbl"
 
@@ -46,8 +48,8 @@ typedef struct field_info_ {
 } field_info;
 
 typedef struct record_value_{
-    arraylist *fieldsInfo; //field_info list
-    arraylist *value;      //variant list
+    vector<field_info*> *fieldsInfo; //field_info list
+    vector<variant*> *value;      //variant list
 }record_value;
 /**
  * 用于保存在hashmap中的key和value
@@ -60,7 +62,7 @@ typedef struct integer_ {
  * 描述数据表的结构信息
  */
 typedef struct table_info_ {
-    arraylist *fieldsName;
+    vector<char*> *fieldsName;
     hmap_t fields;
     hmap_t offsets;
     int recordLen;
@@ -120,7 +122,7 @@ int record_file_record_formatter(record_file *recordFile, memory_page *memoryPag
 
 field_info *field_info_create(enum data_type type, int length);
 
-table_info *table_info_create(const char *tableName, arraylist *fieldsName, hmap_t fields);
+table_info *table_info_create(const char *tableName,  vector<char*> *fieldsName, hmap_t fields);
 
 int table_info_free(table_info *tableInfo);
 

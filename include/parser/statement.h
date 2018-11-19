@@ -5,7 +5,7 @@
 #ifndef DONGMENDB_STATEMENT_H
 #define DONGMENDB_STATEMENT_H
 
-#include <utils/arraylist.h>
+
 #include "dongmendb/recordfile.h"
 #include "dongmendb/dongmendb.h"
 #include "dongmendb/securitymanager.h"
@@ -23,14 +23,14 @@ typedef struct sql_stmt_create_ {
 
 typedef struct sql_stmt_insert_ {
     char *tableName;
-    arraylist *fields;
-    arraylist *values;
+    vector<char*> *fields;
+    vector<variant*> *values;
 } sql_stmt_insert;
 
 typedef struct sql_stmt_update_ {
     char *tableName;
-    arraylist *fields; //set fields 被更新的字段列表
-    arraylist *fieldsExpr;  //set fields expression 新值(表达式)列表
+    vector<char*> *fields; //set fields 被更新的字段列表
+    vector<Expression*> *fieldsExpr;  //set fields expression 新值(表达式)列表
     SRA_t *where;
 } sql_stmt_update;
 
@@ -48,9 +48,9 @@ typedef enum {
 typedef struct sql_stmt_grant_{
     sql_stmt_type sqlStmtType;   //SQL_STMT_GRANT, SQL_STMT_REVOKE
     grant_revoke_type grantType;
-    arraylist *roles;
-    arraylist *users;
-    arraylist *rights;
+    vector<role*> *roles;
+    vector<user*> *users;
+    vector<right*> *rights;
 }sql_stmt_grant_revoke;
 
 
@@ -80,7 +80,7 @@ typedef struct UpdateStmt_ {
 */
 
 sql_stmt_create *sql_stmt_create_create(char *tableName,
-                                        arraylist *fieldsName, hmap_t columns,
+                                        vector<char*> *fieldsName, hmap_t columns,
                                         Constraint_t *constraints);
 /*
 AlterStmt *createAlterStmt(char *tableName, enum AlterType type,
@@ -108,7 +108,7 @@ BinaryExpr *parseBinaryExpr(ParserT *parser);
 UnaryExpr *parseUnaryExpr(ParserT *parser);
 arraylist *parseGroupExpr(ParserT *parser);
  */
-arraylist *parseOrderExpr(ParserT *parser);
+vector<Expression*> *parseOrderExpr(ParserT *parser);
 /*
 ColumnsExpr *parseColumnsExpr(ParserT *parser);
 SetExpr *parseSetExpr(ParserT *parser);
@@ -117,7 +117,7 @@ SetExpr *parseSetExpr(ParserT *parser);
 /* 在src_experiment\exp_01_stmt_parser\exp_01_03_select.c 中实现*/
 SRA_t *parse_sql_stmt_select(ParserT *parser);
 
-arraylist *parseFieldsExpr(ParserT *parser);
+vector<Expression*> *parseFieldsExpr(ParserT *parser);
 SRA_t *parseTablesExpr(ParserT *parser);
 
 sql_stmt_create *parse_sql_stmt_create(ParserT *parser);

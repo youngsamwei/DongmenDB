@@ -3,6 +3,9 @@
 
 #include "parser/expression.h"
 #include "column.h"
+#include <vector>
+
+using namespace std;
 
 /* Relation Algebra
 RA_t in Haskell
@@ -40,7 +43,7 @@ struct RA_s {
         } sigma;
         struct {
             RA_t *ra;
-            arraylist *expr_list;
+            vector<Expression*> *expr_list;
         } pi;
         struct {
             RA_t *ra1, *ra2;
@@ -58,7 +61,7 @@ void RA_print(RA_t *ra);
 
 RA_t *RA_Table(const char *name);
 RA_t *RA_Sigma(RA_t *ra, Expression *expr);
-RA_t *RA_Pi(RA_t *ra, arraylist *expr_list);
+RA_t *RA_Pi(RA_t *ra, vector<Expression*> *expr_list);
 RA_t *RA_Union(RA_t *ra1, RA_t *ra2);
 RA_t *RA_Difference(RA_t *ra1, RA_t *ra2);
 RA_t *RA_Cross(RA_t *ra1, RA_t *ra2);

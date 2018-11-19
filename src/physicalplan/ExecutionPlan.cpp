@@ -64,12 +64,12 @@ Scan* ExecutionPlan::generateScan(dongmendb *db, SRA_t *sra, transaction *tx){
 
 };
 
-int ExecutionPlan::executeInsert(dongmendb *db, char *tableName, arraylist *fieldNames, arraylist *values, transaction *tx){
+int ExecutionPlan::executeInsert(dongmendb *db, char *tableName,  vector<char*> *fieldNames,  vector<variant*> *values, transaction *tx){
     TableScan tableScan(db, tableName, tx);
     tableScan.insertRecord();
-    for (size_t i = 0; i < fieldNames->size; i++){
+    for (size_t i = 0; i < fieldNames->size(); i++){
 
-        char *fieldName = (char *)arraylist_get(fieldNames, i);
+        char *fieldName = fieldNames->at(i);
 
         void_ptr *ptr = (void_ptr *) calloc(sizeof(void_ptr *), 1);
         hashmap_get(tableScan.m_tableInfo->fields, fieldName, ptr);
@@ -78,10 +78,10 @@ int ExecutionPlan::executeInsert(dongmendb *db, char *tableName, arraylist *fiel
         /* TODO: 完整性检查 */
         int type = fieldInfo->type;
         if (type == DATA_TYPE_INT) {
-            integer *val = (integer *)arraylist_get(values, i);
+            integer *val = (integer *)values->at(i);
             tableScan.setInt(tableName, fieldName, val->val);
         }else if (type == DATA_TYPE_CHAR){
-            char *val = (char *)arraylist_get(values, i);
+            char *val = (char *)values->at(i);
             /*字符串超出定义时的长度，则截断字符串.*/
             if(fieldInfo->length<strlen(val)){
                 val[fieldInfo->length] = '\0';

@@ -12,8 +12,8 @@
 
 sql_stmt_insert *parse_sql_stmt_insert(ParserT *parser) {
     char *tableName = NULL;
-    arraylist *fields = arraylist_create();
-    arraylist *values = arraylist_create();
+    vector<char*> *fields ;
+    vector<variant*> *values ;
 
     if (!matchToken(parser, TOKEN_RESERVED_WORD, "insert")) {
         return NULL;
@@ -40,7 +40,7 @@ sql_stmt_insert *parse_sql_stmt_insert(ParserT *parser) {
         while (token->type == TOKEN_WORD) {
             char *fieldName = new_id_name();
             strcpy(fieldName, token->text);
-            arraylist_add(fields, fieldName);
+            fields->push_back(fieldName);
             token = parseEatAndNextToken(parser);
             if (token->type==TOKEN_COMMA){
                 token = parseEatAndNextToken(parser);
@@ -75,11 +75,18 @@ sql_stmt_insert *parse_sql_stmt_insert(ParserT *parser) {
                 strcpy(value, v);
                 value[len-1] = '\0';*/
 
-                arraylist_add(values, token->text);
+                variant *v = (variant*)malloc(sizeof(variant*));
+                v->type == DATA_TYPE_CHAR;
+                v->strValue=token->text;
+                values->push_back(v);
             } else{
                 integer *i = (integer *)calloc(sizeof(integer *), 1);
                 i->val = atoi(token->text);
-                arraylist_add(values, i);
+
+                variant *v = (variant*)malloc(sizeof(variant*));
+                v->type == DATA_TYPE_INT;
+                v->intValue = i->val;
+                values->push_back(v);
             }
 
             token = parseEatAndNextToken(parser);
