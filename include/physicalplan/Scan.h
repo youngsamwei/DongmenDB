@@ -39,7 +39,7 @@ public:
 
     virtual field_info* getField(string tableName, string fieldName)=0;
 
-    virtual  vector<char*>* getFieldsName(string tableName)=0;
+    virtual  vector<char*> getFieldsName(string tableName)=0;
 
     virtual int setInt(string tableName, string fieldName, int value)=0;
 

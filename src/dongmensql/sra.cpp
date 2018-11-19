@@ -10,7 +10,7 @@ SRA_t *SRATable(TableReference_t *ref)
     return sra;
 }
 
-SRA_t *SRAProject(SRA_t *sra,  vector<Expression*> *exprlist)
+SRA_t *SRAProject(SRA_t *sra,  vector<Expression*> exprlist)
 {
     SRA_t *new_sra = (SRA_t *)calloc(1, sizeof(SRA_t));
     new_sra->t = SRA_PROJECT;
@@ -120,20 +120,20 @@ void SRA_print(SRA_t *sra)
         upInd();
         SRA_print(sra->project.sra);
         if (sra->project.distinct ||
-                sra->project.group_by ||
-                sra->project.order_by)
+                !sra->project.group_by.empty() ||
+                !sra->project.order_by.empty())
         {
             printf(",\n");
             indent_print("Options: ");
             if (sra->project.distinct)
                 printf("Distinct ");
-            if (sra->project.group_by)
+            if (!sra->project.group_by.empty())
             {
                 printf("Group by ");
                 expression_print_list(sra->project.group_by);
                 printf(" ");
             }
-            if (sra->project.order_by)
+            if (!sra->project.order_by.empty())
             {
                 printf("Order by ");
                 expression_print_list(sra->project.order_by);
@@ -247,14 +247,14 @@ SRA_t *SRA_applyOption(SRA_t *sra, ProjectOption_t *option)
     }
     else if (option != NULL)
     {
-        if (option->order_by)
+        if (!option->order_by.empty())
         {
-            sra->project.order_by = option->order_by;
+            sra->project.order_by.assign(option->order_by.begin(), option->order_by.end());
 //            sra->project.asc_desc = option->asc_desc;
         }
-        if (option->group_by)
+        if (!option->group_by.empty())
         {
-            sra->project.group_by = option->group_by;
+            sra->project.group_by.assign(option->group_by.begin(), option->group_by.end());
         }
     }
     return sra;
@@ -262,22 +262,22 @@ SRA_t *SRA_applyOption(SRA_t *sra, ProjectOption_t *option)
 
 void ProjectOption_free(ProjectOption_t *opt)
 {
-    if (opt->group_by)
+    if (!opt->group_by.empty())
         expression_free_list(opt->group_by);
-    if (opt->order_by)
+    if (!opt->order_by.empty())
         expression_free_list(opt->order_by);
     free(opt);
 }
 
-ProjectOption_t *OrderBy_make( vector<Expression*> *expr, enum OrderBy asc_desc)
+ProjectOption_t *OrderBy_make( vector<Expression*> expr, enum OrderBy asc_desc)
 {
     ProjectOption_t *ob = (ProjectOption_t *)calloc(1, sizeof(ProjectOption_t));
     ob->asc_desc = asc_desc;
-    ob->order_by = expr;
+    ob->order_by.assign(expr.begin(), expr.end());
     return ob;
 }
 
-ProjectOption_t *GroupBy_make( vector<Expression*> *expr)
+ProjectOption_t *GroupBy_make( vector<Expression*> expr)
 {
     ProjectOption_t *gb = (ProjectOption_t *)calloc(1, sizeof(ProjectOption_t));
     gb->group_by = expr;
@@ -287,27 +287,27 @@ ProjectOption_t *GroupBy_make( vector<Expression*> *expr)
 ProjectOption_t *ProjectOption_combine(ProjectOption_t *op1,
                                        ProjectOption_t *op2)
 {
-    if (op1->group_by && op2->group_by)
+    if (op1->group_by.empty() && op2->group_by.empty())
     {
         fprintf(stderr, "Error: can't combine two group_bys.\n");
         exit(1);
     }
-    if (op1->order_by && op2->order_by)
+    if (op1->order_by.empty() && op2->order_by.empty())
     {
         fprintf(stderr, "Error: can't combine two order_bys.\n");
         exit(1);
     }
-    if (op2->group_by)
+    if (op2->group_by.empty())
     {
         op1->group_by = op2->group_by;
-        op2->group_by = NULL;
+        op2->group_by.clear();
         ProjectOption_free(op2);
         return op1;
     }
     else
     {
         op2->group_by = op1->group_by;
-        op1->group_by = NULL;
+        op1->group_by.clear();
         ProjectOption_free(op1);
         return op2;
     }
@@ -344,18 +344,18 @@ JoinCondition_t *Using(StrList_t *col_list)
 
 void ProjectOption_print(ProjectOption_t *op)
 {
-    if (op->order_by)
+    if (!op->order_by.empty())
     {
         printf("Order by: (%p) ", op->order_by);
         expression_print_list(op->order_by);
         printf(op->asc_desc == ORDER_BY_ASC ? " ascending" : " descending");
     }
-    if (op->group_by)
+    if (!op->group_by.empty())
     {
         printf("Group by: (%p) ", op->group_by);
         expression_print_list(op->group_by);
     }
-    if (!op->order_by && !op->group_by)
+    if (op->order_by.empty() && op->group_by.empty())
     {
         printf("Empty ProjectOption\n");
     }

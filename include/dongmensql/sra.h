@@ -88,10 +88,10 @@ typedef struct order_by_expr_ {
 
 typedef struct SRA_Project_s {
     SRA_t *sra;
-    vector<Expression*> *expr_list; //expression列表
-    vector<Expression*> *order_by; //order_by_expr的列表
+    vector<Expression*> expr_list; //expression列表
+    vector<Expression*> order_by; //order_by_expr的列表
     int distinct;
-    vector<Expression*> *group_by; // expression列表
+    vector<Expression*> group_by; // expression列表
 } SRA_Project_t;
 
 typedef struct SRA_Select_s {
@@ -137,12 +137,12 @@ struct JoinCondition_s {
 };
 
 typedef struct ProjectOption_s {
-    vector<Expression*> *order_by, *group_by;
+    vector<Expression*> order_by, group_by;
     enum OrderBy asc_desc; /* not used by group by */
 } ProjectOption_t;
 
 SRA_t *SRATable(TableReference_t *ref);
-SRA_t *SRAProject(SRA_t *sra,  vector<Expression*> *expr_list);
+SRA_t *SRAProject(SRA_t *sra,  vector<Expression*> expr_list);
 SRA_t *SRASelect(SRA_t *sra, Expression *cond);
 SRA_t *SRANaturalJoin(SRA_t *sra1, SRA_t *sra2);
 SRA_t *SRAJoin(SRA_t *sra1, SRA_t *sra2, JoinCondition_t *cond);

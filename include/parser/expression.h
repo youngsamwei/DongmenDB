@@ -144,15 +144,15 @@ Expression *newExpression(TokenType type, Expression *nextexpr);
 
 TermExpr *newTermExpr();
 
-char *getExpressionNamesTitle(vector<Expression*> *fields);
+char *getExpressionNamesTitle(vector<Expression*> fields);
 
 int expression_free(Expression *expr);
 
-int expression_free_list(vector<Expression*> *exprlist);
+int expression_free_list(vector<Expression*> exprlist);
 
 Expression *expression_print(Expression *expr, char *desc);
 
-int expression_print_list(vector<Expression*> *exprlist);
+int expression_print_list(vector<Expression*> exprlist);
 
 
 /**

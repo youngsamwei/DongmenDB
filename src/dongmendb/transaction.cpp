@@ -92,7 +92,7 @@ int buffer_list_pin(buffer_list *bufferList, disk_block *block) {
     memory_buffer *buffer = (memory_buffer *) *pbuf;
     buffer->block = block;
     hashmap_put(bufferList->buffers, blockName, buffer);
-    bufferList->pins->push_back(block);
+    bufferList->pins.push_back(block);
     return 1;
 };
 
@@ -109,18 +109,18 @@ int buffer_list_unpin(buffer_list *bufferList, disk_block *block) {
     buffer_manager_unpin(bufferList->bufferManager, buffer);
 //    bufferList->pins->erase(block, bufferList->pins->begin(), bufferList->pins->end());
 
-    vector<disk_block *>::iterator s=find(bufferList->pins->begin(),bufferList->pins->end(),block);
-    if( s !=bufferList->pins->end()){
-        bufferList->pins->erase(s);
+    vector<disk_block *>::iterator s=find(bufferList->pins.begin(),bufferList->pins.end(),block);
+    if( s !=bufferList->pins.end()){
+        bufferList->pins.erase(s);
     }
 
     return 1;
 };
 
 int buffer_list_unpin_all(buffer_list *bufferList) {
-    int size = bufferList->pins->size() - 1;
+    int size = bufferList->pins.size() - 1;
     for (int i = 0; i <= size; i++) {
-        disk_block *diskBlock = bufferList->pins->at(i);
+        disk_block *diskBlock = bufferList->pins.at(i);
 
         char *blockName = disk_block_get_num_string(diskBlock);
         void_ptr *pbuf = (void_ptr *) malloc(sizeof(void_ptr *));
@@ -130,7 +130,7 @@ int buffer_list_unpin_all(buffer_list *bufferList) {
         buffer_manager_unpin(bufferList->bufferManager, buffer);
     }
     hashmap_clear(bufferList->buffers);
-    bufferList->pins->clear();
+    bufferList->pins.clear();
 };
 
 memory_buffer *buffer_list_get_buffer(buffer_list *bufferList, disk_block *block) {
@@ -153,6 +153,6 @@ int buffer_list_pin_new(buffer_list *bufferList, char *fileName, void_ptr *pbloc
 
     char *blockName = disk_block_get_num_string(diskBlock);
     hashmap_put(bufferList->buffers, blockName, buffer);
-    bufferList->pins->push_back(diskBlock);
+    bufferList->pins.push_back(diskBlock);
     return 1;
 };

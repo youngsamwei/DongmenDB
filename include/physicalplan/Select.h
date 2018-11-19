@@ -37,7 +37,7 @@ class Select : public Scan {
 
     field_info *getField(string tableName, string fieldName);
 
-    vector<char*> *getFieldsName(string tableName);
+    vector<char*> getFieldsName(string tableName);
 
     int setInt(string tableName, string fieldName, int value);
 

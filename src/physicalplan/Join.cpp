@@ -81,12 +81,12 @@ field_info *Join::getField(string tableName, string fieldName) {
     }
 };
 
-vector<char*> *Join::getFieldsName(string tableName) {
+vector<char*> Join::getFieldsName(string tableName) {
 
-    vector<char*> *scan1flds = scan1->getFieldsName( tableName);
-    vector<char*> *scan2flds = scan2->getFieldsName( tableName);
+    vector<char*> scan1flds = scan1->getFieldsName( tableName);
+    vector<char*> scan2flds = scan2->getFieldsName( tableName);
 
-    scan1flds->insert(scan1flds->end(), scan2flds->begin(), scan2flds->end());
+    scan1flds.insert(scan1flds.end(), scan2flds.begin(), scan2flds.end());
     return scan1flds;
 };
 

@@ -62,7 +62,7 @@ typedef struct integer_ {
  * 描述数据表的结构信息
  */
 typedef struct table_info_ {
-    vector<char*> *fieldsName;
+    vector<char*> fieldsName;
     hmap_t fields;
     hmap_t offsets;
     int recordLen;
@@ -122,7 +122,7 @@ int record_file_record_formatter(record_file *recordFile, memory_page *memoryPag
 
 field_info *field_info_create(enum data_type type, int length);
 
-table_info *table_info_create(const char *tableName,  vector<char*> *fieldsName, hmap_t fields);
+table_info *table_info_create(const char *tableName,  vector<char*> fieldsName, hmap_t fields);
 
 int table_info_free(table_info *tableInfo);
 

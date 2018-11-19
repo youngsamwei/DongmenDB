@@ -13,6 +13,9 @@
 
 #include "dongmendb.h"
 
+#include <vector>
+
+using namespace std;
 
 typedef enum{
     RIGHT_SELECT = 0,
@@ -26,25 +29,28 @@ typedef struct security_manager_ {
 
 } security_manager;
 
-typedef struct role_ role;
-typedef struct right_ right;
-typedef struct user_{
+class role;
+class right;
+ class user{
+ public:
     char *userName;
     char *password;
     vector<role*> *roles;
-    vector<right*> *rights;
-}user;
+//    vector<right*> *rights;
+};
 
-typedef struct right_{
+class right {
+public:
     char *objectName;
     right_type rightType;
-}right;
+};
 
-typedef struct role_{
+class role {
+public:
     char *roleName;
     vector<role*> *roles;
-    vector<right*> *rights;
-}role;
+//    vector<right*> *rights;
+};
 
 /**
  * 在系统表user中增加用户

@@ -99,7 +99,7 @@ RA_t *RA_Sigma (RA_t *ra, Expression *cond)
     return new_ra;
 }
 
-RA_t *RA_Pi (RA_t *ra,  vector<Expression*> *expr_list)
+RA_t *RA_Pi (RA_t *ra,  vector<Expression*> expr_list)
 {
     RA_t *new_ra = (RA_t *)calloc(1, sizeof(RA_t));
     new_ra->t = RA_PI;

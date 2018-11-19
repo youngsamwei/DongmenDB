@@ -330,11 +330,11 @@ int dongmendb_shell_handle_select_table(dongmendb_shell_handle_sql_t *ctx, const
         /*执行select语句，获得物理扫描计划*/
         Scan* scan = plan.generateSelect(ctx->db, optmiziedSelectStmt, ctx->db->tx);
         Project* project = (Project*)scan;
-        vector<Expression*> *exprs =project->expr_list;
+        vector<Expression*> exprs =project->expr_list;
         printf("\n%s\n", getExpressionNamesTitle(exprs));
         project->beforeFirst();
         while (project->next()){
-            for (int i = 0; i <= exprs->size() - 1; i++) {
+            for (int i = 0; i <= exprs.size() - 1; i++) {
                 variant *var = project->getValueByIndex( i);
                 if (var->type == DATA_TYPE_CHAR){
                     printf("%s\t", var->strValue);

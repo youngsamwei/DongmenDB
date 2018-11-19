@@ -93,11 +93,11 @@ TermExpr *newTermExpr() {
     return expr;
 }
 
-char *getExpressionNamesTitle(vector<Expression*> *exprs){
+char *getExpressionNamesTitle(vector<Expression*> exprs){
     char *title = (char *)calloc(1024,1);
 
-    for (int i = 0; i < exprs->size(); i++){
-        Expression* expr = exprs->at(i);
+    for (int i = 0; i < exprs.size(); i++){
+        Expression* expr = exprs.at(i);
         expression_print(expr, title);
         strcat(title, "\t");
     }
@@ -106,7 +106,7 @@ char *getExpressionNamesTitle(vector<Expression*> *exprs){
 
 int expression_free(Expression *expr) {};
 
-int expression_free_list(vector<Expression*> *expr) {};
+int expression_free_list(vector<Expression*> expr) {};
 
 Expression *expression_print(Expression *expr, char *desc) {
     if (!expr) return NULL;
@@ -164,14 +164,14 @@ Expression *expression_print(Expression *expr, char *desc) {
     return result;
 };
 
-int expression_print_list(vector<Expression*> *exprlist) {
+int expression_print_list(vector<Expression*> exprlist) {
 
-    Expression *expr1 = exprlist->at(0);
+    Expression *expr1 = exprlist.at(0);
     printf("[");
     expression_print(expr1, NULL);
 
-    for (int i = 1; i <= exprlist->size(); i++) {
-        expr1 = exprlist->at(i);
+    for (int i = 1; i <= exprlist.size(); i++) {
+        expr1 = exprlist.at(i);
         printf(", ");
         expression_print(expr1, NULL);
     }

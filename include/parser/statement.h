@@ -13,6 +13,11 @@
 #include <dongmensql/sra.h>
 #include "parser.h"
 
+
+#include <vector>
+
+using namespace std;
+
 typedef struct ParserT_  ParserT;
 typedef struct sql_stmt_create_ {
     table_info *tableInfo;
@@ -23,14 +28,14 @@ typedef struct sql_stmt_create_ {
 
 typedef struct sql_stmt_insert_ {
     char *tableName;
-    vector<char*> *fields;
-    vector<variant*> *values;
+    vector<char*> fields;
+    vector<variant*> values;
 } sql_stmt_insert;
 
 typedef struct sql_stmt_update_ {
     char *tableName;
-    vector<char*> *fields; //set fields 被更新的字段列表
-    vector<Expression*> *fieldsExpr;  //set fields expression 新值(表达式)列表
+    vector<char*> fields; //set fields 被更新的字段列表
+    vector<Expression*> fieldsExpr;  //set fields expression 新值(表达式)列表
     SRA_t *where;
 } sql_stmt_update;
 
@@ -48,9 +53,9 @@ typedef enum {
 typedef struct sql_stmt_grant_{
     sql_stmt_type sqlStmtType;   //SQL_STMT_GRANT, SQL_STMT_REVOKE
     grant_revoke_type grantType;
-    vector<role*> *roles;
-    vector<user*> *users;
-    vector<right*> *rights;
+    vector<role*> roles;
+    vector<user*> users;
+//    vector<right*> *rights;
 }sql_stmt_grant_revoke;
 
 
@@ -80,7 +85,7 @@ typedef struct UpdateStmt_ {
 */
 
 sql_stmt_create *sql_stmt_create_create(char *tableName,
-                                        vector<char*> *fieldsName, hmap_t columns,
+                                        vector<char*> fieldsName, hmap_t columns,
                                         Constraint_t *constraints);
 /*
 AlterStmt *createAlterStmt(char *tableName, enum AlterType type,
@@ -108,7 +113,7 @@ BinaryExpr *parseBinaryExpr(ParserT *parser);
 UnaryExpr *parseUnaryExpr(ParserT *parser);
 arraylist *parseGroupExpr(ParserT *parser);
  */
-vector<Expression*> *parseOrderExpr(ParserT *parser);
+vector<Expression*> parseOrderExpr(ParserT *parser);
 /*
 ColumnsExpr *parseColumnsExpr(ParserT *parser);
 SetExpr *parseSetExpr(ParserT *parser);
@@ -117,7 +122,7 @@ SetExpr *parseSetExpr(ParserT *parser);
 /* 在src_experiment\exp_01_stmt_parser\exp_01_03_select.c 中实现*/
 SRA_t *parse_sql_stmt_select(ParserT *parser);
 
-vector<Expression*> *parseFieldsExpr(ParserT *parser);
+vector<Expression*> parseFieldsExpr(ParserT *parser);
 SRA_t *parseTablesExpr(ParserT *parser);
 
 sql_stmt_create *parse_sql_stmt_create(ParserT *parser);

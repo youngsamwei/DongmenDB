@@ -39,7 +39,7 @@ typedef struct table_manager_ {
 
 int metadata_manager_create(metadata_manager *metadataManager, const char *file, transaction *tx, int isNew);
 table_manager *table_manager_create(int isNew, transaction *tx);
-int table_manager_create_table(table_manager *tableManager, char *tableName,  vector<char*> *fieldsName, hmap_t fields,
+int table_manager_create_table(table_manager *tableManager, char *tableName,  vector<char*> fieldsName, hmap_t fields,
                                transaction *tx);
 table_info *table_manager_get_tableinfo(table_manager *tableManager, const char *tableName, transaction *tx);
 

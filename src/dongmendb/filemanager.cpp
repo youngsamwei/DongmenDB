@@ -165,9 +165,9 @@ int memory_page_record_formatter(memory_page *contents, table_info *tableInfo) {
         memory_page_setint(contents, pos, RECORD_PAGE_EMPTY);
         /*计算当前记录的偏移量, +slot的使用状态的整型值偏移量*/
         int recoffset = pos + INT_SIZE;
-        int count = tableInfo->fieldsName->size() - 1;
+        int count = tableInfo->fieldsName.size() - 1;
         for (int i = 0; i <= count; i++) {
-            char *fieldName = tableInfo->fieldsName->at( i);
+            char *fieldName = tableInfo->fieldsName.at( i);
 
             void_ptr *fielddesc = (void_ptr *) malloc(sizeof(void_ptr *));
             hashmap_get(tableInfo->fields, fieldName, fielddesc);

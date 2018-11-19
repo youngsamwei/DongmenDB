@@ -7,7 +7,7 @@
 #include <dongmensql/dongmensql.h>
 
 sql_stmt_create *sql_stmt_create_create(char *tableName,
-                            vector<char*> *fieldsName, hmap_t columns,
+                            vector<char*> fieldsName, hmap_t columns,
                                         Constraint_t *constraints) {
     sql_stmt_create *sqlStmtCreate = (sql_stmt_create *)malloc(sizeof(sql_stmt_create));
     sqlStmtCreate->tableInfo =  table_info_create(tableName, fieldsName, columns);
@@ -33,7 +33,9 @@ UnaryExpr *parseUnaryExpr(ParserT *parser) { return NULL; };
 
 arraylist *parseGroupExpr(ParserT *parser) { return NULL; };
 */
-vector<Expression*> *parseOrderExpr(ParserT *parser) { return NULL; };
+vector<Expression*> parseOrderExpr(ParserT *parser) {
+    vector<Expression*> v;
+    return v; };
 /*
 ColumnsExpr *parseColumnsExpr(ParserT *parser) { return NULL; };
 

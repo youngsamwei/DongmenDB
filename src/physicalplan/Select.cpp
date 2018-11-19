@@ -63,7 +63,7 @@ field_info* Select::getField(string tableName, string fieldName) {
     return scan->getField( tableName, fieldName);
 };
 
-vector<char*>* Select::getFieldsName(string tableName) {
+vector<char*> Select::getFieldsName(string tableName) {
     return scan->getFieldsName( tableName);
 };
 

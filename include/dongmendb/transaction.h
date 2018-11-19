@@ -33,7 +33,7 @@ typedef struct transaction_ {
 
 typedef struct buffer_list_ {
     hmap_t buffers;
-    vector<disk_block*> *pins;
+    vector<disk_block*> pins;
     buffer_manager *bufferManager;
 } buffer_list;
 

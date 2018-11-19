@@ -133,7 +133,7 @@ field_info *field_info_create(enum data_type type, int length) {
     return fieldInfo;
 };
 
-table_info *table_info_create(const char *tableName, vector<char*> *fieldsName, hmap_t fields) {
+table_info *table_info_create(const char *tableName, vector<char*> fieldsName, hmap_t fields) {
     table_info *tableInfo = (table_info *) malloc(sizeof(table_info));
     tableInfo->tableName = new_id_name();
     strcpy( tableInfo->tableName, tableName);
@@ -143,9 +143,9 @@ table_info *table_info_create(const char *tableName, vector<char*> *fieldsName, 
     tableInfo->recordLen = 0;
     int pos = 0;
 
-    int count = fieldsName->size() - 1;
+    int count = fieldsName.size() - 1;
     for (int i = 0; i <= count; i++) {
-        char *fieldName = fieldsName->at( i);
+        char *fieldName = fieldsName.at( i);
 
         void_ptr *value = (void_ptr *) malloc(sizeof(void_ptr *));
         hashmap_get(tableInfo->fields, fieldName, value);
