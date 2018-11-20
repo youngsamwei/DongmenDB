@@ -109,7 +109,7 @@ int table_manager_create_table(table_manager *tableManager, char *tableName, vec
 
         field_info *fieldInfo = tableInfo->fields->find(fieldName)->second;
 
-        int offset = table_info_offset(tableInfo, fieldName);
+        int offset = tableInfo->offsets->find(fieldName)->second;
 
         record_file_insert(fcatFile);
         record_file_set_string(fcatFile, "tablename", tableName);

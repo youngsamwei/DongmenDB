@@ -143,7 +143,8 @@ table_info *table_info_create(const char *tableName, vector<char*> fieldsName,  
     tableInfo->fields = lfields;
 
     /*TODO：需要释放*/
-    tableInfo->offsets = new map<string, int>();
+//
+    std::map<string, int> *lfs = new std::map<string, int>();
 
     tableInfo->recordLen = 0;
     int pos = 0;
@@ -154,7 +155,9 @@ table_info *table_info_create(const char *tableName, vector<char*> fieldsName,  
 
         field_info *fieldInfo = lfields->find(fieldName)->second;
 
-        tableInfo->offsets->insert(pair<string,int>(fieldName, pos));
+        cout<<tableName<<" "<<fieldName<<" pause."<<endl;
+        (*lfs)[fieldName]=  pos;
+//        lfs->insert(pair<string,integer*>(fieldName, ipos));
 
         if (fieldInfo->type == DATA_TYPE_CHAR) {
             /*增加字符串长度的存储 位置*/
@@ -164,6 +167,7 @@ table_info *table_info_create(const char *tableName, vector<char*> fieldsName,  
         }
 
     }
+    tableInfo->offsets = lfs;
     tableInfo->recordLen = pos;
     return tableInfo;
 };
@@ -268,7 +272,7 @@ int record_page_current_pos(record_page *recordPage) {
  * @return
  */
 int record_page_fieldpos(record_page *recordPage, const char *fieldName) {
-    int offset = table_info_offset(recordPage->tableInfo, fieldName);
+    int offset = recordPage->tableInfo->offsets->find(fieldName)->second;
 
     return recordPage->currentSlot * recordPage->slotSize + offset + INT_SIZE;
 };

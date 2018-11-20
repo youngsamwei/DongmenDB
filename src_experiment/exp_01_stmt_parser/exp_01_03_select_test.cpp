@@ -39,6 +39,7 @@ TEST_F(Exp_01_03_SelectTest, Correct){
 /*创建表*/
     createTable();
 
+
 /*增加数据*/
     insertData();
 

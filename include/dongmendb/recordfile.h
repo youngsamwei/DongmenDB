@@ -18,6 +18,7 @@
 #include "dongmendb/filemanager.h"
 
 #include <vector>
+#include <map>
 
 using namespace std;
 

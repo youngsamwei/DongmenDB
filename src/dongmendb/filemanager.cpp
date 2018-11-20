@@ -5,6 +5,7 @@
 #include <sys/stat.h>
 #include <utils/utils.h>
 #include <io.h>
+#include <iostream>
 
 #include "dongmendb/filemanager.h"
 
@@ -170,7 +171,10 @@ int memory_page_record_formatter(memory_page *contents, table_info *tableInfo) {
 
             field_info *fieldInfo = tableInfo->fields->find(fieldName)->second;
 
-            int offset = table_info_offset(tableInfo, fieldName);
+            int offset = tableInfo->offsets->find(fieldName)->second;
+            if (offset < 0){
+                cout<<offset<<endl;
+            }
 
             if (fieldInfo->type == DATA_TYPE_INT) {
                 memory_page_setint(contents, recoffset + offset, 0);
