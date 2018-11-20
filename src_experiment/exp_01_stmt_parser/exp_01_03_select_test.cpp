@@ -32,10 +32,13 @@ protected:
 };
 
 TEST_F(Exp_01_03_SelectTest, Correct){
+
     /*据指定的数据库名称创建数据库*/
     createDB(dbname);
+
 /*创建表*/
     createTable();
+
 /*增加数据*/
     insertData();
 

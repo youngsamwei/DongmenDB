@@ -134,16 +134,16 @@ field_info *field_info_create(enum data_type type, int length) {
     return fieldInfo;
 };
 
-table_info *table_info_create(const char *tableName, vector<char*> fieldsName, hmap_t fields) {
+table_info *table_info_create(const char *tableName, vector<char*> fieldsName,  map<string, field_info*>  *lfields) {
 
     table_info *tableInfo = (table_info *) malloc(sizeof(table_info));
     tableInfo->tableName = new_id_name();
     strcpy( tableInfo->tableName, tableName);
     tableInfo->fieldsName = fieldsName;
+    tableInfo->fields = lfields;
 
-    tableInfo->fields = fields;
-
-    tableInfo->offsets = hashmap_create();
+    /*TODO：需要释放*/
+    tableInfo->offsets = new map<string, int>();
 
     tableInfo->recordLen = 0;
     int pos = 0;
@@ -152,13 +152,9 @@ table_info *table_info_create(const char *tableName, vector<char*> fieldsName, h
     for (int i = 0; i <= count; i++) {
         char *fieldName = fieldsName.at( i);
 
-        void_ptr *value = (void_ptr *) malloc(sizeof(void_ptr *));
-        hashmap_get(tableInfo->fields, fieldName, value);
-        field_info *fieldInfo = (field_info *)*value;
+        field_info *fieldInfo = lfields->find(fieldName)->second;
 
-        integer *ipos = (integer *) malloc(sizeof(integer));
-        ipos->val = pos;
-        hashmap_put(tableInfo->offsets, fieldName, ipos);
+        tableInfo->offsets->insert(pair<string,int>(fieldName, pos));
 
         if (fieldInfo->type == DATA_TYPE_CHAR) {
             /*增加字符串长度的存储 位置*/
@@ -180,10 +176,7 @@ int table_info_free(table_info *tableInfo) {
 }
 
 int table_info_offset(table_info *tableInfo, const char *fieldName) {
-    void_ptr *ptr = (void_ptr*) malloc(sizeof(void_ptr));
-    hashmap_get(tableInfo->offsets, fieldName, ptr);
-    integer *ipos = (integer *)*ptr;
-    return ipos->val;
+    return tableInfo->offsets->find(fieldName)->second;
 };
 
 record_page *record_page_create(transaction *tx, table_info *tableInfo, disk_block *diskBlock) {

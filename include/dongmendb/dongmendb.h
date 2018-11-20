@@ -16,6 +16,11 @@
 
 #define MAX_ID_NAME_LENGTH 32
 
+
+
+typedef void *void_ptr;
+
+
 /* Forward declarations.
  * From the API's perspective's, these are opaque data types. */
 

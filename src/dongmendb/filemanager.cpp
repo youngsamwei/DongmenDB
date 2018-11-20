@@ -19,22 +19,21 @@ int file_manager_new(file_manager *fileManager, char *directory, const char *dbN
 
     fileManager->dbDirectoryName = strdup(dbName);
     fileManager->dbDirectory = fopen(dbName, "rw");
-    fileManager->openFiles = hashmap_create();
+
+    fileManager->openFiles  = new map<string, FILE*>();
 };
 
 int file_manager_read(file_manager *fileManager, memory_page *memoryPage, disk_block *diskBlock) {
-    void_ptr *pfile = (void_ptr *) malloc(sizeof(void_ptr *));
-    file_manager_getfile(fileManager, diskBlock->fileName, pfile);
-    FILE *fp = (FILE*)*pfile;
+
+    FILE *fp = file_manager_getfile(fileManager, diskBlock->fileName);
     //memset(memoryPage->contents, 0, sizeof(memoryPage->contents));
     fseek(fp, diskBlock->blkNum * DISK_BOLCK_SIZE, SEEK_SET);
     fread(memoryPage->contents, sizeof(char), sizeof(memoryPage->contents), fp);
 };
 
 int file_manager_write(file_manager *fileManager, memory_page *memoryPage, disk_block *diskBlock) {
-    void_ptr *pfile = (void_ptr *) malloc(sizeof(void_ptr *));
-    file_manager_getfile(fileManager, diskBlock->fileName, pfile);
-    FILE *fp = (FILE*)*pfile;
+
+    FILE *fp = file_manager_getfile(fileManager, diskBlock->fileName);
     fseek(fp, diskBlock->blkNum * DISK_BOLCK_SIZE, SEEK_SET);
     int size = sizeof(memoryPage->contents);
     fwrite(memoryPage->contents, sizeof(char), size, fp);
@@ -51,10 +50,8 @@ int file_manager_append(file_manager *fileManager, memory_buffer *memoryBuffer, 
 
 /*获取文件大小*/
 int file_manager_size(file_manager *fileManager, char *fileName) {
-    void_ptr *pfile = (void_ptr *)malloc(sizeof(void_ptr *));
-    file_manager_getfile(fileManager, fileName, pfile);
 
-    FILE *file = (FILE*)*pfile;
+    FILE *file = file_manager_getfile(fileManager, fileName);
 
     fseek(file,0L,SEEK_END); /* 定位到文件末尾 */
     int flen=ftell(file); /* 得到文件大小 */
@@ -65,10 +62,10 @@ int file_manager_isnew(file_manager *fileManager) {
     return fileManager->isNew;
 };
 
-int file_manager_getfile(file_manager *fileManager, char *fileName, void_ptr *file) {
-    int found = hashmap_get(fileManager->openFiles, fileName, file);
-
-    if (found == HMAP_E_NOTFOUND) {
+FILE*  file_manager_getfile(file_manager *fileManager, char *fileName) {
+    map<string,FILE*>::iterator it;
+    it = fileManager->openFiles->find(fileName);
+    if (it == fileManager->openFiles->end()) {
         char *fname = new_id_name();
         strcat(fname, fileManager->dbDirectoryName);
         strcat(fname, "/");
@@ -78,38 +75,40 @@ int file_manager_getfile(file_manager *fileManager, char *fileName, void_ptr *fi
             f = fopen(fname, "wb+");
             if (f == NULL) {
                 /*TODO:error*/
-                return DONGMENDB_ERROR_IO;
+                return NULL;
             }
             fclose(f);
             f = fopen(fname, "rwb+");
         }
 
-        hashmap_put(fileManager->openFiles, fileName, f);
-        *file = f;
+        fileManager->openFiles->insert(pair<string, FILE*>(fileName, f));
+        return f;
+    }else{
+        return it->second;
+
     }
 
-    return DONGMENDB_OK;
 };
 
 int file_manager_closefile(file_manager *fileManager, char *fileName){
-    void_ptr *file;
-    int found = hashmap_get(fileManager->openFiles, fileName, file);
-    if (found == HMAP_E_KEYUSED){
-        fclose((FILE *)file);
+    map<string,FILE*>::iterator it;
+    it = fileManager->openFiles->find(fileName);
+    if (it != fileManager->openFiles->end()) {
+        fclose(it->second);
+        fileManager->openFiles->erase(it);
     }
-    hashmap_remove(fileManager->openFiles, fileName, file);
-}
 
-int _iter_closefile(char * filename, void_ptr fnIterValue, void_ptr arg){
-    if (!fclose((FILE *)fnIterValue)) {
-        return HMAP_S_OK;
-    }
-    return HMAP_E_FAIL;
+    return 1;
 }
 
 int file_manager_closeallfile(file_manager *fileManager){
-    hashmap_iterate(fileManager->openFiles, _iter_closefile, NULL);
-    hashmap_clear(fileManager->openFiles);
+    map<string,FILE*>::iterator iter;
+
+    for(iter = fileManager->openFiles->begin(); iter != fileManager->openFiles->end(); iter++){
+        fclose(iter->second);
+    }
+    fileManager->openFiles->clear();
+
 }
 
 int disk_block_new(char *fileName, int blockNum, table_info *tableInfo, disk_block *diskBlock) {
@@ -169,9 +168,7 @@ int memory_page_record_formatter(memory_page *contents, table_info *tableInfo) {
         for (int i = 0; i <= count; i++) {
             char *fieldName = tableInfo->fieldsName.at( i);
 
-            void_ptr *fielddesc = (void_ptr *) malloc(sizeof(void_ptr *));
-            hashmap_get(tableInfo->fields, fieldName, fielddesc);
-            field_info *fieldInfo = (field_info *)fielddesc;
+            field_info *fieldInfo = tableInfo->fields->find(fieldName)->second;
 
             int offset = table_info_offset(tableInfo, fieldName);
 

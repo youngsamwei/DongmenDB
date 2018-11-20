@@ -73,8 +73,7 @@ int ExecutionPlan::executeInsert(dongmendb *db, char *tableName,  vector<char*> 
         char *fieldName = fieldNames.at(i);
 
         void_ptr *ptr = (void_ptr *) calloc(sizeof(void_ptr *), 1);
-        hashmap_get(tableScan.m_tableInfo->fields, fieldName, ptr);
-        field_info *fieldInfo = (field_info *)*ptr;
+        field_info *fieldInfo = tableScan.m_tableInfo->fields->find(fieldName)->second;
         variant *val = (variant *)values.at(i);
 
         /* TODO: 完整性检查 */

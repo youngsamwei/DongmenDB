@@ -12,13 +12,13 @@ int metadata_manager_create(metadata_manager *metadataManager, const char *file,
 
 table_manager *table_manager_create(int isNew, transaction *tx) {
     table_manager *tableManager = (table_manager *) malloc(sizeof(table_manager));
-    hmap_t tableDescfields = hashmap_create();
+    map<string, field_info*> *tableDescfields = new map<string, field_info*>();
 
     field_info *fieldInfo = field_info_create(DATA_TYPE_CHAR, MAX_ID_NAME_LENGTH);
-    hashmap_put(tableDescfields, "tablename", fieldInfo);
+    tableDescfields->insert(pair<string, field_info*>("tablename", fieldInfo));
 
     fieldInfo = field_info_create(DATA_TYPE_INT, INT_SIZE);
-    hashmap_put(tableDescfields, "reclength", fieldInfo);
+    tableDescfields->insert(pair<string, field_info*>("reclength", fieldInfo));
 
     vector<char*> tableMetaFieldsName;
     tableMetaFieldsName.push_back("tablename");
@@ -26,17 +26,18 @@ table_manager *table_manager_create(int isNew, transaction *tx) {
 
     tableManager->tcatInfo = table_info_create("tablecat", tableMetaFieldsName, tableDescfields);
 
-    hmap_t fieldDescfields = hashmap_create();
+    map<string, field_info*> *fieldDescfields  = new map<string, field_info*>();
     fieldInfo = field_info_create(DATA_TYPE_CHAR, MAX_ID_NAME_LENGTH);
-    hashmap_put(fieldDescfields, "tablename", fieldInfo);
+    fieldDescfields->insert(pair<string, field_info*>("tablename",fieldInfo));
     fieldInfo = field_info_create(DATA_TYPE_CHAR, MAX_ID_NAME_LENGTH);
-    hashmap_put(fieldDescfields, "fieldname", fieldInfo);
+
+    fieldDescfields->insert(pair<string, field_info*>("fieldname",  fieldInfo));
     fieldInfo = field_info_create(DATA_TYPE_INT, INT_SIZE);
-    hashmap_put(fieldDescfields, "type", fieldInfo);
+    fieldDescfields->insert(pair<string, field_info*>("type", fieldInfo));
     fieldInfo = field_info_create(DATA_TYPE_INT, INT_SIZE);
-    hashmap_put(fieldDescfields, "length", fieldInfo);
+    fieldDescfields->insert(pair<string, field_info*>("length", fieldInfo));
     fieldInfo = field_info_create(DATA_TYPE_INT, INT_SIZE);
-    hashmap_put(fieldDescfields, "offset", fieldInfo);
+    fieldDescfields->insert(pair<string, field_info*>("offset", fieldInfo));
 
     vector<char*> fieldMetaFieldsName ;
     fieldMetaFieldsName.push_back("tablename");
@@ -64,7 +65,7 @@ table_manager *table_manager_create(int isNew, transaction *tx) {
  * @param tx
  * @return
  */
-int table_manager_create_table(table_manager *tableManager, char *tableName, vector<char*> fieldsName, hmap_t fields,
+int table_manager_create_table(table_manager *tableManager, char *tableName, vector<char*> fieldsName,  map<string, field_info*>  *fields,
                                transaction *tx) {
 
 
@@ -106,9 +107,7 @@ int table_manager_create_table(table_manager *tableManager, char *tableName, vec
     for (int i = 0; i <= count; i++) {
         char *fieldName = tableInfo->fieldsName.at( i);
 
-        void_ptr *ptr = (void_ptr *) malloc(sizeof(void_ptr *));
-        hashmap_get(tableInfo->fields, fieldName, ptr);
-        field_info *fieldInfo = (field_info *)*ptr;
+        field_info *fieldInfo = tableInfo->fields->find(fieldName)->second;
 
         int offset = table_info_offset(tableInfo, fieldName);
 
@@ -141,8 +140,8 @@ table_info *table_manager_get_tableinfo(table_manager *tableManager, const char 
     record_file *fcatFile = (record_file *) malloc(sizeof(record_file));
     record_file_create(fcatFile, tableManager->fcatInfo, tx);
     vector<char*> fieldsName ;
-    hmap_t *fields = ( hmap_t *)hashmap_create();
-    hmap_t *offsets = (hmap_t *)hashmap_create();
+    map<string, field_info*> *fields = new map<string, field_info*> ();
+    map<string, int> *offsets = new map<string, int> ();
     while (record_file_next(fcatFile)) {
         char *name = new_id_name();
         record_file_get_string(fcatFile, "tablename", name);
@@ -155,8 +154,8 @@ table_info *table_manager_get_tableinfo(table_manager *tableManager, const char 
             integer *soffset = (integer *) malloc(sizeof(integer));
             soffset->val = offset;
             field_info *fi = field_info_create(type, length);
-            hashmap_put(fields, fieldName, fi);
-            hashmap_put(offsets, fieldName, soffset);
+            fields->insert(pair<string, field_info*>(fieldName, fi));
+            offsets->insert(pair<string,int>(fieldName,offset));
             fieldsName.push_back(fieldName);
         }
         // free(name);

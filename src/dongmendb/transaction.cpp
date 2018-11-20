@@ -8,14 +8,19 @@
 
 transaction *transaction_create(dongmendb *db) {
     transaction *tx = (transaction *) malloc(sizeof(transaction));
+    /*使用malloc申请空间，不能初始化map对象*/
     tx->bufferList = (buffer_list *) malloc(sizeof(buffer_list));
     tx->bufferList->bufferManager = db->bufferManager;
-    tx->bufferList->buffers = hashmap_create();
+
+    /*TODO:需要释放*/
+    tx->bufferList->buffers = new map<string, memory_buffer*>();
+
     tx->db = db;
     tx->txNum = transaction_next_txnum(tx);
     tx->recoveryManager = NULL;
     tx->concurrencyManager = NULL;
 
+    return tx;
 };
 
 int transaction_commit(transaction *tx) {
@@ -91,7 +96,8 @@ int buffer_list_pin(buffer_list *bufferList, disk_block *block) {
     buffer_manager_pin(bufferList->bufferManager, block, pbuf);
     memory_buffer *buffer = (memory_buffer *) *pbuf;
     buffer->block = block;
-    hashmap_put(bufferList->buffers, blockName, buffer);
+
+    bufferList->buffers->insert(pair<string, memory_buffer*>(blockName, buffer));
     bufferList->pins.push_back(block);
     return 1;
 };
@@ -102,9 +108,13 @@ int transaction_next_txnum(transaction *tx) {
 
 int buffer_list_unpin(buffer_list *bufferList, disk_block *block) {
     char *blockName = disk_block_get_num_string(block);
-    void_ptr *pbuf = (void_ptr *) malloc(sizeof(void_ptr *));
-    hashmap_remove(bufferList->buffers, blockName, pbuf);
-    memory_buffer *buffer = (memory_buffer *) *pbuf;
+    memory_buffer *buffer;
+    map<string, memory_buffer*>::iterator it = bufferList->buffers->find(blockName);
+    if (it != bufferList->buffers->end()){
+        buffer = it->second;
+        bufferList->buffers->erase(it);
+    }
+
     //buffer->block = NULL;
     buffer_manager_unpin(bufferList->bufferManager, buffer);
 //    bufferList->pins->erase(block, bufferList->pins->begin(), bufferList->pins->end());
@@ -123,21 +133,18 @@ int buffer_list_unpin_all(buffer_list *bufferList) {
         disk_block *diskBlock = bufferList->pins.at(i);
 
         char *blockName = disk_block_get_num_string(diskBlock);
-        void_ptr *pbuf = (void_ptr *) malloc(sizeof(void_ptr *));
-        hashmap_get(bufferList->buffers, blockName, pbuf);
-        memory_buffer *buffer = (memory_buffer *) *pbuf;
+        memory_buffer *buffer = bufferList->buffers->find(blockName)->second;
 
         buffer_manager_unpin(bufferList->bufferManager, buffer);
     }
-    hashmap_clear(bufferList->buffers);
+    bufferList->buffers->clear();
     bufferList->pins.clear();
 };
 
 memory_buffer *buffer_list_get_buffer(buffer_list *bufferList, disk_block *block) {
     char *blockName = disk_block_get_num_string(block);
-    void_ptr *buffer1 = (void_ptr *) malloc(sizeof(void_ptr *));
-    hashmap_get(bufferList->buffers, blockName, buffer1);
-    return (memory_buffer *) *buffer1;
+    memory_buffer *buffer1 = bufferList->buffers->find(blockName)->second;
+    return buffer1;
 };
 
 int buffer_list_pin_new(buffer_list *bufferList, char *fileName, void_ptr *pblock, table_info *tableInfo) {
@@ -152,7 +159,8 @@ int buffer_list_pin_new(buffer_list *bufferList, char *fileName, void_ptr *pbloc
     *pblock = buffer->block;
 
     char *blockName = disk_block_get_num_string(diskBlock);
-    hashmap_put(bufferList->buffers, blockName, buffer);
+
+    bufferList->buffers->insert(pair<string, memory_buffer*>(blockName, buffer));
     bufferList->pins.push_back(diskBlock);
     return 1;
 };

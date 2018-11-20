@@ -63,8 +63,8 @@ typedef struct integer_ {
  */
 typedef struct table_info_ {
     vector<char*> fieldsName;
-    hmap_t fields;
-    hmap_t offsets;
+    map<string, field_info*> *fields;
+    map<string, int> *offsets;
     int recordLen;
     char *tableName;
 } table_info;
@@ -122,7 +122,7 @@ int record_file_record_formatter(record_file *recordFile, memory_page *memoryPag
 
 field_info *field_info_create(enum data_type type, int length);
 
-table_info *table_info_create(const char *tableName,  vector<char*> fieldsName, hmap_t fields);
+table_info *table_info_create(const char *tableName,  vector<char*> fieldsName,  map<string, field_info*>  *fields);
 
 int table_info_free(table_info *tableInfo);
 

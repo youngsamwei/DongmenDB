@@ -13,7 +13,10 @@
  */
 #include <stdio.h>
 #include "dongmendb.h"
-#include "utils/hashmap.h"
+
+#include <map>
+
+using  namespace std;
 
 #define DISK_BOLCK_SIZE 400
 /**
@@ -35,7 +38,7 @@ typedef struct file_manager_ {
     char *dbDirectoryName;
     FILE *dbDirectory;
     int isNew;
-    hmap_t openFiles;
+    map<string, FILE*> *openFiles;
 } file_manager;
 
 
@@ -69,7 +72,7 @@ int file_manager_size(file_manager *fileManager, char *fileName);
 
 int file_manager_isnew(file_manager *fileManager);
 
-int file_manager_getfile(file_manager *fileManager, char *fileName, void_ptr *fp);
+FILE* file_manager_getfile(file_manager *fileManager, char *fileName);
 
 int file_manager_closefile(file_manager *fileManager, char *fileName);
 

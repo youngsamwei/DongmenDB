@@ -85,7 +85,7 @@ typedef struct UpdateStmt_ {
 */
 
 sql_stmt_create *sql_stmt_create_create(char *tableName,
-                                        vector<char*> fieldsName, hmap_t columns,
+                                        vector<char*> fieldsName, map<string, field_info*> *columns,
                                         Constraint_t *constraints);
 /*
 AlterStmt *createAlterStmt(char *tableName, enum AlterType type,

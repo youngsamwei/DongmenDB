@@ -7,13 +7,16 @@
 
 #include "dongmendb.h"
 
-#include "utils/hashmap.h"
 #include <vector>
+#include <map>
 
 using namespace std;
 
 
 #define  END_OF_FILE -1
+
+
+typedef void *void_ptr;
 
 typedef struct dongmendb_ dongmendb;
 typedef struct recovery_manager_ recovery_manager;
@@ -32,7 +35,7 @@ typedef struct transaction_ {
 } transaction;
 
 typedef struct buffer_list_ {
-    hmap_t buffers;
+    map<string, memory_buffer*> *buffers;
     vector<disk_block*> pins;
     buffer_manager *bufferManager;
 } buffer_list;

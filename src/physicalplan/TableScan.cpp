@@ -75,12 +75,10 @@ field_info* TableScan::getField(string tableName, string fieldName) {
     if (!tableName.empty() && stricmp(m_tableInfo->tableName, tableName.c_str()) != 0){
         return NULL;
     }
-    hmap_t fields = m_tableInfo->fields;
-    void_ptr *fiptr = (void_ptr *)calloc(sizeof(void_ptr), 1);
-    hashmap_get(fields, fieldName.c_str(), fiptr);
-    if (*fiptr){
-        field_info *fi = (field_info *)*fiptr;
-        return fi;
+
+    map<string, field_info*>::iterator it = m_tableInfo->fields->find(fieldName);
+    if (it != m_tableInfo->fields->end()){
+        return it->second;
     }else{
         return NULL;
     }

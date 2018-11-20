@@ -20,6 +20,7 @@
  */
 #define BUFFER_MAX_SIZE 5
 
+
 typedef void *void_ptr;
 
 typedef struct table_info_ table_info;

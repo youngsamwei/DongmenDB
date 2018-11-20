@@ -7,7 +7,7 @@
 #include <dongmensql/dongmensql.h>
 
 sql_stmt_create *sql_stmt_create_create(char *tableName,
-                            vector<char*> fieldsName, hmap_t columns,
+                            vector<char*> fieldsName, map<string, field_info*> *columns,
                                         Constraint_t *constraints) {
     sql_stmt_create *sqlStmtCreate = (sql_stmt_create *)malloc(sizeof(sql_stmt_create));
     sqlStmtCreate->tableInfo =  table_info_create(tableName, fieldsName, columns);

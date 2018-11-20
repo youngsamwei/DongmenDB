@@ -12,7 +12,7 @@
 
 sql_stmt_create *parse_sql_stmt_create(ParserT *parser) {
     char *tableName = NULL;
-    hmap_t columns = hashmap_create();
+    map<string, field_info*> *columns = new map<string, field_info*>();
     vector<char*> fieldsName ;
     if (!matchToken(parser, TOKEN_RESERVED_WORD, "create")) {
         return NULL;
@@ -41,7 +41,7 @@ sql_stmt_create *parse_sql_stmt_create(ParserT *parser) {
         if (field == NULL) {
             break;
         } else {
-            hashmap_put(columns, field->fieldName, field);
+            columns->insert(pair<string, field_info*>(field->fieldName, field));
             fieldsName.push_back(field->fieldName);
         }
         token = parseNextToken(parser);
