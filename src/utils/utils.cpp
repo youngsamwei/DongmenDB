@@ -18,6 +18,25 @@ char *new_id_name(){
     return name;
 };
 
+/*
+    * BKDR string hash function. Based on the works of Kernighan, Dennis and Pike.
+    *
+    * Copyleft(or right) 2011         fairywell
+    */
+unsigned int bkdr_hash(const char *str)
+{
+    unsigned int seed = 131; // the magic number, 31, 131, 1313, 13131, etc.. orz..
+    unsigned int hash = 0;
+
+    unsigned char *p = (unsigned char *) str;
+    while (*p){
+        hash = hash*seed + (*p++);
+    }
+    //0x7FFFFFFF是long int 最大值
+    return  hash&0x7FFFFFFF;
+}
+
+
 int bytes2int(unsigned char x1, unsigned char x2, unsigned char x3, unsigned char x4){
     return (x1 << 24) | (x2 << 16) | (x3 << 8) | x4;
 };

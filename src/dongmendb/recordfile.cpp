@@ -144,19 +144,20 @@ table_info *table_info_create(const char *tableName, vector<char*> fieldsName,  
 
     /*TODO：需要释放*/
 //
-    std::map<string, int> *lfs = new std::map<string, int>();
+    std::map<unsigned int, int> *lfs = new std::map<unsigned int, int>();
 
     tableInfo->recordLen = 0;
     int pos = 0;
 
     int count = fieldsName.size() - 1;
     for (int i = 0; i <= count; i++) {
-        char *fieldName = fieldsName.at( i);
+        const char* fieldName = fieldsName.at( i);
 
         field_info *fieldInfo = lfields->find(fieldName)->second;
 
         cout<<tableName<<" "<<fieldName<<" pause."<<endl;
-        (*lfs)[fieldName]=  pos;
+        unsigned int fid = bkdr_hash(fieldName);
+        (*lfs)[fid]=  pos;
 //        lfs->insert(pair<string,integer*>(fieldName, ipos));
 
         if (fieldInfo->type == DATA_TYPE_CHAR) {
@@ -180,7 +181,8 @@ int table_info_free(table_info *tableInfo) {
 }
 
 int table_info_offset(table_info *tableInfo, const char *fieldName) {
-    return tableInfo->offsets->find(fieldName)->second;
+    unsigned int fid = bkdr_hash(fieldName);
+    return tableInfo->offsets->find(fid)->second;
 };
 
 record_page *record_page_create(transaction *tx, table_info *tableInfo, disk_block *diskBlock) {
@@ -272,7 +274,8 @@ int record_page_current_pos(record_page *recordPage) {
  * @return
  */
 int record_page_fieldpos(record_page *recordPage, const char *fieldName) {
-    int offset = recordPage->tableInfo->offsets->find(fieldName)->second;
+    unsigned int fid = bkdr_hash(fieldName);
+    int offset = recordPage->tableInfo->offsets->find(fid)->second;
 
     return recordPage->currentSlot * recordPage->slotSize + offset + INT_SIZE;
 };

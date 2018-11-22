@@ -65,7 +65,7 @@ typedef struct integer_ {
 typedef struct table_info_ {
     vector<char*> fieldsName;
     map<string, field_info*> *fields;
-    map<string, int> *offsets;
+    map< unsigned int, int> *offsets;
     int recordLen;
     char *tableName;
 } table_info;

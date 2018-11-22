@@ -170,11 +170,8 @@ int memory_page_record_formatter(memory_page *contents, table_info *tableInfo) {
             char *fieldName = tableInfo->fieldsName.at( i);
 
             field_info *fieldInfo = tableInfo->fields->find(fieldName)->second;
-
-            int offset = tableInfo->offsets->find(fieldName)->second;
-            if (offset < 0){
-                cout<<offset<<endl;
-            }
+            unsigned int fid = bkdr_hash(fieldName);
+            int offset = tableInfo->offsets->find(fid)->second;
 
             if (fieldInfo->type == DATA_TYPE_INT) {
                 memory_page_setint(contents, recoffset + offset, 0);

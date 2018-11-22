@@ -108,8 +108,8 @@ int table_manager_create_table(table_manager *tableManager, char *tableName, vec
         char *fieldName = tableInfo->fieldsName.at( i);
 
         field_info *fieldInfo = tableInfo->fields->find(fieldName)->second;
-
-        int offset = tableInfo->offsets->find(fieldName)->second;
+        unsigned int fid = bkdr_hash(fieldName);
+        int offset = tableInfo->offsets->find(fid)->second;
 
         record_file_insert(fcatFile);
         record_file_set_string(fcatFile, "tablename", tableName);
@@ -141,7 +141,7 @@ table_info *table_manager_get_tableinfo(table_manager *tableManager, const char 
     record_file_create(fcatFile, tableManager->fcatInfo, tx);
     vector<char*> fieldsName ;
     map<string, field_info*> *fields = new map<string, field_info*> ();
-    map<string, int> *offsets = new map<string, int> ();
+
     while (record_file_next(fcatFile)) {
         char *name = new_id_name();
         record_file_get_string(fcatFile, "tablename", name);
@@ -150,12 +150,10 @@ table_info *table_manager_get_tableinfo(table_manager *tableManager, const char 
             record_file_get_string(fcatFile, "fieldname", fieldName);
             enum data_type type = (data_type)record_file_get_int(fcatFile, "type");
             int length = record_file_get_int(fcatFile, "length");
-            int offset = record_file_get_int(fcatFile, "offset");
-            integer *soffset = (integer *) malloc(sizeof(integer));
-            soffset->val = offset;
+
             field_info *fi = field_info_create(type, length);
             fields->insert(pair<string, field_info*>(fieldName, fi));
-            offsets->insert(pair<string,int>(fieldName,offset));
+
             fieldsName.push_back(fieldName);
         }
         // free(name);
