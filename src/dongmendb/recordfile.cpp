@@ -127,10 +127,12 @@ int record_file_record_formatter(record_file *recordFile, memory_page *memoryPag
 }
 
 field_info *field_info_create(enum data_type type, int length) {
-    field_info *fieldInfo = (field_info *) calloc(sizeof(field_info), 1);
+    field_info *fieldInfo = (field_info *) malloc(sizeof(field_info*));
     fieldInfo->type = type;
     fieldInfo->length = length;
+
     fieldInfo->fieldName = NULL;
+
     return fieldInfo;
 };
 
@@ -155,7 +157,6 @@ table_info *table_info_create(const char *tableName, vector<char*> fieldsName,  
 
         field_info *fieldInfo = lfields->find(fieldName)->second;
 
-        cout<<tableName<<" "<<fieldName<<" pause."<<endl;
         unsigned int fid = bkdr_hash(fieldName);
         (*lfs)[fid]=  pos;
 //        lfs->insert(pair<string,integer*>(fieldName, ipos));

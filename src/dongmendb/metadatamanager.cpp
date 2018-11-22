@@ -14,11 +14,11 @@ table_manager *table_manager_create(int isNew, transaction *tx) {
     table_manager *tableManager = (table_manager *) malloc(sizeof(table_manager));
     map<string, field_info*> *tableDescfields = new map<string, field_info*>();
 
-    field_info *fieldInfo = field_info_create(DATA_TYPE_CHAR, MAX_ID_NAME_LENGTH);
-    tableDescfields->insert(pair<string, field_info*>("tablename", fieldInfo));
+    field_info *tablename = field_info_create(DATA_TYPE_CHAR, MAX_ID_NAME_LENGTH);
+    tableDescfields->insert(pair<string, field_info*>("tablename", tablename));
 
-    fieldInfo = field_info_create(DATA_TYPE_INT, INT_SIZE);
-    tableDescfields->insert(pair<string, field_info*>("reclength", fieldInfo));
+    field_info *reclength = field_info_create(DATA_TYPE_INT, INT_SIZE);
+    tableDescfields->insert(pair<string, field_info*>("reclength", reclength));
 
     vector<char*> tableMetaFieldsName;
     tableMetaFieldsName.push_back("tablename");
@@ -27,17 +27,21 @@ table_manager *table_manager_create(int isNew, transaction *tx) {
     tableManager->tcatInfo = table_info_create("tablecat", tableMetaFieldsName, tableDescfields);
 
     map<string, field_info*> *fieldDescfields  = new map<string, field_info*>();
-    fieldInfo = field_info_create(DATA_TYPE_CHAR, MAX_ID_NAME_LENGTH);
-    fieldDescfields->insert(pair<string, field_info*>("tablename",fieldInfo));
-    fieldInfo = field_info_create(DATA_TYPE_CHAR, MAX_ID_NAME_LENGTH);
 
-    fieldDescfields->insert(pair<string, field_info*>("fieldname",  fieldInfo));
-    fieldInfo = field_info_create(DATA_TYPE_INT, INT_SIZE);
-    fieldDescfields->insert(pair<string, field_info*>("type", fieldInfo));
-    fieldInfo = field_info_create(DATA_TYPE_INT, INT_SIZE);
-    fieldDescfields->insert(pair<string, field_info*>("length", fieldInfo));
-    fieldInfo = field_info_create(DATA_TYPE_INT, INT_SIZE);
-    fieldDescfields->insert(pair<string, field_info*>("offset", fieldInfo));
+    field_info *field_tablename = field_info_create(DATA_TYPE_CHAR, MAX_ID_NAME_LENGTH);
+
+    fieldDescfields->insert(pair<string, field_info*>("tablename",field_tablename));
+
+
+    field_info *fieldname = field_info_create(DATA_TYPE_CHAR, MAX_ID_NAME_LENGTH);
+    fieldDescfields->insert(pair<string, field_info*>("fieldname",  fieldname));
+
+    field_info *type = field_info_create(DATA_TYPE_INT, INT_SIZE);
+    fieldDescfields->insert(pair<string, field_info*>("type", type));
+    field_info *length = field_info_create(DATA_TYPE_INT, INT_SIZE);
+    fieldDescfields->insert(pair<string, field_info*>("length", length));
+    field_info *offset = field_info_create(DATA_TYPE_INT, INT_SIZE);
+    fieldDescfields->insert(pair<string, field_info*>("offset", offset));
 
     vector<char*> fieldMetaFieldsName ;
     fieldMetaFieldsName.push_back("tablename");
