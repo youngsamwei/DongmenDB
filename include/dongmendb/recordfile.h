@@ -44,6 +44,7 @@ typedef enum {
 
 typedef struct field_info_ {
     char *fieldName;
+    unsigned int hashCode;
     enum data_type type;
     int length;
 } field_info;
@@ -121,7 +122,7 @@ int record_file_append_block(record_file *recordFile);
 
 int record_file_record_formatter(record_file *recordFile, memory_page *memoryPage);
 
-field_info *field_info_create(enum data_type type, int length);
+field_info *field_info_create(enum data_type type, int length, char* fieldName);
 
 table_info *table_info_create(const char *tableName,  vector<char*> fieldsName,  map<string, field_info*>  *fields);
 

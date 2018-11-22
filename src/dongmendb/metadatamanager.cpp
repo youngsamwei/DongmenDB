@@ -14,10 +14,10 @@ table_manager *table_manager_create(int isNew, transaction *tx) {
     table_manager *tableManager = (table_manager *) malloc(sizeof(table_manager));
     map<string, field_info*> *tableDescfields = new map<string, field_info*>();
 
-    field_info *tablename = field_info_create(DATA_TYPE_CHAR, MAX_ID_NAME_LENGTH);
+    field_info *tablename = field_info_create(DATA_TYPE_CHAR, MAX_ID_NAME_LENGTH, "tablename");
     tableDescfields->insert(pair<string, field_info*>("tablename", tablename));
 
-    field_info *reclength = field_info_create(DATA_TYPE_INT, INT_SIZE);
+    field_info *reclength = field_info_create(DATA_TYPE_INT, INT_SIZE, "reclength");
     tableDescfields->insert(pair<string, field_info*>("reclength", reclength));
 
     vector<char*> tableMetaFieldsName;
@@ -28,19 +28,19 @@ table_manager *table_manager_create(int isNew, transaction *tx) {
 
     map<string, field_info*> *fieldDescfields  = new map<string, field_info*>();
 
-    field_info *field_tablename = field_info_create(DATA_TYPE_CHAR, MAX_ID_NAME_LENGTH);
+    field_info *field_tablename = field_info_create(DATA_TYPE_CHAR, MAX_ID_NAME_LENGTH, "tablename");
 
     fieldDescfields->insert(pair<string, field_info*>("tablename",field_tablename));
 
 
-    field_info *fieldname = field_info_create(DATA_TYPE_CHAR, MAX_ID_NAME_LENGTH);
+    field_info *fieldname = field_info_create(DATA_TYPE_CHAR, MAX_ID_NAME_LENGTH, "fieldname");
     fieldDescfields->insert(pair<string, field_info*>("fieldname",  fieldname));
 
-    field_info *type = field_info_create(DATA_TYPE_INT, INT_SIZE);
+    field_info *type = field_info_create(DATA_TYPE_INT, INT_SIZE, "type");
     fieldDescfields->insert(pair<string, field_info*>("type", type));
-    field_info *length = field_info_create(DATA_TYPE_INT, INT_SIZE);
+    field_info *length = field_info_create(DATA_TYPE_INT, INT_SIZE, "length");
     fieldDescfields->insert(pair<string, field_info*>("length", length));
-    field_info *offset = field_info_create(DATA_TYPE_INT, INT_SIZE);
+    field_info *offset = field_info_create(DATA_TYPE_INT, INT_SIZE, "offset");
     fieldDescfields->insert(pair<string, field_info*>("offset", offset));
 
     vector<char*> fieldMetaFieldsName ;
@@ -155,7 +155,7 @@ table_info *table_manager_get_tableinfo(table_manager *tableManager, const char 
             enum data_type type = (data_type)record_file_get_int(fcatFile, "type");
             int length = record_file_get_int(fcatFile, "length");
 
-            field_info *fi = field_info_create(type, length);
+            field_info *fi = field_info_create(type, length, "length");
             fields->insert(pair<string, field_info*>(fieldName, fi));
 
             fieldsName.push_back(fieldName);

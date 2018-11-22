@@ -126,11 +126,11 @@ int record_file_record_formatter(record_file *recordFile, memory_page *memoryPag
 
 }
 
-field_info *field_info_create(enum data_type type, int length) {
+field_info *field_info_create(enum data_type type, int length, char* fieldName) {
     field_info *fieldInfo = (field_info *) malloc(sizeof(field_info*));
     fieldInfo->type = type;
     fieldInfo->length = length;
-
+    fieldInfo->hashCode = bkdr_hash(fieldName);
     fieldInfo->fieldName = NULL;
 
     return fieldInfo;
