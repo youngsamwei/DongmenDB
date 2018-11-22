@@ -170,7 +170,7 @@ int expression_print_list(vector<Expression*> exprlist) {
     printf("[");
     expression_print(expr1, NULL);
 
-    for (int i = 1; i <= exprlist.size(); i++) {
+    for (int i = 1; i < exprlist.size(); i++) {
         expr1 = exprlist.at(i);
         printf(", ");
         expression_print(expr1, NULL);
