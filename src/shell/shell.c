@@ -313,7 +313,9 @@ int dongmendb_shell_handle_select_table(dongmendb_shell_handle_sql_t *ctx, const
 
     /*TODO: 逻辑优化：关系代数优化*/
 
-    SRA_t *optmiziedSelectStmt = dongmengdb_algebra_optimize_condition_pushdown(selectStmt, ctx->db->metadataManager->tableManager);
+    SRA_t *optmiziedSelectStmt = dongmengdb_algebra_optimize_condition_pushdown(selectStmt,
+                                                                                ctx->db->metadataManager->tableManager,
+                                                                                ctx->db->tx);
 
     if (optmiziedSelectStmt == NULL) {
         return DONGMENDB_EINVALIDSQL;
@@ -518,7 +520,9 @@ int dongmendb_shell_handle_cmd_opt(dongmendb_shell_handle_sql_t *ctx, struct han
         printf(parser->parserMessage);
     }
 
-    SRA_t *optmiziedSelectStmt = dongmengdb_algebra_optimize_condition_pushdown(selectStmt, ctx->db->metadataManager->tableManager);
+    SRA_t *optmiziedSelectStmt = dongmengdb_algebra_optimize_condition_pushdown(selectStmt,
+                                                                                ctx->db->metadataManager->tableManager,
+                                                                                ctx->db->tx);
 
     if (optmiziedSelectStmt == NULL) {
         return DONGMENDB_EINVALIDSQL;
