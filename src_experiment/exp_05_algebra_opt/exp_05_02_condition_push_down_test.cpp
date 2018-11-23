@@ -16,7 +16,7 @@ protected:
         _m_list[5] = "select student.* from student, sc, course where student.sno = sc.sno and sc.cno = course.cno";
         _m_list[6] = "select student.*, sc.*, course.* from student, sc, course where student.sno = sc.sno and sc.cno = course.cno and course.cno = 'c001'";
         _m_list[7] = "select student.*, sc.*, course.* from student, sc, course where student.sno = sc.sno and sc.cno = course.cno and course.cno = 'c001' and grade >= 80";
-
+        _m_list[8] = "select sno,cno,grade, cname from sc, course where sc.cno = course.cno";
     }
 
     const char *_m_list[14];
@@ -30,7 +30,7 @@ TEST_F(Exp_05_02_ConditionPushdownTest, Correct) {
     createTable();
 /*增加数据*/
     insertData();
-
+//
     EXPECT_EQ(0, opt_condition_pushdown_test(_m_list[0]));
     EXPECT_EQ(0, opt_condition_pushdown_test(_m_list[1]));
     EXPECT_EQ(0, opt_condition_pushdown_test(_m_list[2]));
@@ -39,6 +39,7 @@ TEST_F(Exp_05_02_ConditionPushdownTest, Correct) {
     EXPECT_EQ(0, opt_condition_pushdown_test(_m_list[5]));
     EXPECT_EQ(0, opt_condition_pushdown_test(_m_list[6]));
     EXPECT_EQ(0, opt_condition_pushdown_test(_m_list[7]));
+    EXPECT_EQ(0, opt_condition_pushdown_test(_m_list[8]));
 
 /*删除数据库*/
     dropDB();
