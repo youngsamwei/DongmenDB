@@ -63,11 +63,12 @@ int opt_search_in_fields(arraylist *fieldsName, const char *columnName){
 }
 
 /*判断tableName.columnName是否在sra中*/
-int opt_field_test(SRA_t *sra, const char *tableName, const char * columnName, table_manager *tableManager){
+int opt_field_test(SRA_t *sra, const char *tableName, const char *columnName, table_manager *tableManager,
+                   transaction *tx) {
     switch (sra->t){
         case SRA_TABLE:{
             if (tableName == NULL){
-                table_info *ti = table_manager_get_tableinfo(tableManager, sra->table.ref->table_name, NULL);
+                table_info *ti = table_manager_get_tableinfo(tableManager, sra->table.ref->table_name, tx);
                 arraylist *fieldsName = ti->fieldsName;
                 /*在fieldsName中查找columnName*/
                 return opt_search_in_fields(fieldsName, columnName);
@@ -79,59 +80,59 @@ int opt_field_test(SRA_t *sra, const char *tableName, const char * columnName, t
             }
         }
         case SRA_JOIN:{
-            int ret = opt_field_test(sra->join.sra1, tableName, columnName,tableManager);
+            int ret = opt_field_test(sra->join.sra1, tableName, columnName, tableManager, tx);
             if (ret){
                 return ret;
             }else {
-                return opt_field_test(sra->join.sra2, tableName, columnName, tableManager);
+                return opt_field_test(sra->join.sra2, tableName, columnName, tableManager, tx);
             }
         }
         case SRA_SELECT:
-            return opt_field_test(sra->select.sra, tableName, columnName, tableManager);
+            return opt_field_test(sra->select.sra, tableName, columnName, tableManager, tx);
         default:
             return 0;
     }
 }
 
 /* 判断expr中的每个字段是否在sra中, 若存在一个字段不在sra中则返回0， 否则返回1*/
-int opt_fields_test(Expression *expr, SRA_t *sra, table_manager *tableManager) {
+int opt_fields_test(Expression *expr, SRA_t *sra, table_manager *tableManager, transaction *tx) {
     if (expr == NULL){
         return 0;
     }
     if (expr->term != NULL) {
         switch(expr->term->t){
             case TERM_COLREF:
-                return opt_field_test(sra, expr->term->ref->tableName, expr->term->ref->columnName, tableManager);
+                return opt_field_test(sra, expr->term->ref->tableName, expr->term->ref->columnName, tableManager, tx);
             default:
                 return 0;
         }
     } else {
-        return opt_fields_test(expr->nextexpr, sra, tableManager);
+        return opt_fields_test(expr->nextexpr, sra, tableManager, tx);
     }
 }
 
-int opt_optimed_test(Expression *expr, SRA_t *sra, table_manager *tableManager) {
+int opt_optimed_test(Expression *expr, SRA_t *sra, table_manager *tableManager, transaction *tx) {
 
     switch (sra->t) {
         case SRA_JOIN:
             /*检测expr中的字段属性是否在某个操作对象中，若是则返回1*/
-            return opt_fields_test(expr, sra, tableManager);
+            return opt_fields_test(expr, sra, tableManager, tx);
         default:
             return 0;
     }
 }
 
 /*检测每个SRA_Select是否在最优位置*/
-int opt_test(SRA_t *sra, table_manager *tableManager) {
+int opt_test(SRA_t *sra, table_manager *tableManager, transaction *tx) {
     switch (sra->t) {
         case SRA_SELECT: {
             /*寻找子树中JOIM操作，若条件属性均包含在JOIN操作的某个分支中，则返回1*/
-            int ret = opt_optimed_test(sra->select.cond, sra->select.sra, tableManager);
+            int ret = opt_optimed_test(sra->select.cond, sra->select.sra, tableManager, tx);
             if (ret) {
                 return ret;
             } else {
                 /*检查子树中的SELECT*/
-                return opt_test(sra->select.sra, tableManager);
+                return opt_test(sra->select.sra, tableManager, tx);
             }
         };
         case SRA_TABLE: {
@@ -139,15 +140,15 @@ int opt_test(SRA_t *sra, table_manager *tableManager) {
         }
         case SRA_JOIN: {
 
-            int ret = opt_test(sra->join.sra1, tableManager);
+            int ret = opt_test(sra->join.sra1, tableManager, tx);
             if (ret) {
                 return ret;
             }
-            return opt_test(sra->join.sra2, tableManager);
+            return opt_test(sra->join.sra2, tableManager, tx);
 
         }
         case SRA_PROJECT:
-            return opt_test(sra->project.sra, tableManager);
+            return opt_test(sra->project.sra, tableManager, tx);
         default:/*其他操作*/
             return 0;
     }
@@ -161,7 +162,8 @@ int TestStmtOptimized::opt_condition_pushdown_test(const char *sqlselect) {
     SRA_t *selectStmt = parse_sql_stmt_select(parser);
 
     SRA_t *optimizedStmt = dongmengdb_algebra_optimize_condition_pushdown(selectStmt,
-                                                                          test_db_ctx->db->metadataManager->tableManager);
+                                                                          test_db_ctx->db->metadataManager->tableManager,
+                                                                          test_db_ctx->db->tx);
 
     /*检查思路：查找每个SRA_Select， 检查：
      * 1 是否多条件且and连接，若是则返回1 */
@@ -173,7 +175,7 @@ int TestStmtOptimized::opt_condition_pushdown_test(const char *sqlselect) {
     }
 
     /* 2 检查每个SRA_Select 是否在最优位置,若不是则返回1*/
-    ret = opt_test(optimizedStmt, test_db_ctx->db->metadataManager->tableManager);
+    ret = opt_test(optimizedStmt, test_db_ctx->db->metadataManager->tableManager, test_db_ctx->db->tx);
 
     return ret;
 }
