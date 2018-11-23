@@ -98,16 +98,18 @@ int opt_fields_test(Expression *expr, SRA_t *sra, table_manager *tableManager) {
     if (expr == NULL){
         return 0;
     }
+    int ret = 0;
     if (expr->term != NULL) {
         switch(expr->term->t){
             case TERM_COLREF:
-                return opt_field_test(sra, expr->term->ref->tableName, expr->term->ref->columnName, tableManager);
+                ret = opt_field_test(sra, expr->term->ref->tableName, expr->term->ref->columnName, tableManager);
             default:
-                return 0;
+                ret = 0;
         }
-    } else {
-        return opt_fields_test(expr->nextexpr, sra, tableManager);
     }
+    if (ret)
+        return opt_fields_test(expr->nextexpr, sra, tableManager);
+    return 0;
 }
 
 int opt_optimed_test(Expression *expr, SRA_t *sra, table_manager *tableManager) {
