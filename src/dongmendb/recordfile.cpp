@@ -127,11 +127,12 @@ int record_file_record_formatter(record_file *recordFile, memory_page *memoryPag
 }
 
 field_info *field_info_create(enum data_type type, int length, char* fieldName) {
+
     field_info *fieldInfo = (field_info *) malloc(sizeof(field_info*));
     fieldInfo->type = type;
     fieldInfo->length = length;
     fieldInfo->hashCode = bkdr_hash(fieldName);
-    fieldInfo->fieldName = NULL;
+    fieldInfo->fieldName = strdup(fieldName);
 
     return fieldInfo;
 };
@@ -157,8 +158,7 @@ table_info *table_info_create(const char *tableName, vector<char*> fieldsName,  
 
         field_info *fieldInfo = lfields->find(fieldName)->second;
 
-        unsigned int fid = bkdr_hash(fieldName);
-        (*lfs)[fid]=  pos;
+        (*lfs)[fieldInfo->hashCode]=  pos;
 //        lfs->insert(pair<string,integer*>(fieldName, ipos));
 
         if (fieldInfo->type == DATA_TYPE_CHAR) {

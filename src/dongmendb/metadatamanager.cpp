@@ -14,15 +14,17 @@ table_manager *table_manager_create(int isNew, transaction *tx) {
     table_manager *tableManager = (table_manager *) malloc(sizeof(table_manager));
     map<string, field_info*> *tableDescfields = new map<string, field_info*>();
 
-    field_info *tablename = field_info_create(DATA_TYPE_CHAR, MAX_ID_NAME_LENGTH, "tablename");
-    tableDescfields->insert(pair<string, field_info*>("tablename", tablename));
+    char* fn_tablename = "tablename";
+    field_info *tablename = field_info_create(DATA_TYPE_CHAR, MAX_ID_NAME_LENGTH, fn_tablename);
 
-    field_info *reclength = field_info_create(DATA_TYPE_INT, INT_SIZE, "reclength");
-    tableDescfields->insert(pair<string, field_info*>("reclength", reclength));
+    tableDescfields->insert(pair<string, field_info*>(fn_tablename, tablename));
+    char* fn_reclength = "reclength";
+    field_info *reclength = field_info_create(DATA_TYPE_INT, INT_SIZE, fn_reclength);
+    tableDescfields->insert(pair<string, field_info*>(fn_reclength, reclength));
 
     vector<char*> tableMetaFieldsName;
-    tableMetaFieldsName.push_back("tablename");
-    tableMetaFieldsName.push_back("reclength");
+    tableMetaFieldsName.push_back(fn_tablename);
+    tableMetaFieldsName.push_back(fn_reclength);
 
     tableManager->tcatInfo = table_info_create("tablecat", tableMetaFieldsName, tableDescfields);
 
@@ -31,7 +33,6 @@ table_manager *table_manager_create(int isNew, transaction *tx) {
     field_info *field_tablename = field_info_create(DATA_TYPE_CHAR, MAX_ID_NAME_LENGTH, "tablename");
 
     fieldDescfields->insert(pair<string, field_info*>("tablename",field_tablename));
-
 
     field_info *fieldname = field_info_create(DATA_TYPE_CHAR, MAX_ID_NAME_LENGTH, "fieldname");
     fieldDescfields->insert(pair<string, field_info*>("fieldname",  fieldname));
@@ -112,8 +113,7 @@ int table_manager_create_table(table_manager *tableManager, char *tableName, vec
         char *fieldName = tableInfo->fieldsName.at( i);
 
         field_info *fieldInfo = tableInfo->fields->find(fieldName)->second;
-        unsigned int fid = bkdr_hash(fieldName);
-        int offset = tableInfo->offsets->find(fid)->second;
+        int offset = tableInfo->offsets->find(fieldInfo->hashCode)->second;
 
         record_file_insert(fcatFile);
         record_file_set_string(fcatFile, "tablename", tableName);
@@ -155,7 +155,7 @@ table_info *table_manager_get_tableinfo(table_manager *tableManager, const char 
             enum data_type type = (data_type)record_file_get_int(fcatFile, "type");
             int length = record_file_get_int(fcatFile, "length");
 
-            field_info *fi = field_info_create(type, length, "length");
+            field_info *fi = field_info_create(type, length, fieldName);
             fields->insert(pair<string, field_info*>(fieldName, fi));
 
             fieldsName.push_back(fieldName);
