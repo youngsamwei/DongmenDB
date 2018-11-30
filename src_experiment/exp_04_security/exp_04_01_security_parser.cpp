@@ -24,18 +24,18 @@
  */
 
 
-user *parse_create_user(ParserT *parser){
+user *parse_create_user(Parser *parser){
 
 };
 
-role *parse_create_role(ParserT *parser){
+role *parse_create_role(Parser *parser){
 
 };
 
-sql_stmt_grant_revoke *parse_grant(ParserT *parser){
+sql_stmt_grant_revoke *parse_grant(Parser *parser){
 
 };
 
-sql_stmt_grant_revoke *parse_revoke(ParserT *parser){
+sql_stmt_grant_revoke *parse_revoke(Parser *parser){
 
 };

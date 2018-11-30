@@ -6,28 +6,33 @@
 #include <stdlib.h>
 #include <gtest/gtest.h>
 #include <parser/statement.h>
+#include <physicalplan/Scan.h>
+#include <physicalplan/ExecutionPlan.h>
+#include <physicalplan/Project.h>
 #include "dongmendb/dongmendb.h"
 #include "parser/Tokenizer.h"
 #include "parser/parser.h"
 #include "dongmensql/sra.h"
-#include "physicalplan/physicalplan.h"
 
 
 int select(dongmendb *db, const char *sqlselect) {
     char *sql = (char *) calloc(strlen(sqlselect), 1);
     strcpy(sql, sqlselect);
-    Tokenizer *tokenizer = TKCreate(sql);
-    ParserT *parser = newParser(tokenizer);
+    Tokenizer *tokenizer = new Tokenizer(sql);
+    Parser *parser = new Parser(tokenizer);
     memset(parser->parserMessage, 0, sizeof(parser->parserMessage));
 
     SRA_t *selectStmt = parse_sql_stmt_select(parser);
-    physical_scan *plan = plan_execute_select(db, selectStmt, db->tx);
-    plan->beforeFirst(plan);
+    ExecutionPlan plan;
+
+    Scan* scan = plan.generateSelect(db, selectStmt, db->tx);
+    Project *project = (Project*) scan;
+    project->beforeFirst();
     int count = 0;
-    while (plan->next(plan)) {
+    while (project->next()) {
         count++;
     }
-    plan->close(plan);
+    project->close();
     dongmendb_close(db);
     return count;
 }

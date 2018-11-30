@@ -3,6 +3,9 @@
 
 #include "column.h"
 
+typedef struct Column_s Column_t;
+typedef struct ForeignKeyRef_s ForeignKeyRef_t;
+
 typedef struct Table_s {
     char *name;
     Column_t *columns;
@@ -16,7 +19,7 @@ typedef struct KeyDec_s {
     enum key_dec_type t;
     union {
         StrList_t *primary_keys;
-        ForeignKeyRef_t fkey;
+        ForeignKeyRef_t *fkey;
     } dec;
     struct KeyDec_s *next;
 } KeyDec_t;

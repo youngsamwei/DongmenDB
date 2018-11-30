@@ -21,7 +21,7 @@ Constraint_t *PrimaryKey(void) {
     return con;
 }
 
-Constraint_t *ForeignKey(ForeignKeyRef_t fkr) {
+Constraint_t *ForeignKey(ForeignKeyRef_t *fkr) {
     Constraint_t *con = (Constraint_t *) calloc(1, sizeof(Constraint_t));
     con->t = CONS_FOREIGN_KEY;
     con->constraint.ref = fkr;
@@ -63,7 +63,7 @@ static void deleteConstraint_ts(Constraint_t *constraint) {
                 Literal_free(constraint->constraint.default_val);
                 break;
             case CONS_CHECK:
-                expression_free(constraint->constraint.check);
+                constraint->constraint.check->expression_free();
                 break;
             default:
                 break;
@@ -184,8 +184,8 @@ void Constraint_print(void *constraint_voidp) {
             printf("Unique");
             break;
         case CONS_FOREIGN_KEY:
-            printf("Foreign key (%s, %s)", constraint->constraint.ref.table_name,
-                   constraint->constraint.ref.table_col_name);
+            printf("Foreign key (%s, %s)", constraint->constraint.ref->table_name,
+                   constraint->constraint.ref->table_col_name);
             break;
         case CONS_AUTO_INCREMENT:
             printf("Auto increment");
@@ -195,7 +195,7 @@ void Constraint_print(void *constraint_voidp) {
             break;
         case CONS_CHECK:
             printf("Check: ");
-            expression_print(constraint->constraint.check, NULL);
+            constraint->constraint.check->expression_print(constraint->constraint.check,NULL);
             break;
         case CONS_SIZE:
             printf("Size: %u", constraint->constraint.size);

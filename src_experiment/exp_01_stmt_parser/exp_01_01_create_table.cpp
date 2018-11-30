@@ -10,18 +10,18 @@
  * 在现有create table基础上，修改代码以支持pk，fk，check，unique，not null约束。
  */
 
-sql_stmt_create *parse_sql_stmt_create(ParserT *parser) {
+sql_stmt_create *parse_sql_stmt_create(Parser *parser) {
     char *tableName = NULL;
     map<string, field_info*> *columns = new map<string, field_info*>();
     vector<char*> fieldsName ;
-    if (!matchToken(parser, TOKEN_RESERVED_WORD, "create")) {
+    if (!parser->matchToken(TOKEN_RESERVED_WORD, "create")) {
         return NULL;
     }
-    if (!matchToken(parser, TOKEN_RESERVED_WORD, "table")) {
+    if (!parser->matchToken( TOKEN_RESERVED_WORD, "table")) {
         strcpy(parser->parserMessage, "invalid sql: should be table.");
         return NULL;
     }
-    Token *token = parseNextToken(parser);
+    Token *token = parser->parseNextToken();
     if (token->type == TOKEN_WORD) {
         tableName = new_id_name();
         strcpy(tableName, token->text);
@@ -29,12 +29,12 @@ sql_stmt_create *parse_sql_stmt_create(ParserT *parser) {
         strcpy(parser->parserMessage, "invalid sql: missing table name.");
         return NULL;
     }
-    token = parseEatAndNextToken(parser);
-    if (!matchToken(parser, TOKEN_OPEN_PAREN, "(")) {
+    token = parser->parseEatAndNextToken();
+    if (!parser->matchToken( TOKEN_OPEN_PAREN, "(")) {
         strcpy(parser->parserMessage, "invalid sql: missing (.");
         return NULL;
     }
-    token = parseNextToken(parser);
+    token = parser->parseNextToken();
 
     while (token->type != TOKEN_CLOSE_PAREN) {
         field_info *field = parse_sql_stmt_columnexpr(parser);
@@ -44,15 +44,15 @@ sql_stmt_create *parse_sql_stmt_create(ParserT *parser) {
             columns->insert(pair<string, field_info*>(field->fieldName, field));
             fieldsName.push_back(field->fieldName);
         }
-        token = parseNextToken(parser);
+        token = parser->parseNextToken();
         if (token->type == TOKEN_COMMA) {
-            token = parseEatAndNextToken(parser);
+            token = parser->parseEatAndNextToken();
         } else {
             break;
         }
     }
-    token = parseNextToken(parser);
-    if (!matchToken(parser, TOKEN_CLOSE_PAREN, ")")) {
+    token = parser->parseNextToken();
+    if (!parser->matchToken( TOKEN_CLOSE_PAREN, ")")) {
         strcpy(parser->parserMessage, "invalid sql: missing ).");
         return NULL;
     }
@@ -60,8 +60,8 @@ sql_stmt_create *parse_sql_stmt_create(ParserT *parser) {
     return sql_stmt_create_create(tableName, fieldsName, columns, NULL);
 };
 
-field_info *parse_sql_stmt_columnexpr(ParserT *parser) {
-    Token *token = parseNextToken(parser);
+field_info *parse_sql_stmt_columnexpr(Parser *parser) {
+    Token *token = parser->parseNextToken();
     char *columnName = NULL;
     enum data_type type;
     int length;
@@ -72,22 +72,22 @@ field_info *parse_sql_stmt_columnexpr(ParserT *parser) {
         strcpy(parser->parserMessage, "invalid sql: missing field name.");
         return NULL;
     }
-    token = parseEatAndNextToken(parser);
+    token = parser->parseEatAndNextToken();
     if (token->type == TOKEN_RESERVED_WORD) {
         if (stricmp(token->text, "int") == 0 || stricmp(token->text, "integer") == 0) {
             type = DATA_TYPE_INT;
             length = INT_SIZE;
-            token = parseEatAndNextToken(parser);
+            token = parser->parseEatAndNextToken();
         } else if (stricmp(token->text, "char") == 0) {
             type = DATA_TYPE_CHAR;
-            token = parseEatAndNextToken(parser);
-            if (matchToken(parser, TOKEN_OPEN_PAREN, "(")) {
-                token = parseNextToken(parser);
+            token = parser->parseEatAndNextToken();
+            if (parser->matchToken( TOKEN_OPEN_PAREN, "(")) {
+                token = parser->parseNextToken();
                 if (token->type == TOKEN_DECIMAL) {
                     length = atoi(token->text);
-                    token = parseEatAndNextToken(parser);
-                    if (matchToken(parser, TOKEN_CLOSE_PAREN, ")")) {
-                        token = parseNextToken(parser);
+                    token = parser->parseEatAndNextToken();
+                    if (parser->matchToken( TOKEN_CLOSE_PAREN, ")")) {
+                        token = parser->parseNextToken();
                     } else {
                         strcpy(parser->parserMessage, "invalid sql: missing ).");
                         return NULL;

@@ -222,7 +222,7 @@ int dongmendb_shell_handle_create_table(dongmendb_shell_handle_sql_t *ctx, const
     }
 
     Tokenizer *tokenizer = new Tokenizer(sqlcreate);
-    ParserT *parser = newParser(tokenizer);
+    Parser *parser = new Parser(tokenizer);
     memset(parser->parserMessage, 0, sizeof(parser->parserMessage));
 
 //    int status = 0;
@@ -259,7 +259,7 @@ int dongmendb_shell_handle_insert_table(dongmendb_shell_handle_sql_t *ctx, const
     }
 
     Tokenizer *tokenizer = new Tokenizer(sqlinsert);
-    ParserT *parser = newParser(tokenizer);
+    Parser *parser = new Parser(tokenizer);
     memset(parser->parserMessage, 0, sizeof(parser->parserMessage));
 
     sql_stmt_insert *sqlStmtInsert = parse_sql_stmt_insert(parser);
@@ -303,7 +303,7 @@ int dongmendb_shell_handle_select_table(dongmendb_shell_handle_sql_t *ctx, const
     }
 
     Tokenizer *tokenizer = new Tokenizer(sqlselect);
-    ParserT *parser = newParser(tokenizer);
+    Parser *parser = new Parser(tokenizer);
     memset(parser->parserMessage, 0, sizeof(parser->parserMessage));
 
     /* 解析 select语句，获得SRA_t对象*/
@@ -369,7 +369,7 @@ int dongmendb_shell_handle_update_data(dongmendb_shell_handle_sql_t *ctx, const 
     /* token解析 */
     Tokenizer *tokenizer = new Tokenizer(sqlupdate);
     /* parser解析 */
-    ParserT *parser = newParser(tokenizer);
+    Parser *parser = new Parser(tokenizer);
     memset(parser->parserMessage, 0, sizeof(parser->parserMessage));
 
     /*TODO: parse_sql_stmt_update， update语句解析*/
@@ -427,7 +427,7 @@ int dongmendb_shell_handle_delete_data(dongmendb_shell_handle_sql_t *ctx, const 
     }
 
     Tokenizer *tokenizer = new Tokenizer(sqldelete);
-    ParserT *parser = newParser(tokenizer);
+    Parser *parser = new Parser(tokenizer);
     memset(parser->parserMessage, 0, sizeof(parser->parserMessage));
 
     sql_stmt_delete *sqlStmtDelete = parse_sql_stmt_delete(parser);
@@ -522,7 +522,7 @@ int dongmendb_shell_handle_cmd_opt(dongmendb_shell_handle_sql_t *ctx, struct han
     };
 
     Tokenizer *tokenizer = new Tokenizer(cmdstring);
-    ParserT *parser = newParser(tokenizer);
+    Parser *parser = new Parser(tokenizer);
     memset(parser->parserMessage, 0, sizeof(parser->parserMessage));
 
     /* 解析 select语句，获得SRA_t对象*/

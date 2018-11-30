@@ -13,12 +13,11 @@
 #include <utils/utils.h>
 #include "utils/opstack.h"
 #include "Tokenizer.h"
-#include "parser.h"
+#include "parser/parser.h"
 
 #include <vector>
 
 using namespace std;
-
 
 
 /*使用递归下降法解析表达式
@@ -107,7 +106,8 @@ static const OPERATOR operators[] = {
         {2, 1,  1,  right2left, TOKEN_COMMA}
 };
 
-typedef struct Expression_ Expression;
+class Expression;
+
 typedef struct Func {
     FuncType t;
     Expression *expr;
@@ -125,7 +125,8 @@ typedef struct TermExpr_ {
     };
 } TermExpr;
 
-typedef struct Expression_ {
+class Expression {
+public:
     /*当term不为空时，表示是term*/
     TokenType opType;
     TermExpr *term;
@@ -134,118 +135,29 @@ typedef struct Expression_ {
     /*按链表顺序存操作数*/
     Expression *nextexpr;
 
-} Expression;
 
-int printTermExpression(char *exprs, TermExpr *term);
+    int printTermExpression(char *exprs, TermExpr *term);
 
-const char *getOperatorDesc(TokenType type);
+    const char *getOperatorDesc(TokenType type);
 
-Expression *newExpression(TokenType type, Expression *nextexpr);
+    Expression(TokenType type, Expression *nextexpr);
 
-TermExpr *newTermExpr();
+    TermExpr *newTermExpr();
+
+
+    int expression_free();
+
+
+    Expression *expression_print( Expression *expr, char *desc);
+
+
+} ;
 
 char *getExpressionNamesTitle(vector<Expression*> fields);
 
-int expression_free(Expression *expr);
-
 int expression_free_list(vector<Expression*> exprlist);
 
-Expression *expression_print(Expression *expr, char *desc);
-
 int expression_print_list(vector<Expression*> exprlist);
-
-
-/**
- * @brief 入口函数
- * @param parser ParserT结构的解析器
- * @return 表达式
- */
-Expression *parseExpressionRD(ParserT *parser);
-
-/**
- * @brief 合并两个后缀表达式，
-  @param[in] expr0 作为左操作数，
-  @param[in] expr1 作为右操作数\
-  @return 合并后的后缀表达式
-*/
-Expression *concatExpression(Expression *expr0, Expression *expr1);
-
-/**
- @brief  解析函数的参数列表
- @param[in] parser ParserT结构的解析器
- @return 读到的参数表达式
- */
-Expression *parseReadArgument(ParserT *parser);
-
-/**
- @brief 解析函数, 如 sqrt(.), pow(.), 等
- @param[in] parser ParserT结构的解析器
- @return 函数表达式
-*/
-Expression *parseReadBuiltin(ParserT *parser);
-
-/**
- @brief  解析括号内的表达式
- @param[in] parser ParserT结构的解析器
- @return 表达式
- */
-Expression *parseReadParen(ParserT *parser);
-
-/**
- @brief 解析单目运算表达式
- @param[in] parser ParserT结构的解析器
- @return 表达式
-*/
-Expression *parseReadUnary(ParserT *parser);
-
-/**
- @brief 解析指数表达式
- @param[in] parser ParserT结构的解析器
- @return 表达式
- */
-Expression *parseReadPower(ParserT *parser);
-
-/**
- @brief 解析终结符表达式
- @param[in] parser  ParserT结构的解析器
- @return 表达式
- */
-Expression *parseReadTerm(ParserT *parser);
-
-/**
- @brief 解析算术表达式
- @param[in] parser ParserT结构的解析器
- @return 表达式
- */
-Expression *parseReadExpr(ParserT *parser);
-
-/**
- @brief 解析比较表达式
- @param[in] parser  ParserT结构的解析器
- @return 表达式
- */
-Expression *parseReadBooleanComparison(ParserT *parser);
-
-/**
- * @brief 解析等比较表达式
- * @param parser ParserT结构的解析器
- * @return  表达式
- */
-Expression *parseReadBooleanEquality(ParserT *parser);
-
-/**
- @brief 解析and比较表达式
- @param[in] parser  ParserT结构的解析器
- @return 表达式
-*/
-Expression *parseReadBooleanAnd(ParserT *parser);
-
-/**
- @brief 解析or比较表达式
- @param[in] parser ParserT结构的解析器
- @return 表达式
-*/
-Expression *parseReadBooleanOr(ParserT *parser);
 
 
 #endif //DONGMENDB_EXPRESSION_H

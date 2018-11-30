@@ -33,8 +33,8 @@ int Project::processExpressionList(){
                 for (int j = 0; j < names.size(); j ++){
                     char *name = names.at(j);
                     ColumnReference_t *ref = column_get_reference(name);
-                    Expression *expr0 = newExpression(TOKEN_WORD, NULL);
-                    TermExpr *term = newTermExpr();
+                    Expression *expr0 = new Expression(TOKEN_WORD, NULL);
+                    TermExpr *term = expr0->newTermExpr();
                     term->t = TERM_COLREF;
                     term->ref = ref;
                     expr0->term = term;

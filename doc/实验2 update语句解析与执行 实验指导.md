@@ -69,19 +69,19 @@ const char *reservedWords[] = {
 
 解析器作用主要是获取 token(词)，然后对 token(词)进行解析，主要的函数在`src/parser/parser.c`中实现：
 
-`int matchToken(ParserT *parser, TokenType type, char *text)`//**常用函数**
+`int matchToken(Parser *parser, TokenType type, char *text)`//**常用函数**
 对解析器中 token(词）的`TokenType`和`text`进行检查，如果匹配成功，就**直接获取下一个词放入解析器中**，否则输出错误信息，返回 NUL，不对解析器中的词修改
 
-`Token *parseNextToken(ParserT *parser)`  
+`Token *parseNextToken(Parser *parser)`  
 首先判断当前解析器中的词是否为 NULL,如果是，就获取下一个 token;否则就返回当前词
 
-`Token *parseEatToken(ParserT *parser)`  
+`Token *parseEatToken(Parser *parser)`  
 在解析完当前词之后，将当前解析器中的 token(词)置为 NULL
 
-`Token *parseEatAndNextToken(ParserT *parser)`  
+`Token *parseEatAndNextToken(Parser *parser)`  
 直接获取下一个词，不对当前解析器中的词进行判断
 
-`void *parseError(ParserT *parser, char *message)`  
+`void *parseError(Parser *parser, char *message)`  
 将解析状态修改为解析失败(`PARSER_WRONG`),返回 NULL
 
 ### 2.1.3 解析 update 语句(parse_sql_stmt_update)
@@ -131,7 +131,7 @@ SRA_t *SRASelect(SRA_t *sra, Expression *cond);
 
 - `arraylist_create()` //创建一个 arraylist
 - `int arraylist_add(arraylist *list, void *element)` //向 arraylist 中添加元素
-- `Expression *parseExpressionRD(ParserT *parser)` //递归下降法解析表达式 详情看 src/parser/expression.c 中
+- `Expression *parseExpressionRD(Parser *parser)` //递归下降法解析表达式 详情看 src/parser/expression.c 中
 - `SRA_t *SRATable(TableReference_t *ref);` // `SRA_t`构造函数
 - `SRA_t *SRASelect(SRA_t *sra, Expression *cond);` // `SRA_t`构造函数
 

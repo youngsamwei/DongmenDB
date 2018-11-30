@@ -16,7 +16,7 @@
 int parse_expression(const char *sexpr){
     int result = 0;
     Tokenizer *tokenizer = TKCreate(sexpr);
-    ParserT *parser = newParser(tokenizer);
+    Parser *parser = newParser(tokenizer);
 
     Expression *expr = parseExpressionRD(parser);
     if (parser->parserStateType ==PARSER_WRONG){

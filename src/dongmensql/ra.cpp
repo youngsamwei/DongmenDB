@@ -9,7 +9,7 @@ void RA_print(RA_t *ra)
         break;
     case RA_SIGMA:
         indent_print("Sigma(");
-        expression_print(ra->sigma.cond, NULL);
+            ra->sigma.cond->expression_print(ra->sigma.cond, NULL);
         printf(", ");
         upInd();
         RA_print(ra->sigma.ra);
@@ -54,7 +54,7 @@ void RA_print(RA_t *ra)
         break;
     case RA_RHO_EXPR:
         indent_print("RhoExpr(");
-        expression_print(ra->rho.to_rename, NULL);
+            ra->rho.to_rename->expression_print(ra->rho.to_rename, NULL);
         printf(", \"%s\",", ra->rho.new_name);
         upInd();
         RA_print(ra->rho.ra);
@@ -163,7 +163,7 @@ void RA_free(RA_t *ra)
     switch(ra->t)
     {
     case RA_SIGMA:
-        expression_free(ra->sigma.cond);
+        ra->sigma.cond->expression_free();
         RA_free(ra->sigma.ra);
         break;
     case RA_PI:
@@ -179,7 +179,7 @@ void RA_free(RA_t *ra)
     case RA_RHO_EXPR:
         RA_free(ra->rho.ra);
         free(ra->rho.new_name);
-        expression_free(ra->rho.to_rename);
+            ra->rho.to_rename->expression_free();
         break;
     case RA_RHO_TABLE:
         RA_free(ra->rho.ra);

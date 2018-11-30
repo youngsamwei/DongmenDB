@@ -29,7 +29,9 @@ enum RA_Type {
     RA_RHO_EXPR,
 };
 
+class Expression;
 typedef struct RA_s RA_t;
+typedef struct Column_s Column_t;
 
 struct RA_s {
     enum RA_Type t;

@@ -1,8 +1,8 @@
 #ifndef __COLUMN_H_
 #define __COLUMN_H_
 
-#include "literal.h"
 #include "parser/expression.h"
+#include "literal.h"
 
 enum constraint_type {
     CONS_NOT_NULL,
@@ -15,33 +15,38 @@ enum constraint_type {
     CONS_SIZE
 };
 
-typedef struct ForeignKeyRef_t {
-    const char *col_name, *table_name, *table_col_name;
-} ForeignKeyRef_t;
+typedef class Expression;
 
-typedef struct Expression_ Expression;
-typedef struct Constraint_t {
+typedef struct ForeignKeyRef_s ForeignKeyRef_t;
+typedef struct ForeignKeyRef_s {
+    const char *col_name, *table_name, *table_col_name;
+} ;
+
+typedef struct Constraint_s Constraint_t;
+typedef struct Constraint_s {
     enum constraint_type t;
     union {
-        ForeignKeyRef_t ref;
+        ForeignKeyRef_t *ref;
         Literal_t *default_val;
         unsigned size;
         Expression *check;
     } constraint;
-    struct Constraint_t *next;
-} Constraint_t;
+    Constraint_t *next;
+} ;
 
-typedef struct Column_t {
+typedef struct Column_s Column_t;
+typedef struct Column_s {
     char *name;
     enum data_type type;
     Constraint_t *constraints;
     size_t offset; /* offset in bytes from the beginning of the row */
-    struct Column_t *next;
-} Column_t;
+    Column_t *next;
+} ;
 
+typedef struct ColumnReference_s ColumnReference_t;
 typedef struct ColumnReference_s {
     char *tableName, *columnName, *columnAlias, *allName;
-} ColumnReference_t;
+} ;
 
 /* constraints on single columns */
 ForeignKeyRef_t ForeignKeyRef_makeFull(const char *cname, ForeignKeyRef_t fkey);
@@ -51,7 +56,7 @@ ForeignKeyRef_t ForeignKeyRef_make(const char *foreign_tname,
 Constraint_t *NotNull(void);
 Constraint_t *AutoIncrement(void);
 Constraint_t *PrimaryKey(void);
-Constraint_t *ForeignKey(ForeignKeyRef_t fkr);
+Constraint_t *ForeignKey(ForeignKeyRef_t *fkr);
 Constraint_t *Default(Literal_t *val);
 Constraint_t *Unique(void);
 Constraint_t *Check(Expression *cond);

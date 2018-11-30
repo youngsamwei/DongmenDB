@@ -18,7 +18,6 @@
 
 using namespace std;
 
-typedef struct ParserT_  ParserT;
 typedef struct sql_stmt_create_ {
     table_info *tableInfo;
 
@@ -100,50 +99,50 @@ UpdateStmt *createUpdateStmt(char *tableName,
 
 */
 
-sql_stmt_create *parse_sql_stmt_create(ParserT *parser);
+sql_stmt_create *parse_sql_stmt_create(Parser *parser);
 /*
-AlterStmt *parseAlter(ParserT *parser);
-InsertStmt *parseInsert(ParserT *parser);
-DeleteStmt *parseDelete(ParserT *parser);
-UpdateStmt *parseUpdate(ParserT *parser);
+AlterStmt *parseAlter(Parser *parser);
+InsertStmt *parseInsert(Parser *parser);
+DeleteStmt *parseDelete(Parser *parser);
+UpdateStmt *parseUpdate(Parser *parser);
 */
 /*
-TermExpr *parseTermExpr(ParserT *parser);
-BinaryExpr *parseBinaryExpr(ParserT *parser);
-UnaryExpr *parseUnaryExpr(ParserT *parser);
-arraylist *parseGroupExpr(ParserT *parser);
+TermExpr *parseTermExpr(Parser *parser);
+BinaryExpr *parseBinaryExpr(Parser *parser);
+UnaryExpr *parseUnaryExpr(Parser *parser);
+arraylist *parseGroupExpr(Parser *parser);
  */
-vector<Expression*> parseOrderExpr(ParserT *parser);
+vector<Expression*> parseOrderExpr(Parser *parser);
 /*
-ColumnsExpr *parseColumnsExpr(ParserT *parser);
-SetExpr *parseSetExpr(ParserT *parser);
+ColumnsExpr *parseColumnsExpr(Parser *parser);
+SetExpr *parseSetExpr(Parser *parser);
 */
 
 /* 在src_experiment\exp_01_stmt_parser\exp_01_03_select.c 中实现*/
-SRA_t *parse_sql_stmt_select(ParserT *parser);
+SRA_t *parse_sql_stmt_select(Parser *parser);
 
-vector<Expression*> parseFieldsExpr(ParserT *parser);
-SRA_t *parseTablesExpr(ParserT *parser);
+vector<Expression*> parseFieldsExpr(Parser *parser);
+SRA_t *parseTablesExpr(Parser *parser);
 
-sql_stmt_create *parse_sql_stmt_create(ParserT *parser);
-field_info *parse_sql_stmt_columnexpr(ParserT *parser);
+sql_stmt_create *parse_sql_stmt_create(Parser *parser);
+field_info *parse_sql_stmt_columnexpr(Parser *parser);
 
 /*  在src_experiment\exp_01_stmt_parser\exp_01_02_insert.c 中实现*/;
-sql_stmt_insert *parse_sql_stmt_insert(ParserT *parser);
+sql_stmt_insert *parse_sql_stmt_insert(Parser *parser);
 
 /* 在src_experiment\exp_01_stmt_parser\exp_01_04_update.c 中实现*/
-sql_stmt_update *parse_sql_stmt_update(ParserT *parser);
+sql_stmt_update *parse_sql_stmt_update(Parser *parser);
 
 /* 在src_experiment\exp_01_stmt_parser\exp_01_05_delete.c 中实现*/
-sql_stmt_delete *parse_sql_stmt_delete(ParserT *parser);
+sql_stmt_delete *parse_sql_stmt_delete(Parser *parser);
 
-user *parse_create_user(ParserT *parser);
+user *parse_create_user(Parser *parser);
 
-role *parse_create_role(ParserT *parser);
+role *parse_create_role(Parser *parser);
 
-sql_stmt_grant_revoke *parse_grant(ParserT *parser);
+sql_stmt_grant_revoke *parse_grant(Parser *parser);
 
-sql_stmt_grant_revoke *parse_revoke(ParserT *parser);
+sql_stmt_grant_revoke *parse_revoke(Parser *parser);
 
 
 /* 打印 sql_stmt_update */

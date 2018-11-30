@@ -54,7 +54,7 @@ void TestStmtParser::dropDB() {
 int TestStmtParser::select(const char *sqlselect) {
 
     Tokenizer *tokenizer = new Tokenizer(sqlselect);
-    ParserT *parser = newParser(tokenizer);
+    Parser *parser = new Parser(tokenizer);
     memset(parser->parserMessage, 0, sizeof(parser->parserMessage));
 
     SRA_t *selectStmt = parse_sql_stmt_select(parser);
@@ -78,7 +78,7 @@ int TestStmtParser::select(const char *sqlselect) {
 int TestStmtParser::delete_(const char *strdelete) {
 
     Tokenizer *tokenizer =  new Tokenizer(strdelete);
-    ParserT *parser = newParser(tokenizer);
+    Parser *parser = new Parser(tokenizer);
     memset(parser->parserMessage, 0, sizeof(parser->parserMessage));
 
     sql_stmt_delete *sqlStmtDelete = parse_sql_stmt_delete(parser);
@@ -94,7 +94,7 @@ int TestStmtParser::delete_(const char *strdelete) {
 int TestStmtParser::update(const char *strupdate) {
 
     Tokenizer *tokenizer = new Tokenizer(strupdate);
-    ParserT *parser = newParser(tokenizer);
+    Parser *parser = new Parser(tokenizer);
     memset(parser->parserMessage, 0, sizeof(parser->parserMessage));
     sql_stmt_update *sqlStmtUpdate = parse_sql_stmt_update(parser);
 

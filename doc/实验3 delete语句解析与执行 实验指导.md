@@ -19,7 +19,7 @@
 
 - `arraylist_create()` //创建一个 arraylist
 - `int arraylist_add(arraylist *list, void *element)` //向 arraylist 中添加元素
-- `Expression *parseExpressionRD(ParserT *parser)` //递归下降法解析表达式 详情看 src/parser/expression.c 中
+- `Expression *parseExpressionRD(Parser *parser)` //递归下降法解析表达式 详情看 src/parser/expression.c 中
 - `SRA_t *SRATable(TableReference_t *ref);` // `SRA_t`构造函数
 - `SRA_t *SRASelect(SRA_t *sra, Expression *cond);` // `SRA_t`构造函数
 

@@ -15,6 +15,6 @@
  * 解析获得 sql_stmt_delete 结构
  */
 
-sql_stmt_delete *parse_sql_stmt_delete(ParserT *parser){
+sql_stmt_delete *parse_sql_stmt_delete(Parser *parser){
 
 };

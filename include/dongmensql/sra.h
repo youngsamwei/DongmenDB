@@ -55,6 +55,7 @@ using namespace std;
 /* Forward declarations */
 typedef struct SRA_s SRA_t;
 typedef struct JoinCondition_s JoinCondition_t;
+typedef struct TableReference_s TableReference_t;
 
 enum SRAType {
     SRA_TABLE,

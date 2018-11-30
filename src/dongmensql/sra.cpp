@@ -1,5 +1,7 @@
 #include "dongmensql/dongmensql.h"
 
+#include "parser/expression.h"
+
 static SRA_t *SRABinary(SRA_t *sra1, SRA_t *sra2, enum SRAType t);
 
 SRA_t *SRATable(TableReference_t *ref)
@@ -106,7 +108,7 @@ void SRA_print(SRA_t *sra)
         break;
     case SRA_SELECT:
         indent_print("Select(");
-        expression_print(sra->select.cond, NULL);
+            sra->select.cond->expression_print(sra->select.cond, NULL);
         printf(", ");
         upInd();
         SRA_print(sra->select.sra);
@@ -225,7 +227,7 @@ void JoinCondition_print(JoinCondition_t *cond)
     if (cond->t == JOIN_COND_ON)
     {
         printf("On: ");
-        expression_print(cond->on, NULL);
+        cond->on->expression_print(cond->on, NULL);
     }
     else if (cond->t == JOIN_COND_USING)
     {
@@ -366,7 +368,7 @@ void JoinCondition_free(JoinCondition_t *cond)
     switch (cond->t)
     {
     case JOIN_COND_ON:
-        expression_free(cond->on);
+        cond->on->expression_free();
         break;
     case JOIN_COND_USING:
         StrList_free(cond->col_list);
@@ -389,7 +391,7 @@ void SRA_free(SRA_t *sra)
         break;
     case SRA_SELECT:
         SRA_free(sra->select.sra);
-        expression_free(sra->select.cond);
+            sra->select.cond->expression_free();
         break;
     case SRA_FULL_OUTER_JOIN:
     case SRA_LEFT_OUTER_JOIN:

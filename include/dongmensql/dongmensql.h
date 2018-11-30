@@ -21,6 +21,12 @@
 #define STMT_INSERT (2)
 #define STMT_DELETE (3)
 
+typedef struct Create_s Create_t;
+typedef struct SRA_s SRA_t;
+typedef struct Insert_s Insert_t;
+typedef struct Delete_s Delete_t;
+
+
 typedef struct dongmensql_statement {
 
     bool explain;

@@ -2,7 +2,7 @@
 
 static Table_t *Table_addPrimaryKey(Table_t *table, const char *col_name);
 
-Table_t *Table_addForeignKey(Table_t *table, ForeignKeyRef_t fkr)
+Table_t *Table_addForeignKey(Table_t *table, ForeignKeyRef_t *fkr)
 {
     if (table != NULL)
     {
@@ -10,13 +10,13 @@ Table_t *Table_addForeignKey(Table_t *table, ForeignKeyRef_t fkr)
         Column_t *col = table->columns;
         for (; col; col=col->next)
         {
-            if (!strcmp(col->name, fkr.col_name))
+            if (!strcmp(col->name, fkr->col_name))
             {
                 Column_addConstraint(col, ForeignKey(fkr));
                 return table;
             }
         }
-        fprintf(stderr, "Error: column %s not in table\n", fkr.col_name);
+        fprintf(stderr, "Error: column %s not in table\n", fkr->col_name);
         return table;
     }
     fprintf(stderr, "Error: table is null\n");
@@ -39,7 +39,7 @@ Table_t *Table_addKeyDecs(Table_t *table, KeyDec_t *decs)
             break;
         case KEY_DEC_FOREIGN:
             if (!Table_addForeignKey(table, decs->dec.fkey))
-                fprintf(stderr, "Error: column '%s' not found\n", decs->dec.fkey.col_name);
+                fprintf(stderr, "Error: column '%s' not found\n", decs->dec.fkey->col_name);
             break;
         default:
             fprintf(stderr, "Unknown declaration type\n");
@@ -48,7 +48,7 @@ Table_t *Table_addKeyDecs(Table_t *table, KeyDec_t *decs)
     return table;
 }
 
-KeyDec_t *ForeignKeyDec(ForeignKeyRef_t fkr)
+KeyDec_t *ForeignKeyDec(ForeignKeyRef_t *fkr)
 {
     KeyDec_t *kdec = (KeyDec_t *)calloc(1, sizeof(KeyDec_t));
     kdec->t = KEY_DEC_FOREIGN;

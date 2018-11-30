@@ -16,30 +16,30 @@ sql_stmt_create *sql_stmt_create_create(char *tableName,
 };
 
 
-sql_stmt_create *parseCreate(ParserT *parser) { return NULL; };
+sql_stmt_create *parseCreate(Parser *parser) { return NULL; };
 /*
-AlterStmt *parseAlter(ParserT *parser) { return NULL; };
+AlterStmt *parseAlter(Parser *parser) { return NULL; };
 
-DeleteStmt *parseDelete(ParserT *parser) { return NULL; };
+DeleteStmt *parseDelete(Parser *parser) { return NULL; };
 
-UpdateStmt *parseUpdate(ParserT *parser) { return NULL; };
+UpdateStmt *parseUpdate(Parser *parser) { return NULL; };
 */
 /*
-TermExpr *parseTermExpr(ParserT *parser) { return NULL; };
+TermExpr *parseTermExpr(Parser *parser) { return NULL; };
 
-BinaryExpr *parseBinaryExpr(ParserT *parser) { return NULL; };
+BinaryExpr *parseBinaryExpr(Parser *parser) { return NULL; };
 
-UnaryExpr *parseUnaryExpr(ParserT *parser) { return NULL; };
+UnaryExpr *parseUnaryExpr(Parser *parser) { return NULL; };
 
-arraylist *parseGroupExpr(ParserT *parser) { return NULL; };
+arraylist *parseGroupExpr(Parser *parser) { return NULL; };
 */
-vector<Expression*> parseOrderExpr(ParserT *parser) {
+vector<Expression*> parseOrderExpr(Parser *parser) {
     vector<Expression*> v;
     return v; };
 /*
-ColumnsExpr *parseColumnsExpr(ParserT *parser) { return NULL; };
+ColumnsExpr *parseColumnsExpr(Parser *parser) { return NULL; };
 
-SetExpr *parseSetExpr(ParserT *parser) { return NULL; };
+SetExpr *parseSetExpr(Parser *parser) { return NULL; };
 */
 int dongmensql_parser(const char *sql, dongmensql_statement_t **stmt){};
 int dongmensql_stmt_print(dongmensql_statement_t *stmt){};
