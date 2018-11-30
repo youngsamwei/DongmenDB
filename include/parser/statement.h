@@ -121,8 +121,6 @@ SetExpr *parseSetExpr(Parser *parser);
 /* 在src_experiment\exp_01_stmt_parser\exp_01_03_select.c 中实现*/
 SRA_t *parse_sql_stmt_select(Parser *parser);
 
-vector<Expression*> parseFieldsExpr(Parser *parser);
-SRA_t *parseTablesExpr(Parser *parser);
 
 sql_stmt_create *parse_sql_stmt_create(Parser *parser);
 field_info *parse_sql_stmt_columnexpr(Parser *parser);

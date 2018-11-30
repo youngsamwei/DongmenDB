@@ -12,6 +12,7 @@
 #include <physicalplan/Scan.h>
 #include <physicalplan/Project.h>
 #include <iostream>
+#include <parser/StatementParser.h>
 #include "shell/shell.h"
 
 /*
@@ -307,7 +308,8 @@ int dongmendb_shell_handle_select_table(dongmendb_shell_handle_sql_t *ctx, const
     memset(parser->parserMessage, 0, sizeof(parser->parserMessage));
 
     /* 解析 select语句，获得SRA_t对象*/
-    SRA_t *selectStmt = parse_sql_stmt_select(parser);
+    SelectParser *sp = new SelectParser(tokenizer);
+    SRA_t *selectStmt = sp->parse_sql_stmt_select();
     if (selectStmt != NULL) {
         SRA_print(selectStmt);
     } else {
@@ -526,7 +528,8 @@ int dongmendb_shell_handle_cmd_opt(dongmendb_shell_handle_sql_t *ctx, struct han
     memset(parser->parserMessage, 0, sizeof(parser->parserMessage));
 
     /* 解析 select语句，获得SRA_t对象*/
-    SRA_t *selectStmt = parse_sql_stmt_select(parser);
+    SelectParser *sp = new SelectParser(tokenizer);
+    SRA_t *selectStmt = sp->parse_sql_stmt_select();
     if (selectStmt != NULL) {
         printf("\n");
         SRA_print(selectStmt);

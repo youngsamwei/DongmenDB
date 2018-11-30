@@ -56,6 +56,24 @@ public:
     int matchToken( TokenType type, char *text);
 
 
+/*使用递归下降法解析表达式
+ *
+ * 支持：
+ * 算术运算 + - * /
+ * 比较运算: > < != <= >=
+ * 逻辑运算: NOT AND OR
+ * 函数:  round, ltrim （仅作为例子，没有实现）
+ * 字段变量: 类似student.sname
+ * 支持简单的语法检查。
+ * 支持的数据类型:数值，字符串
+ *
+ * 尚未支持的运算符： like， between..and 等
+ * 暂不支持函数
+ * 此功能属于语法检查，尚不支持语义检查。比如函数操作符操作数类型匹配，函数传参类型匹配检查等。
+ *
+ * 入口函数：parseExpressionRD
+ * */
+
 /**
  * @brief 入口函数
  * @param parser ParserT结构的解析器

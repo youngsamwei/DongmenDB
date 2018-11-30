@@ -4,6 +4,7 @@
 
 #include <test/test_stmt_parser.h>
 #include <parser/statement.h>
+#include <parser/StatementParser.h>
 
 
 void TestStmtParser::createDB(const char *dbname) {
@@ -57,7 +58,8 @@ int TestStmtParser::select(const char *sqlselect) {
     Parser *parser = new Parser(tokenizer);
     memset(parser->parserMessage, 0, sizeof(parser->parserMessage));
 
-    SRA_t *selectStmt = parse_sql_stmt_select(parser);
+    SelectParser *sp = new SelectParser(tokenizer);
+    SRA_t *selectStmt = sp->parse_sql_stmt_select();
     ExecutionPlan plan;
 
     Scan* scan = plan.generateSelect(test_db_ctx->db, selectStmt, test_db_ctx->db->tx);
