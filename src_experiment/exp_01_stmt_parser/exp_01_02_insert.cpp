@@ -4,67 +4,68 @@
 #include <parser/statement.h>
 #include <parser/parser.h>
 #include <utils/utils.h>
+#include <parser/StatementParser.h>
 
 /**
  * 在现有实现的基础上，修改parser以支持insert values多条的特性。
  * insert into table(f1,f2,...,fn) values (v1,v2,...,vn),(v1,v2,...,vn),(v1,v2,...,vn)(v1,v2,...,vn);
  */
 
-sql_stmt_insert *parse_sql_stmt_insert(Parser *parser) {
+sql_stmt_insert *InsertParser::parse_sql_stmt_insert() {
     char *tableName = NULL;
     vector<char*> fields ;
     vector<variant*> values ;
 
-    if (!parser->matchToken( TOKEN_RESERVED_WORD, "insert")) {
+    if (!this->matchToken( TOKEN_RESERVED_WORD, "insert")) {
         return NULL;
     }
-    if (!parser->matchToken( TOKEN_RESERVED_WORD, "into")) {
-        strcpy(parser->parserMessage, "invalid sql: should be into.");
+    if (!this->matchToken( TOKEN_RESERVED_WORD, "into")) {
+        strcpy(this->parserMessage, "invalid sql: should be into.");
         return NULL;
     }
-    Token *token = parser->parseNextToken();
+    Token *token = this->parseNextToken();
     if (token->type == TOKEN_WORD) {
         tableName = new_id_name();
         strcpy(tableName, token->text);
     } else {
-        strcpy(parser->parserMessage, "invalid sql: missing table name.");
+        strcpy(this->parserMessage, "invalid sql: missing table name.");
         return NULL;
     }
-    token = parser->parseEatAndNextToken();
-    if (!parser->matchToken( TOKEN_OPEN_PAREN, "(")) {
-        strcpy(parser->parserMessage, "invalid sql: missing (.");
+    token = this->parseEatAndNextToken();
+    if (!this->matchToken( TOKEN_OPEN_PAREN, "(")) {
+        strcpy(this->parserMessage, "invalid sql: missing (.");
         return NULL;
     }
-    token = parser->parseNextToken();
+    token = this->parseNextToken();
     if (token->type == TOKEN_WORD) {
         while (token->type == TOKEN_WORD) {
             char *fieldName = new_id_name();
             strcpy(fieldName, token->text);
             fields.push_back(fieldName);
-            token = parser->parseEatAndNextToken();
+            token = this->parseEatAndNextToken();
             if (token->type==TOKEN_COMMA){
-                token = parser->parseEatAndNextToken();
+                token = this->parseEatAndNextToken();
             }else{
                 break;
             }
         }
     } else {
-        strcpy(parser->parserMessage, "invalid sql: missing field name.");
+        strcpy(this->parserMessage, "invalid sql: missing field name.");
         return NULL;
     }
-    if (!parser->matchToken( TOKEN_CLOSE_PAREN, ")")) {
-        strcpy(parser->parserMessage, "invalid sql: missing ).");
+    if (!this->matchToken( TOKEN_CLOSE_PAREN, ")")) {
+        strcpy(this->parserMessage, "invalid sql: missing ).");
         return NULL;
     }
-    if (!parser->matchToken( TOKEN_RESERVED_WORD, "values")) {
-        strcpy(parser->parserMessage, "invalid sql: missing values.");
+    if (!this->matchToken( TOKEN_RESERVED_WORD, "values")) {
+        strcpy(this->parserMessage, "invalid sql: missing values.");
         return NULL;
     }
-    if (!parser->matchToken( TOKEN_OPEN_PAREN, "(")) {
-        strcpy(parser->parserMessage, "invalid sql: missing (.");
+    if (!this->matchToken( TOKEN_OPEN_PAREN, "(")) {
+        strcpy(this->parserMessage, "invalid sql: missing (.");
         return NULL;
     }
-    token = parser->parseNextToken();
+    token = this->parseNextToken();
     if (token->type == TOKEN_STRING || token->type == TOKEN_DECIMAL) {
         while (token->type == TOKEN_STRING || token->type == TOKEN_DECIMAL) {
             if (token->type == TOKEN_STRING){
@@ -89,19 +90,19 @@ sql_stmt_insert *parse_sql_stmt_insert(Parser *parser) {
                 values.push_back(v);
             }
 
-            token = parser->parseEatAndNextToken();
+            token = this->parseEatAndNextToken();
             if (token->type==TOKEN_COMMA){
-                token = parser->parseEatAndNextToken();
+                token = this->parseEatAndNextToken();
             }else{
                 break;
             }
         }
     } else {
-        strcpy(parser->parserMessage, "invalid sql: missing a value.");
+        strcpy(this->parserMessage, "invalid sql: missing a value.");
         return NULL;
     }
-    if (!parser->matchToken( TOKEN_CLOSE_PAREN, ")")) {
-        strcpy(parser->parserMessage, "invalid sql: missing ).");
+    if (!this->matchToken( TOKEN_CLOSE_PAREN, ")")) {
+        strcpy(this->parserMessage, "invalid sql: missing ).");
         return NULL;
     }
     sql_stmt_insert *sqlStmtInsert = (sql_stmt_insert *)calloc(sizeof(sql_stmt_insert),1);

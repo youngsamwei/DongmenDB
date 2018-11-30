@@ -3,6 +3,7 @@
 //
 
 #include <parser/statement.h>
+#include <parser/StatementParser.h>
 
 /**
  * 在现有实现基础上，实现delete from子句
@@ -15,6 +16,6 @@
  * 解析获得 sql_stmt_delete 结构
  */
 
-sql_stmt_delete *parse_sql_stmt_delete(Parser *parser){
+sql_stmt_delete *DeleteParser::parse_sql_stmt_delete(){
 
 };

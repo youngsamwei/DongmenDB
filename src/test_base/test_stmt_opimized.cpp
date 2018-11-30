@@ -5,6 +5,7 @@
 #include <test/test_stmt_optimized.h>
 #include <dongmensql/optimizer.h>
 #include <parser/statement.h>
+#include <parser/StatementParser.h>
 
 
 /*检查SRA_Select操作的条件：
@@ -159,7 +160,8 @@ int TestStmtOptimized::opt_condition_pushdown_test(const char *sqlselect) {
     Parser *parser = new Parser(tokenizer);
     memset(parser->parserMessage, 0, sizeof(parser->parserMessage));
 
-    SRA_t *selectStmt = parse_sql_stmt_select(parser);
+    SelectParser * sp = new SelectParser(tokenizer);
+    SRA_t *selectStmt = sp->parse_sql_stmt_select();
 
     SRA_t *optimizedStmt = dongmengdb_algebra_optimize_condition_pushdown(selectStmt,
                                                                           test_db_ctx->db->metadataManager->tableManager);

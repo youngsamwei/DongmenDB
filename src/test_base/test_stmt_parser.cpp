@@ -83,7 +83,8 @@ int TestStmtParser::delete_(const char *strdelete) {
     Parser *parser = new Parser(tokenizer);
     memset(parser->parserMessage, 0, sizeof(parser->parserMessage));
 
-    sql_stmt_delete *sqlStmtDelete = parse_sql_stmt_delete(parser);
+    DeleteParser *dp = new DeleteParser(tokenizer);
+    sql_stmt_delete *sqlStmtDelete = dp->parse_sql_stmt_delete();
 
     /*返回修改的记录条数*/
     int count = 0;
@@ -98,7 +99,9 @@ int TestStmtParser::update(const char *strupdate) {
     Tokenizer *tokenizer = new Tokenizer(strupdate);
     Parser *parser = new Parser(tokenizer);
     memset(parser->parserMessage, 0, sizeof(parser->parserMessage));
-    sql_stmt_update *sqlStmtUpdate = parse_sql_stmt_update(parser);
+
+    UpdateParser *up = new UpdateParser(tokenizer);
+    sql_stmt_update *sqlStmtUpdate = up->parse_sql_stmt_update();
 
     if (sqlStmtUpdate == NULL) {
         printf(parser->parserMessage);

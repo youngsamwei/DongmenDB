@@ -263,7 +263,8 @@ int dongmendb_shell_handle_insert_table(dongmendb_shell_handle_sql_t *ctx, const
     Parser *parser = new Parser(tokenizer);
     memset(parser->parserMessage, 0, sizeof(parser->parserMessage));
 
-    sql_stmt_insert *sqlStmtInsert = parse_sql_stmt_insert(parser);
+    InsertParser *ip = new InsertParser(tokenizer);
+    sql_stmt_insert *sqlStmtInsert = ip->parse_sql_stmt_insert();
 
     /* TODO: 语义检查:检查表和字段是否存在*/
     int status =  semantic_check_table_exists(ctx->db->metadataManager->tableManager, sqlStmtInsert->tableName, ctx->db->tx);
@@ -375,7 +376,8 @@ int dongmendb_shell_handle_update_data(dongmendb_shell_handle_sql_t *ctx, const 
     memset(parser->parserMessage, 0, sizeof(parser->parserMessage));
 
     /*TODO: parse_sql_stmt_update， update语句解析*/
-    sql_stmt_update *sqlStmtUpdate = parse_sql_stmt_update(parser);
+    UpdateParser *up = new UpdateParser(tokenizer);
+    sql_stmt_update *sqlStmtUpdate = up->parse_sql_stmt_update();
     if (sqlStmtUpdate == NULL) {
         printf(parser->parserMessage);
         return 1;
@@ -432,7 +434,8 @@ int dongmendb_shell_handle_delete_data(dongmendb_shell_handle_sql_t *ctx, const 
     Parser *parser = new Parser(tokenizer);
     memset(parser->parserMessage, 0, sizeof(parser->parserMessage));
 
-    sql_stmt_delete *sqlStmtDelete = parse_sql_stmt_delete(parser);
+    DeleteParser *dp = new DeleteParser(tokenizer);
+    sql_stmt_delete *sqlStmtDelete = dp->parse_sql_stmt_delete();
     if (sqlStmtDelete == NULL) {
         printf(parser->parserMessage);
         return 1;

@@ -3,6 +3,7 @@
 //
 
 #include <parser/statement.h>
+#include <parser/StatementParser.h>
 
 /**
  * 在现有实现基础上，实现update from子句
@@ -16,7 +17,7 @@
  */
 
 /*TODO: parse_sql_stmt_update， update语句解析*/
-sql_stmt_update *parse_sql_stmt_update(Parser *parser) {
+sql_stmt_update *UpdateParser::parse_sql_stmt_update() {
 //    fprintf(stderr, "TODO: update is not implemented yet. in parse_sql_stmt_update \n");
 
 };

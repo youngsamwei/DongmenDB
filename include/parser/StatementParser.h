@@ -6,19 +6,51 @@
 #define DONGMENDB_STATEMENTPARSER_H
 
 /* 在src_experiment\exp_01_stmt_parser\exp_01_03_select.c 中实现*/
-class SelectParser : public Parser{
+class SelectParser : public Parser {
 public:
-    SelectParser(Tokenizer *tokenizer):Parser(tokenizer){
+    SelectParser(Tokenizer *tokenizer) : Parser(tokenizer) {
     }
 
     SRA_t *parse_sql_stmt_select();
 
-    vector<Expression*> parseFieldsExpr();
+    vector<Expression *> parseFieldsExpr();
+
     SRA_t *parseTablesExpr();
 };
 
-class CreateParser : public Parser{
+class CreateParser : public Parser {
     sql_stmt_create *parseCreate();
+};
+/*  在src_experiment\exp_01_stmt_parser\exp_01_02_insert.c 中实现*/;
+
+class InsertParser : public Parser {
+public:
+    InsertParser(Tokenizer *tokenizer) : Parser(tokenizer) {
+    }
+
+    sql_stmt_insert *parse_sql_stmt_insert();
+};
+
+/* 在src_experiment\exp_01_stmt_parser\exp_01_04_update.c 中实现*/
+
+class UpdateParser : public Parser {
+public:
+    UpdateParser(Tokenizer *tokenizer) : Parser(tokenizer) {
+    }
+
+    sql_stmt_update *parse_sql_stmt_update();
+
+};
+
+/* 在src_experiment\exp_01_stmt_parser\exp_01_05_delete.c 中实现*/
+
+class DeleteParser : public Parser {
+public:
+    DeleteParser(Tokenizer *tokenizer) : Parser(tokenizer) {
+    }
+
+    sql_stmt_delete *parse_sql_stmt_delete();
+
 };
 
 #endif //DONGMENDB_STATEMENTPARSER_H
