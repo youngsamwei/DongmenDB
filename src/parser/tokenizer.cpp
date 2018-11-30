@@ -36,18 +36,17 @@ using namespace std;
  */
 Tokenizer::Tokenizer(const char *ts) {
     // TODO: use strcpy to copy input stream ts
-    Tokenizer *newTokenizer = (Tokenizer *) malloc(sizeof(Tokenizer));
 
     long int streamSize = strlen(ts) + 2;
-    newTokenizer->inputStream = (char *) malloc(sizeof(char) * streamSize);
-    strcpy(newTokenizer->inputStream, ts);
-    newTokenizer->inputIter = newTokenizer->inputStream;
+    inputStream = (char *) malloc(sizeof(char) * streamSize);
+    strcpy(inputStream, ts);
+    inputIter = inputStream;
 
-    newTokenizer->bufferSize = 0;
-    newTokenizer->tokenBuffer = (char *) malloc(sizeof(char) * 1000);
-    strcpy(newTokenizer->tokenBuffer, "");  // end the buffer with this null byte
-    newTokenizer->bufferIter = newTokenizer->tokenBuffer;
-    newTokenizer->offset = 0;
+    bufferSize = 0;
+    tokenBuffer = (char *) malloc(sizeof(char) * 1000);
+    strcpy(tokenBuffer, "");  // end the buffer with this null byte
+    bufferIter = tokenBuffer;
+    offset = 0;
 }
 
 
@@ -144,8 +143,7 @@ void Tokenizer::printToken(Token *token) {
 }
 
 Token *Tokenizer::makeToken(TokenType type){
-    string text = this->tokenBuffer;
-    return new Token(text, type);
+    return new Token(this->tokenBuffer, type);
 };
 
 /******************************************/
@@ -333,10 +331,10 @@ Token *Tokenizer::_line_comment() {
         if (this->inputIter[0] == '\n') {
             nextChar();
             clearBuffer();
-            return TKGetNextToken();
+            return getNextToken();
         }
         if (this->inputIter[0] == '\0') {
-            return TKGetNextToken();
+            return getNextToken();
         }
     }
 }
@@ -354,11 +352,11 @@ Token *Tokenizer::_block_comment() {
             if (this->inputIter[0] == '/') {
                 nextChar();
                 clearBuffer();
-                return TKGetNextToken();
+                return getNextToken();
             }
         }
         if (this->inputIter[0] == '\0') {
-            return TKGetNextToken();
+            return getNextToken();
         }
     }
 }
@@ -512,7 +510,7 @@ Token *Tokenizer::_power() {
  *
  * You need to fill in this function as part of your implementation.
  */
-Token *Tokenizer::TKGetNextToken() {
+Token *Tokenizer::getNextToken() {
     clearBuffer();
     char curr = this->inputIter[0];
 

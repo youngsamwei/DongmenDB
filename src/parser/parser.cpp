@@ -30,7 +30,7 @@ Token *parseNextToken(ParserT *parser) {
         return NULL;
     }
     if (parser->currToken == NULL) {
-        parser->currToken = TKGetNextToken(parser->tokenizer);
+        parser->currToken = parser->tokenizer->getNextToken();
     }
     return parser->currToken;
 };
@@ -57,7 +57,7 @@ Token *parseEatAndNextToken(ParserT *parser) {
     if (parser->parserStateType == PARSER_WRONG) {
         return NULL;
     }
-    parser->currToken = TKGetNextToken(parser->tokenizer);
+    parser->currToken = parser->tokenizer->getNextToken();
     return parser->currToken;
 };
 

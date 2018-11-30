@@ -221,7 +221,7 @@ int dongmendb_shell_handle_create_table(dongmendb_shell_handle_sql_t *ctx, const
         return 1;
     }
 
-    Tokenizer *tokenizer = TKCreate(sqlcreate);
+    Tokenizer *tokenizer = new Tokenizer(sqlcreate);
     ParserT *parser = newParser(tokenizer);
     memset(parser->parserMessage, 0, sizeof(parser->parserMessage));
 
@@ -258,7 +258,7 @@ int dongmendb_shell_handle_insert_table(dongmendb_shell_handle_sql_t *ctx, const
         return 1;
     }
 
-    Tokenizer *tokenizer = TKCreate(sqlinsert);
+    Tokenizer *tokenizer = new Tokenizer(sqlinsert);
     ParserT *parser = newParser(tokenizer);
     memset(parser->parserMessage, 0, sizeof(parser->parserMessage));
 
@@ -302,7 +302,7 @@ int dongmendb_shell_handle_select_table(dongmendb_shell_handle_sql_t *ctx, const
         return 1;
     }
 
-    Tokenizer *tokenizer = TKCreate(sqlselect);
+    Tokenizer *tokenizer = new Tokenizer(sqlselect);
     ParserT *parser = newParser(tokenizer);
     memset(parser->parserMessage, 0, sizeof(parser->parserMessage));
 
@@ -367,7 +367,7 @@ int dongmendb_shell_handle_update_data(dongmendb_shell_handle_sql_t *ctx, const 
     }
 
     /* token解析 */
-    Tokenizer *tokenizer = TKCreate(sqlupdate);
+    Tokenizer *tokenizer = new Tokenizer(sqlupdate);
     /* parser解析 */
     ParserT *parser = newParser(tokenizer);
     memset(parser->parserMessage, 0, sizeof(parser->parserMessage));
@@ -426,7 +426,7 @@ int dongmendb_shell_handle_delete_data(dongmendb_shell_handle_sql_t *ctx, const 
         return 1;
     }
 
-    Tokenizer *tokenizer = TKCreate(sqldelete);
+    Tokenizer *tokenizer = new Tokenizer(sqldelete);
     ParserT *parser = newParser(tokenizer);
     memset(parser->parserMessage, 0, sizeof(parser->parserMessage));
 
@@ -521,7 +521,7 @@ int dongmendb_shell_handle_cmd_opt(dongmendb_shell_handle_sql_t *ctx, struct han
         strcat(cmdstring, " ");
     };
 
-    Tokenizer *tokenizer = TKCreate(cmdstring);
+    Tokenizer *tokenizer = new Tokenizer(cmdstring);
     ParserT *parser = newParser(tokenizer);
     memset(parser->parserMessage, 0, sizeof(parser->parserMessage));
 

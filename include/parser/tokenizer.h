@@ -35,7 +35,7 @@ public:
     void printToken(Token *token);
     Token *makeToken(TokenType type);
 
-    Token *TKGetNextToken();
+    Token *getNextToken();
     Token *_invalid();
     Token *_word();
     Token *_neq();

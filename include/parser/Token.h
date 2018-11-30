@@ -5,7 +5,9 @@
 #ifndef DONGMENDB_TOKEN_H
 #define DONGMENDB_TOKEN_H
 
+#include <stdlib.h>
 #include <string.h>
+
 /*与operators中的排序一致，方便按照顺序访问operators*/
 typedef enum TokenType_ {
     TOKEN_OPEN_PAREN = 0,

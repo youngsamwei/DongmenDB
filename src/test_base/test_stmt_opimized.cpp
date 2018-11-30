@@ -155,7 +155,7 @@ int opt_test(SRA_t *sra, table_manager *tableManager) {
 }
 
 int TestStmtOptimized::opt_condition_pushdown_test(const char *sqlselect) {
-    Tokenizer *tokenizer = TKCreate(sqlselect);
+    Tokenizer *tokenizer = new Tokenizer(sqlselect);
     ParserT *parser = newParser(tokenizer);
     memset(parser->parserMessage, 0, sizeof(parser->parserMessage));
 
