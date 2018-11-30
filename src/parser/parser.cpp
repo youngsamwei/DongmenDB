@@ -16,6 +16,7 @@ Parser::Parser(Tokenizer *tokenizer) {
     this->tokenizer = tokenizer;
     this->currToken = NULL;
     this->parserStateType = PARSER_CORRECT;
+    memset(this->parserMessage, 0, sizeof(this->parserMessage));
 };
 
 /**

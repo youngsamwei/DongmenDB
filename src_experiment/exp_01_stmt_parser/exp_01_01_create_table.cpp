@@ -5,63 +5,66 @@
 #include <parser/statement.h>
 #include <parser/parser.h>
 #include <utils/utils.h>
+#include <parser/StatementParser.h>
 
 /**
  * 在现有create table基础上，修改代码以支持pk，fk，check，unique，not null约束。
  */
 
-sql_stmt_create *parse_sql_stmt_create(Parser *parser) {
+sql_stmt_create *CreateParser::parse_sql_stmt_create() {
     char *tableName = NULL;
     map<string, field_info*> *columns = new map<string, field_info*>();
     vector<char*> fieldsName ;
-    if (!parser->matchToken(TOKEN_RESERVED_WORD, "create")) {
+    if (!this->matchToken(TOKEN_RESERVED_WORD, "create")) {
         return NULL;
     }
-    if (!parser->matchToken( TOKEN_RESERVED_WORD, "table")) {
-        strcpy(parser->parserMessage, "invalid sql: should be table.");
+    if (!this->matchToken( TOKEN_RESERVED_WORD, "table")) {
+        strcpy(this->parserMessage, "invalid sql: should be table.");
         return NULL;
     }
-    Token *token = parser->parseNextToken();
+    Token *token = this->parseNextToken();
     if (token->type == TOKEN_WORD) {
         tableName = new_id_name();
         strcpy(tableName, token->text);
     } else {
-        strcpy(parser->parserMessage, "invalid sql: missing table name.");
+        strcpy(this->parserMessage, "invalid sql: missing table name.");
         return NULL;
     }
-    token = parser->parseEatAndNextToken();
-    if (!parser->matchToken( TOKEN_OPEN_PAREN, "(")) {
-        strcpy(parser->parserMessage, "invalid sql: missing (.");
+    token = this->parseEatAndNextToken();
+    if (!this->matchToken( TOKEN_OPEN_PAREN, "(")) {
+        strcpy(this->parserMessage, "invalid sql: missing (.");
         return NULL;
     }
-    token = parser->parseNextToken();
+    token = this->parseNextToken();
 
     while (token->type != TOKEN_CLOSE_PAREN) {
-        field_info *field = parse_sql_stmt_columnexpr(parser);
+        field_info *field = parse_sql_stmt_columnexpr();
         if (field == NULL) {
             break;
         } else {
             columns->insert(pair<string, field_info*>(field->fieldName, field));
             fieldsName.push_back(field->fieldName);
         }
-        token = parser->parseNextToken();
+        token = this->parseNextToken();
         if (token->type == TOKEN_COMMA) {
-            token = parser->parseEatAndNextToken();
+            token = this->parseEatAndNextToken();
         } else {
             break;
         }
     }
-    token = parser->parseNextToken();
-    if (!parser->matchToken( TOKEN_CLOSE_PAREN, ")")) {
-        strcpy(parser->parserMessage, "invalid sql: missing ).");
+    token = this->parseNextToken();
+    if (!this->matchToken( TOKEN_CLOSE_PAREN, ")")) {
+        strcpy(this->parserMessage, "invalid sql: missing ).");
         return NULL;
     }
-
-    return sql_stmt_create_create(tableName, fieldsName, columns, NULL);
+    sql_stmt_create *sqlStmtCreate = (sql_stmt_create *)malloc(sizeof(sql_stmt_create));
+    sqlStmtCreate->tableInfo =  table_info_create(tableName, fieldsName, columns);
+    sqlStmtCreate->constraints = NULL;
+    return sqlStmtCreate;
 };
 
-field_info *parse_sql_stmt_columnexpr(Parser *parser) {
-    Token *token = parser->parseNextToken();
+field_info *CreateParser::parse_sql_stmt_columnexpr() {
+    Token *token = this->parseNextToken();
     char *columnName = NULL;
     enum data_type type;
     int length;
@@ -69,44 +72,44 @@ field_info *parse_sql_stmt_columnexpr(Parser *parser) {
         columnName = new_id_name();
         strcpy(columnName, token->text);
     } else {
-        strcpy(parser->parserMessage, "invalid sql: missing field name.");
+        strcpy(this->parserMessage, "invalid sql: missing field name.");
         return NULL;
     }
-    token = parser->parseEatAndNextToken();
+    token = this->parseEatAndNextToken();
     if (token->type == TOKEN_RESERVED_WORD) {
         if (stricmp(token->text, "int") == 0 || stricmp(token->text, "integer") == 0) {
             type = DATA_TYPE_INT;
             length = INT_SIZE;
-            token = parser->parseEatAndNextToken();
+            token = this->parseEatAndNextToken();
         } else if (stricmp(token->text, "char") == 0) {
             type = DATA_TYPE_CHAR;
-            token = parser->parseEatAndNextToken();
-            if (parser->matchToken( TOKEN_OPEN_PAREN, "(")) {
-                token = parser->parseNextToken();
+            token = this->parseEatAndNextToken();
+            if (this->matchToken( TOKEN_OPEN_PAREN, "(")) {
+                token = this->parseNextToken();
                 if (token->type == TOKEN_DECIMAL) {
                     length = atoi(token->text);
-                    token = parser->parseEatAndNextToken();
-                    if (parser->matchToken( TOKEN_CLOSE_PAREN, ")")) {
-                        token = parser->parseNextToken();
+                    token = this->parseEatAndNextToken();
+                    if (this->matchToken( TOKEN_CLOSE_PAREN, ")")) {
+                        token = this->parseNextToken();
                     } else {
-                        strcpy(parser->parserMessage, "invalid sql: missing ).");
+                        strcpy(this->parserMessage, "invalid sql: missing ).");
                         return NULL;
                     }
                 } else {
-                    strcpy(parser->parserMessage, "invalid sql: missing char length.");
+                    strcpy(this->parserMessage, "invalid sql: missing char length.");
                     return NULL;
                 }
             } else {
-                strcpy(parser->parserMessage, "invalid sql: missing char length.");
+                strcpy(this->parserMessage, "invalid sql: missing char length.");
                 return NULL;
             }
         } else {
-            strcpy(parser->parserMessage, "invalid sql: wrong data type : ");
-            strcat(parser->parserMessage, token->text);
+            strcpy(this->parserMessage, "invalid sql: wrong data type : ");
+            strcat(this->parserMessage, token->text);
             return NULL;
         }
     } else {
-        strcpy(parser->parserMessage, "invalid sql : missing field name.");
+        strcpy(this->parserMessage, "invalid sql : missing field name.");
         return NULL;
     }
     field_info *field = (field_info *) calloc(sizeof(field_info), 1);

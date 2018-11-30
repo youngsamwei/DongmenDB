@@ -34,35 +34,40 @@ protected:
 
 TEST_F(Exp_01_03_SelectTest, Correct){
 
-    /*据指定的数据库名称创建数据库*/
-    createDB(dbname);
+    try {
+        /*据指定的数据库名称创建数据库*/
+        createDB(dbname);
 
 /*创建表*/
-    createTable();
+        createTable();
 
 /*增加数据*/
-    insertData();
+        insertData();
 
-//    cout<<" pause."<<endl;
-    EXPECT_EQ(9, select( _m_list[0]));
-    EXPECT_EQ(5, select(_m_list[1]));
-    EXPECT_EQ(1, select(_m_list[2]));
-    EXPECT_EQ(1, select(_m_list[3]));
-    EXPECT_EQ(2, select(_m_list[4]));
+        EXPECT_EQ(9, select(_m_list[0]));
+        EXPECT_EQ(5, select(_m_list[1]));
+        EXPECT_EQ(1, select(_m_list[2]));
+        EXPECT_EQ(1, select(_m_list[3]));
+        EXPECT_EQ(2, select(_m_list[4]));
 
-    EXPECT_EQ(14, select(_m_list[5]));
+        EXPECT_EQ(14, select(_m_list[5]));
 
-    EXPECT_EQ(6, select(_m_list[6]));
-    EXPECT_EQ(14, select(_m_list[7]));
-    EXPECT_EQ(14, select(_m_list[8]));
-    EXPECT_EQ(14, select(_m_list[9]));
-    EXPECT_EQ(14, select(_m_list[10]));
+        EXPECT_EQ(6, select(_m_list[6]));
+        EXPECT_EQ(14, select(_m_list[7]));
+        EXPECT_EQ(14, select(_m_list[8]));
+        EXPECT_EQ(14, select(_m_list[9]));
+        EXPECT_EQ(14, select(_m_list[10]));
 
-    EXPECT_EQ(0, select(_m_list[11]));
-    EXPECT_EQ(1, select(_m_list[12]));
-    EXPECT_EQ(0, select(_m_list[13]));
+        EXPECT_EQ(0, select(_m_list[11]));
+        EXPECT_EQ(1, select(_m_list[12]));
+        EXPECT_EQ(0, select(_m_list[13]));
 
-    EXPECT_EQ(2, select(_m_list[14]));
-    /*删除数据库*/
-    dropDB();
+        EXPECT_EQ(2, select(_m_list[14]));
+        /*删除数据库*/
+        dropDB();
+    }catch(const std::exception& e)
+    {
+        cout << e.what() << endl;
+    }
+
 }

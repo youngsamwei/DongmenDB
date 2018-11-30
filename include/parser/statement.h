@@ -83,9 +83,7 @@ typedef struct UpdateStmt_ {
 } UpdateStmt;
 */
 
-sql_stmt_create *sql_stmt_create_create(char *tableName,
-                                        vector<char*> fieldsName, map<string, field_info*> *columns,
-                                        Constraint_t *constraints);
+
 /*
 AlterStmt *createAlterStmt(char *tableName, enum AlterType type,
                            ColumnsExpr *columnsExpr);
@@ -99,7 +97,6 @@ UpdateStmt *createUpdateStmt(char *tableName,
 
 */
 
-sql_stmt_create *parse_sql_stmt_create(Parser *parser);
 /*
 AlterStmt *parseAlter(Parser *parser);
 InsertStmt *parseInsert(Parser *parser);
@@ -120,9 +117,6 @@ SetExpr *parseSetExpr(Parser *parser);
 
 /* 在src_experiment\exp_01_stmt_parser\exp_01_03_select.c 中实现*/
 //class SelectParser;
-
-sql_stmt_create *parse_sql_stmt_create(Parser *parser);
-field_info *parse_sql_stmt_columnexpr(Parser *parser);
 
 //class InsertParser;
 

@@ -16,7 +16,6 @@ table_manager *table_manager_create(int isNew, transaction *tx) {
 
     char* fn_tablename = "tablename";
     field_info *tablename = field_info_create(DATA_TYPE_CHAR, MAX_ID_NAME_LENGTH, fn_tablename);
-
     tableDescfields->insert(pair<string, field_info*>(fn_tablename, tablename));
     char* fn_reclength = "reclength";
     field_info *reclength = field_info_create(DATA_TYPE_INT, INT_SIZE, fn_reclength);

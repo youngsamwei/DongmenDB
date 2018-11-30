@@ -223,11 +223,10 @@ int dongmendb_shell_handle_create_table(dongmendb_shell_handle_sql_t *ctx, const
     }
 
     Tokenizer *tokenizer = new Tokenizer(sqlcreate);
-    Parser *parser = new Parser(tokenizer);
-    memset(parser->parserMessage, 0, sizeof(parser->parserMessage));
 
+    CreateParser *cp = new CreateParser(tokenizer);
 //    int status = 0;
-    sql_stmt_create *sqlStmtCreate = parse_sql_stmt_create(parser);
+    sql_stmt_create *sqlStmtCreate = cp->parse_sql_stmt_create();
 
     /*TODO: 检查是否已经存在要创建的表 */
     int status =  semantic_check_table_exists(ctx->db->metadataManager->tableManager, sqlStmtCreate->tableInfo->tableName, ctx->db->tx);
@@ -260,8 +259,6 @@ int dongmendb_shell_handle_insert_table(dongmendb_shell_handle_sql_t *ctx, const
     }
 
     Tokenizer *tokenizer = new Tokenizer(sqlinsert);
-    Parser *parser = new Parser(tokenizer);
-    memset(parser->parserMessage, 0, sizeof(parser->parserMessage));
 
     InsertParser *ip = new InsertParser(tokenizer);
     sql_stmt_insert *sqlStmtInsert = ip->parse_sql_stmt_insert();
@@ -305,8 +302,6 @@ int dongmendb_shell_handle_select_table(dongmendb_shell_handle_sql_t *ctx, const
     }
 
     Tokenizer *tokenizer = new Tokenizer(sqlselect);
-    Parser *parser = new Parser(tokenizer);
-    memset(parser->parserMessage, 0, sizeof(parser->parserMessage));
 
     /* 解析 select语句，获得SRA_t对象*/
     SelectParser *sp = new SelectParser(tokenizer);
@@ -314,7 +309,7 @@ int dongmendb_shell_handle_select_table(dongmendb_shell_handle_sql_t *ctx, const
     if (selectStmt != NULL) {
         SRA_print(selectStmt);
     } else {
-        printf(parser->parserMessage);
+        printf(sp->parserMessage);
     }
 
     /*TODO: 语义检查：表与字段是否存在*/
@@ -351,7 +346,7 @@ int dongmendb_shell_handle_select_table(dongmendb_shell_handle_sql_t *ctx, const
         printf("\nsuccess.");
         project->close();
     } else {
-        printf(parser->parserMessage);
+        printf(sp->parserMessage);
     }
 }
 
@@ -371,15 +366,12 @@ int dongmendb_shell_handle_update_data(dongmendb_shell_handle_sql_t *ctx, const 
 
     /* token解析 */
     Tokenizer *tokenizer = new Tokenizer(sqlupdate);
-    /* parser解析 */
-    Parser *parser = new Parser(tokenizer);
-    memset(parser->parserMessage, 0, sizeof(parser->parserMessage));
 
     /*TODO: parse_sql_stmt_update， update语句解析*/
     UpdateParser *up = new UpdateParser(tokenizer);
     sql_stmt_update *sqlStmtUpdate = up->parse_sql_stmt_update();
     if (sqlStmtUpdate == NULL) {
-        printf(parser->parserMessage);
+        printf(up->parserMessage);
         return 1;
     }
     
@@ -431,13 +423,11 @@ int dongmendb_shell_handle_delete_data(dongmendb_shell_handle_sql_t *ctx, const 
     }
 
     Tokenizer *tokenizer = new Tokenizer(sqldelete);
-    Parser *parser = new Parser(tokenizer);
-    memset(parser->parserMessage, 0, sizeof(parser->parserMessage));
 
     DeleteParser *dp = new DeleteParser(tokenizer);
     sql_stmt_delete *sqlStmtDelete = dp->parse_sql_stmt_delete();
     if (sqlStmtDelete == NULL) {
-        printf(parser->parserMessage);
+        printf(dp->parserMessage);
         return 1;
     }
 
