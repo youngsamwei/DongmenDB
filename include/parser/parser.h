@@ -5,7 +5,7 @@
 #ifndef DONGMENDB_PARSER_H
 #define DONGMENDB_PARSER_H
 
-#include "tokenizer.h"
+#include "Tokenizer.h"
 
 /*
  * 定义parser的基础数据结构和共用的函数

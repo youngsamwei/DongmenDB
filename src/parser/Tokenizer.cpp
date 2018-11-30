@@ -17,7 +17,7 @@
 #include <ctype.h>
 #include <string.h>
 #include <assert.h>
-#include "parser/tokenizer.h"
+#include "parser/Tokenizer.h"
 
 using namespace std;
 

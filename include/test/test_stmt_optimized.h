@@ -11,7 +11,7 @@
 #include <dongmendb/dongmendb.h>
 #include <gtest/gtest.h>
 #include <utils/utils.h>
-#include <parser/tokenizer.h>
+#include <parser/Tokenizer.h>
 #include <parser/parser.h>
 #include <dongmensql/sra.h>
 

@@ -6,7 +6,7 @@
  * 测试表达式的解析。
  * 算术表达式，条件表达式，逻辑表达式
  */
-#include <parser/tokenizer.h>
+#include <parser/Tokenizer.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <gtest/gtest.h>

@@ -7,7 +7,7 @@
 #include <gtest/gtest.h>
 #include <parser/statement.h>
 #include "dongmendb/dongmendb.h"
-#include "parser/tokenizer.h"
+#include "parser/Tokenizer.h"
 #include "parser/parser.h"
 #include "dongmensql/sra.h"
 #include "physicalplan/physicalplan.h"
