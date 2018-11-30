@@ -72,13 +72,13 @@ const char *reservedWords[] = {
 `int matchToken(ParserT *parser, TokenType type, char *text)`//**常用函数**
 对解析器中 token(词）的`TokenType`和`text`进行检查，如果匹配成功，就**直接获取下一个词放入解析器中**，否则输出错误信息，返回 NUL，不对解析器中的词修改
 
-`TokenT *parseNextToken(ParserT *parser)`  
+`Token *parseNextToken(ParserT *parser)`  
 首先判断当前解析器中的词是否为 NULL,如果是，就获取下一个 token;否则就返回当前词
 
-`TokenT *parseEatToken(ParserT *parser)`  
+`Token *parseEatToken(ParserT *parser)`  
 在解析完当前词之后，将当前解析器中的 token(词)置为 NULL
 
-`TokenT *parseEatAndNextToken(ParserT *parser)`  
+`Token *parseEatAndNextToken(ParserT *parser)`  
 直接获取下一个词，不对当前解析器中的词进行判断
 
 `void *parseError(ParserT *parser, char *message)`  

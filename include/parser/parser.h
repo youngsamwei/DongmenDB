@@ -38,17 +38,17 @@ typedef enum {
 
 typedef struct ParserT_ {
 
-    TokenizerT *tokenizer;
-    TokenT *currToken;
+    Tokenizer *tokenizer;
+    Token *currToken;
     ParserStateType parserStateType;
     char parserMessage[PARSER_MESSAGE_LENTTH];
 } ParserT;
 
 
-ParserT *newParser(TokenizerT *tokenizer);
-TokenT *parseNextToken(ParserT *parser);
-TokenT *parseEatToken(ParserT *parser);
-TokenT *parseEatAndNextToken(ParserT *parser);
+ParserT *newParser(Tokenizer *tokenizer);
+Token *parseNextToken(ParserT *parser);
+Token *parseEatToken(ParserT *parser);
+Token *parseEatAndNextToken(ParserT *parser);
 void *parseError(ParserT *parser, char *message);
 
 int matchToken(ParserT *parser, TokenType type, char *text);

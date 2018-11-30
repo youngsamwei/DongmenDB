@@ -19,32 +19,24 @@
 #include <assert.h>
 #include "parser/tokenizer.h"
 
-
-int isOctal(char curr) {
-    if (curr >= '0' && curr <= '7') {
-        return 1;
-    } else {
-        return 0;
-    }
-}
-
+using namespace std;
 
 /* 创建词法解析器
- * TKCreate creates a new TokenizerT object for a given token stream
+ * TKCreate creates a new Tokenizer object for a given token stream
  * (given as a string).
  *
  * TKCreate should copy the arguments so that it is not dependent on
  * them staying immutable after returning.  (In the future, this may change
  * to increase efficiency.)
  *
- * If the function succeeds, it returns a non-NULL TokenizerT.
+ * If the function succeeds, it returns a non-NULL Tokenizer.
  * Else it returns NULL.
  *
  * You need to fill in this function as part of your implementation.
  */
-TokenizerT *TKCreate(const char *ts) {
+Tokenizer::Tokenizer(const char *ts) {
     // TODO: use strcpy to copy input stream ts
-    TokenizerT *newTokenizer = (TokenizerT *) malloc(sizeof(TokenizerT));
+    Tokenizer *newTokenizer = (Tokenizer *) malloc(sizeof(Tokenizer));
 
     long int streamSize = strlen(ts) + 2;
     newTokenizer->inputStream = (char *) malloc(sizeof(char) * streamSize);
@@ -56,22 +48,18 @@ TokenizerT *TKCreate(const char *ts) {
     strcpy(newTokenizer->tokenBuffer, "");  // end the buffer with this null byte
     newTokenizer->bufferIter = newTokenizer->tokenBuffer;
     newTokenizer->offset = 0;
-    return newTokenizer;
 }
 
 
 /*
- * TKDestroy destroys a TokenizerT object.  It should free all dynamically
+ * TKDestroy destroys a Tokenizer object.  It should free all dynamically
  * allocated memory that is part of the object being destroyed.
  *
  * You need to fill in this function as part of your implementation.
  */
-void TKDestroy(TokenizerT *tk) {
-    assert(tk != NULL);
-
-    free(tk->inputStream);
-    free(tk->tokenBuffer);
-    free(tk);
+Tokenizer::~Tokenizer() {
+    free(inputStream);
+    free(tokenBuffer);
 }
 
 
@@ -79,45 +67,54 @@ void TKDestroy(TokenizerT *tk) {
  * Copy one character from the inputStream to the tokenBuffer. Then, move the
  * iterators forward to the next character.
  *
- * tk->inputIter[0] contains the character to be added to the current token.
- * tk->bufferIter[0] contains the most recent character added to the token.
+ * this->inputIter[0] contains the character to be added to the current token.
+ * this->bufferIter[0] contains the most recent character added to the token.
  *
  * Returns 1 if inputIter[0] is '\0', else 0.
  */
-int nextChar(TokenizerT *tk) {
-    tk->offset++;
-    tk->bufferIter[0] = tk->inputIter[0];  // copy new char to end of buffer
-    tk->inputIter++;                       // move the input iterator over
-    tk->bufferIter++;                      // move the buffer iterator over
-    tk->bufferIter[0] = '\0';              // add a null to the end of buffer
-    tk->bufferSize++;                      // increase bufferSize accordingly
-    if (tk->bufferSize == 999) {
+int Tokenizer::nextChar() {
+    this->offset++;
+    this->bufferIter[0] = this->inputIter[0];  // copy new char to end of buffer
+    this->inputIter++;                       // move the input iterator over
+    this->bufferIter++;                      // move the buffer iterator over
+    this->bufferIter[0] = '\0';              // add a null to the end of buffer
+    this->bufferSize++;                      // increase bufferSize accordingly
+    if (this->bufferSize == 999) {
         // TODO: exit gracefully
         exit(1);
     }
 
-    assert(strlen(tk->bufferIter) == 0);
+    assert(strlen(this->bufferIter) == 0);
 
     int nextIsNull = 0;
-    if (tk->inputIter[0] == '\0') {
+    if (this->inputIter[0] == '\0') {
         nextIsNull = 1;
     }
     return nextIsNull;
 }
 
-void clearBuffer(TokenizerT *tk) {
-    tk->bufferSize = 0;
-    tk->bufferIter = tk->tokenBuffer;
-    tk->bufferIter[0] = '\0';  // immediately end the string
+void Tokenizer::clearBuffer() {
+    this->bufferSize = 0;
+    this->bufferIter = this->tokenBuffer;
+    this->bufferIter[0] = '\0';  // immediately end the string
 
-    assert(strlen(tk->tokenBuffer) == 0);
+    assert(strlen(this->tokenBuffer) == 0);
+}
+
+
+int Tokenizer::isOctal(char curr) {
+    if (curr >= '0' && curr <= '7') {
+        return 1;
+    } else {
+        return 0;
+    }
 }
 
 
 /*
  * Returns 1 if a word is a reserved word. Otherwise, returns 0.
  */
-int isReservedWord(char *word) {
+int Tokenizer::isReservedWord(char *word) {
     const char *reservedWords[] = {
             "select", "from", "where", "order", "by", "group", "create", "table", "index", "and", "not", "or", "null",
             "like", "in", "grant", "integer", "int", "char", "values", "insert", "into", "update", "delete", "set", "on",
@@ -136,39 +133,9 @@ int isReservedWord(char *word) {
 
 
 /*
- * Make a token struct from the current state of the tokenizer and the
- * identified type.
- */
-TokenT *makeToken(TokenizerT *tk, TokenType type) {
-    TokenT *token = (TokenT *) malloc(sizeof(TokenT));
-
-    token->type = type;
-    token->text = (char *) malloc(sizeof(char) * 1000);
-
-    /*如果是字符串，需要从token->text去掉单引号*/
-    if (type == TOKEN_STRING){
-        char *v = tk->tokenBuffer + 1;
-        int len = strlen(tk->tokenBuffer) - 1;
-        strcpy(token->text, v);
-        token->text[len-1] = '\0';
-    } else {
-        strcpy(token->text, tk->tokenBuffer);
-    }
-
-    return token;
-}
-
-
-void destroyToken(TokenT *token) {
-    free(token->text);
-    free(token);
-}
-
-
-/*
  * Print a token. Used in main loop.
  */
-void printToken(TokenT *token) {
+void Tokenizer::printToken(Token *token) {
     if (token->type == TOKEN_STRING) {
         printf("%s '%s'\n", token->type, token->text);
     } else {
@@ -176,76 +143,80 @@ void printToken(TokenT *token) {
     }
 }
 
+Token *Tokenizer::makeToken(TokenType type){
+    string text = this->tokenBuffer;
+    return new Token(text, type);
+};
 
 /******************************************/
 /*************** Token States *************/
 /******************************************/
 
 
-TokenT *_invalid(TokenizerT *tk) {
-    nextChar(tk);
-    return makeToken(tk, TOKEN_INVALID);
+Token *Tokenizer::_invalid() {
+    nextChar();
+    return makeToken( TOKEN_INVALID);
 }
 
-TokenT *_word(TokenizerT *tk) {
-    nextChar(tk);
-    if (isalnum(tk->inputIter[0]) || tk->inputIter[0] == '_'
-        || tk->inputIter[0] == '.' || tk->inputIter[0] == '*') {
+Token *Tokenizer::_word() {
+    nextChar();
+    if (isalnum(this->inputIter[0]) || this->inputIter[0] == '_'
+        || this->inputIter[0] == '.' || this->inputIter[0] == '*') {
         /* . 对象限定符, * 对象通配符，如 student.sno 表示student表中的sno字段, sc.* 表示sc表中的所有字段  */
-        return _word(tk);
+        return _word();
     } else {
-        if (isReservedWord(tk->tokenBuffer)) {
-            if (strcasecmp(tk->tokenBuffer, "AND") == 0) {
-                return makeToken(tk, TOKEN_AND);
-            } else if (strcasecmp(tk->tokenBuffer, "NOT") == 0) {
-                return makeToken(tk, TOKEN_NOT);
-            } else if (strcasecmp(tk->tokenBuffer, "OR") == 0) {
-                return makeToken(tk, TOKEN_OR);
-            } else if (strcasecmp(tk->tokenBuffer, "NULL") == 0) {
-                return makeToken(tk, TOKEN_NULL);
-            } else if (strcasecmp(tk->tokenBuffer, "LIKE") == 0) {
-                return makeToken(tk, TOKEN_LIKE);
-            } else if (strcasecmp(tk->tokenBuffer, "IN") == 0) {
-                return makeToken(tk, TOKEN_IN);
+        if (isReservedWord(this->tokenBuffer)) {
+            if (strcasecmp(this->tokenBuffer, "AND") == 0) {
+                return makeToken( TOKEN_AND);
+            } else if (strcasecmp(this->tokenBuffer, "NOT") == 0) {
+                return makeToken( TOKEN_NOT);
+            } else if (strcasecmp(this->tokenBuffer, "OR") == 0) {
+                return makeToken( TOKEN_OR);
+            } else if (strcasecmp(this->tokenBuffer, "NULL") == 0) {
+                return makeToken( TOKEN_NULL);
+            } else if (strcasecmp(this->tokenBuffer, "LIKE") == 0) {
+                return makeToken( TOKEN_LIKE);
+            } else if (strcasecmp(this->tokenBuffer, "IN") == 0) {
+                return makeToken( TOKEN_IN);
             }
             /*TODO:需要处理函数*/
-            return makeToken(tk, TOKEN_RESERVED_WORD);
+            return makeToken( TOKEN_RESERVED_WORD);
         } else {
-            return makeToken(tk, TOKEN_WORD); //标识符
+            return makeToken( TOKEN_WORD); //标识符
         }
     }
 }
 
 /* != */
-TokenT *_neq(TokenizerT *tk) {
-    nextChar(tk);
-    if (tk->inputIter[0] == '=') {
-        nextChar(tk);
-        return makeToken(tk, TOKEN_NOT_EQUAL);
+Token *Tokenizer::_neq() {
+    nextChar();
+    if (this->inputIter[0] == '=') {
+        nextChar();
+        return makeToken( TOKEN_NOT_EQUAL);
     }
 }
 
-TokenT *_double_quote(TokenizerT *tk) {
-    int atEndOfFile = nextChar(tk);
-    while (tk->inputIter[0] != '"') {
-        if (tk->inputIter[0] == '\\') {
+Token *Tokenizer::_double_quote() {
+    int atEndOfFile = nextChar();
+    while (this->inputIter[0] != '"') {
+        if (this->inputIter[0] == '\\') {
             if (atEndOfFile) {
-                return makeToken(tk, TOKEN_UNENDED_SRING);
+                return makeToken( TOKEN_UNENDED_SRING);
             }
-            atEndOfFile = nextChar(tk);
+            atEndOfFile = nextChar();
         }
         if (atEndOfFile) {
-            return makeToken(tk, TOKEN_UNENDED_SRING);
+            return makeToken( TOKEN_UNENDED_SRING);
         }
-        atEndOfFile = nextChar(tk);
+        atEndOfFile = nextChar();
     }
-    nextChar(tk);
-    return makeToken(tk, TOKEN_STRING);
+    nextChar();
+    return makeToken( TOKEN_STRING);
 }
 
-TokenT *_mod(TokenizerT *tk) {
-    nextChar(tk);
-    return makeToken(tk, TOKEN_MOD);
+Token *Tokenizer::_mod() {
+    nextChar();
+    return makeToken( TOKEN_MOD);
 
 }
 
@@ -265,88 +236,88 @@ TokenT *_mod(TokenizerT *tk) {
  * invalid char literals don't close properly or at all.
  */
 /* 使用单引号标注字符串*/
-TokenT *_single_quote(TokenizerT *tk) {
-    int atEndOfFile = nextChar(tk);
-    while (tk->inputIter[0] != '\'') {
-        if (tk->inputIter[0] == '\\') {
+Token *Tokenizer::_single_quote() {
+    int atEndOfFile = nextChar();
+    while (this->inputIter[0] != '\'') {
+        if (this->inputIter[0] == '\\') {
             if (atEndOfFile) {
-                return makeToken(tk, TOKEN_UNENDED_SRING);
+                return makeToken( TOKEN_UNENDED_SRING);
             }
-            atEndOfFile = nextChar(tk);
+            atEndOfFile = nextChar();
         }
         if (atEndOfFile) {
-            return makeToken(tk, TOKEN_UNENDED_SRING);
+            return makeToken( TOKEN_UNENDED_SRING);
         }
-        atEndOfFile = nextChar(tk);
+        atEndOfFile = nextChar();
     }
-    nextChar(tk);
-    return makeToken(tk, TOKEN_STRING);
+    nextChar();
+    return makeToken( TOKEN_STRING);
     /*
-    int atEndOfFile = nextChar(tk);
+    int atEndOfFile = nextChar();
     if (atEndOfFile) {
-        return makeToken(tk, TOKEN_INCOMPLETE_CHAR);  // case: 'EOF
+        return makeToken( TOKEN_INCOMPLETE_CHAR);  // case: 'EOF
     }
-    if (tk->inputIter[0] != '\\') {
-        atEndOfFile = nextChar(tk);
+    if (this->inputIter[0] != '\\') {
+        atEndOfFile = nextChar();
         if (atEndOfFile) {
-            return makeToken(tk, TOKEN_INCOMPLETE_CHAR);  // case: 'cEOF
+            return makeToken( TOKEN_INCOMPLETE_CHAR);  // case: 'cEOF
         }
-        if (tk->inputIter[0] == '\'') {
-            nextChar(tk);
-            return makeToken(tk, TOKEN_CHAR);  // case: 'c'
+        if (this->inputIter[0] == '\'') {
+            nextChar();
+            return makeToken( TOKEN_CHAR);  // case: 'c'
         } else {  // must be invalid by structure, not just EOF
-            nextChar(tk);
-            return makeToken(tk, TOKEN_INVALID_CHAR);  // case: 'cc
+            nextChar();
+            return makeToken( TOKEN_INVALID_CHAR);  // case: 'cc
         }
     } else {
-        atEndOfFile = nextChar(tk);
+        atEndOfFile = nextChar();
         if (atEndOfFile) {
-            return makeToken(tk, TOKEN_INCOMPLETE_CHAR);  // case: '\EOF
+            return makeToken( TOKEN_INCOMPLETE_CHAR);  // case: '\EOF
         }
-        atEndOfFile = nextChar(tk);
+        atEndOfFile = nextChar();
         if (atEndOfFile) {
-            return makeToken(tk, TOKEN_INCOMPLETE_CHAR);  // case: '\cEOF
+            return makeToken( TOKEN_INCOMPLETE_CHAR);  // case: '\cEOF
         }
-        if (tk->inputIter[0] == '\'') {
-            nextChar(tk);
-            return makeToken(tk, TOKEN_CHAR);  // case: '\c'
+        if (this->inputIter[0] == '\'') {
+            nextChar();
+            return makeToken( TOKEN_CHAR);  // case: '\c'
         } else {  // must be invalid by structure, not just EOF
-            nextChar(tk);
-            return makeToken(tk, TOKEN_INVALID_CHAR);  // case: '\cc
+            nextChar();
+            return makeToken( TOKEN_INVALID_CHAR);  // case: '\cc
         }
     }
      */
 }
 
-TokenT *_open_paren(TokenizerT *tk) {
-    nextChar(tk);
-    return makeToken(tk, TOKEN_OPEN_PAREN);
+Token *Tokenizer::_open_paren() {
+    nextChar();
+    return makeToken( TOKEN_OPEN_PAREN);
 }
 
-TokenT *_close_paren(TokenizerT *tk) {
-    nextChar(tk);
-    return makeToken(tk, TOKEN_CLOSE_PAREN);
+Token *Tokenizer::_close_paren() {
+    nextChar();
+    return makeToken( TOKEN_CLOSE_PAREN);
 }
 
 /* TODO: 需要解析 在select子句中单独出现的*，但需要上下文才能处理 */
-TokenT *_mult(TokenizerT *tk) {
-    nextChar(tk);
-    return makeToken(tk, TOKEN_MULTIPLY);
+Token *Tokenizer::_mult() {
+    nextChar();
+    return makeToken( TOKEN_MULTIPLY);
 }
 
-TokenT *_plus(TokenizerT *tk) {
-    nextChar(tk);
-    return makeToken(tk, TOKEN_PLUS);
+Token *Tokenizer::_plus() {
+    nextChar();
+    return makeToken( TOKEN_PLUS);
 }
 
-TokenT *_comma(TokenizerT *tk) {
-    nextChar(tk);
-    return makeToken(tk, TOKEN_COMMA);
+Token *Tokenizer::_comma() {
+    nextChar();
+    return makeToken( TOKEN_COMMA);
 }
 
-TokenT *_minus(TokenizerT *tk) {
-    nextChar(tk);
-    return makeToken(tk, TOKEN_MINUS);
+Token *Tokenizer::_minus() {
+    nextChar();
+    return makeToken( TOKEN_MINUS);
 }
 
 /*
@@ -355,17 +326,17 @@ TokenT *_minus(TokenizerT *tk) {
  * long and we don't have to recognize them, so it makes sense to skip them
  * while clearing the tokenBuffer at each new character.
  */
-TokenT *_line_comment(TokenizerT *tk) {
+Token *Tokenizer::_line_comment() {
     while (1) {
-        nextChar(tk);
-        clearBuffer(tk);
-        if (tk->inputIter[0] == '\n') {
-            nextChar(tk);
-            clearBuffer(tk);
-            return TKGetNextToken(tk);
+        nextChar();
+        clearBuffer();
+        if (this->inputIter[0] == '\n') {
+            nextChar();
+            clearBuffer();
+            return TKGetNextToken();
         }
-        if (tk->inputIter[0] == '\0') {
-            return TKGetNextToken(tk);
+        if (this->inputIter[0] == '\0') {
+            return TKGetNextToken();
         }
     }
 }
@@ -373,161 +344,161 @@ TokenT *_line_comment(TokenizerT *tk) {
 /*
  * See above comment.
  */
-TokenT *_block_comment(TokenizerT *tk) {
+Token *Tokenizer::_block_comment() {
     while (1) {
-        nextChar(tk);
-        clearBuffer(tk);
-        while (tk->inputIter[0] == '*') {
-            nextChar(tk);
-            clearBuffer(tk);
-            if (tk->inputIter[0] == '/') {
-                nextChar(tk);
-                clearBuffer(tk);
-                return TKGetNextToken(tk);
+        nextChar();
+        clearBuffer();
+        while (this->inputIter[0] == '*') {
+            nextChar();
+            clearBuffer();
+            if (this->inputIter[0] == '/') {
+                nextChar();
+                clearBuffer();
+                return TKGetNextToken();
             }
         }
-        if (tk->inputIter[0] == '\0') {
-            return TKGetNextToken(tk);
+        if (this->inputIter[0] == '\0') {
+            return TKGetNextToken();
         }
     }
 }
 
-TokenT *_div(TokenizerT *tk) {
-    nextChar(tk);
+Token *Tokenizer::_div() {
+    nextChar();
 
-    if (tk->inputIter[0] == '/') {
-        nextChar(tk);
-        return _line_comment(tk);
+    if (this->inputIter[0] == '/') {
+        nextChar();
+        return _line_comment();
     }
-    if (tk->inputIter[0] == '*') {
-        nextChar(tk);
-        return _block_comment(tk);
+    if (this->inputIter[0] == '*') {
+        nextChar();
+        return _block_comment();
     }
-    return makeToken(tk, TOKEN_DIVIDE);
+    return makeToken( TOKEN_DIVIDE);
 }
 
-TokenT *_semicolon(TokenizerT *tk) {
-    nextChar(tk);
-    return makeToken(tk, TOKEN_SEMICOLON);
+Token *Tokenizer::_semicolon() {
+    nextChar();
+    return makeToken( TOKEN_SEMICOLON);
 }
 
 /* <= , < */
-TokenT *_lt(TokenizerT *tk) {
-    nextChar(tk);
-    if (tk->inputIter[0] == '=') {
-        nextChar(tk);
-        return makeToken(tk, TOKEN_LE);
+Token *Tokenizer::_lt() {
+    nextChar();
+    if (this->inputIter[0] == '=') {
+        nextChar();
+        return makeToken( TOKEN_LE);
     }
-    return makeToken(tk, TOKEN_LT);
+    return makeToken( TOKEN_LT);
 }
 
 /*不解析赋值语句*/
-TokenT *_eq(TokenizerT *tk) {
-    nextChar(tk);
-    return makeToken(tk, TOKEN_EQ);
+Token *Tokenizer::_eq() {
+    nextChar();
+    return makeToken( TOKEN_EQ);
 }
 
-TokenT *_gt(TokenizerT *tk) {
-    nextChar(tk);
-    if (tk->inputIter[0] == '=') {
-        nextChar(tk);
-        return makeToken(tk, TOKEN_GE);
+Token *Tokenizer::_gt() {
+    nextChar();
+    if (this->inputIter[0] == '=') {
+        nextChar();
+        return makeToken( TOKEN_GE);
     }
-    return makeToken(tk, TOKEN_GT);
+    return makeToken( TOKEN_GT);
 }
 
-TokenT *_expofloat(TokenizerT *tk, int isFirst, int lastWasSign) {
-    nextChar(tk);
-    if (isdigit(tk->inputIter[0])) {
-        return _expofloat(tk, 0, 0);
-    } else if (tk->inputIter[0] == '+' || tk->inputIter[0] == '-') {
+Token *Tokenizer::_expofloat( int isFirst, int lastWasSign) {
+    nextChar();
+    if (isdigit(this->inputIter[0])) {
+        return _expofloat( 0, 0);
+    } else if (this->inputIter[0] == '+' || this->inputIter[0] == '-') {
         if (isFirst) {
-            return _expofloat(tk, 0, 1);
+            return _expofloat( 0, 1);
         } else if (lastWasSign) {
-            return _invalid(tk);
+            return _invalid();
         } else {
-            return makeToken(tk, TOKEN_EXP_FLOAT);
+            return makeToken( TOKEN_EXP_FLOAT);
         }
     } else {
         if (isFirst) {
-            return _invalid(tk);
+            return _invalid();
         } else if (lastWasSign) {
-            return _invalid(tk);
+            return _invalid();
         } else {
-            return makeToken(tk, TOKEN_EXP_FLOAT);
+            return makeToken( TOKEN_EXP_FLOAT);
         }
     }
 }
 
-TokenT *_float(TokenizerT *tk, int isFirst) {
-    nextChar(tk);
-    if (isdigit(tk->inputIter[0])) {
-        return _float(tk, 0);
-    } else if (tk->inputIter[0] == 'e' || tk->inputIter[0] == 'E') {
-        return _expofloat(tk, 1, 0);
+Token *Tokenizer::_float( int isFirst) {
+    nextChar();
+    if (isdigit(this->inputIter[0])) {
+        return _float( 0);
+    } else if (this->inputIter[0] == 'e' || this->inputIter[0] == 'E') {
+        return _expofloat( 1, 0);
     } else {
         if (isFirst) {
-            return _invalid(tk);
+            return _invalid();
         } else {
-            return makeToken(tk, TOKEN_FLOAT);
+            return makeToken( TOKEN_FLOAT);
         }
     }
 }
 
-TokenT *_octal(TokenizerT *tk) {
-    nextChar(tk);
-    if (isOctal(tk->inputIter[0])) {
-        return _octal(tk);
+Token *Tokenizer::_octal() {
+    nextChar();
+    if (isOctal(this->inputIter[0])) {
+        return _octal();
     } else {
-        return makeToken(tk, TOKEN_OCTAL);
+        return makeToken( TOKEN_OCTAL);
     }
 }
 
-TokenT *_hex(TokenizerT *tk, int isFirst) {
-    nextChar(tk);
-    if (isxdigit(tk->inputIter[0])) {
-        return _hex(tk, 0);
+Token *Tokenizer::_hex( int isFirst) {
+    nextChar();
+    if (isxdigit(this->inputIter[0])) {
+        return _hex( 0);
     } else {
         if (isFirst) {
-            return _invalid(tk);
+            return _invalid();
         } else {
-            return makeToken(tk, TOKEN_HEX);
+            return makeToken( TOKEN_HEX);
         }
     }
 }
 
-TokenT *_decimal(TokenizerT *tk) {
-    nextChar(tk);
-    if (isdigit(tk->inputIter[0])) {
-        return _decimal(tk);
-    } else if (tk->inputIter[0] == '.') {
-        return _float(tk, 1);
-    } else if (tk->inputIter[0] == 'e' || tk->inputIter[0] == 'E') {
-        return _expofloat(tk, 1, 0);
+Token *Tokenizer::_decimal() {
+    nextChar();
+    if (isdigit(this->inputIter[0])) {
+        return _decimal();
+    } else if (this->inputIter[0] == '.') {
+        return _float( 1);
+    } else if (this->inputIter[0] == 'e' || this->inputIter[0] == 'E') {
+        return _expofloat( 1, 0);
     } else {
-        return makeToken(tk, TOKEN_DECIMAL);
+        return makeToken( TOKEN_DECIMAL);
     }
 }
 
 /*
  * Handle being given a zero as the first char in a new token.
  */
-TokenT *_zero(TokenizerT *tk) {
-    nextChar(tk);
-    if (isOctal(tk->inputIter[0])) {
-        return _octal(tk);
-    } else if (tk->inputIter[0] == 'x' || (tk->inputIter[0]) == 'X') {
-        return _hex(tk, 1);
-    } else if (tk->inputIter[0] == '.') {
-        return _float(tk, 1);
+Token *Tokenizer::_zero() {
+    nextChar();
+    if (isOctal(this->inputIter[0])) {
+        return _octal();
+    } else if (this->inputIter[0] == 'x' || (this->inputIter[0]) == 'X') {
+        return _hex( 1);
+    } else if (this->inputIter[0] == '.') {
+        return _float( 1);
     } else {
-        return makeToken(tk, TOKEN_ZERO);
+        return makeToken( TOKEN_ZERO);
     }
 }
 
-TokenT *_power(TokenizerT *tk) {
-    nextChar(tk);
-    return makeToken(tk, TOKEN_POWER);
+Token *Tokenizer::_power() {
+    nextChar();
+    return makeToken( TOKEN_POWER);
 }
 
 /*
@@ -541,59 +512,59 @@ TokenT *_power(TokenizerT *tk) {
  *
  * You need to fill in this function as part of your implementation.
  */
-TokenT *TKGetNextToken(TokenizerT *tk) {
-    clearBuffer(tk);
-    char curr = tk->inputIter[0];
+Token *Tokenizer::TKGetNextToken() {
+    clearBuffer();
+    char curr = this->inputIter[0];
 
     // skip all whitespace before next token
     while (isspace(curr)) {
-        nextChar(tk);
-        clearBuffer(tk);
-        curr = tk->inputIter[0];
+        nextChar();
+        clearBuffer();
+        curr = this->inputIter[0];
     }
 
     if (curr == '\0') {
         return NULL;
     } else if (isalpha(curr) || curr == '_') {
-        return _word(tk);
+        return _word();
     } else if (curr == '0') {
-        return _zero(tk);
+        return _zero();
     } else if (isdigit(curr)) {
-        return _decimal(tk);
+        return _decimal();
     } else if (curr == '!') { // neq
-        return _neq(tk);
+        return _neq();
     } else if (curr == '"') { // double_quote
-        return _double_quote(tk);
+        return _double_quote();
     } else if (curr == '%') { // mod, mod_eq
-        return _mod(tk);
+        return _mod();
     } else if (curr == '\'') { // single_quote
-        return _single_quote(tk);
+        return _single_quote();
     } else if (curr == '(') { // open_paren
-        return _open_paren(tk);
+        return _open_paren();
     } else if (curr == ')') { // close_paren
-        return _close_paren(tk);
+        return _close_paren();
     } else if (curr == '*') { // mult, mult_eq, pointer (?)
-        return _mult(tk);
+        return _mult();
     } else if (curr == '+') { // plus, plus_eq, inc
-        return _plus(tk);
+        return _plus();
     } else if (curr == ',') { // comma
-        return _comma(tk);
+        return _comma();
     } else if (curr == '-') { // minus, minus_eq, dec, struct_pointer
-        return _minus(tk);
+        return _minus();
     } else if (curr == '/') { // div, div_eq
-        return _div(tk);
+        return _div();
     } else if (curr == ';') { // semicolon
-        return _semicolon(tk);
+        return _semicolon();
     } else if (curr == '<') { // lt, lshift, lt_eq
-        return _lt(tk);
+        return _lt();
     } else if (curr == '=') { // eq, assign
-        return _eq(tk);
+        return _eq();
     } else if (curr == '>') { // gt, rshift, gt_eq
-        return _gt(tk);
+        return _gt();
     } else if (curr == '^') {
-        return _power(tk);
+        return _power();
     } else {
-        return _invalid(tk);
+        return _invalid();
     }
 }
 

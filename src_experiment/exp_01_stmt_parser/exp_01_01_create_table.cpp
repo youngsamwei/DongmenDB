@@ -21,7 +21,7 @@ sql_stmt_create *parse_sql_stmt_create(ParserT *parser) {
         strcpy(parser->parserMessage, "invalid sql: should be table.");
         return NULL;
     }
-    TokenT *token = parseNextToken(parser);
+    Token *token = parseNextToken(parser);
     if (token->type == TOKEN_WORD) {
         tableName = new_id_name();
         strcpy(tableName, token->text);
@@ -61,7 +61,7 @@ sql_stmt_create *parse_sql_stmt_create(ParserT *parser) {
 };
 
 field_info *parse_sql_stmt_columnexpr(ParserT *parser) {
-    TokenT *token = parseNextToken(parser);
+    Token *token = parseNextToken(parser);
     char *columnName = NULL;
     enum data_type type;
     int length;

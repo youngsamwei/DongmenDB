@@ -13,7 +13,7 @@
  * @return select语句
  */
 SRA_t *parse_sql_stmt_select(ParserT *parser) {
-    TokenT *token = parseNextToken(parser);
+    Token *token = parseNextToken(parser);
     /*匹配select关键词*/
     if(!matchToken(parser, TOKEN_RESERVED_WORD, "select")){
         strcpy(parser->parserMessage, "语法错误.");
@@ -121,7 +121,7 @@ vector<Expression*> parseFieldsExpr(ParserT *parser) {
     Expression *expr0 = parseExpressionRD(parser);
     exprs.push_back(expr0);
 
-    TokenT *token = parseNextToken(parser);
+    Token *token = parseNextToken(parser);
     /*若还有其他表达式则进入循环，否则返回*/
     while (token != NULL && token->type == TOKEN_COMMA) {
         parseEatAndNextToken(parser);
@@ -140,7 +140,7 @@ vector<Expression*> parseFieldsExpr(ParserT *parser) {
  *
  * */
 SRA_t *parseTablesExpr(ParserT *parser) {
-    TokenT *token = parseNextToken(parser);
+    Token *token = parseNextToken(parser);
     if (token->type == TOKEN_WORD) {
 
         /*解析from子句第一个数据表*/
@@ -148,7 +148,7 @@ SRA_t *parseTablesExpr(ParserT *parser) {
         TableReference_t *ref =   TableReference_make(tableName, NULL);
         SRA_t *table =  SRATable(ref);
 
-        TokenT *token = parseEatAndNextToken(parser);
+        Token *token = parseEatAndNextToken(parser);
         /*若还有其他数据表，则进入循环继续解析，否则返回*/
         while (token != NULL && token->type == TOKEN_COMMA) {
             token = parseEatAndNextToken(parser);/*跳过comma*/

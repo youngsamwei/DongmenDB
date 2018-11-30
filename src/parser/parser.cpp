@@ -11,7 +11,7 @@
  * @param tokenizer 词法分析器
  * @return 解析器
  */
-ParserT *newParser(TokenizerT *tokenizer) {
+ParserT *newParser(Tokenizer *tokenizer) {
     ParserT *parser = (ParserT *) malloc(sizeof(ParserT));
     parser->tokenizer = tokenizer;
     parser->currToken = NULL;
@@ -25,7 +25,7 @@ ParserT *newParser(TokenizerT *tokenizer) {
  * @param parser 解析器
  * @return Token
  */
-TokenT *parseNextToken(ParserT *parser) {
+Token *parseNextToken(ParserT *parser) {
     if (parser->parserStateType == PARSER_WRONG) {
         return NULL;
     }
@@ -40,7 +40,7 @@ TokenT *parseNextToken(ParserT *parser) {
  * @param parser  解析器
  * @return  NULL
  */
-TokenT *parseEatToken(ParserT *parser) {
+Token *parseEatToken(ParserT *parser) {
     if (parser->parserStateType == PARSER_WRONG) {
         return NULL;
     }
@@ -53,7 +53,7 @@ TokenT *parseEatToken(ParserT *parser) {
  * @param parser
  * @return
  */
-TokenT *parseEatAndNextToken(ParserT *parser) {
+Token *parseEatAndNextToken(ParserT *parser) {
     if (parser->parserStateType == PARSER_WRONG) {
         return NULL;
     }
@@ -74,7 +74,7 @@ void *parseError(ParserT *parser, char *message) {
 };
 
 int matchToken(ParserT *parser, TokenType type, char *text){
-    TokenT *token = parseNextToken(parser);
+    Token *token = parseNextToken(parser);
     if (token && token->type == type && stricmp(token->text, text) == 0) {
         parseEatAndNextToken(parser);
         return 1;

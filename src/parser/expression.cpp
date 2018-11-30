@@ -215,7 +215,7 @@ Expression *parseExpressionRD(ParserT *parser) {
 /*由parseReadDouble修改而来*/
 Expression *parseReadLiteral(ParserT *parser) {
     Expression *expr0 = NULL;
-    TokenT *token = parseNextToken(parser);
+    Token *token = parseNextToken(parser);
     if (token == NULL) {
         parseError(parser, "syntax error: missing number.");
         return NULL;
@@ -268,7 +268,7 @@ Expression *parseReadLiteral(ParserT *parser) {
 
 Expression *parseReadArgument(ParserT *parser) {
     Expression *expr0 = NULL;
-    TokenT *token = parseNextToken(parser);
+    Token *token = parseNextToken(parser);
     if (token == NULL) {
          parseError(parser, "syntax error: missing argument.");
         return NULL;
@@ -282,7 +282,7 @@ Expression *parseReadArgument(ParserT *parser) {
 
 Expression *parseReadBuiltin(ParserT *parser) {
     Expression *expr0 = NULL, *expr1 = NULL;
-    TokenT *token = parseNextToken(parser);
+    Token *token = parseNextToken(parser);
     if (token == NULL) {
          parseError(parser, "syntax error: missing id or number.");
         return NULL;
@@ -389,7 +389,7 @@ Expression *parseReadBuiltin(ParserT *parser) {
 
 Expression *parseReadParen(ParserT *parser) {
     Expression *expr0 = NULL;
-    TokenT *token = parseNextToken(parser);
+    Token *token = parseNextToken(parser);
     if (token == NULL) {
          parseError(parser, "syntax error.");
         return NULL;
@@ -412,7 +412,7 @@ Expression *parseReadParen(ParserT *parser) {
 
 Expression *parseReadUnary(ParserT *parser) {
     Expression *expr0 = NULL, *expr1 = NULL;
-    TokenT *token = parseNextToken(parser);
+    Token *token = parseNextToken(parser);
     if (token == NULL) {
          parseError(parser, "syntax error.");
         return NULL;
@@ -430,7 +430,7 @@ Expression *parseReadUnary(ParserT *parser) {
 
 Expression *parseReadPower(ParserT *parser) {
     Expression *expr0 = NULL, *expr1 = NULL;
-    TokenT *token = parseNextToken(parser);
+    Token *token = parseNextToken(parser);
     expr0 = parseReadUnary(parser);
     token = parseNextToken(parser);
 
@@ -446,7 +446,7 @@ Expression *parseReadPower(ParserT *parser) {
 Expression *parseReadTerm(ParserT *parser) {
     Expression *expr0 = NULL, *expr1 = NULL, *expr2 = NULL;
     expr0 = parseReadPower(parser);
-    TokenT *token = parseNextToken(parser);
+    Token *token = parseNextToken(parser);
 
     while (token != NULL && (token->type == TOKEN_MULTIPLY || token->type == TOKEN_DIVIDE)) {
         /*需要处理多个连续的乘除*/
@@ -478,7 +478,7 @@ Expression *concatExpression(Expression *expr0, Expression *expr1) {
 
 Expression *parseReadExpr(ParserT *parser) {
     Expression *expr0 = NULL, *expr1 = NULL, *expr2 = NULL;
-    TokenT *token = parseNextToken(parser);
+    Token *token = parseNextToken(parser);
     if (token == NULL) {
          parseError(parser, "syntax error.");
         return NULL;
@@ -508,7 +508,7 @@ Expression *parseReadExpr(ParserT *parser) {
 Expression *parseReadBooleanComparison(ParserT *parser) {
     Expression *expr0 = NULL, *expr1 = NULL, *expr2 = NULL;
     expr0 = parseReadExpr(parser);
-    TokenT *token = parseNextToken(parser);
+    Token *token = parseNextToken(parser);
 
     if (token != NULL && (token->type == TOKEN_GE || token->type == TOKEN_LE
                           || token->type == TOKEN_GT || token->type == TOKEN_LT)) {
@@ -522,7 +522,7 @@ Expression *parseReadBooleanComparison(ParserT *parser) {
 
 Expression *parseReadBooleanEquality(ParserT *parser) {
     Expression *expr0 = NULL, *expr1 = NULL;
-    TokenT *token = parseNextToken(parser);
+    Token *token = parseNextToken(parser);
     expr0 = parseReadBooleanComparison(parser);
     token = parseNextToken(parser);
 
@@ -539,7 +539,7 @@ Expression *parseReadBooleanEquality(ParserT *parser) {
 
 Expression *parseReadBooleanAnd(ParserT *parser) {
     Expression *expr0 = NULL, *expr1 = NULL, *expr2 = NULL;
-    TokenT *token = parseNextToken(parser);
+    Token *token = parseNextToken(parser);
     expr0 = parseReadBooleanEquality(parser);
     token = parseNextToken(parser);
 
@@ -557,7 +557,7 @@ Expression *parseReadBooleanAnd(ParserT *parser) {
 
 Expression *parseReadBooleanOr(ParserT *parser) {
     Expression *expr0, *expr1 = NULL, *expr2 = NULL;
-    TokenT *token = parseNextToken(parser);
+    Token *token = parseNextToken(parser);
     expr0 = parseReadBooleanAnd(parser);
     token = parseNextToken(parser);
 

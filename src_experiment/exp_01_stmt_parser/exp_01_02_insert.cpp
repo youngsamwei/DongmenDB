@@ -22,7 +22,7 @@ sql_stmt_insert *parse_sql_stmt_insert(ParserT *parser) {
         strcpy(parser->parserMessage, "invalid sql: should be into.");
         return NULL;
     }
-    TokenT *token = parseNextToken(parser);
+    Token *token = parseNextToken(parser);
     if (token->type == TOKEN_WORD) {
         tableName = new_id_name();
         strcpy(tableName, token->text);

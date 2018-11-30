@@ -16,7 +16,7 @@
 int select(dongmendb *db, const char *sqlselect) {
     char *sql = (char *) calloc(strlen(sqlselect), 1);
     strcpy(sql, sqlselect);
-    TokenizerT *tokenizer = TKCreate(sql);
+    Tokenizer *tokenizer = TKCreate(sql);
     ParserT *parser = newParser(tokenizer);
     memset(parser->parserMessage, 0, sizeof(parser->parserMessage));
 
