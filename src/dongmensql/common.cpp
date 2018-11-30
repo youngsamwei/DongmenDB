@@ -112,10 +112,10 @@ void Query_free(Query_t *query) {
             Index_free(query->index);
             return;
         case INSERT_Q:
-            Insert_free(query->insert);
+//            Insert_free(query->insert);
             return;
         case DELETE_Q:
-            Delete_free(query->del);
+//            Delete_free(query->del);
             return;
     }
 }
