@@ -24,9 +24,7 @@ UnaryExpr *parseUnaryExpr(Parser *parser) { return NULL; };
 
 arraylist *parseGroupExpr(Parser *parser) { return NULL; };
 */
-vector<Expression*> parseOrderExpr(Parser *parser) {
-    vector<Expression*> v;
-    return v; };
+
 /*
 ColumnsExpr *parseColumnsExpr(Parser *parser) { return NULL; };
 

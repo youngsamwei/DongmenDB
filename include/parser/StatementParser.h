@@ -16,6 +16,9 @@ public:
     vector<Expression *> parseFieldsExpr();
 
     SRA_t *parseTablesExpr();
+    vector<Expression*> parseOrderExpr(Parser *parser) {
+        vector<Expression*> v;
+        return v; };
 };
 
 class CreateParser : public Parser {
@@ -58,5 +61,6 @@ public:
     sql_stmt_delete *parse_sql_stmt_delete();
 
 };
+
 
 #endif //DONGMENDB_STATEMENTPARSER_H

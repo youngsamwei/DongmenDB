@@ -109,7 +109,7 @@ BinaryExpr *parseBinaryExpr(Parser *parser);
 UnaryExpr *parseUnaryExpr(Parser *parser);
 arraylist *parseGroupExpr(Parser *parser);
  */
-vector<Expression*> parseOrderExpr(Parser *parser);
+
 /*
 ColumnsExpr *parseColumnsExpr(Parser *parser);
 SetExpr *parseSetExpr(Parser *parser);
