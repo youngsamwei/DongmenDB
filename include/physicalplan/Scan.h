@@ -6,7 +6,7 @@
 #define DONGMENDB_SCAN_H
 
 #include <string>
-#include <dongmendb/dongmendb.h>
+#include <dongmendb/DongmenDB.h>
 #include <parser/expression.h>
 
 using namespace std;
@@ -14,7 +14,7 @@ using namespace std;
 /*扫描接口*/
 class Scan {
 public:
-    dongmendb *m_db;
+    DongmenDB *m_db;
     Transaction *m_tx;
 
     virtual int beforeFirst()=0;

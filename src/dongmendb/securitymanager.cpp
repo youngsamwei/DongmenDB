@@ -2,10 +2,10 @@
 // Created by Sam on 2018/1/26.
 //
 
-#include <dongmendb/dongmendb.h>
+#include <dongmendb/DongmenDB.h>
 #include "dongmendb/securitymanager.h"
 
-security_manager *security_manager_create(dongmendb *db){
+security_manager *security_manager_create(DongmenDB *db){
 
 };
 

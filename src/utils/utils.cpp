@@ -5,7 +5,7 @@
 #include <stddef.h>
 #include <ctype.h>
 #include <malloc.h>
-#include <dongmendb/dongmendb.h>
+#include <dongmendb/DongmenDB.h>
 #include <parser/expression.h>
 #include <io.h>
 #include <direct.h>

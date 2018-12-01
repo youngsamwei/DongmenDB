@@ -2,7 +2,7 @@
 #include <string.h>
 #include <utils/utils.h>
 
-#include <dongmendb/dongmendb.h>
+#include <dongmendb/DongmenDB.h>
 #include <dongmensql/dongmensql.h>
 #include <dongmendb/Recordfile.h>
 #include <utils/utils.h>
@@ -115,19 +115,19 @@ int dongmendb_shell_handle_sql(dongmendb_shell_handle_sql_t *ctx, const char *sq
     int rc;
     dongmendb_stmt *stmt;
 
-    rc = dongmendb_prepare(ctx->db, sql, &stmt);
+    rc = ctx->db->dongmendb_prepare(sql, &stmt);
 
     if (rc == DONGMENDB_OK) {
-        int numcol = dongmendb_column_count(stmt);
+        int numcol = ctx->db->dongmendb_column_count(stmt);
 
         if (ctx->header) {
             for (int i = 0; i < numcol; i++) {
                 if (ctx->mode == MODE_LIST) {
                     printf(i == 0 ? "" : COL_SEPARATOR);
-                    printf("%s", dongmendb_column_name(stmt, i));
+                    printf("%s", ctx->db->dongmendb_column_name(stmt, i));
                 } else if (ctx->mode == MODE_COLUMN) {
                     printf(i == 0 ? "" : " ");
-                    printf("%-10.10s", dongmendb_column_name(stmt, i));
+                    printf("%-10.10s", ctx->db->dongmendb_column_name(stmt, i));
                 }
             }
             printf("\n");
@@ -141,7 +141,7 @@ int dongmendb_shell_handle_sql(dongmendb_shell_handle_sql_t *ctx, const char *sq
             }
         }
 
-        while ((rc = dongmendb_step(stmt)) == DONGMENDB_ROW) {
+        while ((rc = ctx->db->dongmendb_step(stmt)) == DONGMENDB_ROW) {
             for (int i = 0; i < numcol; i++) {
                 int coltype;
 
@@ -151,7 +151,7 @@ int dongmendb_shell_handle_sql(dongmendb_shell_handle_sql_t *ctx, const char *sq
                     printf(i == 0 ? "" : " ");
 
 
-                coltype = dongmendb_column_type(stmt, i);
+                coltype = ctx->db->dongmendb_column_type(stmt, i);
 
                 if (coltype == SQL_NOTVALID) {
                     printf("ERROR: Column %i return an invalid type.\n", coltype);
@@ -159,9 +159,9 @@ int dongmendb_shell_handle_sql(dongmendb_shell_handle_sql_t *ctx, const char *sq
                 } else if (coltype == SQL_INTEGER_1BYTE || coltype == SQL_INTEGER_2BYTE ||
                            coltype == SQL_INTEGER_4BYTE) {
                     if (ctx->mode == MODE_LIST)
-                        printf("%i", dongmendb_column_int(stmt, i));
+                        printf("%i", ctx->db->dongmendb_column_int(stmt, i));
                     else if (ctx->mode == MODE_COLUMN)
-                        printf("%10i", dongmendb_column_int(stmt, i));
+                        printf("%10i", ctx->db->dongmendb_column_int(stmt, i));
                 } else if (coltype == SQL_NULL) {
                     /* Print nothing */
                     if (ctx->mode == MODE_COLUMN)
@@ -172,7 +172,7 @@ int dongmendb_shell_handle_sql(dongmendb_shell_handle_sql_t *ctx, const char *sq
                         printf("ERROR: Column %i returned an invalid type.\n", i);
                         break;
                     }
-                    const char *text = dongmendb_column_text(stmt, i);
+                    const char *text = ctx->db->dongmendb_column_text(stmt, i);
                     len = strlen(text);
                     if (len != (coltype - 13) / 2) {
                         printf("ERROR: THe length (%i) of the text in column %i does not match its type (%i).\n", len,
@@ -204,7 +204,7 @@ int dongmendb_shell_handle_sql(dongmendb_shell_handle_sql_t *ctx, const char *sq
                 break;
         }
 
-        rc = dongmendb_finalize(stmt);
+        rc = ctx->db->dongmendb_finalize(stmt);
         if (rc == DONGMENDB_EMISUSE)
             printf("API used incorrectly.\n");
     } else if (rc == DONGMENDB_EINVALIDSQL)
@@ -459,14 +459,14 @@ int dongmendb_shell_handle_delete_data(dongmendb_shell_handle_sql_t *ctx, const 
 int dongmendb_shell_handle_cmd_open(dongmendb_shell_handle_sql_t *ctx, struct handler_entry *e, const char **tokens,
                                     int ntokens) {
     int rc;
-    dongmendb *newdb = (dongmendb *) calloc(sizeof(dongmendb), 1);
+    DongmenDB *newdb = new DongmenDB();
 
     if (ntokens != 2) {
         usage_error(e, "Invalid arguments");
         return 1;
     }
     char *token = strdup(tokens[1]);
-    rc = dongmendb_open(token, newdb);
+    rc = newdb->dongmendb_open(token);
 
     if (rc != DONGMENDB_OK) {
         fprintf(stderr, "ERROR: Could not open file %s or file is not well formed.\n", tokens[1]);
@@ -474,7 +474,7 @@ int dongmendb_shell_handle_cmd_open(dongmendb_shell_handle_sql_t *ctx, struct ha
     }
 
     if (ctx->db) {
-        dongmendb_close(ctx->db);
+        ctx->db->dongmendb_close();
         free(ctx->dbfile);
     }
 
@@ -615,7 +615,7 @@ int dongmendb_shell_handle_cmd_help(dongmendb_shell_handle_sql_t *ctx, struct ha
 int dongmendb_shell_handle_cmd_exit(dongmendb_shell_handle_sql_t *ctx, struct handler_entry *e, const char **tokens,
                                     int ntokens) {
     if (ctx->db) {
-        dongmendb_close(ctx->db);
+        ctx->db->dongmendb_close();
         free(ctx->dbfile);
     }
 

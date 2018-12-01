@@ -9,13 +9,13 @@
 #include <physicalplan/Scan.h>
 #include <physicalplan/ExecutionPlan.h>
 #include <physicalplan/Project.h>
-#include "dongmendb/dongmendb.h"
+#include "dongmendb/DongmenDB.h"
 #include "parser/Tokenizer.h"
 #include "parser/parser.h"
 #include "dongmensql/sra.h"
 
 
-int select(dongmendb *db, const char *sqlselect) {
+int select(const char *sqlselect) {
     char *sql = (char *) calloc(strlen(sqlselect), 1);
     strcpy(sql, sqlselect);
     Tokenizer *tokenizer = new Tokenizer(sql);
@@ -38,7 +38,7 @@ int select(dongmendb *db, const char *sqlselect) {
 }
 
 int test(const char *dbname, const char *strselect) {
-    dongmendb *newdb = (dongmendb *) calloc(sizeof(dongmendb), 1);
+    DongmenDB *newdb = (DongmenDB *) calloc(sizeof(dongmendb), 1);
     int rc = dongmendb_open(dbname, newdb);
     int count = select(newdb, strselect);
     return count;

@@ -33,17 +33,6 @@ typedef struct file_manager_ file_manager;
 typedef struct integrity_manager_ integrity_manager;
 typedef struct metadata_manager_ metadata_manager;
 
-typedef struct dongmendb_ {
-    char *dbName;
-    FileManager *fileManager;
-    BufferManager *bufferManager;
-    TableManager *tableManager;
-    log_manager *logManager;
-    security_manager *securityManager;
-    integrity_manager *integrityManager;
-    Transaction *tx;
-} dongmendb;
-
 /* API return codes */
 #define DONGMENDB_OK (0)
 #define DONGMENDB_EINVALIDSQL (1)
@@ -57,6 +46,18 @@ typedef struct dongmendb_ {
 
 #define DONGMENDB_ROW (100)
 #define DONGMENDB_DONE (101)
+
+
+class DongmenDB {
+public:
+    char *dbName;
+    FileManager *fileManager;
+    BufferManager *bufferManager;
+    TableManager *tableManager;
+    log_manager *logManager;
+    security_manager *securityManager;
+    integrity_manager *integrityManager;
+    Transaction *tx;
 
 
 /* Opens a dongmendb file.
@@ -79,7 +80,7 @@ typedef struct dongmendb_ {
  * - DONGMENDB_ECORRUPT: The database file is not well formed
  * - DONGMENDB_EIO: An I/O error has occurred when accessing the file
  */
-int dongmendb_open(const char *file, dongmendb *db);
+    int dongmendb_open(const char *file);
 
 
 /* Prepares a SQL statement for execution
@@ -95,7 +96,7 @@ int dongmendb_open(const char *file, dongmendb *db);
  * - DONGMENDB_EINVALIDSQL: Invalid SQL
  * - DONGMENDB_ENOMEM: Could not allocate memory
  */
-extern int dongmendb_prepare(dongmendb *db, const char *sql, dongmendb_stmt **stmt);
+    int dongmendb_prepare(const char *sql, dongmendb_stmt **stmt);
 
 
 /* Steps through a prepared SQL statement
@@ -120,7 +121,7 @@ extern int dongmendb_prepare(dongmendb *db, const char *sql, dongmendb_stmt **st
  * - DONGMENDB_ROW: Statement returned a row.
  * - DONGMENDB_DONE: Statement has finished executing.
  */
-int dongmendb_step(dongmendb_stmt *stmt);
+    int dongmendb_step(dongmendb_stmt *stmt);
 
 
 /* Finalizes a SQL statement, freeing all resources associated with it.
@@ -132,7 +133,7 @@ int dongmendb_step(dongmendb_stmt *stmt);
  * - DONGMENDB_OK: Operation successful
  * - DONGMENDB_EMISUSE: Statement was already finalized
  */
-int dongmendb_finalize(dongmendb_stmt *stmt);
+    int dongmendb_finalize(dongmendb_stmt *stmt);
 
 
 /* Returns the number of columns returned by a SQL statement
@@ -145,7 +146,7 @@ int dongmendb_finalize(dongmendb_stmt *stmt);
  *   meant to produce any results (such as an INSERT statement), then 0
  *   is returned.
  */
-int dongmendb_column_count(dongmendb_stmt *stmt);
+    int dongmendb_column_count(dongmendb_stmt *stmt);
 
 
 /* Returns the type of a column
@@ -157,7 +158,7 @@ int dongmendb_column_count(dongmendb_stmt *stmt);
  * Return
  * - Column type (see dongmendb Architecture document for valid types)
  */
-int dongmendb_column_type(dongmendb_stmt *stmt, int col);
+    int dongmendb_column_type(dongmendb_stmt *stmt, int col);
 
 
 /* Returns the name of a column
@@ -171,7 +172,7 @@ int dongmendb_column_type(dongmendb_stmt *stmt, int col);
  *   client does not have to free() the returned string. It is the API's
  *   responsibility to allocate and free the memory for this string.
  */
-const char *dongmendb_column_name(dongmendb_stmt *stmt, int col);
+    const char *dongmendb_column_name(dongmendb_stmt *stmt, int col);
 
 
 /* Returns the value of a column of integer type
@@ -183,7 +184,7 @@ const char *dongmendb_column_name(dongmendb_stmt *stmt, int col);
  * Return
  * - Integer value
  */
-int dongmendb_column_int(dongmendb_stmt *stmt, int col);
+    int dongmendb_column_int(dongmendb_stmt *stmt, int col);
 
 
 /* Returns the value of a column of string type
@@ -198,7 +199,7 @@ int dongmendb_column_int(dongmendb_stmt *stmt, int col);
  *   responsibility to allocate and free the memory for this string
  *   (note that this may happen after dongmendb_step is called again)
  */
-const char *dongmendb_column_text(dongmendb_stmt *stmt, int col);
+    const char *dongmendb_column_text(dongmendb_stmt *stmt, int col);
 
 
 /* Closes a dongmendb database
@@ -210,8 +211,10 @@ const char *dongmendb_column_text(dongmendb_stmt *stmt, int col);
  * - DONGMENDB_OK: Operation successful
  * - DONGMENDB_EMISUSE: Database that is already closed
  */
-int dongmendb_close(dongmendb *db);
+    int dongmendb_close();
 
+
+} ;
 
 
 #endif //DONGMENDB_DONGMENDB_H

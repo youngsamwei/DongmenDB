@@ -11,7 +11,7 @@
  *
  */
 
-#include "dongmendb.h"
+#include "DongmenDB.h"
 
 #include <vector>
 
@@ -166,7 +166,7 @@ int security_manager_init(security_manager *securityManager);
  * @param db
  * @return
  */
-security_manager *security_manager_create(dongmendb *db);
+security_manager *security_manager_create(DongmenDB *db);
 
 
 

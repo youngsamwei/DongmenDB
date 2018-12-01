@@ -12,7 +12,7 @@
  *
  */
 #include <stdio.h>
-#include "dongmendb.h"
+#include "DongmenDB.h"
 
 #include <map>
 

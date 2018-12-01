@@ -7,7 +7,7 @@
 
 
 #include "dongmendb/Recordfile.h"
-#include "dongmendb/dongmendb.h"
+#include "dongmendb/DongmenDB.h"
 #include "dongmendb/securitymanager.h"
 #include "dongmensql/column.h"
 #include <dongmensql/sra.h>

@@ -2,7 +2,7 @@
 // Created by Sam on 2018/2/13.
 //
 
-#include <dongmendb/dongmendb.h>
+#include <dongmendb/DongmenDB.h>
 
 /*
  * 检查是否存在数据表

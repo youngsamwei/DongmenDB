@@ -8,7 +8,7 @@
 
 #include <shell/shell.h>
 
-#include <dongmendb/dongmendb.h>
+#include <dongmendb/DongmenDB.h>
 #include <gtest/gtest.h>
 #include <utils/utils.h>
 #include <parser/Tokenizer.h>

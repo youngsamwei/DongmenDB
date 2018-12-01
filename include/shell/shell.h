@@ -1,7 +1,7 @@
 #ifndef SHELL_H_
 #define SHELL_H_
 
-#include <dongmendb/dongmendb.h>
+#include <dongmendb/DongmenDB.h>
 #include <stdbool.h>
 #include <physicalplan/ExecutionPlan.h>
 #include <physicalplan/Project.h>
@@ -18,7 +18,7 @@ typedef enum shell_mode
 typedef struct dongmendb_shell_handle_sql
 {
     char *dbfile;
-    dongmendb *db;
+    DongmenDB *db;
 
     bool header;
     shell_mode_t mode;

@@ -12,9 +12,9 @@ void TestStmtParser::createDB(const char *dbname) {
     test_db_ctx = (dongmendb_shell_handle_sql_t *) calloc(sizeof(dongmendb_shell_handle_sql_t), 1);
     dongmendb_shell_init_ctx(test_db_ctx);
 
-    dongmendb *newdb = (dongmendb *) calloc(sizeof(dongmendb), 1);
+    DongmenDB *newdb = new DongmenDB();
 
-    int rc = dongmendb_open(dbname, newdb);
+    int rc = newdb->dongmendb_open(dbname);
 
     if (rc != DONGMENDB_OK) {
         fprintf(stderr, "ERROR: Could not open file %s or file is not well formed.\n", dbname);
@@ -46,7 +46,7 @@ void TestStmtParser::insertData() {
 /*删除 db 指向的数据库*/
 void TestStmtParser::dropDB() {
 
-    dongmendb_close(test_db_ctx->db);
+    test_db_ctx->db->dongmendb_close();
 
     removeDir(test_db_ctx->dbfile);
 

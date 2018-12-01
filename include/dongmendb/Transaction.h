@@ -5,7 +5,7 @@
 #ifndef DONGMENDB_TRANSACTION_H
 #define DONGMENDB_TRANSACTION_H
 
-#include "dongmendb.h"
+#include "DongmenDB.h"
 
 #include <vector>
 #include <map>
@@ -16,6 +16,7 @@ using namespace std;
 #define  END_OF_FILE -1
 
 class BufferManager;
+class DongmenDB;
 
 typedef void *void_ptr;
 
@@ -29,13 +30,13 @@ static int next_tx_num = 1;
 
 class Transaction {
 public:
-    dongmendb *db;
+    DongmenDB *db;
     int txNum;
     recovery_manager *recoveryManager;
     concurrency_manager *concurrencyManager;
     buffer_list *bufferList;
 
-    Transaction(dongmendb *db);
+    Transaction(DongmenDB *db);
     int transaction_commit();
     int transaction_rollback();
     int transaction_recover();

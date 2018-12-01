@@ -6,7 +6,7 @@
 #include <algorithm>
 #include "dongmendb/Transaction.h"
 
-Transaction::Transaction(dongmendb *db) {
+Transaction::Transaction(DongmenDB *db) {
     /*使用malloc申请空间，不能初始化map对象*/
     this->bufferList = (buffer_list *) malloc(sizeof(buffer_list));
     this->bufferList->bufferManager = db->bufferManager;

@@ -10,7 +10,7 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <string.h>
-#include <dongmendb/dongmendb.h>
+#include <dongmendb/DongmenDB.h>
 #include <stdio.h>
 #include "shell/shell.h"
 
