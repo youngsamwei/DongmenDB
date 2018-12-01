@@ -20,13 +20,25 @@ class DongmenDB;
 
 typedef void *void_ptr;
 
-typedef struct dongmendb_ dongmendb;
 typedef struct recovery_manager_ recovery_manager;
 typedef struct concurrency_manager_ concurrency_manager;
-typedef struct buffer_list_ buffer_list;
-typedef struct buffer_manager_ buffer_manager;
 
 static int next_tx_num = 1;
+
+
+class BufferList {
+public:
+    map<string, MemoryBuffer*> *buffers;
+    vector<DiskBlock *> pins;
+    BufferManager *bufferManager;
+
+    int buffer_list_pin(DiskBlock *block);
+    int buffer_list_unpin(DiskBlock *block);
+    int buffer_list_unpin_all();
+    MemoryBuffer *buffer_list_get_buffer(DiskBlock *block);
+    int buffer_list_pin_new(char *fileName, void_ptr *block, table_info *tableInfo);
+
+} ;
 
 class Transaction {
 public:
@@ -34,7 +46,7 @@ public:
     int txNum;
     recovery_manager *recoveryManager;
     concurrency_manager *concurrencyManager;
-    buffer_list *bufferList;
+    BufferList *bufferList;
 
     Transaction(DongmenDB *db);
     int transaction_commit();
@@ -54,20 +66,6 @@ public:
 
     int transaction_next_txnum();
 } ;
-
-typedef struct buffer_list_ {
-    map<string, MemoryBuffer*> *buffers;
-    vector<DiskBlock *> pins;
-    BufferManager *bufferManager;
-} buffer_list;
-
-
-int buffer_list_pin(buffer_list *bufferList, DiskBlock *block);
-int buffer_list_unpin(buffer_list *bufferList, DiskBlock *block);
-int buffer_list_unpin_all(buffer_list *bufferList);
-MemoryBuffer *buffer_list_get_buffer(buffer_list *bufferList, DiskBlock *block);
-int buffer_list_pin_new(buffer_list *bufferList, char *fileName, void_ptr *block, table_info *tableInfo);
-
 
 
 #endif //DONGMENDB_TRANSACTION_H
