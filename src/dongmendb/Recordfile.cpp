@@ -97,9 +97,8 @@ int RecordFile::record_file_moveto(int currentBlkNum) {
         record_page_close(this->recordPage);
     }
     this->currentBlkNum = currentBlkNum;
-    disk_block *diskBlock = (disk_block *) malloc(sizeof(disk_block));
-    diskBlock->blkNum = currentBlkNum;
-    diskBlock->fileName = this->fileName;
+    DiskBlock *diskBlock = new DiskBlock(this->fileName, currentBlkNum, this->tableInfo);
+
     record_page *recordPage = record_page_create(this->tx, this->tableInfo, diskBlock);
 
     this->recordPage = recordPage;
@@ -186,7 +185,7 @@ int table_info_offset(table_info *tableInfo, const char *fieldName) {
     return tableInfo->offsets->find(fid)->second;
 };
 
-record_page *record_page_create(Transaction *tx, table_info *tableInfo, disk_block *diskBlock) {
+record_page *record_page_create(Transaction *tx, table_info *tableInfo, DiskBlock *diskBlock) {
     record_page *recordPage = (record_page *) malloc(sizeof(record_page));
     recordPage->diskBlock = diskBlock;
     recordPage->tx = tx;

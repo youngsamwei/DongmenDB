@@ -9,11 +9,9 @@
 
 int dongmendb_open(const char *dbName, dongmendb *db) {
 
-    db->fileManager = (file_manager *)malloc(sizeof(file_manager));
+    db->fileManager = new FileManager("", dbName);
     db->dbName = strdup(dbName);
 
-    /*初始化文件管理*/
-    file_manager_new(db->fileManager, "", dbName);
 
     /*初始日志*/
     //log_manager_new(db->fileManager, file);
@@ -50,7 +48,7 @@ int dongmendb_column_int(dongmendb_stmt *stmt, int col) {};
 const char *dongmendb_column_text(dongmendb_stmt *stmt, int col) {};
 
 int dongmendb_close(dongmendb *db) {
-    file_manager_closeallfile(db->fileManager);
+    db->fileManager->file_manager_closeallfile();
 };
 
 

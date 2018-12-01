@@ -40,13 +40,13 @@ public:
     int transaction_rollback();
     int transaction_recover();
 
-    int transaction_pin(disk_block *block);
-    int transaction_unpin(disk_block *block);
+    int transaction_pin(DiskBlock *block);
+    int transaction_unpin(DiskBlock *block);
 
-    int transaction_getint(disk_block *block, int offset);
-    int transaction_setint(disk_block *block, int offset, int value);
-    int transaction_getstring(disk_block *block, int offset, char *value);
-    int transaction_setstring(disk_block *block, int offset, const char *value);
+    int transaction_getint(DiskBlock *block, int offset);
+    int transaction_setint(DiskBlock *block, int offset, int value);
+    int transaction_getstring(DiskBlock *block, int offset, char *value);
+    int transaction_setstring(DiskBlock *block, int offset, const char *value);
 
     int transaction_size(char *fileName);
     int transaction_append(char *fileName, table_info *tableInfo);
@@ -56,15 +56,15 @@ public:
 
 typedef struct buffer_list_ {
     map<string, MemoryBuffer*> *buffers;
-    vector<disk_block*> pins;
+    vector<DiskBlock *> pins;
     BufferManager *bufferManager;
 } buffer_list;
 
 
-int buffer_list_pin(buffer_list *bufferList, disk_block *block);
-int buffer_list_unpin(buffer_list *bufferList, disk_block *block);
+int buffer_list_pin(buffer_list *bufferList, DiskBlock *block);
+int buffer_list_unpin(buffer_list *bufferList, DiskBlock *block);
 int buffer_list_unpin_all(buffer_list *bufferList);
-MemoryBuffer *buffer_list_get_buffer(buffer_list *bufferList, disk_block *block);
+MemoryBuffer *buffer_list_get_buffer(buffer_list *bufferList, DiskBlock *block);
 int buffer_list_pin_new(buffer_list *bufferList, char *fileName, void_ptr *block, table_info *tableInfo);
 
 

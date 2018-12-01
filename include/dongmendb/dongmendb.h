@@ -34,7 +34,7 @@ typedef struct metadata_manager_ metadata_manager;
 
 typedef struct dongmendb_ {
     char *dbName;
-    file_manager *fileManager;
+    FileManager *fileManager;
     BufferManager *bufferManager;
     metadata_manager *metadataManager;
     log_manager *logManager;

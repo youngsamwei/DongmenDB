@@ -113,7 +113,7 @@ typedef struct table_info_ {
  * 管理一个block中的记录。
  */
 typedef struct record_page_ {
-    disk_block *diskBlock;
+    DiskBlock *diskBlock;
     table_info *tableInfo;
     Transaction *tx;
     int slotSize;
@@ -133,7 +133,7 @@ int table_info_free(table_info *tableInfo);
 
 int table_info_offset(table_info *tableInfo, const char *fieldName);
 
-record_page *record_page_create(Transaction *tx, table_info *tableInfo, disk_block *diskBlock);
+record_page *record_page_create(Transaction *tx, table_info *tableInfo, DiskBlock *diskBlock);
 
 int record_page_close(record_page *recordPage);
 

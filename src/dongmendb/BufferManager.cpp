@@ -5,7 +5,7 @@
 
 #include <dongmendb/BufferManager.h>
 
- BufferManager::BufferManager(int bufferSize, file_manager *fileManager) {
+ BufferManager::BufferManager(int bufferSize, FileManager *fileManager) {
 
     this->numAvailable = bufferSize;
     for (int i = 0; i <= bufferSize - 1 ; i++){
@@ -13,7 +13,7 @@
     }
 };
 
-int BufferManager::buffer_manager_pin(disk_block *block, void_ptr *buffer) {
+int BufferManager::buffer_manager_pin(DiskBlock *block, void_ptr *buffer) {
     /*先查找block是否已经在缓存中*/
     buffer_manager_find_existing(block, buffer);
     MemoryBuffer *buf = (MemoryBuffer *)*buffer;
@@ -58,10 +58,10 @@ int BufferManager::buffer_manager_flushall(int txnum) {
 }
 
 /*这里的查找算法效率低，可以修改为效率高的算法.*/
-int BufferManager::buffer_manager_find_existing(disk_block *block, void_ptr *buffer) {
+int BufferManager::buffer_manager_find_existing(DiskBlock *block, void_ptr *buffer) {
     for (int i = 0; i <= BUFFER_MAX_SIZE - 1; i++) {
         MemoryBuffer *buf = this->bufferPool[i];
-        disk_block *b = buf->block;
+        DiskBlock *b = buf->block;
         if (b != NULL && stricmp(b->fileName, block->fileName)==0 && (b->blkNum == block->blkNum)) {
             *buffer = buf;
             return 0;
@@ -85,7 +85,7 @@ int BufferManager::buffer_manager_available(BufferManager *bufferManager) {
     return this->numAvailable;
 }
 
- MemoryBuffer::MemoryBuffer(file_manager *fileManager) {
+ MemoryBuffer::MemoryBuffer(FileManager *fileManager) {
     this->contents = (memory_page *)malloc(sizeof(memory_page));
     this->pins = 0;
     this->modifiedBy = -1;
@@ -143,7 +143,7 @@ int MemoryBuffer::memory_buffer_is_modifiedby(int txnum) {
     return txnum == this->modifiedBy;
 }
 
-int MemoryBuffer::memory_buffer_assignto(disk_block *block) {
+int MemoryBuffer::memory_buffer_assignto(DiskBlock *block) {
     memory_buffer_flush();
     this->block = block;
     memory_page_read(this->contents, block);

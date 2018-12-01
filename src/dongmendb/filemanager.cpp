@@ -9,66 +9,65 @@
 
 #include "dongmendb/filemanager.h"
 
-int file_manager_new(file_manager *fileManager, char *directory, const char *dbName) {
-    fileManager->isNew = 0;
+FileManager::FileManager(char *directory, const char *dbName) {
+    this->isNew = 0;
     /*如果对应的文件夹不存在*/
     int exists = access(dbName, F_OK);
     if (exists != 0) {
-        fileManager->isNew = 1;
+        this->isNew = 1;
         mkdir(dbName);
     }
 
-    fileManager->dbDirectoryName = strdup(dbName);
-    fileManager->dbDirectory = fopen(dbName, "rw");
+    this->dbDirectoryName = strdup(dbName);
+    this->dbDirectory = fopen(dbName, "rw");
 
-    fileManager->openFiles  = new map<string, FILE*>();
+    this->openFiles  = new map<string, FILE*>();
 };
 
-int file_manager_read(file_manager *fileManager, memory_page *memoryPage, disk_block *diskBlock) {
+int FileManager::file_manager_read(memory_page *memoryPage, DiskBlock *diskBlock) {
 
-    FILE *fp = file_manager_getfile(fileManager, diskBlock->fileName);
+    FILE *fp = file_manager_getfile( diskBlock->fileName);
     //memset(memoryPage->contents, 0, sizeof(memoryPage->contents));
     fseek(fp, diskBlock->blkNum * DISK_BOLCK_SIZE, SEEK_SET);
     fread(memoryPage->contents, sizeof(char), sizeof(memoryPage->contents), fp);
 };
 
-int file_manager_write(file_manager *fileManager, memory_page *memoryPage, disk_block *diskBlock) {
+int FileManager::file_manager_write(memory_page *memoryPage, DiskBlock *diskBlock) {
 
-    FILE *fp = file_manager_getfile(fileManager, diskBlock->fileName);
+    FILE *fp = file_manager_getfile( diskBlock->fileName);
     fseek(fp, diskBlock->blkNum * DISK_BOLCK_SIZE, SEEK_SET);
     int size = sizeof(memoryPage->contents);
     fwrite(memoryPage->contents, sizeof(char), size, fp);
 };
 
-int file_manager_append(file_manager *fileManager, MemoryBuffer *memoryBuffer, char *fileName, table_info *tableInfo) {
-    int newBlockNum = file_manager_size(fileManager, fileName);
-    disk_block *diskBlock = (disk_block *) calloc(sizeof(disk_block), 1);
+int FileManager::file_manager_append(MemoryBuffer *memoryBuffer, char *fileName, table_info *tableInfo) {
+    int newBlockNum = file_manager_size( fileName);
+    DiskBlock *diskBlock = new DiskBlock(fileName, newBlockNum, tableInfo);
 
     memoryBuffer->block = diskBlock;
-    disk_block_new(fileName, newBlockNum, tableInfo, diskBlock);
-    file_manager_write(fileManager, memoryBuffer->contents, diskBlock);
+    file_manager_write( memoryBuffer->contents, diskBlock);
 };
 
 /*获取文件大小*/
-int file_manager_size(file_manager *fileManager, char *fileName) {
+int FileManager::file_manager_size(char *fileName) {
 
-    FILE *file = file_manager_getfile(fileManager, fileName);
+    FILE *file = file_manager_getfile( fileName);
 
     fseek(file,0L,SEEK_END); /* 定位到文件末尾 */
     int flen=ftell(file); /* 得到文件大小 */
     return flen / DISK_BOLCK_SIZE;
 }
 
-int file_manager_isnew(file_manager *fileManager) {
-    return fileManager->isNew;
+int FileManager::file_manager_isnew(FileManager *fileManager) {
+    return this->isNew;
 };
 
-FILE*  file_manager_getfile(file_manager *fileManager, char *fileName) {
+FILE*  FileManager::file_manager_getfile(char *fileName) {
     map<string,FILE*>::iterator it;
-    it = fileManager->openFiles->find(fileName);
-    if (it == fileManager->openFiles->end()) {
+    it = this->openFiles->find(fileName);
+    if (it == this->openFiles->end()) {
         char *fname = new_id_name();
-        strcat(fname, fileManager->dbDirectoryName);
+        strcat(fname, this->dbDirectoryName);
         strcat(fname, "/");
         strcat(fname, fileName);
         FILE *f = fopen(fname, "rwb+");
@@ -82,7 +81,7 @@ FILE*  file_manager_getfile(file_manager *fileManager, char *fileName) {
             f = fopen(fname, "rwb+");
         }
 
-        fileManager->openFiles->insert(pair<string, FILE*>(fileName, f));
+        this->openFiles->insert(pair<string, FILE*>(fileName, f));
         return f;
     }else{
         return it->second;
@@ -91,62 +90,61 @@ FILE*  file_manager_getfile(file_manager *fileManager, char *fileName) {
 
 };
 
-int file_manager_closefile(file_manager *fileManager, char *fileName){
+int FileManager::file_manager_closefile(char *fileName){
     map<string,FILE*>::iterator it;
-    it = fileManager->openFiles->find(fileName);
-    if (it != fileManager->openFiles->end()) {
+    it = this->openFiles->find(fileName);
+    if (it != this->openFiles->end()) {
         fclose(it->second);
-        fileManager->openFiles->erase(it);
+        this->openFiles->erase(it);
     }
 
     return 1;
 }
 
-int file_manager_closeallfile(file_manager *fileManager){
+int FileManager::file_manager_closeallfile(){
     map<string,FILE*>::iterator iter;
 
-    for(iter = fileManager->openFiles->begin(); iter != fileManager->openFiles->end(); iter++){
+    for(iter = this->openFiles->begin(); iter != this->openFiles->end(); iter++){
         fclose(iter->second);
     }
-    fileManager->openFiles->clear();
+    this->openFiles->clear();
 
 }
 
-int disk_block_new(char *fileName, int blockNum, table_info *tableInfo, disk_block *diskBlock) {
+DiskBlock::DiskBlock(char *fileName, int blockNum, table_info *tableInfo) {
 
-    diskBlock->fileName = fileName;
-    diskBlock->blkNum = blockNum;
-    diskBlock->tableInfo = tableInfo;
+    this->fileName = fileName;
+    this->blkNum = blockNum;
+    this->tableInfo = tableInfo;
 
-    return 1;
 };
 
-char *disk_block_get_num_string(disk_block *block) {
+char *DiskBlock::disk_block_get_num_string() {
     char *blockNum = new_id_name();
-    itoa(block->blkNum, blockNum, 10);
+    itoa(this->blkNum, blockNum, 10);
 
     char *blockName = new_id_name();
-    strcat(blockName, block->tableInfo->tableName);
+    strcat(blockName, this->tableInfo->tableName);
     strcat(blockName, blockNum);
     return blockName;
 };
 
-int memory_page_create(memory_page *memoryPage, file_manager *fileManager) {
+int memory_page_create(memory_page *memoryPage, FileManager *fileManager) {
     memset(memoryPage->contents, 0, sizeof(memoryPage->contents));
     memoryPage->fileManager = fileManager;
     return 1;
 };
 
-int memory_page_read(memory_page *memoryPage, disk_block *block) {
-    file_manager_read(memoryPage->fileManager, memoryPage, block);
+int memory_page_read(memory_page *memoryPage, DiskBlock *block) {
+    memoryPage->fileManager->file_manager_read( memoryPage, block);
 };
 
-int memory_page_write(memory_page *memoryPage, disk_block *block) {
-    file_manager_write(memoryPage->fileManager, memoryPage, block);
+int memory_page_write(memory_page *memoryPage, DiskBlock *block) {
+    memoryPage->fileManager->file_manager_write(memoryPage, block);
 };
 
 int memory_page_append(MemoryBuffer *memoryBuffer, char *fileName, table_info *tableInfo) {
-    file_manager_append(memoryBuffer->contents->fileManager, memoryBuffer, fileName, tableInfo);
+    memoryBuffer->contents->fileManager-> file_manager_append( memoryBuffer, fileName, tableInfo);
 };
 
 /**

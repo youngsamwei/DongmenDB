@@ -29,27 +29,23 @@ using  namespace std;
  * 一个文件包含多个磁盘块。
  */
 class MemoryBuffer;
+class FileManager;
 typedef struct table_info_ table_info;
-
-typedef struct file_manager_ {
-    /**
-     * 数据库目录
-     */
-    char *dbDirectoryName;
-    FILE *dbDirectory;
-    int isNew;
-    map<string, FILE*> *openFiles;
-} file_manager;
-
 
 /**
  * 描述保存在磁盘上的块
  */
-typedef struct disk_block_ {
+class DiskBlock {
+public:
     table_info *tableInfo;
     char *fileName;
     int blkNum;
-} disk_block;
+
+
+    DiskBlock(char *fileName, int blockNum, table_info *tableInfo);
+
+    char *disk_block_get_num_string();
+} ;
 
 /**
  * 与磁盘块对应的大小一致的内存页。
@@ -57,36 +53,47 @@ typedef struct disk_block_ {
  */
 typedef struct memory_page_ {
     unsigned char contents[DISK_BOLCK_SIZE];
-    file_manager *fileManager;
+    FileManager *fileManager;
 } memory_page;
 
-int file_manager_new(file_manager *fileManager, char *directory, const char *dbName);
 
-int file_manager_read(file_manager *fileManager, memory_page *memoryPage, disk_block *diskBlock);
+class FileManager {
+public:
+    /**
+     * 数据库目录
+     */
+    char *dbDirectoryName;
+    FILE *dbDirectory;
+    int isNew;
+    map<string, FILE*> *openFiles;
 
-int file_manager_write(file_manager *fileManager, memory_page *memoryPage, disk_block *diskBlock);
 
-int file_manager_append(file_manager *fileManager, MemoryBuffer *memoryBuffer, char *fileName, table_info *tableInfo);
+    FileManager(char *directory, const char *dbName);
 
-int file_manager_size(file_manager *fileManager, char *fileName);
+    int file_manager_read(memory_page *memoryPage, DiskBlock *diskBlock);
 
-int file_manager_isnew(file_manager *fileManager);
+    int file_manager_write(memory_page *memoryPage, DiskBlock *diskBlock);
 
-FILE* file_manager_getfile(file_manager *fileManager, char *fileName);
+    int file_manager_append(MemoryBuffer *memoryBuffer, char *fileName, table_info *tableInfo);
 
-int file_manager_closefile(file_manager *fileManager, char *fileName);
+    int file_manager_size(char *fileName);
 
-int file_manager_closeallfile(file_manager *fileManager);
+    int file_manager_isnew(FileManager *fileManager);
 
-int disk_block_new(char *fileName, int blockNum, table_info *tableInfo, disk_block *diskBlock);
+    FILE* file_manager_getfile(char *fileName);
 
-char *disk_block_get_num_string(disk_block *diskBlock);
+    int file_manager_closefile(char *fileName);
 
-int memory_page_create(memory_page *memoryPage, file_manager *fileManager);
+    int file_manager_closeallfile();
+} ;
 
-int memory_page_read(memory_page *memoryPage, disk_block *block);
 
-int memory_page_write(memory_page *memoryPage, disk_block *block);
+
+int memory_page_create(memory_page *memoryPage, FileManager *fileManager);
+
+int memory_page_read(memory_page *memoryPage, DiskBlock *block);
+
+int memory_page_write(memory_page *memoryPage, DiskBlock *block);
 
 int memory_page_append(MemoryBuffer *memoryBuffer, char *fileName, table_info *tableInfo);
 int memory_page_record_formatter(memory_page *content, table_info *tableInfo);

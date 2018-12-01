@@ -20,6 +20,8 @@
  */
 #define BUFFER_MAX_SIZE 5
 
+class FileManager;
+class DiskBlock;
 
 typedef void *void_ptr;
 
@@ -31,12 +33,12 @@ typedef struct file_manager_ file_manager;
 class MemoryBuffer {
 public:
     memory_page *contents;
-    disk_block *block;
+    DiskBlock *block;
     int pins;
     int modifiedBy; //-1,负值表示未被修改
     int logSequenceNumber; // -1 ，负值表示没有对应的日志记录
 
-    MemoryBuffer(file_manager *fileManager);
+    MemoryBuffer(FileManager *fileManager);
     int memory_buffer_getint(int offset);
     int memory_buffer_getstring(int offset, char *val);
     int memory_buffer_setint(int offset, int val, int txnum, int lsn);
@@ -48,7 +50,7 @@ public:
     int memory_buffer_is_pinned();
     int memory_buffer_is_modifiedby(int txnum);
 
-    int memory_buffer_assignto(disk_block *block);
+    int memory_buffer_assignto(DiskBlock *block);
     int memory_buffer_assignto_new(char *fileName, table_info *tableInfo);
 
 
@@ -59,7 +61,7 @@ public:
     MemoryBuffer *bufferPool[BUFFER_MAX_SIZE];
     int numAvailable;
 
-    BufferManager(int bufferSize, file_manager *fileManager);
+    BufferManager(int bufferSize, FileManager *fileManager);
 /**
  * 将缓冲区pin到一个指定的block上。没有考虑异常情况。
  * @param bufferManager
@@ -67,14 +69,14 @@ public:
  * @param buffer
  * @return
  */
-    int buffer_manager_pin(disk_block *block, void_ptr *buffer);
+    int buffer_manager_pin(DiskBlock *block, void_ptr *buffer);
 
     int buffer_manager_pinnew(char *fileName, void_ptr *buffer, table_info *tableInfo);
 
     int buffer_manager_unpin(MemoryBuffer *buffer);
 
     int buffer_manager_flushall(int txnum);
-    int buffer_manager_find_existing(disk_block *block, void_ptr *buffer);
+    int buffer_manager_find_existing(DiskBlock *block, void_ptr *buffer);
     int buffer_manager_find_choose_unpinned_buffer(void_ptr *buffer);
     int buffer_manager_available(BufferManager *bufferManager);
 } ;
