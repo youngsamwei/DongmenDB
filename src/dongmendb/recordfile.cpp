@@ -6,114 +6,114 @@
 #include <iostream>
 #include "dongmendb/recordfile.h"
 
-int record_file_create(record_file *recordFile, table_info *tableInfo,
+RecordFile::RecordFile(table_info *tableInfo,
                        transaction *tx) {
 
-    recordFile->tableInfo = tableInfo;
-    recordFile->tx = tx;
-    recordFile->recordPage = NULL;
-    recordFile->fileName = NULL;
-    recordFile->currentBlkNum = -1;
+    this->tableInfo = tableInfo;
+    this->tx = tx;
+    this->recordPage = NULL;
+    this->fileName = NULL;
+    this->currentBlkNum = -1;
 
     char *fileName = new_id_name();
     strcpy(fileName, tableInfo->tableName);
     strcat(fileName, RECORD_FILE_EXT);
 
-    recordFile->fileName = fileName;
-    if (transaction_size(tx, recordFile->fileName) == 0) {
-        record_file_append_block(recordFile);
+    this->fileName = fileName;
+    if (transaction_size(tx, this->fileName) == 0) {
+        record_file_append_block();
     }
-    record_file_moveto(recordFile, 0);
+    record_file_moveto( 0);
 }
 
-int record_file_close(record_file *recordFile) {
-    record_page_close(recordFile->recordPage);
+int RecordFile::record_file_close() {
+    record_page_close(this->recordPage);
 }
 
-int record_file_before_first(record_file *recordFile) {
-    record_file_moveto(recordFile, 0);
+int RecordFile::record_file_before_first() {
+    record_file_moveto( 0);
 }
 
-int record_file_next(record_file *recordFile) {
+int RecordFile::record_file_next() {
     while (1) {
-        if (record_page_next(recordFile->recordPage)) {
+        if (record_page_next(this->recordPage)) {
             return 1;
         }
-        if (record_file_atlast(recordFile)) {
+        if (record_file_atlast()) {
             return 0;
         }
-        record_file_moveto(recordFile, recordFile->currentBlkNum + 1);
+        record_file_moveto( this->currentBlkNum + 1);
     }
 }
 
-int record_file_atlast(record_file *recordFile) {
-    return recordFile->currentBlkNum == transaction_size(recordFile->tx, recordFile->fileName) - 1;
+int RecordFile::record_file_atlast() {
+    return this->currentBlkNum == transaction_size(this->tx, this->fileName) - 1;
 }
 
-int record_file_get_int(record_file *recordFile, const char *fieldName) {
-    return record_page_getint(recordFile->recordPage, fieldName);
+int RecordFile::record_file_get_int(const char *fieldName) {
+    return record_page_getint(this->recordPage, fieldName);
 }
 
-int record_file_get_string(record_file *recordFile, const char *fieldName, char *value) {
-    return record_page_getstring(recordFile->recordPage, fieldName, value);
+int RecordFile::record_file_get_string(const char *fieldName, char *value) {
+    return record_page_getstring(this->recordPage, fieldName, value);
 }
 
-int record_file_set_int(record_file *recordFile, const char *fieldName, int value) {
-    return record_page_setint(recordFile->recordPage, fieldName, value);
+int RecordFile::record_file_set_int(const char *fieldName, int value) {
+    return record_page_setint(this->recordPage, fieldName, value);
 }
 
-int record_file_set_string(record_file *recordFile, const char *fieldName, const char *value) {
-    return record_page_setstring(recordFile->recordPage, fieldName, value);
+int RecordFile::record_file_set_string(const char *fieldName, const char *value) {
+    return record_page_setstring(this->recordPage, fieldName, value);
 }
 
-int record_file_delete(record_file *recordFile) {
-    return record_page_delete(recordFile->recordPage);
+int RecordFile::record_file_delete() {
+    return record_page_delete(this->recordPage);
 }
 
-int record_file_insert(record_file *recordFile) {
-    while (!record_page_insert(recordFile->recordPage)) {
+int RecordFile::record_file_insert() {
+    while (!record_page_insert(this->recordPage)) {
         /*逻辑问题*/
-        if (record_file_atlast_block(recordFile)) {
-            record_file_append_block(recordFile);
+        if (record_file_atlast_block()) {
+            record_file_append_block();
         }
-        record_file_moveto(recordFile, recordFile->currentBlkNum + 1);
+        record_file_moveto( this->currentBlkNum + 1);
     }
 }
 
-int record_file_moveto_recordid(record_file *recordFile, record_id *recordId) {
-    record_file_moveto(recordFile, recordId->blockNum);
-    record_page_moveto_id(recordFile->recordPage, recordId->id);
+int RecordFile::record_file_moveto_recordid(record_id *recordId) {
+    record_file_moveto( recordId->blockNum);
+    record_page_moveto_id(this->recordPage, recordId->id);
 }
 
-int record_file_current_recordid(record_file *recordFile, record_id *recordId) {
+int RecordFile::record_file_current_recordid(record_id *recordId) {
     recordId = (record_id *) malloc(sizeof(record_id));
-    recordId->id = recordFile->recordPage->currentSlot;
-    recordId->blockNum = recordFile->currentBlkNum;
+    recordId->id = this->recordPage->currentSlot;
+    recordId->blockNum = this->currentBlkNum;
     return 0;
 }
 
-int record_file_moveto(record_file *recordFile, int currentBlkNum) {
-    if (recordFile->recordPage != NULL) {
-        record_page_close(recordFile->recordPage);
+int RecordFile::record_file_moveto(int currentBlkNum) {
+    if (this->recordPage != NULL) {
+        record_page_close(this->recordPage);
     }
-    recordFile->currentBlkNum = currentBlkNum;
+    this->currentBlkNum = currentBlkNum;
     disk_block *diskBlock = (disk_block *) malloc(sizeof(disk_block));
     diskBlock->blkNum = currentBlkNum;
-    diskBlock->fileName = recordFile->fileName;
-    record_page *recordPage = record_page_create(recordFile->tx, recordFile->tableInfo, diskBlock);
+    diskBlock->fileName = this->fileName;
+    record_page *recordPage = record_page_create(this->tx, this->tableInfo, diskBlock);
 
-    recordFile->recordPage = recordPage;
+    this->recordPage = recordPage;
     return DONGMENDB_OK;
 }
 
-int record_file_atlast_block(record_file *recordFile) {
-    int size = transaction_size(recordFile->tx, recordFile->fileName) - 1;
-    int result = recordFile->currentBlkNum == size;
+int RecordFile::record_file_atlast_block() {
+    int size = transaction_size(this->tx, this->fileName) - 1;
+    int result = this->currentBlkNum == size;
     return result;
 }
 
-int record_file_append_block(record_file *recordFile) {
-    transaction_append(recordFile->tx, recordFile->fileName, recordFile->tableInfo);
+int RecordFile::record_file_append_block() {
+    transaction_append(this->tx, this->fileName, this->tableInfo);
 }
 
 /**
@@ -122,7 +122,7 @@ int record_file_append_block(record_file *recordFile) {
  * @param memoryPage
  * @return
  */
-int record_file_record_formatter(record_file *recordFile, memory_page *memoryPage) {
+int RecordFile::record_file_record_formatter(memory_page *memoryPage) {
 
 }
 

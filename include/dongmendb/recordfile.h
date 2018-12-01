@@ -25,17 +25,55 @@ using namespace std;
 #define RECORD_FILE_EXT ".tbl"
 
 typedef struct table_info_ table_info;
-
+typedef struct record_id_ record_id;
 typedef struct record_page_ record_page;
 typedef struct transaction_ transaction;
 
-typedef struct record_file_ {
+class RecordFile {
+public:
     table_info *tableInfo;
     transaction *tx;
     char *fileName;
     record_page *recordPage;
     int currentBlkNum;
-} record_file;
+
+
+    RecordFile(table_info *tableInfo,
+                           transaction *tx);
+
+    int record_file_close();
+
+    int record_file_before_first();
+
+    int record_file_next();
+
+    int record_file_atlast();
+
+    int record_file_get_int(const char *fieldName);
+
+    int record_file_get_string(const char *fieldName, char *value);
+
+    int record_file_set_int(const char *fieldName, int value);
+
+    int record_file_set_string(const char *fieldName, const char *value);
+
+    int record_file_delete();
+
+    int record_file_insert();
+
+    int record_file_moveto_recordid(record_id *recordId);
+
+    int record_file_current_recordid(record_id *recordId);
+
+    int record_file_moveto(int currentBlkNum);
+
+    int record_file_atlast_block();
+
+    int record_file_append_block();
+
+    int record_file_record_formatter(memory_page *memoryPage);
+
+} ;
 
 typedef enum {
     RECORD_PAGE_EMPTY = 0,
@@ -86,41 +124,6 @@ typedef struct record_id_ {
     int blockNum;
     int id;
 } record_id;
-
-int record_file_create(record_file *recordFile, table_info *tableInfo,
-                       transaction *tx);
-
-int record_file_close(record_file *recordFile);
-
-int record_file_before_first(record_file *recordFile);
-
-int record_file_next(record_file *recordFile);
-
-int record_file_atlast(record_file *recordFile);
-
-int record_file_get_int(record_file *recordFile, const char *fieldName);
-
-int record_file_get_string(record_file *recordFile, const char *fieldName, char *value);
-
-int record_file_set_int(record_file *recordFile, const char *fieldName, int value);
-
-int record_file_set_string(record_file *recordFile, const char *fieldName, const char *value);
-
-int record_file_delete(record_file *recordFile);
-
-int record_file_insert(record_file *recordFile);
-
-int record_file_moveto_recordid(record_file *recordFile, record_id *recordId);
-
-int record_file_current_recordid(record_file *recordFile, record_id *recordId);
-
-int record_file_moveto(record_file *recordFile, int currentBlkNum);
-
-int record_file_atlast_block(record_file *recordFile);
-
-int record_file_append_block(record_file *recordFile);
-
-int record_file_record_formatter(record_file *recordFile, memory_page *memoryPage);
 
 field_info *field_info_create(enum data_type type, int length, char* fieldName);
 

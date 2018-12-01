@@ -74,37 +74,36 @@ int table_manager_create_table(table_manager *tableManager, char *tableName, vec
 
 
     /*打开元数据表*/
-    record_file *tcatFile = (record_file *) malloc(sizeof(record_file));
-    record_file_create(tcatFile, tableManager->tcatInfo, tx);
+    RecordFile *tcatFile = new RecordFile(tableManager->tcatInfo, tx);
 
     /*遍历整个record_file,第一列是tablename,第二列是recordlen，
      * 遍历第一列，判断表名是否已经存在*/
-    while(record_file_next(tcatFile)){
+    while(tcatFile->record_file_next()){
         char *name=new_id_name();
-        record_file_get_string(tcatFile,"tablename",name);
+        tcatFile->record_file_get_string("tablename",name);
         if(strcmp(name,tableName)==0)
         {
             fprintf(stderr,"table already exists!\n");
-            record_file_close(tcatFile);
+            tcatFile->record_file_close();
             return DONGMENDB_EINVALIDSQL;
         }
         //int value=record_file_get_int(tcatFile,"reclength");
     }
 
     /*使record_file中的指针再次指向文件开头*/
-    record_file_before_first(tcatFile);
+    tcatFile->record_file_before_first();
 
 
     table_info *tableInfo = table_info_create(tableName, fieldsName, fields);
     /*增加元数据到table描述表中*/
-    record_file_insert(tcatFile);
-    record_file_set_string(tcatFile, "tablename", tableName);
-    record_file_set_int(tcatFile, "reclength", tableInfo->recordLen);
-    record_file_close(tcatFile);
+    tcatFile->record_file_insert();
+    tcatFile-> record_file_set_string("tablename", tableName);
+    tcatFile->record_file_set_int( "reclength", tableInfo->recordLen);
+    tcatFile-> record_file_close();
+    free(tcatFile);
 
     /*打开元数据表 */
-    record_file *fcatFile = (record_file *) malloc(sizeof(record_file));
-    record_file_create(fcatFile, tableManager->fcatInfo, tx);
+    RecordFile *fcatFile = new RecordFile(tableManager->fcatInfo, tx);
 
     /*增加元数据到field描述表中*/
     int count = tableInfo->fieldsName.size() - 1;
@@ -114,45 +113,45 @@ int table_manager_create_table(table_manager *tableManager, char *tableName, vec
         field_info *fieldInfo = tableInfo->fields->find(fieldName)->second;
         int offset = tableInfo->offsets->find(fieldInfo->hashCode)->second;
 
-        record_file_insert(fcatFile);
-        record_file_set_string(fcatFile, "tablename", tableName);
-        record_file_set_string(fcatFile, "fieldname", fieldName);
-        record_file_set_int(fcatFile, "type", fieldInfo->type);
-        record_file_set_int(fcatFile, "length", fieldInfo->length);
-        record_file_set_int(fcatFile, "offset", offset);
+        fcatFile-> record_file_insert();
+        fcatFile->record_file_set_string( "tablename", tableName);
+        fcatFile-> record_file_set_string("fieldname", fieldName);
+        fcatFile-> record_file_set_int( "type", fieldInfo->type);
+        fcatFile->record_file_set_int( "length", fieldInfo->length);
+        fcatFile->record_file_set_int( "offset", offset);
     }
-    record_file_close(fcatFile);
+    fcatFile->record_file_close();
+    free(fcatFile);
     return DONGMENDB_OK;
 };
 
 table_info *table_manager_get_tableinfo(table_manager *tableManager, const char *tableName, transaction *tx) {
-    record_file *tcatFile = (record_file *) malloc(sizeof(record_file));
-    record_file_create(tcatFile, tableManager->tcatInfo, tx);
+    RecordFile *tcatFile = new RecordFile(tableManager->tcatInfo, tx);
 
     int recordLen = -1;
-    while (record_file_next(tcatFile)) {
+    while (tcatFile->record_file_next()) {
         char *name = new_id_name();
-        record_file_get_string(tcatFile, "tablename", name);
+        tcatFile->record_file_get_string("tablename", name);
         if (stricmp(tableName, name) == 0) {
-            recordLen = record_file_get_int(tcatFile, "reclength");
+            recordLen = tcatFile->record_file_get_int("reclength");
         }
         // free(name);
     }
-    record_file_close(tcatFile);
+    tcatFile-> record_file_close();
+    free(tcatFile);
 
-    record_file *fcatFile = (record_file *) malloc(sizeof(record_file));
-    record_file_create(fcatFile, tableManager->fcatInfo, tx);
+    RecordFile *fcatFile = new RecordFile( tableManager->fcatInfo, tx);
     vector<char*> fieldsName ;
     map<string, field_info*> *fields = new map<string, field_info*> ();
 
-    while (record_file_next(fcatFile)) {
+    while (fcatFile->record_file_next()) {
         char *name = new_id_name();
-        record_file_get_string(fcatFile, "tablename", name);
+        fcatFile->record_file_get_string( "tablename", name);
         if (stricmp(tableName, name) == 0) {
             char *fieldName = new_id_name();
-            record_file_get_string(fcatFile, "fieldname", fieldName);
-            enum data_type type = (data_type)record_file_get_int(fcatFile, "type");
-            int length = record_file_get_int(fcatFile, "length");
+            fcatFile->record_file_get_string( "fieldname", fieldName);
+            enum data_type type = (data_type)fcatFile->record_file_get_int( "type");
+            int length = fcatFile->record_file_get_int( "length");
 
             field_info *fi = field_info_create(type, length, fieldName);
             fields->insert(pair<string, field_info*>(fieldName, fi));
@@ -161,7 +160,8 @@ table_info *table_manager_get_tableinfo(table_manager *tableManager, const char 
         }
         // free(name);
     }
-    record_file_close(fcatFile);
+    fcatFile->record_file_close();
+    free(fcatFile);
     table_info *tableInfo = table_info_create(tableName, fieldsName, fields);
     tableInfo->recordLen = recordLen;
     return tableInfo;

@@ -11,20 +11,20 @@ TableScan::TableScan(dongmendb *db, string tableName, transaction *tx){
     this->m_db = db;
     this->m_tx = tx;
     this->m_tableInfo = table_manager_get_tableinfo(db->metadataManager->tableManager, tableName.c_str(), tx);
-    this->m_recordFile = (record_file *) malloc(sizeof(record_file));
-    record_file_create(this->m_recordFile, this->m_tableInfo, tx);
+    this->m_recordFile = (RecordFile *) malloc(sizeof(RecordFile));
+    this->m_recordFile = new RecordFile(this->m_tableInfo, tx);
 };
 
 int TableScan::beforeFirst() {
-   return  record_file_before_first(m_recordFile);
+   return  m_recordFile->record_file_before_first();
 };
 
 int TableScan::next() {
-    return record_file_next(m_recordFile);
+    return m_recordFile->record_file_next();
 };
 
 int TableScan::close() {
-    return record_file_close(m_recordFile);
+    return m_recordFile->record_file_close();
 };
 
 variant * TableScan::getValueByIndex(int index){
@@ -43,7 +43,7 @@ int TableScan::getInt(string tableName, string fieldName) {
     if (!tableName.empty() && stricmp(m_tableInfo->tableName, tableName.c_str()) != 0) {
         return 0;
     }
-    return record_file_get_int(m_recordFile, fieldName.c_str());
+    return m_recordFile->record_file_get_int(fieldName.c_str());
 }
 
 variant* TableScan::getValue(string fieldName){
@@ -56,7 +56,7 @@ string TableScan::getString(string tableName, string fieldName) {
     }
     field_info *fi = getField(tableName, fieldName);
     char *value = (char *) calloc(fi->length, 1);
-    record_file_get_string(m_recordFile, fieldName.c_str(), value);
+    m_recordFile->record_file_get_string( fieldName.c_str(), value);
     return string(value);
 };
 
@@ -94,25 +94,25 @@ vector<char*> TableScan::getFieldsName(string tableName) {
 };
 
 int TableScan::setInt(string tableName, string fieldName, int value) {
-    return record_file_set_int(m_recordFile, fieldName.c_str(), value);
+    return m_recordFile->record_file_set_int( fieldName.c_str(), value);
 };
 
 int TableScan::setString(string tableName, string fieldName, string value) {
-    return record_file_set_string(m_recordFile, fieldName.c_str(), value.c_str());
+    return m_recordFile->record_file_set_string(fieldName.c_str(), value.c_str());
 };
 
 int TableScan::deleteRecord() {
-    return record_file_delete(m_recordFile);
+    return m_recordFile->record_file_delete();
 };
 
 int TableScan::insertRecord() {
-    return record_file_insert(m_recordFile);
+    return m_recordFile->record_file_insert();
 };
 
 int TableScan::getRID(record_id *recordID) {
-    return record_file_current_recordid(m_recordFile, recordID);
+    return m_recordFile->record_file_current_recordid( recordID);
 };
 
 int TableScan::moveTo(record_id *recordID) {
-    return record_file_moveto_recordid(m_recordFile, recordID);
+    return m_recordFile->record_file_moveto_recordid( recordID);
 };
