@@ -17,8 +17,7 @@ int dongmendb_open(const char *dbName, dongmendb *db) {
 
     /*初始日志*/
     //log_manager_new(db->fileManager, file);
-    db->bufferManager = (buffer_manager *) malloc(sizeof(buffer_manager));
-    buffer_manager_create(db->bufferManager, BUFFER_MAX_SIZE, db->fileManager);
+    db->bufferManager = new BufferManager(BUFFER_MAX_SIZE, db->fileManager);
 
     /*初始化事务*/
     Transaction *tx =    new Transaction( db);

@@ -36,12 +36,12 @@ typedef struct memory_buffer_ {
     int logSequenceNumber; // -1 ，负值表示没有对应的日志记录
 } memory_buffer;
 
-typedef struct buffer_manager_ {
+class BufferManager {
+public:
     memory_buffer *bufferPool[BUFFER_MAX_SIZE];
     int numAvailable;
-} buffer_manager;
 
-int buffer_manager_create(buffer_manager *bufferManager, int bufferSize, file_manager *fileManager);
+    BufferManager(int bufferSize, file_manager *fileManager);
 /**
  * 将缓冲区pin到一个指定的block上。没有考虑异常情况。
  * @param bufferManager
@@ -49,16 +49,18 @@ int buffer_manager_create(buffer_manager *bufferManager, int bufferSize, file_ma
  * @param buffer
  * @return
  */
-int buffer_manager_pin(buffer_manager *bufferManager, disk_block *block, void_ptr *buffer);
+    int buffer_manager_pin(disk_block *block, void_ptr *buffer);
 
-int buffer_manager_pinnew(buffer_manager *bufferManager, char *fileName, void_ptr *buffer, table_info *tableInfo);
+    int buffer_manager_pinnew(char *fileName, void_ptr *buffer, table_info *tableInfo);
 
-int buffer_manager_unpin(buffer_manager *bufferManager, memory_buffer *buffer);
+    int buffer_manager_unpin(memory_buffer *buffer);
 
-int buffer_manager_flushall(buffer_manager *bufferManager, int txnum);
-int buffer_manager_find_existing(buffer_manager *bufferManager, disk_block *block, void_ptr *buffer);
-int buffer_manager_find_choose_unpinned_buffer(buffer_manager *bufferManager, void_ptr *buffer);
-int buffer_manager_available(buffer_manager *bufferManager);
+    int buffer_manager_flushall(int txnum);
+    int buffer_manager_find_existing(disk_block *block, void_ptr *buffer);
+    int buffer_manager_find_choose_unpinned_buffer(void_ptr *buffer);
+    int buffer_manager_available(BufferManager *bufferManager);
+} ;
+
 
 int memory_buffer_create(memory_buffer *buffer, file_manager *fileManager);
 int memory_buffer_getint(memory_buffer *buffer, int offset);

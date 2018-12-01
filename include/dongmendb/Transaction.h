@@ -15,6 +15,7 @@ using namespace std;
 
 #define  END_OF_FILE -1
 
+class BufferManager;
 
 typedef void *void_ptr;
 
@@ -56,7 +57,7 @@ public:
 typedef struct buffer_list_ {
     map<string, memory_buffer*> *buffers;
     vector<disk_block*> pins;
-    buffer_manager *bufferManager;
+    BufferManager *bufferManager;
 } buffer_list;
 
 

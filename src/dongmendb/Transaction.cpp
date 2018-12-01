@@ -22,7 +22,7 @@ Transaction::Transaction(dongmendb *db) {
 };
 
 int Transaction::transaction_commit() {
-    buffer_manager_flushall(this->bufferList->bufferManager, this->txNum);
+    this->bufferList->bufferManager->buffer_manager_flushall(this->txNum);
     //recovery_manager_commit(this->recoveryManager);
     //concurrency_manager_release(this->concurrencyManager);
     buffer_list_unpin_all(this->bufferList);
@@ -95,7 +95,7 @@ int Transaction::transaction_next_txnum() {
 int buffer_list_pin(buffer_list *bufferList, disk_block *block) {
     char *blockName = disk_block_get_num_string(block);
     void_ptr *pbuf = (void_ptr *) malloc(sizeof(void_ptr *));
-    buffer_manager_pin(bufferList->bufferManager, block, pbuf);
+    bufferList->bufferManager->buffer_manager_pin(block, pbuf);
     memory_buffer *buffer = (memory_buffer *) *pbuf;
     buffer->block = block;
 
@@ -114,7 +114,7 @@ int buffer_list_unpin(buffer_list *bufferList, disk_block *block) {
     }
 
     //buffer->block = NULL;
-    buffer_manager_unpin(bufferList->bufferManager, buffer);
+    bufferList->bufferManager->buffer_manager_unpin(buffer);
 //    bufferList->pins->erase(block, bufferList->pins->begin(), bufferList->pins->end());
 
     vector<disk_block *>::iterator s=find(bufferList->pins.begin(),bufferList->pins.end(),block);
@@ -133,7 +133,7 @@ int buffer_list_unpin_all(buffer_list *bufferList) {
         char *blockName = disk_block_get_num_string(diskBlock);
         memory_buffer *buffer = bufferList->buffers->find(blockName)->second;
 
-        buffer_manager_unpin(bufferList->bufferManager, buffer);
+        bufferList->bufferManager-> buffer_manager_unpin( buffer);
     }
     bufferList->buffers->clear();
     bufferList->pins.clear();
@@ -147,7 +147,7 @@ memory_buffer *buffer_list_get_buffer(buffer_list *bufferList, disk_block *block
 
 int buffer_list_pin_new(buffer_list *bufferList, char *fileName, void_ptr *pblock, table_info *tableInfo) {
     void_ptr *pbuffer = (void_ptr *) malloc(sizeof(void_ptr *));
-    int r = buffer_manager_pinnew(bufferList->bufferManager, fileName, pbuffer, tableInfo);
+    int r = bufferList->bufferManager-> buffer_manager_pinnew( fileName, pbuffer, tableInfo);
     memory_buffer *buffer;
     if (r) {
         buffer = (memory_buffer *) *pbuffer;

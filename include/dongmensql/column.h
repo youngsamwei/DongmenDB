@@ -15,7 +15,7 @@ enum constraint_type {
     CONS_SIZE
 };
 
-typedef class Expression;
+class Expression;
 
 typedef struct ForeignKeyRef_s ForeignKeyRef_t;
 typedef struct ForeignKeyRef_s {

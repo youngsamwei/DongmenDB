@@ -5,21 +5,21 @@
 
 #include <dongmendb/buffermanager.h>
 
-int buffer_manager_create(buffer_manager *bufferManager, int bufferSize, file_manager *fileManager) {
+ BufferManager::BufferManager(int bufferSize, file_manager *fileManager) {
 
-    bufferManager->numAvailable = bufferSize;
+    this->numAvailable = bufferSize;
     for (int i = 0; i <= bufferSize - 1 ; i++){
-        bufferManager->bufferPool[i] = (memory_buffer *)malloc(sizeof(memory_buffer));
-        memory_buffer_create( bufferManager->bufferPool[i], fileManager);
+        this->bufferPool[i] = (memory_buffer *)malloc(sizeof(memory_buffer));
+        memory_buffer_create( this->bufferPool[i], fileManager);
     }
 };
 
-int buffer_manager_pin(buffer_manager *bufferManager, disk_block *block, void_ptr *buffer) {
+int BufferManager::buffer_manager_pin(disk_block *block, void_ptr *buffer) {
     /*先查找block是否已经在缓存中*/
-    buffer_manager_find_existing(bufferManager, block, buffer);
+    buffer_manager_find_existing(block, buffer);
     memory_buffer *buf = (memory_buffer *)*buffer;
     if (*buffer == NULL) {
-        buffer_manager_find_choose_unpinned_buffer(bufferManager, buffer);
+        buffer_manager_find_choose_unpinned_buffer(buffer);
         if (*buffer == NULL) {
             return -1;
         }
@@ -27,41 +27,41 @@ int buffer_manager_pin(buffer_manager *bufferManager, disk_block *block, void_pt
         memory_buffer_assignto(buf, block);
     }
     if (!memory_buffer_is_pinned(buf)) {
-        bufferManager->numAvailable--;
+        this->numAvailable--;
     }
     memory_buffer_pin(buf);
 }
 
-int buffer_manager_pinnew(buffer_manager *bufferManager, char *fileName, void_ptr *buffer, table_info *tableInfo) {
-    buffer_manager_find_choose_unpinned_buffer(bufferManager, buffer);
+int BufferManager::buffer_manager_pinnew(char *fileName, void_ptr *buffer, table_info *tableInfo) {
+    buffer_manager_find_choose_unpinned_buffer(buffer);
     if (*buffer == NULL) {
         return -1;
     }
     memory_buffer *buf = (memory_buffer *)*buffer;
     memory_buffer_assignto_new(buf, fileName, tableInfo);
-    bufferManager->numAvailable--;
+    this->numAvailable--;
     memory_buffer_pin(buf);
 }
 
-int buffer_manager_unpin(buffer_manager *bufferManager, memory_buffer *buffer) {
+int BufferManager::buffer_manager_unpin(memory_buffer *buffer) {
     memory_buffer_unpin(buffer);
     if (!memory_buffer_is_pinned(buffer)) {
-        bufferManager->numAvailable++;
+        this->numAvailable++;
     }
 }
 
-int buffer_manager_flushall(buffer_manager *bufferManager, int txnum) {
+int BufferManager::buffer_manager_flushall(int txnum) {
     for (int i = 0; i <= BUFFER_MAX_SIZE - 1; i++) {
-        if (memory_buffer_is_modifiedby(bufferManager->bufferPool[i], txnum)) {
-            memory_buffer_flush(bufferManager->bufferPool[i]);
+        if (memory_buffer_is_modifiedby(this->bufferPool[i], txnum)) {
+            memory_buffer_flush(this->bufferPool[i]);
         }
     }
 }
 
 /*这里的查找算法效率低，可以修改为效率高的算法.*/
-int buffer_manager_find_existing(buffer_manager *bufferManager, disk_block *block, void_ptr *buffer) {
+int BufferManager::buffer_manager_find_existing(disk_block *block, void_ptr *buffer) {
     for (int i = 0; i <= BUFFER_MAX_SIZE - 1; i++) {
-        memory_buffer *buf = bufferManager->bufferPool[i];
+        memory_buffer *buf = this->bufferPool[i];
         disk_block *b = buf->block;
         if (b != NULL && stricmp(b->fileName, block->fileName)==0 && (b->blkNum == block->blkNum)) {
             *buffer = buf;
@@ -72,18 +72,18 @@ int buffer_manager_find_existing(buffer_manager *bufferManager, disk_block *bloc
     return 1;
 }
 
-int buffer_manager_find_choose_unpinned_buffer(buffer_manager *bufferManager, void_ptr *buffer) {
+int BufferManager::buffer_manager_find_choose_unpinned_buffer(void_ptr *buffer) {
     for (int i = 0; i <= BUFFER_MAX_SIZE - 1; i++) {
-        if (!bufferManager->bufferPool[i]->pins > 0) {
-            *buffer = (void_ptr)bufferManager->bufferPool[i];
+        if (!this->bufferPool[i]->pins > 0) {
+            *buffer = (void_ptr)this->bufferPool[i];
             return 1;
         }
     }
     return 0;
 }
 
-int buffer_manager_available(buffer_manager *bufferManager) {
-    return bufferManager->numAvailable;
+int BufferManager::buffer_manager_available(BufferManager *bufferManager) {
+    return this->numAvailable;
 }
 
 int memory_buffer_create(memory_buffer *buffer, file_manager *fileManager) {

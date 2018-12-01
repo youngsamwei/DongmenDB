@@ -19,7 +19,7 @@ int main(int argc, char *argv[]) {
     int opt;
     int rc;
     int verbosity = 0;
-    char *command = "select sno from student;";
+    const char *command = "select sno from student;";
     dongmendb_shell_handle_sql_t shell_ctx;
 
     dongmendb_shell_init_ctx(&shell_ctx);
