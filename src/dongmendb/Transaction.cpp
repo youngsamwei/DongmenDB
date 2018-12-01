@@ -4,91 +4,93 @@
 
 #include <malloc.h>
 #include <algorithm>
-#include "dongmendb/transaction.h"
+#include "dongmendb/Transaction.h"
 
-transaction *transaction_create(dongmendb *db) {
-    transaction *tx = (transaction *) malloc(sizeof(transaction));
+Transaction::Transaction(dongmendb *db) {
     /*使用malloc申请空间，不能初始化map对象*/
-    tx->bufferList = (buffer_list *) malloc(sizeof(buffer_list));
-    tx->bufferList->bufferManager = db->bufferManager;
+    this->bufferList = (buffer_list *) malloc(sizeof(buffer_list));
+    this->bufferList->bufferManager = db->bufferManager;
 
     /*TODO:需要释放*/
-    tx->bufferList->buffers = new map<string, memory_buffer*>();
+    this->bufferList->buffers = new map<string, memory_buffer*>();
 
-    tx->db = db;
-    tx->txNum = transaction_next_txnum(tx);
-    tx->recoveryManager = NULL;
-    tx->concurrencyManager = NULL;
+    this->db = db;
+    this->txNum = transaction_next_txnum();
+    this->recoveryManager = NULL;
+    this->concurrencyManager = NULL;
 
-    return tx;
 };
 
-int transaction_commit(transaction *tx) {
-    buffer_manager_flushall(tx->bufferList->bufferManager, tx->txNum);
-    //recovery_manager_commit(tx->recoveryManager);
-    //concurrency_manager_release(tx->concurrencyManager);
-    buffer_list_unpin_all(tx->bufferList);
+int Transaction::transaction_commit() {
+    buffer_manager_flushall(this->bufferList->bufferManager, this->txNum);
+    //recovery_manager_commit(this->recoveryManager);
+    //concurrency_manager_release(this->concurrencyManager);
+    buffer_list_unpin_all(this->bufferList);
 
 }
 
-int transaction_rollback(transaction *transaction) {
+int Transaction::transaction_rollback() {
 
 }
 
-int transaction_recover(transaction *transaction) {
+int Transaction::transaction_recover() {
 
 }
 
-int transaction_pin(transaction *transaction, disk_block *block) {
-    return buffer_list_pin(transaction->bufferList, block);
+int Transaction::transaction_pin(disk_block *block) {
+    return buffer_list_pin(this->bufferList, block);
 };
 
-int transaction_unpin(transaction *transaction, disk_block *block) {
-    buffer_list_unpin(transaction->bufferList, block);
+int Transaction::transaction_unpin(disk_block *block) {
+    buffer_list_unpin(this->bufferList, block);
 };
 
-int transaction_getint(transaction *transaction, disk_block *block, int offset) {
-    //concurrency_manager_slock(transaction->concurrencyManager, block);
-    memory_buffer *buffer = buffer_list_get_buffer(transaction->bufferList, block);
+int Transaction::transaction_getint(disk_block *block, int offset) {
+    //concurrency_manager_slock(this->concurrencyManager, block);
+    memory_buffer *buffer = buffer_list_get_buffer(this->bufferList, block);
     return memory_buffer_getint(buffer, offset);
 };
 
-int transaction_setint(transaction *transaction, disk_block *block, int offset, int value) {
-    //concurrency_manager_xlock(transaction->concurrencyManager, block);
+int Transaction::transaction_setint(disk_block *block, int offset, int value) {
+    //concurrency_manager_xlock(this->concurrencyManager, block);
     memory_buffer *buffer =
-            buffer_list_get_buffer(transaction->bufferList, block);
-    int lsn = 0;//recovery_manager_setint(transaction->recoveryManager, buffer, offset, value);
-    return memory_buffer_setint(buffer, offset, value, transaction->txNum, lsn);
+            buffer_list_get_buffer(this->bufferList, block);
+    int lsn = 0;//recovery_manager_setint(this->recoveryManager, buffer, offset, value);
+    return memory_buffer_setint(buffer, offset, value, this->txNum, lsn);
 };
 
-int transaction_getstring(transaction *transaction, disk_block *block, int offset, char *value) {
-    //concurrency_manager_slock(transaction->concurrencyManager, block);
+int Transaction::transaction_getstring(disk_block *block, int offset, char *value) {
+    //concurrency_manager_slock(this->concurrencyManager, block);
     memory_buffer *buffer =
-            buffer_list_get_buffer(transaction->bufferList, block);
+            buffer_list_get_buffer(this->bufferList, block);
     return memory_buffer_getstring(buffer, offset, value);
 };
 
-int transaction_setstring(transaction *transaction, disk_block *block, int offset, const char *value) {
-    //concurrency_manager_xlock(transaction->concurrencyManager, block);
+int Transaction::transaction_setstring(disk_block *block, int offset, const char *value) {
+    //concurrency_manager_xlock(this->concurrencyManager, block);
     memory_buffer *buffer =
-            buffer_list_get_buffer(transaction->bufferList, block);
-    int lsn = 0;//recovery_manager_setstring(transaction->recoveryManager, buffer, offset, value);
-    return memory_buffer_setstring(buffer, offset, value, transaction->txNum, lsn);
+            buffer_list_get_buffer(this->bufferList, block);
+    int lsn = 0;//recovery_manager_setstring(this->recoveryManager, buffer, offset, value);
+    return memory_buffer_setstring(buffer, offset, value, this->txNum, lsn);
 };
 
-int transaction_size(transaction *tx, char *fileName) {
-    return file_manager_size(tx->db->fileManager, fileName);
+int Transaction::transaction_size(char *fileName) {
+    return file_manager_size(this->db->fileManager, fileName);
 }
 
-int transaction_append(transaction *tx, char *fileName, table_info *tableInfo) {
+int Transaction::transaction_append(char *fileName, table_info *tableInfo) {
     //concurrency_manager_xlock
     void_ptr *pblock = (void_ptr *) malloc(sizeof(void_ptr *));
-    buffer_list_pin_new(tx->bufferList, fileName, pblock, tableInfo);
+    buffer_list_pin_new(this->bufferList, fileName, pblock, tableInfo);
 
     disk_block *block = (disk_block *) *pblock;
-    transaction_unpin(tx, block);
+    transaction_unpin( block);
     return 1;
 }
+
+int Transaction::transaction_next_txnum() {
+    return next_tx_num++;
+};
 
 int buffer_list_pin(buffer_list *bufferList, disk_block *block) {
     char *blockName = disk_block_get_num_string(block);
@@ -100,10 +102,6 @@ int buffer_list_pin(buffer_list *bufferList, disk_block *block) {
     bufferList->buffers->insert(pair<string, memory_buffer*>(blockName, buffer));
     bufferList->pins.push_back(block);
     return 1;
-};
-
-int transaction_next_txnum(transaction *tx) {
-    return next_tx_num++;
 };
 
 int buffer_list_unpin(buffer_list *bufferList, disk_block *block) {

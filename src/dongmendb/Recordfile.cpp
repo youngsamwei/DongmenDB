@@ -4,10 +4,10 @@
 
 #include <utils/utils.h>
 #include <iostream>
-#include "dongmendb/recordfile.h"
+#include "dongmendb/Recordfile.h"
 
 RecordFile::RecordFile(table_info *tableInfo,
-                       transaction *tx) {
+                       Transaction *tx) {
 
     this->tableInfo = tableInfo;
     this->tx = tx;
@@ -20,7 +20,7 @@ RecordFile::RecordFile(table_info *tableInfo,
     strcat(fileName, RECORD_FILE_EXT);
 
     this->fileName = fileName;
-    if (transaction_size(tx, this->fileName) == 0) {
+    if (tx->transaction_size( this->fileName) == 0) {
         record_file_append_block();
     }
     record_file_moveto( 0);
@@ -47,7 +47,7 @@ int RecordFile::record_file_next() {
 }
 
 int RecordFile::record_file_atlast() {
-    return this->currentBlkNum == transaction_size(this->tx, this->fileName) - 1;
+    return this->currentBlkNum == tx->transaction_size(this->fileName) - 1;
 }
 
 int RecordFile::record_file_get_int(const char *fieldName) {
@@ -107,13 +107,13 @@ int RecordFile::record_file_moveto(int currentBlkNum) {
 }
 
 int RecordFile::record_file_atlast_block() {
-    int size = transaction_size(this->tx, this->fileName) - 1;
+    int size = tx->transaction_size(this->fileName) - 1;
     int result = this->currentBlkNum == size;
     return result;
 }
 
 int RecordFile::record_file_append_block() {
-    transaction_append(this->tx, this->fileName, this->tableInfo);
+    this->tx->transaction_append(this->fileName, this->tableInfo);
 }
 
 /**
@@ -186,7 +186,7 @@ int table_info_offset(table_info *tableInfo, const char *fieldName) {
     return tableInfo->offsets->find(fid)->second;
 };
 
-record_page *record_page_create(transaction *tx, table_info *tableInfo, disk_block *diskBlock) {
+record_page *record_page_create(Transaction *tx, table_info *tableInfo, disk_block *diskBlock) {
     record_page *recordPage = (record_page *) malloc(sizeof(record_page));
     recordPage->diskBlock = diskBlock;
     recordPage->tx = tx;
@@ -195,13 +195,13 @@ record_page *record_page_create(transaction *tx, table_info *tableInfo, disk_blo
     recordPage->slotSize = tableInfo->recordLen + INT_SIZE;
     recordPage->currentSlot = -1;
     diskBlock->tableInfo = tableInfo;
-    transaction_pin(tx, diskBlock);
+    tx->transaction_pin( diskBlock);
     return recordPage;
 };
 
 int record_page_close(record_page *recordPage) {
     if (recordPage->diskBlock != NULL) {
-        transaction_unpin(recordPage->tx, recordPage->diskBlock);
+        recordPage->tx->transaction_unpin(recordPage->diskBlock);
         recordPage->diskBlock = NULL;
     }
 }
@@ -210,7 +210,7 @@ int record_page_insert(record_page *recordPage) {
     recordPage->currentSlot = -1;
     if (record_page_searchfor(recordPage, RECORD_PAGE_EMPTY)) {
         int position = record_page_current_pos(recordPage);
-        transaction_setint(recordPage->tx, recordPage->diskBlock, position, RECORD_PAGE_INUSE);
+        recordPage->tx->transaction_setint(recordPage->diskBlock, position, RECORD_PAGE_INUSE);
         return 1;
     }
     return 0;
@@ -226,34 +226,34 @@ int record_page_next(record_page *recordPage) {
 
 int record_page_getint(record_page *recordPage, const char *fieldName) {
     int position = record_page_fieldpos(recordPage, fieldName);
-    return transaction_getint(recordPage->tx, recordPage->diskBlock, position);
+    return recordPage->tx->transaction_getint(recordPage->diskBlock, position);
 };
 
 int record_page_getstring(record_page *recordPage, const char *fieldName, char *value) {
     int position = record_page_fieldpos(recordPage, fieldName);
-    return transaction_getstring(recordPage->tx, recordPage->diskBlock, position, value);
+    return recordPage->tx->transaction_getstring(recordPage->diskBlock, position, value);
 };
 
 int record_page_setint(record_page *recordPage, const char *fieldName, int value) {
     int position = record_page_fieldpos(recordPage, fieldName);
-    return transaction_setint(recordPage->tx, recordPage->diskBlock, position, value);
+    return recordPage->tx->transaction_setint( recordPage->diskBlock, position, value);
 };
 
 int record_page_setstring(record_page *recordPage, const char *fieldName, const char *value) {
     int position = record_page_fieldpos(recordPage, fieldName);
-    return transaction_setstring(recordPage->tx, recordPage->diskBlock, position, value);
+    return recordPage->tx->transaction_setstring( recordPage->diskBlock, position, value);
 };
 
 int record_page_delete(record_page *recordPage) {
     int position = record_page_current_pos(recordPage);
-    return transaction_setint(recordPage->tx, recordPage->diskBlock, position, RECORD_PAGE_EMPTY);
+    return recordPage->tx->transaction_setint( recordPage->diskBlock, position, RECORD_PAGE_EMPTY);
 };
 
 int record_page_searchfor(record_page *recordPage, record_page_status status) {
     recordPage->currentSlot++;
     while (record_page_is_valid_slot(recordPage)) {
         int position = record_page_current_pos(recordPage);
-        if (transaction_getint(recordPage->tx, recordPage->diskBlock, position) == status) {
+        if (recordPage->tx->transaction_getint( recordPage->diskBlock, position) == status) {
             return 1;
         }
         recordPage->currentSlot++;

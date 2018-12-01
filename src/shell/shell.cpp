@@ -4,7 +4,7 @@
 
 #include <dongmendb/dongmendb.h>
 #include <dongmensql/dongmensql.h>
-#include <dongmendb/recordfile.h>
+#include <dongmendb/Recordfile.h>
 #include <utils/utils.h>
 #include <parser/statement.h>
 #include <dongmensql/optimizer.h>
@@ -242,7 +242,7 @@ int dongmendb_shell_handle_create_table(dongmendb_shell_handle_sql_t *ctx, const
                                             ctx->db->tx);
 
     if (status == DONGMENDB_OK) {
-        transaction_commit(ctx->db->tx);
+        ctx->db->tx->transaction_commit();
 //        fprintf(stdout, "create  success!");
         return DONGMENDB_OK;
     } else {
@@ -285,7 +285,7 @@ int dongmendb_shell_handle_insert_table(dongmendb_shell_handle_sql_t *ctx, const
 
 
     if (status == DONGMENDB_OK) {
-        transaction_commit(ctx->db->tx);
+        ctx->db->tx->transaction_commit();
 //        fprintf(stdout, "insert  success!");
         return DONGMENDB_OK;
     } else {
@@ -398,7 +398,7 @@ int dongmendb_shell_handle_update_data(dongmendb_shell_handle_sql_t *ctx, const 
                                     ctx->db->tx);
 
     if (count >= 0) {
-        transaction_commit(ctx->db->tx);
+        ctx->db->tx->transaction_commit();
 //        fprintf(stdout, "update  success! %d line updated.", count);
         return DONGMENDB_OK;
     } else {
@@ -447,7 +447,7 @@ int dongmendb_shell_handle_delete_data(dongmendb_shell_handle_sql_t *ctx, const 
                                     ctx->db->tx);
 
     if (count >= 0) {
-        transaction_commit(ctx->db->tx);
+        ctx->db->tx->transaction_commit();
         fprintf(stdout, "delete  success! %d line deleted.", count);
         return DONGMENDB_OK;
     } else {

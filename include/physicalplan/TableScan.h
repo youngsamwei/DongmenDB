@@ -15,7 +15,7 @@ public:
     RecordFile *m_recordFile;
     table_info *m_tableInfo;
 
-    TableScan(dongmendb *db, string tableName, transaction *tx);
+    TableScan(dongmendb *db, string tableName, Transaction *tx);
 
     int beforeFirst();
 

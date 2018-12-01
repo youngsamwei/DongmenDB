@@ -11,7 +11,7 @@
 #include "integritymanager.h"
 #include "logmanager.h"
 #include "metadatamanager.h"
-#include "recordfile.h"
+#include "Recordfile.h"
 
 
 #define MAX_ID_NAME_LENGTH 32
@@ -24,13 +24,13 @@ typedef void *void_ptr;
 /* Forward declarations.
  * From the API's perspective's, these are opaque data types. */
 
+class Transaction;
 typedef struct dongmendb_stmt dongmendb_stmt;
 typedef struct security_manager_ security_manager;
 typedef struct buffer_manager_ buffer_manager;
 typedef struct file_manager_ file_manager;
 typedef struct integrity_manager_ integrity_manager;
 typedef struct metadata_manager_ metadata_manager;
-typedef struct transaction_ transaction;
 
 typedef struct dongmendb_ {
     char *dbName;
@@ -40,7 +40,7 @@ typedef struct dongmendb_ {
     log_manager *logManager;
     security_manager *securityManager;
     integrity_manager *integrityManager;
-    transaction *tx;
+    Transaction *tx;
 } dongmendb;
 
 /* API return codes */

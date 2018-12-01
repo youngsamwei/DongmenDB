@@ -9,13 +9,13 @@
 #include <physicalplan/Project.h>
 #include <physicalplan/Join.h>
 
-Scan* ExecutionPlan::generateSelect(dongmendb *db, SRA_t *sra, transaction *tx){
+Scan* ExecutionPlan::generateSelect(dongmendb *db, SRA_t *sra, Transaction *tx){
     Scan* plan = generateScan(db, sra, tx);
 
     return plan;
 };
 
-Scan* ExecutionPlan::generateScan(dongmendb *db, SRA_t *sra, transaction *tx){
+Scan* ExecutionPlan::generateScan(dongmendb *db, SRA_t *sra, Transaction *tx){
     switch (sra->t) {
         case SRA_TABLE: {
             TableScan *tableScan = new TableScan(db, sra->table.ref->table_name, tx);
@@ -65,7 +65,7 @@ Scan* ExecutionPlan::generateScan(dongmendb *db, SRA_t *sra, transaction *tx){
 
 };
 
-int ExecutionPlan::executeInsert(dongmendb *db, char *tableName,  vector<char*> fieldNames,  vector<variant*> values, transaction *tx){
+int ExecutionPlan::executeInsert(dongmendb *db, char *tableName,  vector<char*> fieldNames,  vector<variant*> values, Transaction *tx){
     TableScan tableScan(db, tableName, tx);
     tableScan.insertRecord();
     for (size_t i = 0; i < fieldNames.size(); i++){
@@ -94,11 +94,11 @@ int ExecutionPlan::executeInsert(dongmendb *db, char *tableName,  vector<char*> 
     return DONGMENDB_OK;
 };
 
-int ExecutionPlan::executeUpdate(dongmendb *db, sql_stmt_update *sqlStmtUpdate, transaction *tx){
+int ExecutionPlan::executeUpdate(dongmendb *db, sql_stmt_update *sqlStmtUpdate, Transaction *tx){
 
     return -1;
 };
 
-int ExecutionPlan::executeDelete(dongmendb *db, sql_stmt_delete *sqlStmtDelete, transaction *tx){
+int ExecutionPlan::executeDelete(dongmendb *db, sql_stmt_delete *sqlStmtDelete, Transaction *tx){
     return -1;
 };

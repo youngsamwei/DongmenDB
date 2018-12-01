@@ -13,7 +13,7 @@
 
 #include <malloc.h>
 #include <mem.h>
-#include "dongmendb/transaction.h"
+#include "dongmendb/Transaction.h"
 #include <dongmensql/common.h>
 #include "dongmendb/filemanager.h"
 
@@ -24,22 +24,22 @@ using namespace std;
 
 #define RECORD_FILE_EXT ".tbl"
 
+class Transaction;
 typedef struct table_info_ table_info;
 typedef struct record_id_ record_id;
 typedef struct record_page_ record_page;
-typedef struct transaction_ transaction;
 
 class RecordFile {
 public:
     table_info *tableInfo;
-    transaction *tx;
+    Transaction *tx;
     char *fileName;
     record_page *recordPage;
     int currentBlkNum;
 
 
     RecordFile(table_info *tableInfo,
-                           transaction *tx);
+                           Transaction *tx);
 
     int record_file_close();
 
@@ -115,7 +115,7 @@ typedef struct table_info_ {
 typedef struct record_page_ {
     disk_block *diskBlock;
     table_info *tableInfo;
-    transaction *tx;
+    Transaction *tx;
     int slotSize;
     int currentSlot;
 } record_page;
@@ -133,7 +133,7 @@ int table_info_free(table_info *tableInfo);
 
 int table_info_offset(table_info *tableInfo, const char *fieldName);
 
-record_page *record_page_create(transaction *tx, table_info *tableInfo, disk_block *diskBlock);
+record_page *record_page_create(Transaction *tx, table_info *tableInfo, disk_block *diskBlock);
 
 int record_page_close(record_page *recordPage);
 

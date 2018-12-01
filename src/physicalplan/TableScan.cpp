@@ -7,7 +7,7 @@
 
 using namespace std;
 
-TableScan::TableScan(dongmendb *db, string tableName, transaction *tx){
+TableScan::TableScan(dongmendb *db, string tableName, Transaction *tx){
     this->m_db = db;
     this->m_tx = tx;
     this->m_tableInfo = table_manager_get_tableinfo(db->metadataManager->tableManager, tableName.c_str(), tx);

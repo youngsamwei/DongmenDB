@@ -5,7 +5,7 @@
 #ifndef DONGMENDB_INTEGRITYMANAGER_H
 #define DONGMENDB_INTEGRITYMANAGER_H
 
-#include "recordfile.h"
+#include "Recordfile.h"
 
 
 /**

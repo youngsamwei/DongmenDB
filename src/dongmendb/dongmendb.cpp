@@ -21,14 +21,15 @@ int dongmendb_open(const char *dbName, dongmendb *db) {
     buffer_manager_create(db->bufferManager, BUFFER_MAX_SIZE, db->fileManager);
 
     /*初始化事务*/
-    transaction *tx =    transaction_create( db);
+    Transaction *tx =    new Transaction( db);
     db->tx = tx;
 
     /*初始化元数据管理*/
     db->metadataManager = (metadata_manager *)malloc(sizeof(metadata_manager));
     metadata_manager_create(db->metadataManager, dbName, tx, db->fileManager->isNew);
 
-    transaction_commit(tx);
+    tx->transaction_commit();
+
     return DONGMENDB_OK;
 };
 

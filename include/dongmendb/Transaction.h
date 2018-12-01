@@ -26,13 +26,32 @@ typedef struct buffer_manager_ buffer_manager;
 
 static int next_tx_num = 1;
 
-typedef struct transaction_ {
+class Transaction {
+public:
     dongmendb *db;
     int txNum;
     recovery_manager *recoveryManager;
     concurrency_manager *concurrencyManager;
     buffer_list *bufferList;
-} transaction;
+
+    Transaction(dongmendb *db);
+    int transaction_commit();
+    int transaction_rollback();
+    int transaction_recover();
+
+    int transaction_pin(disk_block *block);
+    int transaction_unpin(disk_block *block);
+
+    int transaction_getint(disk_block *block, int offset);
+    int transaction_setint(disk_block *block, int offset, int value);
+    int transaction_getstring(disk_block *block, int offset, char *value);
+    int transaction_setstring(disk_block *block, int offset, const char *value);
+
+    int transaction_size(char *fileName);
+    int transaction_append(char *fileName, table_info *tableInfo);
+
+    int transaction_next_txnum();
+} ;
 
 typedef struct buffer_list_ {
     map<string, memory_buffer*> *buffers;
@@ -40,23 +59,6 @@ typedef struct buffer_list_ {
     buffer_manager *bufferManager;
 } buffer_list;
 
-transaction *transaction_create(dongmendb *db);
-int transaction_commit(transaction *transaction);
-int transaction_rollback(transaction *transaction);
-int transaction_recover(transaction *transaction);
-
-int transaction_pin(transaction *transaction, disk_block *block);
-int transaction_unpin(transaction *transaction, disk_block *block);
-
-int transaction_getint(transaction *transaction, disk_block *block, int offset);
-int transaction_setint(transaction *transaction, disk_block *block, int offset, int value);
-int transaction_getstring(transaction *transaction, disk_block *block, int offset, char *value);
-int transaction_setstring(transaction *transaction, disk_block *block, int offset, const char *value);
-
-int transaction_size(transaction *tx, char *fileName);
-int transaction_append(transaction *tx, char *fileName, table_info *tableInfo);
-
-int transaction_next_txnum(transaction *tx);
 
 int buffer_list_pin(buffer_list *bufferList, disk_block *block);
 int buffer_list_unpin(buffer_list *bufferList, disk_block *block);

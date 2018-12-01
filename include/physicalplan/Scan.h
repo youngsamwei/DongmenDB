@@ -15,7 +15,7 @@ using namespace std;
 class Scan {
 public:
     dongmendb *m_db;
-    transaction *m_tx;
+    Transaction *m_tx;
 
     virtual int beforeFirst()=0;
 

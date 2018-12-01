@@ -6,11 +6,11 @@
 #include <iostream>
 #include "dongmendb/metadatamanager.h"
 
-int metadata_manager_create(metadata_manager *metadataManager, const char *file, transaction *tx, int isNew) {
+int metadata_manager_create(metadata_manager *metadataManager, const char *file, Transaction *tx, int isNew) {
     metadataManager->tableManager = table_manager_create(isNew, tx);
 };
 
-table_manager *table_manager_create(int isNew, transaction *tx) {
+table_manager *table_manager_create(int isNew, Transaction *tx) {
     table_manager *tableManager = (table_manager *) malloc(sizeof(table_manager));
     map<string, field_info*> *tableDescfields = new map<string, field_info*>();
 
@@ -70,7 +70,7 @@ table_manager *table_manager_create(int isNew, transaction *tx) {
  * @return
  */
 int table_manager_create_table(table_manager *tableManager, char *tableName, vector<char*> fieldsName,  map<string, field_info*>  *fields,
-                               transaction *tx) {
+                               Transaction *tx) {
 
 
     /*打开元数据表*/
@@ -125,7 +125,7 @@ int table_manager_create_table(table_manager *tableManager, char *tableName, vec
     return DONGMENDB_OK;
 };
 
-table_info *table_manager_get_tableinfo(table_manager *tableManager, const char *tableName, transaction *tx) {
+table_info *table_manager_get_tableinfo(table_manager *tableManager, const char *tableName, Transaction *tx) {
     RecordFile *tcatFile = new RecordFile(tableManager->tcatInfo, tx);
 
     int recordLen = -1;
