@@ -86,20 +86,19 @@ int BufferManager::buffer_manager_available(BufferManager *bufferManager) {
 }
 
  MemoryBuffer::MemoryBuffer(FileManager *fileManager) {
-    this->contents = (memory_page *)malloc(sizeof(memory_page));
+    this->contents = new MemoryPage(fileManager);
     this->pins = 0;
     this->modifiedBy = -1;
     this->logSequenceNumber = -1;
     this->block=NULL;
-    memory_page_create(this->contents, fileManager);
 };
 
 int MemoryBuffer::memory_buffer_getint(int offset) {
-    return memory_page_getint(this->contents, offset);
+    return this->contents->memory_page_getint(offset);
 };
 
 int MemoryBuffer::memory_buffer_getstring(int offset, char *val) {
-    memory_page_getstring(this->contents, offset, val);
+    this->contents->memory_page_getstring(offset, val);
 };
 
 int MemoryBuffer::memory_buffer_setint(int offset, int val, int txnum, int lsn) {
@@ -107,7 +106,7 @@ int MemoryBuffer::memory_buffer_setint(int offset, int val, int txnum, int lsn) 
     if (lsn >= 0) {
         this->logSequenceNumber = lsn;
     }
-    memory_page_setint(this->contents, offset, val);
+    this->contents-> memory_page_setint(offset, val);
 };
 
 int MemoryBuffer::memory_buffer_setstring(int offset, const char *val, int txnum, int lsn) {
@@ -115,13 +114,13 @@ int MemoryBuffer::memory_buffer_setstring(int offset, const char *val, int txnum
     if (lsn >= 0) {
         this->logSequenceNumber = lsn;
     }
-    memory_page_setstring(this->contents, offset, val);
+    this->contents->memory_page_setstring(offset, val);
 };
 
 int MemoryBuffer::memory_buffer_flush() {
     if (this->modifiedBy >= 0) {
         //log_manager_flush(this->logSequenceNumber);
-        memory_page_write(this->contents, this->block);
+        this->contents-> memory_page_write(this->block);
         this->modifiedBy = -1;
     }
 
@@ -146,14 +145,14 @@ int MemoryBuffer::memory_buffer_is_modifiedby(int txnum) {
 int MemoryBuffer::memory_buffer_assignto(DiskBlock *block) {
     memory_buffer_flush();
     this->block = block;
-    memory_page_read(this->contents, block);
+    this->contents->memory_page_read(block);
     this->pins = 0;
 };
 
 int MemoryBuffer::memory_buffer_assignto_new(char *fileName, table_info *tableInfo) {
     memory_buffer_flush();
-    memory_page_record_formatter(this->contents, tableInfo);
-    memory_page_append( this, fileName, tableInfo);
+    this->contents->memory_page_record_formatter(tableInfo);
+    this->contents->memory_page_append(this,fileName, tableInfo);
     this->pins = 0;
 };
 

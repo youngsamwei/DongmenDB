@@ -22,6 +22,8 @@
 
 class FileManager;
 class DiskBlock;
+class MemoryBuffer;
+class MemoryPage;
 
 typedef void *void_ptr;
 
@@ -32,7 +34,7 @@ typedef struct file_manager_ file_manager;
 
 class MemoryBuffer {
 public:
-    memory_page *contents;
+    MemoryPage *contents;
     DiskBlock *block;
     int pins;
     int modifiedBy; //-1,负值表示未被修改

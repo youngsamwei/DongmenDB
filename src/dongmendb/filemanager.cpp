@@ -24,15 +24,15 @@ FileManager::FileManager(char *directory, const char *dbName) {
     this->openFiles  = new map<string, FILE*>();
 };
 
-int FileManager::file_manager_read(memory_page *memoryPage, DiskBlock *diskBlock) {
+int FileManager::file_manager_read(MemoryPage *memoryPage, DiskBlock *diskBlock) {
 
     FILE *fp = file_manager_getfile( diskBlock->fileName);
-    //memset(memoryPage->contents, 0, sizeof(memoryPage->contents));
+    //memset(this->contents, 0, sizeof(this->contents));
     fseek(fp, diskBlock->blkNum * DISK_BOLCK_SIZE, SEEK_SET);
     fread(memoryPage->contents, sizeof(char), sizeof(memoryPage->contents), fp);
 };
 
-int FileManager::file_manager_write(memory_page *memoryPage, DiskBlock *diskBlock) {
+int FileManager::file_manager_write(MemoryPage *memoryPage, DiskBlock *diskBlock) {
 
     FILE *fp = file_manager_getfile( diskBlock->fileName);
     fseek(fp, diskBlock->blkNum * DISK_BOLCK_SIZE, SEEK_SET);
@@ -129,21 +129,20 @@ char *DiskBlock::disk_block_get_num_string() {
     return blockName;
 };
 
-int memory_page_create(memory_page *memoryPage, FileManager *fileManager) {
-    memset(memoryPage->contents, 0, sizeof(memoryPage->contents));
-    memoryPage->fileManager = fileManager;
-    return 1;
+MemoryPage::MemoryPage(FileManager *fileManager) {
+    memset(this->contents, 0, sizeof(this->contents));
+    this->fileManager = fileManager;
 };
 
-int memory_page_read(memory_page *memoryPage, DiskBlock *block) {
-    memoryPage->fileManager->file_manager_read( memoryPage, block);
+int MemoryPage::memory_page_read(DiskBlock *block) {
+    this->fileManager->file_manager_read( this, block);
 };
 
-int memory_page_write(memory_page *memoryPage, DiskBlock *block) {
-    memoryPage->fileManager->file_manager_write(memoryPage, block);
+int MemoryPage::memory_page_write(DiskBlock *block) {
+    this->fileManager->file_manager_write(this, block);
 };
 
-int memory_page_append(MemoryBuffer *memoryBuffer, char *fileName, table_info *tableInfo) {
+int MemoryPage::memory_page_append(MemoryBuffer *memoryBuffer, char *fileName, table_info *tableInfo) {
     memoryBuffer->contents->fileManager-> file_manager_append( memoryBuffer, fileName, tableInfo);
 };
 
@@ -154,13 +153,13 @@ int memory_page_append(MemoryBuffer *memoryBuffer, char *fileName, table_info *t
  * @param tableInfo
  * @return
  */
-int memory_page_record_formatter(memory_page *contents, table_info *tableInfo) {
+int MemoryPage::memory_page_record_formatter(table_info *tableInfo) {
 //    memset(contents->contents, 0, DISK_BOLCK_SIZE);
     /*保留一个整型位置保存slot的使用状态,默认RECORD_PAGE_EMPTY*/
     int recsize = tableInfo->recordLen + INT_SIZE;
     for (int pos = 0; pos + recsize <= DISK_BOLCK_SIZE; pos += recsize) {
         /*先写slot的使用状态*/
-        memory_page_setint(contents, pos, RECORD_PAGE_EMPTY);
+        memory_page_setint( pos, RECORD_PAGE_EMPTY);
         /*计算当前记录的偏移量, +slot的使用状态的整型值偏移量*/
         int recoffset = pos + INT_SIZE;
         int count = tableInfo->fieldsName.size() - 1;
@@ -172,28 +171,28 @@ int memory_page_record_formatter(memory_page *contents, table_info *tableInfo) {
             int offset = tableInfo->offsets->find(fieldInfo->hashCode)->second;
 
             if (fieldInfo->type == DATA_TYPE_INT) {
-                memory_page_setint(contents, recoffset + offset, 0);
+                memory_page_setint( recoffset + offset, 0);
             } else {
-                memory_page_setstring(contents, recoffset + offset, " ");
+                memory_page_setstring( recoffset + offset, " ");
             }
         }
     }
 }
 
-int memory_page_getint(memory_page *memoryPage, int offset) {
-    return bytes2int(memoryPage->contents[offset],
-                     memoryPage->contents[offset + 1],
-                     memoryPage->contents[offset + 2],
-                     memoryPage->contents[offset + 3]
+int MemoryPage::memory_page_getint(int offset) {
+    return bytes2int(this->contents[offset],
+                     this->contents[offset + 1],
+                     this->contents[offset + 2],
+                     this->contents[offset + 3]
     );
 
 };
 
-int memory_page_setint(memory_page *memoryPage, int offset, int val) {
-    memoryPage->contents[offset] = val >> 24;
-    memoryPage->contents[offset + 1] = val >> 16;
-    memoryPage->contents[offset + 2] = val >> 8;
-    memoryPage->contents[offset + 3] = val;
+int MemoryPage::memory_page_setint(int offset, int val) {
+    this->contents[offset] = val >> 24;
+    this->contents[offset + 1] = val >> 16;
+    this->contents[offset + 2] = val >> 8;
+    this->contents[offset + 3] = val;
 };
 
 /**
@@ -203,13 +202,13 @@ int memory_page_setint(memory_page *memoryPage, int offset, int val) {
  * @param val 返回结果
  * @return 返回状态
  */
-int memory_page_getstring(memory_page *memoryPage, int offset, char *val) {
-    int len = memory_page_getint(memoryPage, offset);
+int MemoryPage::memory_page_getstring(int offset, char *val) {
+    int len = memory_page_getint( offset);
     /*增加一个整型的偏移量*/
     offset += INT_SIZE;
 //    val = (char *) malloc(len);
 //    memset(val, 0, len);
-    memcpy(val, memoryPage->contents + offset , len);
+    memcpy(val, this->contents + offset , len);
     val[len]='\0';
     return 1;
 };
@@ -221,12 +220,12 @@ int memory_page_getstring(memory_page *memoryPage, int offset, char *val) {
  * @param val 要写的值
  * @return 返回状态
  */
-int memory_page_setstring(memory_page *memoryPage, int offset, const char *val) {
+int MemoryPage::memory_page_setstring(int offset, const char *val) {
     int len = strlen(val);
     /*先写字符串长度*/
-    memory_page_setint(memoryPage, offset, len);
+    memory_page_setint( offset, len);
     /*增加一个整型的偏移量*/
     offset += INT_SIZE;
-    memcpy(memoryPage->contents + offset , val, len);
+    memcpy(this->contents + offset , val, len);
     return 1;
 };

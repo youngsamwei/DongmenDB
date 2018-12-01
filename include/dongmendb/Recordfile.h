@@ -71,7 +71,7 @@ public:
 
     int record_file_append_block();
 
-    int record_file_record_formatter(memory_page *memoryPage);
+    int record_file_record_formatter(MemoryPage *memoryPage);
 
 } ;
 

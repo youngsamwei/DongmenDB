@@ -121,7 +121,7 @@ int RecordFile::record_file_append_block() {
  * @param memoryPage
  * @return
  */
-int RecordFile::record_file_record_formatter(memory_page *memoryPage) {
+int RecordFile::record_file_record_formatter(MemoryPage *memoryPage) {
 
 }
 

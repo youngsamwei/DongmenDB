@@ -51,10 +51,28 @@ public:
  * 与磁盘块对应的大小一致的内存页。
  * 将一个磁盘块的内容保存在一一样大小的内存页中。
  */
-typedef struct memory_page_ {
+class MemoryPage {
+public:
     unsigned char contents[DISK_BOLCK_SIZE];
     FileManager *fileManager;
-} memory_page;
+
+
+    MemoryPage(FileManager *fileManager);
+
+    int memory_page_read(DiskBlock *block);
+
+    int memory_page_write(DiskBlock *block);
+
+    int memory_page_append(MemoryBuffer *memoryBuffer, char *fileName, table_info *tableInfo);
+    int memory_page_record_formatter(table_info *tableInfo);
+    int memory_page_getint(int offset);
+    int memory_page_setint(int offset, int val);
+
+    int memory_page_getstring(int offset, char *val);
+    int memory_page_setstring(int offset, const char *val);
+
+
+} ;
 
 
 class FileManager {
@@ -70,9 +88,9 @@ public:
 
     FileManager(char *directory, const char *dbName);
 
-    int file_manager_read(memory_page *memoryPage, DiskBlock *diskBlock);
+    int file_manager_read(MemoryPage *memoryPage, DiskBlock *diskBlock);
 
-    int file_manager_write(memory_page *memoryPage, DiskBlock *diskBlock);
+    int file_manager_write(MemoryPage *memoryPage, DiskBlock *diskBlock);
 
     int file_manager_append(MemoryBuffer *memoryBuffer, char *fileName, table_info *tableInfo);
 
@@ -87,21 +105,6 @@ public:
     int file_manager_closeallfile();
 } ;
 
-
-
-int memory_page_create(memory_page *memoryPage, FileManager *fileManager);
-
-int memory_page_read(memory_page *memoryPage, DiskBlock *block);
-
-int memory_page_write(memory_page *memoryPage, DiskBlock *block);
-
-int memory_page_append(MemoryBuffer *memoryBuffer, char *fileName, table_info *tableInfo);
-int memory_page_record_formatter(memory_page *content, table_info *tableInfo);
-int memory_page_getint(memory_page *memoryPage, int offset);
-int memory_page_setint(memory_page *memoryPage, int offset, int val);
-
-int memory_page_getstring(memory_page *memoryPage, int offset, char *val);
-int memory_page_setstring(memory_page *memoryPage, int offset, const char *val);
 
 
 
