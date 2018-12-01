@@ -40,7 +40,7 @@ int file_manager_write(file_manager *fileManager, memory_page *memoryPage, disk_
     fwrite(memoryPage->contents, sizeof(char), size, fp);
 };
 
-int file_manager_append(file_manager *fileManager, memory_buffer *memoryBuffer, char *fileName, table_info *tableInfo) {
+int file_manager_append(file_manager *fileManager, MemoryBuffer *memoryBuffer, char *fileName, table_info *tableInfo) {
     int newBlockNum = file_manager_size(fileManager, fileName);
     disk_block *diskBlock = (disk_block *) calloc(sizeof(disk_block), 1);
 
@@ -145,7 +145,7 @@ int memory_page_write(memory_page *memoryPage, disk_block *block) {
     file_manager_write(memoryPage->fileManager, memoryPage, block);
 };
 
-int memory_page_append(memory_buffer *memoryBuffer, char *fileName, table_info *tableInfo) {
+int memory_page_append(MemoryBuffer *memoryBuffer, char *fileName, table_info *tableInfo) {
     file_manager_append(memoryBuffer->contents->fileManager, memoryBuffer, fileName, tableInfo);
 };
 

@@ -12,7 +12,7 @@ Transaction::Transaction(dongmendb *db) {
     this->bufferList->bufferManager = db->bufferManager;
 
     /*TODO:需要释放*/
-    this->bufferList->buffers = new map<string, memory_buffer*>();
+    this->bufferList->buffers = new map<string, MemoryBuffer*>();
 
     this->db = db;
     this->txNum = transaction_next_txnum();
@@ -47,31 +47,31 @@ int Transaction::transaction_unpin(disk_block *block) {
 
 int Transaction::transaction_getint(disk_block *block, int offset) {
     //concurrency_manager_slock(this->concurrencyManager, block);
-    memory_buffer *buffer = buffer_list_get_buffer(this->bufferList, block);
-    return memory_buffer_getint(buffer, offset);
+    MemoryBuffer *buffer = buffer_list_get_buffer(this->bufferList, block);
+    return buffer->memory_buffer_getint(offset);
 };
 
 int Transaction::transaction_setint(disk_block *block, int offset, int value) {
     //concurrency_manager_xlock(this->concurrencyManager, block);
-    memory_buffer *buffer =
+    MemoryBuffer *buffer =
             buffer_list_get_buffer(this->bufferList, block);
     int lsn = 0;//recovery_manager_setint(this->recoveryManager, buffer, offset, value);
-    return memory_buffer_setint(buffer, offset, value, this->txNum, lsn);
+    return buffer->memory_buffer_setint( offset, value, this->txNum, lsn);
 };
 
 int Transaction::transaction_getstring(disk_block *block, int offset, char *value) {
     //concurrency_manager_slock(this->concurrencyManager, block);
-    memory_buffer *buffer =
+    MemoryBuffer *buffer =
             buffer_list_get_buffer(this->bufferList, block);
-    return memory_buffer_getstring(buffer, offset, value);
+    return buffer->memory_buffer_getstring( offset, value);
 };
 
 int Transaction::transaction_setstring(disk_block *block, int offset, const char *value) {
     //concurrency_manager_xlock(this->concurrencyManager, block);
-    memory_buffer *buffer =
+    MemoryBuffer *buffer =
             buffer_list_get_buffer(this->bufferList, block);
     int lsn = 0;//recovery_manager_setstring(this->recoveryManager, buffer, offset, value);
-    return memory_buffer_setstring(buffer, offset, value, this->txNum, lsn);
+    return buffer->memory_buffer_setstring( offset, value, this->txNum, lsn);
 };
 
 int Transaction::transaction_size(char *fileName) {
@@ -96,18 +96,18 @@ int buffer_list_pin(buffer_list *bufferList, disk_block *block) {
     char *blockName = disk_block_get_num_string(block);
     void_ptr *pbuf = (void_ptr *) malloc(sizeof(void_ptr *));
     bufferList->bufferManager->buffer_manager_pin(block, pbuf);
-    memory_buffer *buffer = (memory_buffer *) *pbuf;
+    MemoryBuffer *buffer = (MemoryBuffer *) *pbuf;
     buffer->block = block;
 
-    bufferList->buffers->insert(pair<string, memory_buffer*>(blockName, buffer));
+    bufferList->buffers->insert(pair<string, MemoryBuffer*>(blockName, buffer));
     bufferList->pins.push_back(block);
     return 1;
 };
 
 int buffer_list_unpin(buffer_list *bufferList, disk_block *block) {
     char *blockName = disk_block_get_num_string(block);
-    memory_buffer *buffer;
-    map<string, memory_buffer*>::iterator it = bufferList->buffers->find(blockName);
+    MemoryBuffer *buffer;
+    map<string, MemoryBuffer*>::iterator it = bufferList->buffers->find(blockName);
     if (it != bufferList->buffers->end()){
         buffer = it->second;
         bufferList->buffers->erase(it);
@@ -131,7 +131,7 @@ int buffer_list_unpin_all(buffer_list *bufferList) {
         disk_block *diskBlock = bufferList->pins.at(i);
 
         char *blockName = disk_block_get_num_string(diskBlock);
-        memory_buffer *buffer = bufferList->buffers->find(blockName)->second;
+        MemoryBuffer *buffer = bufferList->buffers->find(blockName)->second;
 
         bufferList->bufferManager-> buffer_manager_unpin( buffer);
     }
@@ -139,18 +139,18 @@ int buffer_list_unpin_all(buffer_list *bufferList) {
     bufferList->pins.clear();
 };
 
-memory_buffer *buffer_list_get_buffer(buffer_list *bufferList, disk_block *block) {
+MemoryBuffer *buffer_list_get_buffer(buffer_list *bufferList, disk_block *block) {
     char *blockName = disk_block_get_num_string(block);
-    memory_buffer *buffer1 = bufferList->buffers->find(blockName)->second;
+    MemoryBuffer *buffer1 = bufferList->buffers->find(blockName)->second;
     return buffer1;
 };
 
 int buffer_list_pin_new(buffer_list *bufferList, char *fileName, void_ptr *pblock, table_info *tableInfo) {
     void_ptr *pbuffer = (void_ptr *) malloc(sizeof(void_ptr *));
     int r = bufferList->bufferManager-> buffer_manager_pinnew( fileName, pbuffer, tableInfo);
-    memory_buffer *buffer;
+    MemoryBuffer *buffer;
     if (r) {
-        buffer = (memory_buffer *) *pbuffer;
+        buffer = (MemoryBuffer *) *pbuffer;
     }
 
     disk_block *diskBlock = buffer->block;
@@ -158,7 +158,7 @@ int buffer_list_pin_new(buffer_list *bufferList, char *fileName, void_ptr *pbloc
 
     char *blockName = disk_block_get_num_string(diskBlock);
 
-    bufferList->buffers->insert(pair<string, memory_buffer*>(blockName, buffer));
+    bufferList->buffers->insert(pair<string, MemoryBuffer*>(blockName, buffer));
     bufferList->pins.push_back(diskBlock);
     return 1;
 };

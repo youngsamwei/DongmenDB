@@ -6,7 +6,7 @@
 #define DONGMENDB_DONGMENDB_H
 
 #include "filemanager.h"
-#include "buffermanager.h"
+#include "BufferManager.h"
 
 #include "integritymanager.h"
 #include "logmanager.h"

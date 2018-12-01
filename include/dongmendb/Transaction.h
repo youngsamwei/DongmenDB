@@ -55,7 +55,7 @@ public:
 } ;
 
 typedef struct buffer_list_ {
-    map<string, memory_buffer*> *buffers;
+    map<string, MemoryBuffer*> *buffers;
     vector<disk_block*> pins;
     BufferManager *bufferManager;
 } buffer_list;
@@ -64,7 +64,7 @@ typedef struct buffer_list_ {
 int buffer_list_pin(buffer_list *bufferList, disk_block *block);
 int buffer_list_unpin(buffer_list *bufferList, disk_block *block);
 int buffer_list_unpin_all(buffer_list *bufferList);
-memory_buffer *buffer_list_get_buffer(buffer_list *bufferList, disk_block *block);
+MemoryBuffer *buffer_list_get_buffer(buffer_list *bufferList, disk_block *block);
 int buffer_list_pin_new(buffer_list *bufferList, char *fileName, void_ptr *block, table_info *tableInfo);
 
 

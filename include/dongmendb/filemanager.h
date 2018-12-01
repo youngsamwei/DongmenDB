@@ -28,7 +28,7 @@ using  namespace std;
  * 一个数据库对应一个文件夹，一个数据表对应一个文件。
  * 一个文件包含多个磁盘块。
  */
-typedef struct memory_buffer_ memory_buffer;
+class MemoryBuffer;
 typedef struct table_info_ table_info;
 
 typedef struct file_manager_ {
@@ -66,7 +66,7 @@ int file_manager_read(file_manager *fileManager, memory_page *memoryPage, disk_b
 
 int file_manager_write(file_manager *fileManager, memory_page *memoryPage, disk_block *diskBlock);
 
-int file_manager_append(file_manager *fileManager, memory_buffer *memoryBuffer, char *fileName, table_info *tableInfo);
+int file_manager_append(file_manager *fileManager, MemoryBuffer *memoryBuffer, char *fileName, table_info *tableInfo);
 
 int file_manager_size(file_manager *fileManager, char *fileName);
 
@@ -88,7 +88,7 @@ int memory_page_read(memory_page *memoryPage, disk_block *block);
 
 int memory_page_write(memory_page *memoryPage, disk_block *block);
 
-int memory_page_append(memory_buffer *memoryBuffer, char *fileName, table_info *tableInfo);
+int memory_page_append(MemoryBuffer *memoryBuffer, char *fileName, table_info *tableInfo);
 int memory_page_record_formatter(memory_page *content, table_info *tableInfo);
 int memory_page_getint(memory_page *memoryPage, int offset);
 int memory_page_setint(memory_page *memoryPage, int offset, int val);
