@@ -5,7 +5,7 @@
 #ifndef DONGMENDB_DONGMENDB_H
 #define DONGMENDB_DONGMENDB_H
 
-#include "filemanager.h"
+#include "FileManager.h"
 #include "BufferManager.h"
 
 #include "integritymanager.h"
@@ -25,6 +25,7 @@ typedef void *void_ptr;
  * From the API's perspective's, these are opaque data types. */
 
 class Transaction;
+class TableManager;
 typedef struct dongmendb_stmt dongmendb_stmt;
 typedef struct security_manager_ security_manager;
 typedef struct buffer_manager_ buffer_manager;
@@ -36,7 +37,7 @@ typedef struct dongmendb_ {
     char *dbName;
     FileManager *fileManager;
     BufferManager *bufferManager;
-    metadata_manager *metadataManager;
+    TableManager *tableManager;
     log_manager *logManager;
     security_manager *securityManager;
     integrity_manager *integrityManager;

@@ -15,7 +15,7 @@
 #include <mem.h>
 #include "dongmendb/Transaction.h"
 #include <dongmensql/common.h>
-#include "dongmendb/filemanager.h"
+#include "dongmendb/FileManager.h"
 
 #include <vector>
 #include <map>

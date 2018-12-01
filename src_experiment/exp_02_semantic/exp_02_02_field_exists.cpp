@@ -12,7 +12,7 @@
  * */
 
 
-int semantic_check_field_exists(table_manager *tableManager, char *tableName, char *fieldName, Transaction *tx){
+int TableManager::semantic_check_field_exists(char *tableName, char *fieldName, Transaction *tx){
 
 
     /*

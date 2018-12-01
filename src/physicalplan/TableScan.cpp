@@ -10,7 +10,7 @@ using namespace std;
 TableScan::TableScan(dongmendb *db, string tableName, Transaction *tx){
     this->m_db = db;
     this->m_tx = tx;
-    this->m_tableInfo = table_manager_get_tableinfo(db->metadataManager->tableManager, tableName.c_str(), tx);
+    this->m_tableInfo = db->tableManager->table_manager_get_tableinfo( tableName.c_str(), tx);
     this->m_recordFile = (RecordFile *) malloc(sizeof(RecordFile));
     this->m_recordFile = new RecordFile(this->m_tableInfo, tx);
 };

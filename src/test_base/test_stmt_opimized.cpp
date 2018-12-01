@@ -65,11 +65,11 @@ int opt_search_in_fields(vector<char*> fieldsName, const char *columnName){
 }
 
 /*判断tableName.columnName是否在sra中*/
-int opt_field_test(SRA_t *sra, const char *tableName, const char * columnName, table_manager *tableManager){
+int opt_field_test(SRA_t *sra, const char *tableName, const char * columnName, TableManager *tableManager){
     switch (sra->t){
         case SRA_TABLE:{
             if (tableName == NULL){
-                table_info *ti = table_manager_get_tableinfo(tableManager, sra->table.ref->table_name, NULL);
+                table_info *ti = tableManager->table_manager_get_tableinfo(sra->table.ref->table_name, NULL);
                 vector<char*> fieldsName = ti->fieldsName;
                 /*在fieldsName中查找columnName*/
                 return opt_search_in_fields(fieldsName, columnName);
@@ -96,7 +96,7 @@ int opt_field_test(SRA_t *sra, const char *tableName, const char * columnName, t
 }
 
 /* 判断expr中的每个字段是否在sra中, 若存在一个字段不在sra中则返回0， 否则返回1*/
-int opt_fields_test(Expression *expr, SRA_t *sra, table_manager *tableManager) {
+int opt_fields_test(Expression *expr, SRA_t *sra, TableManager *tableManager) {
     if (expr == NULL){
         return 0;
     }
@@ -112,7 +112,7 @@ int opt_fields_test(Expression *expr, SRA_t *sra, table_manager *tableManager) {
     }
 }
 
-int opt_optimed_test(Expression *expr, SRA_t *sra, table_manager *tableManager) {
+int opt_optimed_test(Expression *expr, SRA_t *sra, TableManager *tableManager) {
 
     switch (sra->t) {
         case SRA_JOIN:
@@ -124,7 +124,7 @@ int opt_optimed_test(Expression *expr, SRA_t *sra, table_manager *tableManager) 
 }
 
 /*检测每个SRA_Select是否在最优位置*/
-int opt_test(SRA_t *sra, table_manager *tableManager) {
+int opt_test(SRA_t *sra, TableManager *tableManager) {
     switch (sra->t) {
         case SRA_SELECT: {
             /*寻找子树中JOIM操作，若条件属性均包含在JOIN操作的某个分支中，则返回1*/
@@ -164,7 +164,7 @@ int TestStmtOptimized::opt_condition_pushdown_test(const char *sqlselect) {
     SRA_t *selectStmt = sp->parse_sql_stmt_select();
 
     SRA_t *optimizedStmt = dongmengdb_algebra_optimize_condition_pushdown(selectStmt,
-                                                                          test_db_ctx->db->metadataManager->tableManager);
+                                                                          test_db_ctx->db->tableManager);
 
     /*检查思路：查找每个SRA_Select， 检查：
      * 1 是否多条件且and连接，若是则返回1 */
@@ -176,7 +176,7 @@ int TestStmtOptimized::opt_condition_pushdown_test(const char *sqlselect) {
     }
 
     /* 2 检查每个SRA_Select 是否在最优位置,若不是则返回1*/
-    ret = opt_test(optimizedStmt, test_db_ctx->db->metadataManager->tableManager);
+    ret = opt_test(optimizedStmt, test_db_ctx->db->tableManager);
 
     return ret;
 }

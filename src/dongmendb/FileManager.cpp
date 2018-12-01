@@ -7,7 +7,7 @@
 #include <io.h>
 #include <iostream>
 
-#include "dongmendb/filemanager.h"
+#include "dongmendb/FileManager.h"
 
 FileManager::FileManager(char *directory, const char *dbName) {
     this->isNew = 0;

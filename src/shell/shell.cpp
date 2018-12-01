@@ -229,13 +229,13 @@ int dongmendb_shell_handle_create_table(dongmendb_shell_handle_sql_t *ctx, const
     sql_stmt_create *sqlStmtCreate = cp->parse_sql_stmt_create();
 
     /*TODO: 检查是否已经存在要创建的表 */
-    int status =  semantic_check_table_exists(ctx->db->metadataManager->tableManager, sqlStmtCreate->tableInfo->tableName, ctx->db->tx);
+    int status =  ctx->db->tableManager->semantic_check_table_exists(sqlStmtCreate->tableInfo->tableName, ctx->db->tx);
     if (status != DONGMENDB_OK){
         fprintf(stderr, "table exists.");
         return DONGMENDB_ERROR_IO;
     }
 
-   status = table_manager_create_table(ctx->db->metadataManager->tableManager,
+   status = ctx->db->tableManager->table_manager_create_table(
                                             sqlStmtCreate->tableInfo->tableName,
                                             sqlStmtCreate->tableInfo->fieldsName,
                                             sqlStmtCreate->tableInfo->fields,
@@ -264,7 +264,7 @@ int dongmendb_shell_handle_insert_table(dongmendb_shell_handle_sql_t *ctx, const
     sql_stmt_insert *sqlStmtInsert = ip->parse_sql_stmt_insert();
 
     /* TODO: 语义检查:检查表和字段是否存在*/
-    int status =  semantic_check_table_exists(ctx->db->metadataManager->tableManager, sqlStmtInsert->tableName, ctx->db->tx);
+    int status =  ctx->db->tableManager->semantic_check_table_exists(sqlStmtInsert->tableName, ctx->db->tx);
     if (status != DONGMENDB_OK){
         fprintf(stderr, "table does not exist.");
         return DONGMENDB_ERROR_IO;
@@ -318,7 +318,7 @@ int dongmendb_shell_handle_select_table(dongmendb_shell_handle_sql_t *ctx, const
 
     /*TODO: 逻辑优化：关系代数优化*/
 
-    SRA_t *optmiziedSelectStmt = dongmengdb_algebra_optimize_condition_pushdown(selectStmt, ctx->db->metadataManager->tableManager);
+    SRA_t *optmiziedSelectStmt = dongmengdb_algebra_optimize_condition_pushdown(selectStmt, ctx->db->tableManager);
 
     if (optmiziedSelectStmt == NULL) {
         return DONGMENDB_EINVALIDSQL;
@@ -379,7 +379,7 @@ int dongmendb_shell_handle_update_data(dongmendb_shell_handle_sql_t *ctx, const 
     sql_stmt_update_print(sqlStmtUpdate);
 
     /*TODO: 语义检查：表与字段是否存在*/
-    int status = semantic_check_table_exists(ctx->db->metadataManager->tableManager, sqlStmtUpdate->tableName, ctx->db->tx);
+    int status = ctx->db->tableManager->semantic_check_table_exists(sqlStmtUpdate->tableName, ctx->db->tx);
 
     if (status != DONGMENDB_OK){
         fprintf(stdout, "table does not exist!");
@@ -432,7 +432,7 @@ int dongmendb_shell_handle_delete_data(dongmendb_shell_handle_sql_t *ctx, const 
     }
 
     /*TODO: 语义检查：表与字段是否存在*/
-    int status = semantic_check_table_exists(ctx->db->metadataManager->tableManager, sqlStmtDelete->tableName,
+    int status = ctx->db->tableManager->semantic_check_table_exists(sqlStmtDelete->tableName,
                                              ctx->db->tx);
     if (status != DONGMENDB_OK) {
         fprintf(stdout, "table does not exist!");
@@ -530,7 +530,7 @@ int dongmendb_shell_handle_cmd_opt(dongmendb_shell_handle_sql_t *ctx, struct han
         printf(parser->parserMessage);
     }
 
-    SRA_t *optmiziedSelectStmt = dongmengdb_algebra_optimize_condition_pushdown(selectStmt, ctx->db->metadataManager->tableManager);
+    SRA_t *optmiziedSelectStmt = dongmengdb_algebra_optimize_condition_pushdown(selectStmt, ctx->db->tableManager);
 
     if (optmiziedSelectStmt == NULL) {
         return DONGMENDB_EINVALIDSQL;
@@ -631,7 +631,7 @@ int dongmendb_shell_handle_cmd_desc(dongmendb_shell_handle_sql_t *ctx, struct ha
     if (ctx->db) {
         char *token = new_id_name();
         strcpy(token, tokens[1]);
-        table_info *tableInfo = table_manager_get_tableinfo(ctx->db->metadataManager->tableManager, token, ctx->db->tx);
+        table_info *tableInfo = ctx->db->tableManager->table_manager_get_tableinfo(token, ctx->db->tx);
         table_info_free(tableInfo);
         free(token);
     }
