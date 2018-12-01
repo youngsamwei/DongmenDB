@@ -4,7 +4,7 @@
 
 #include <utils/utils.h>
 #include <iostream>
-#include "dongmendb/metadatamanager.h"
+#include "dongmendb/MetadataManager.h"
 
  TableManager::TableManager(int isNew, Transaction *tx) {
     map<string, field_info*> *tableDescfields = new map<string, field_info*>();

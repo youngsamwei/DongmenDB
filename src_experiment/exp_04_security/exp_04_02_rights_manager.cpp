@@ -7,7 +7,7 @@
  *
  */
 
-#include "dongmendb/securitymanager.h"
+#include "dongmendb/SecurityManager.h"
 
 int SecurityManager::security_manager_create_user(const char *userName) {
 

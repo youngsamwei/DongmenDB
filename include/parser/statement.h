@@ -8,7 +8,7 @@
 
 #include "dongmendb/Recordfile.h"
 #include "dongmendb/DongmenDB.h"
-#include "dongmendb/securitymanager.h"
+#include "dongmendb/SecurityManager.h"
 #include "dongmensql/column.h"
 #include <dongmensql/sra.h>
 #include "parser.h"

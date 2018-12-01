@@ -17,11 +17,10 @@ using namespace std;
 
 class BufferManager;
 class DongmenDB;
+class RecoveryManager;
+class ConcurrencyManager;
 
 typedef void *void_ptr;
-
-typedef struct recovery_manager_ recovery_manager;
-typedef struct concurrency_manager_ concurrency_manager;
 
 static int next_tx_num = 1;
 
@@ -44,8 +43,8 @@ class Transaction {
 public:
     DongmenDB *db;
     int txNum;
-    recovery_manager *recoveryManager;
-    concurrency_manager *concurrencyManager;
+    RecoveryManager *recoveryManager;
+    ConcurrencyManager *concurrencyManager;
     BufferList *bufferList;
 
     Transaction(DongmenDB *db);

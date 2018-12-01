@@ -3,7 +3,7 @@
 //
 
 #include <dongmendb/DongmenDB.h>
-#include "dongmendb/securitymanager.h"
+#include "dongmendb/SecurityManager.h"
 
 SecurityManager *security_manager_create(DongmenDB *db){
 

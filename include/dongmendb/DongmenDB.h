@@ -8,9 +8,9 @@
 #include "FileManager.h"
 #include "BufferManager.h"
 
-#include "integritymanager.h"
-#include "logmanager.h"
-#include "metadatamanager.h"
+#include "IntegrityManager.h"
+#include "LogManager.h"
+#include "MetadataManager.h"
 #include "Recordfile.h"
 
 

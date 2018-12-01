@@ -2,7 +2,7 @@
 // Created by Sam on 2018/2/13.
 //
 
-#include <dongmendb/integritymanager.h>
+#include <dongmendb/IntegrityManager.h>
 
 /*
  * 完整性管理实验需要实现：

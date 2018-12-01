@@ -3,7 +3,7 @@
 //
 
 #include <parser/parser.h>
-#include <dongmendb/securitymanager.h>
+#include <dongmendb/SecurityManager.h>
 #include <parser/statement.h>
 /**
  * 安全性管理实验需要实现：
