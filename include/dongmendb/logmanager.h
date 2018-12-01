@@ -5,9 +5,9 @@
 #ifndef DONGMENDB_LOGMANAGER_H
 #define DONGMENDB_LOGMANAGER_H
 
-typedef struct log_manager_ {
+class LogManager {
 
-} log_manager;
+} ;
 
 
 #endif //DONGMENDB_LOGMANAGER_H

@@ -25,14 +25,11 @@ typedef enum{
     RIGHT_ALL
 }right_type;
 
-typedef struct security_manager_ {
-
-} security_manager;
 
 class role;
 class right;
- class user{
- public:
+class user{
+public:
     char *userName;
     char *password;
     vector<role*> *roles;
@@ -52,6 +49,8 @@ public:
 //    vector<right*> *rights;
 };
 
+class SecurityManager {
+public:
 /**
  * 在系统表user中增加用户
  *  在 exp_04_02_rights_manager.c 实现
@@ -60,7 +59,7 @@ public:
  * @param rights
  * @return
  */
-int security_manager_create_user(security_manager *securityManager, const char *userName);
+    int security_manager_create_user(const char *userName);
 
 /**
  * 在系统表role中增加角色
@@ -70,7 +69,7 @@ int security_manager_create_user(security_manager *securityManager, const char *
  * @param rights
  * @return
  */
-int security_manager_create_role(security_manager *securityManager, const char *roleName);
+    int security_manager_create_role(const char *roleName);
 
 /**
  * 给用户授予角色。在系统表userrole中增加
@@ -79,7 +78,7 @@ int security_manager_create_role(security_manager *securityManager, const char *
  * @param roleName
  * @return
  */
-int security_manager_grant_role_to_user(security_manager *securityManager, const char *userName, const char *roleName);
+    int security_manager_grant_role_to_user(const char *userName, const char *roleName);
 
 /**
  * 给用户授予权限。在系统表userright中增加
@@ -89,7 +88,7 @@ int security_manager_grant_role_to_user(security_manager *securityManager, const
  * @param rightType
  * @return
  */
-int security_manager_grant_right_to_user(security_manager *securityManager, const char *userName, const char *objName, right_type rightType);
+    int security_manager_grant_right_to_user(const char *userName, const char *objName, right_type rightType);
 
 /**
  * 给角色授予权限。在系统表roleright中增加
@@ -99,7 +98,7 @@ int security_manager_grant_right_to_user(security_manager *securityManager, cons
  * @param rightType
  * @return
  */
-int security_manager_grant_right_to_role(security_manager *securityManager, const char *roleName, const char *objName, right_type rightType);
+    int security_manager_grant_right_to_role(const char *roleName, const char *objName, right_type rightType);
 
 /**
  * 收回用户的角色。
@@ -108,7 +107,7 @@ int security_manager_grant_right_to_role(security_manager *securityManager, cons
  * @param roleName
  * @return
  */
-int security_manager_revoke_role_from_user(security_manager *securityManager, const char *userName, const char *roleName);
+    int security_manager_revoke_role_from_user(const char *userName, const char *roleName);
 
 /**
  * 收回用户的权限
@@ -118,7 +117,7 @@ int security_manager_revoke_role_from_user(security_manager *securityManager, co
  * @param rightType
  * @return
  */
-int security_manager_revoke_right_from_user(security_manager *securityManager, const char *userName, const char *objName, right_type rightType);
+    int security_manager_revoke_right_from_user(const char *userName, const char *objName, right_type rightType);
 
 /**
  * 收回角色的权限
@@ -128,7 +127,7 @@ int security_manager_revoke_right_from_user(security_manager *securityManager, c
  * @param rightType
  * @return
  */
-int security_manager_revoke_right_from_role(security_manager *securityManager, const char *roleName, const char *objName, right_type rightType);
+    int security_manager_revoke_right_from_role(const char *roleName, const char *objName, right_type rightType);
 
 /**
  *  在 exp_04_02_rights_manager.c 中实现
@@ -137,21 +136,21 @@ int security_manager_revoke_right_from_role(security_manager *securityManager, c
  * @param rightType
  * @return 有授权返回1，无授权返回0
  */
-int security_manager_check_right(security_manager *securityManager, const char *userName, const char *objName, right_type rightType);
+    int security_manager_check_right(const char *userName, const char *objName, right_type rightType);
 
 /**
  * 在 securitymanager.c 中实现
  * @param userName
  * @return
  */
-user *security_manager_get_user(security_manager *securityManager, const char *userName);
+    user *security_manager_get_user(const char *userName);
 
 /**
  * 在 securitymanager.c 实现
  * @param roleName
  * @return
  */
-role *security_manager_get_role(security_manager *securityManager, const char *roleName);
+    role *security_manager_get_role(const char *roleName);
 
 /**
  * 初始化用于安全管理的系统数据表.
@@ -159,15 +158,17 @@ role *security_manager_get_role(security_manager *securityManager, const char *r
  * @param db
  * @return
  */
-int security_manager_init(security_manager *securityManager);
+    int security_manager_init(SecurityManager *securityManager);
 
 /**
  * 在 securitymanager.c 中实现
  * @param db
  * @return
  */
-security_manager *security_manager_create(DongmenDB *db);
+    SecurityManager *security_manager_create(DongmenDB *db);
 
+
+} ;
 
 
 #endif //DONGMENDB_SECURITYMANAGER_H

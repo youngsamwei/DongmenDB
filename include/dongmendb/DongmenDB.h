@@ -26,12 +26,9 @@ typedef void *void_ptr;
 
 class Transaction;
 class TableManager;
+class IntegrityManager;
+class SecurityManager;
 typedef struct dongmendb_stmt dongmendb_stmt;
-typedef struct security_manager_ security_manager;
-typedef struct buffer_manager_ buffer_manager;
-typedef struct file_manager_ file_manager;
-typedef struct integrity_manager_ integrity_manager;
-typedef struct metadata_manager_ metadata_manager;
 
 /* API return codes */
 #define DONGMENDB_OK (0)
@@ -54,9 +51,9 @@ public:
     FileManager *fileManager;
     BufferManager *bufferManager;
     TableManager *tableManager;
-    log_manager *logManager;
-    security_manager *securityManager;
-    integrity_manager *integrityManager;
+    LogManager *logManager;
+    SecurityManager *securityManager;
+    IntegrityManager *integrityManager;
     Transaction *tx;
 
 

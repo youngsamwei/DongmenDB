@@ -9,44 +9,44 @@
 
 #include "dongmendb/securitymanager.h"
 
-int security_manager_create_user(security_manager *securityManager, const char *userName) {
+int SecurityManager::security_manager_create_user(const char *userName) {
 
 };
 
-int security_manager_create_role(security_manager *securityManager, const char *roleName) {
+int SecurityManager::security_manager_create_role(const char *roleName) {
 
 };
 
-int security_manager_check_right(security_manager *securityManager, const char *userName, const char *objName,
+int SecurityManager::security_manager_check_right(const char *userName, const char *objName,
                                  right_type rightType) {
 
 };
 
-int security_manager_grant_role_to_user(security_manager *securityManager, const char *userName, const char *roleName) {
+int SecurityManager::security_manager_grant_role_to_user(const char *userName, const char *roleName) {
 
 };
 
-int security_manager_grant_right_to_user(security_manager *securityManager, const char *userName, const char *objName,
+int SecurityManager::security_manager_grant_right_to_user(const char *userName, const char *objName,
                                          right_type rightType) {
 
 };
 
-int security_manager_grant_right_to_role(security_manager *securityManager, const char *roleName, const char *objName,
+int SecurityManager::security_manager_grant_right_to_role(const char *roleName, const char *objName,
                                          right_type rightType) {
 
 };
 
-int security_manager_revoke_role_from_user(security_manager *securityManager, const char *userName,
+int SecurityManager::security_manager_revoke_role_from_user(const char *userName,
                                            const char *roleName) {
 
 };
 
-int security_manager_revoke_right_from_user(security_manager *securityManager, const char *userName, const char *objName,
+int SecurityManager::security_manager_revoke_right_from_user(const char *userName, const char *objName,
                                         right_type rightType) {
 
 };
 
-int security_manager_revoke_right_from_role(security_manager *securityManager, const char *roleName, const char *objName,
+int SecurityManager::security_manager_revoke_right_from_role(const char *roleName, const char *objName,
                                         right_type rightType) {
 
 };
