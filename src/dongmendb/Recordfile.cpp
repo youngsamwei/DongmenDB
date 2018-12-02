@@ -125,18 +125,16 @@ int RecordFile::record_file_record_formatter(MemoryPage *memoryPage) {
 
 }
 
-field_info *field_info_create(enum data_type type, int length, char* fieldName) {
+FieldInfo::FieldInfo(enum data_type type, int length, char* fieldName) {
 
-    field_info *fieldInfo = (field_info *) malloc(sizeof(field_info*));
-    fieldInfo->type = type;
-    fieldInfo->length = length;
-    fieldInfo->hashCode = bkdr_hash(fieldName);
-    fieldInfo->fieldName = strdup(fieldName);
+    this->type = type;
+    this->length = length;
+    this->hashCode = bkdr_hash(fieldName);
+    this->fieldName = strdup(fieldName);
 
-    return fieldInfo;
 };
 
-TableInfo::TableInfo (const char *tableName, vector<char*> fieldsName,  map<string, field_info*>  *lfields) {
+TableInfo::TableInfo (const char *tableName, vector<char*> fieldsName,  map<string, FieldInfo *>  *lfields) {
 
     this->tableName = new_id_name();
     strcpy( this->tableName, tableName);
@@ -154,7 +152,7 @@ TableInfo::TableInfo (const char *tableName, vector<char*> fieldsName,  map<stri
     for (int i = 0; i <= count; i++) {
         const char* fieldName = fieldsName.at( i);
 
-        field_info *fieldInfo = lfields->find(fieldName)->second;
+        FieldInfo *fieldInfo = lfields->find(fieldName)->second;
 
         (*lfs)[fieldInfo->hashCode]=  pos;
 //        lfs->insert(pair<string,integer*>(fieldName, ipos));

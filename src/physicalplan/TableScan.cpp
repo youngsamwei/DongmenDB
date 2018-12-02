@@ -54,7 +54,7 @@ string TableScan::getString(string tableName, string fieldName) {
     if (!tableName.empty() && stricmp(m_tableInfo->tableName, tableName.c_str()) != 0) {
         return "";
     }
-    field_info *fi = getField(tableName, fieldName);
+    FieldInfo *fi = getField(tableName, fieldName);
     char *value = (char *) calloc(fi->length, 1);
     m_recordFile->record_file_get_string( fieldName.c_str(), value);
     return string(value);
@@ -71,12 +71,12 @@ int TableScan::hasField(string tableName,string fieldName) {
     }
 };
 
-field_info* TableScan::getField(string tableName, string fieldName) {
+FieldInfo * TableScan::getField(string tableName, string fieldName) {
     if (!tableName.empty() && stricmp(m_tableInfo->tableName, tableName.c_str()) != 0){
         return NULL;
     }
 
-    map<string, field_info*>::iterator it = m_tableInfo->fields->find(fieldName);
+    map<string, FieldInfo *>::iterator it = m_tableInfo->fields->find(fieldName);
     if (it != m_tableInfo->fields->end()){
         return it->second;
     }else{

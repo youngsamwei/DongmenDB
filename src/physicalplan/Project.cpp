@@ -101,7 +101,7 @@ variant *Project::getValue(string fieldName) {
 };
 
 string Project::getString(string tableName, string fieldName) {
-    field_info *fi = getField(tableName, fieldName);
+    FieldInfo *fi = getField(tableName, fieldName);
     char *value = (char *) calloc(fi->length, 1);
     return scan->getString(tableName, fieldName);
 };
@@ -110,7 +110,7 @@ int Project::hasField(string tableName, string fieldName) {
     return scan->hasField(tableName, fieldName);
 };
 
-field_info *Project::getField(string tableName, string fieldName) {
+FieldInfo *Project::getField(string tableName, string fieldName) {
     return scan->getField(tableName, fieldName);
 };
 

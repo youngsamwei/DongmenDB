@@ -181,7 +181,7 @@ Expression *Scan::evaluateExpression(Expression *expr, Scan *scan, variant *var)
                     fieldName = "";
                 }
 
-                field_info *fi = scan->getField(tableName, fieldName);
+                FieldInfo *fi = scan->getField(tableName, fieldName);
                 switch (fi->type) {
                     case DATA_TYPE_INT:
                     case DATA_TYPE_DOUBLE:

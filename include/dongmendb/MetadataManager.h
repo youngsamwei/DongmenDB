@@ -28,6 +28,7 @@ using namespace std;
 
 class Transaction;
 class TableManager;
+class FieldInfo;
 
 typedef struct field_info_ field_info;
 
@@ -39,7 +40,7 @@ public:
     TableManager(int isNew, Transaction *tx);
 
     int table_manager_create_table(char *tableName, vector<char *> fieldsName,
-                                   map<string, field_info*> *fields,
+                                   map<string, FieldInfo *> *fields,
                                    Transaction *tx);
 
     TableInfo *table_manager_get_tableinfo(const char *tableName, Transaction *tx);

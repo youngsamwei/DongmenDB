@@ -73,7 +73,7 @@ int ExecutionPlan::executeInsert(DongmenDB *db, char *tableName,  vector<char*> 
         char *fieldName = fieldNames.at(i);
 
         void_ptr *ptr = (void_ptr *) calloc(sizeof(void_ptr *), 1);
-        field_info *fieldInfo = tableScan.m_tableInfo->fields->find(fieldName)->second;
+        FieldInfo *fieldInfo = tableScan.m_tableInfo->fields->find(fieldName)->second;
         variant *val = (variant *)values.at(i);
 
         /* TODO: 完整性检查 */

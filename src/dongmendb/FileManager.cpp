@@ -166,7 +166,7 @@ int MemoryPage::memory_page_record_formatter(TableInfo *tableInfo) {
         for (int i = 0; i <= count; i++) {
             char *fieldName = tableInfo->fieldsName.at( i);
 
-            field_info *fieldInfo = tableInfo->fields->find(fieldName)->second;
+            FieldInfo *fieldInfo = tableInfo->fields->find(fieldName)->second;
 
             int offset = tableInfo->offsets->find(fieldInfo->hashCode)->second;
 

@@ -50,7 +50,7 @@ variant* Select::getValue(string fieldName){
 };
 
 string Select::getString(string tableName, string fieldName) {
-    field_info *fi = getField(tableName, fieldName);
+    FieldInfo *fi = getField(tableName, fieldName);
     char *value = (char *) calloc(fi->length, 1);
     return scan->getString( tableName, fieldName);
 };
@@ -59,7 +59,7 @@ int Select::hasField(string tableName,string fieldName) {
     return scan->hasField( tableName, fieldName);
 };
 
-field_info* Select::getField(string tableName, string fieldName) {
+FieldInfo * Select::getField(string tableName, string fieldName) {
     return scan->getField( tableName, fieldName);
 };
 

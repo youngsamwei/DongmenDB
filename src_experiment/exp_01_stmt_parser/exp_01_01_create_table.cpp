@@ -11,7 +11,7 @@
 
 sql_stmt_create *CreateParser::parse_sql_stmt_create() {
     char *tableName = NULL;
-    map<string, field_info*> *columns = new map<string, field_info*>();
+    map<string, FieldInfo *> *columns = new map<string, FieldInfo *>();
     vector<char*> fieldsName ;
     if (!this->matchToken(TOKEN_RESERVED_WORD, "create")) {
         return NULL;
@@ -36,11 +36,11 @@ sql_stmt_create *CreateParser::parse_sql_stmt_create() {
     token = this->parseNextToken();
 
     while (token->type != TOKEN_CLOSE_PAREN) {
-        field_info *field = parse_sql_stmt_columnexpr();
+        FieldInfo *field = parse_sql_stmt_columnexpr();
         if (field == NULL) {
             break;
         } else {
-            columns->insert(pair<string, field_info*>(field->fieldName, field));
+            columns->insert(pair<string, FieldInfo *>(field->fieldName, field));
             fieldsName.push_back(field->fieldName);
         }
         token = this->parseNextToken();
@@ -61,7 +61,7 @@ sql_stmt_create *CreateParser::parse_sql_stmt_create() {
     return sqlStmtCreate;
 };
 
-field_info *CreateParser::parse_sql_stmt_columnexpr() {
+FieldInfo *CreateParser::parse_sql_stmt_columnexpr() {
     Token *token = this->parseNextToken();
     char *columnName = NULL;
     enum data_type type;
@@ -110,9 +110,7 @@ field_info *CreateParser::parse_sql_stmt_columnexpr() {
         strcpy(this->parserMessage, "invalid sql : missing field name.");
         return NULL;
     }
-    field_info *field = (field_info *) calloc(sizeof(field_info), 1);
-    field->type = type;
-    field->length = length;
-    field->fieldName = columnName;
+    FieldInfo *field = new FieldInfo(type, length, columnName);
+
     return field;
 };

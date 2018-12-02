@@ -36,7 +36,7 @@ class Join : public Scan {
 
     int hasField(string tableName, string fieldName);
 
-    field_info *getField(string tableName, string fieldName);
+    FieldInfo *getField(string tableName, string fieldName);
 
     vector<char*> getFieldsName(string tableName);
 

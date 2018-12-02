@@ -71,9 +71,9 @@ int Join::hasField(string tableName, string fieldName) {
            || (scan2->hasField( tableName, fieldName));
 };
 
-field_info *Join::getField(string tableName, string fieldName) {
+FieldInfo *Join::getField(string tableName, string fieldName) {
 
-    field_info *fi = scan1->getField( tableName, fieldName);
+    FieldInfo *fi = scan1->getField( tableName, fieldName);
     if (fi) {
         return fi;
     } else {

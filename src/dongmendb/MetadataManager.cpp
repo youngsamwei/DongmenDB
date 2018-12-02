@@ -7,14 +7,14 @@
 #include "dongmendb/MetadataManager.h"
 
  TableManager::TableManager(int isNew, Transaction *tx) {
-    map<string, field_info*> *tableDescfields = new map<string, field_info*>();
+    map<string, FieldInfo *> *tableDescfields = new map<string, FieldInfo *>();
 
     char* fn_tablename = "tablename";
-    field_info *tablename = field_info_create(DATA_TYPE_CHAR, MAX_ID_NAME_LENGTH, fn_tablename);
-    tableDescfields->insert(pair<string, field_info*>(fn_tablename, tablename));
+    FieldInfo *tablename = new FieldInfo(DATA_TYPE_CHAR, MAX_ID_NAME_LENGTH, fn_tablename);
+    tableDescfields->insert(pair<string, FieldInfo *>(fn_tablename, tablename));
     char* fn_reclength = "reclength";
-    field_info *reclength = field_info_create(DATA_TYPE_INT, INT_SIZE, fn_reclength);
-    tableDescfields->insert(pair<string, field_info*>(fn_reclength, reclength));
+    FieldInfo *reclength = new FieldInfo(DATA_TYPE_INT, INT_SIZE, fn_reclength);
+    tableDescfields->insert(pair<string, FieldInfo *>(fn_reclength, reclength));
 
     vector<char*> tableMetaFieldsName;
     tableMetaFieldsName.push_back(fn_tablename);
@@ -22,21 +22,21 @@
 
     this->tcatInfo = new TableInfo("tablecat", tableMetaFieldsName, tableDescfields);
 
-    map<string, field_info*> *fieldDescfields  = new map<string, field_info*>();
+    map<string, FieldInfo *> *fieldDescfields  = new map<string, FieldInfo *>();
 
-    field_info *field_tablename = field_info_create(DATA_TYPE_CHAR, MAX_ID_NAME_LENGTH, "tablename");
+    FieldInfo *field_tablename = new FieldInfo(DATA_TYPE_CHAR, MAX_ID_NAME_LENGTH, "tablename");
 
-    fieldDescfields->insert(pair<string, field_info*>("tablename",field_tablename));
+    fieldDescfields->insert(pair<string, FieldInfo *>("tablename",field_tablename));
 
-    field_info *fieldname = field_info_create(DATA_TYPE_CHAR, MAX_ID_NAME_LENGTH, "fieldname");
-    fieldDescfields->insert(pair<string, field_info*>("fieldname",  fieldname));
+    FieldInfo *fieldname = new FieldInfo(DATA_TYPE_CHAR, MAX_ID_NAME_LENGTH, "fieldname");
+    fieldDescfields->insert(pair<string, FieldInfo *>("fieldname",  fieldname));
 
-    field_info *type = field_info_create(DATA_TYPE_INT, INT_SIZE, "type");
-    fieldDescfields->insert(pair<string, field_info*>("type", type));
-    field_info *length = field_info_create(DATA_TYPE_INT, INT_SIZE, "length");
-    fieldDescfields->insert(pair<string, field_info*>("length", length));
-    field_info *offset = field_info_create(DATA_TYPE_INT, INT_SIZE, "offset");
-    fieldDescfields->insert(pair<string, field_info*>("offset", offset));
+    FieldInfo *type = new FieldInfo(DATA_TYPE_INT, INT_SIZE, "type");
+    fieldDescfields->insert(pair<string, FieldInfo *>("type", type));
+    FieldInfo *length = new FieldInfo(DATA_TYPE_INT, INT_SIZE, "length");
+    fieldDescfields->insert(pair<string, FieldInfo *>("length", length));
+    FieldInfo *offset = new FieldInfo(DATA_TYPE_INT, INT_SIZE, "offset");
+    fieldDescfields->insert(pair<string, FieldInfo *>("offset", offset));
 
     vector<char*> fieldMetaFieldsName ;
     fieldMetaFieldsName.push_back("tablename");
@@ -63,7 +63,7 @@
  * @param tx
  * @return
  */
-int TableManager::table_manager_create_table(char *tableName, vector<char*> fieldsName,  map<string, field_info*>  *fields,
+int TableManager::table_manager_create_table(char *tableName, vector<char*> fieldsName,  map<string, FieldInfo *>  *fields,
                                Transaction *tx) {
 
 
@@ -104,7 +104,7 @@ int TableManager::table_manager_create_table(char *tableName, vector<char*> fiel
     for (int i = 0; i <= count; i++) {
         char *fieldName = tableInfo->fieldsName.at( i);
 
-        field_info *fieldInfo = tableInfo->fields->find(fieldName)->second;
+        FieldInfo *fieldInfo = tableInfo->fields->find(fieldName)->second;
         int offset = tableInfo->offsets->find(fieldInfo->hashCode)->second;
 
         fcatFile-> record_file_insert();
@@ -136,7 +136,7 @@ TableInfo *TableManager::table_manager_get_tableinfo(const char *tableName, Tran
 
     RecordFile *fcatFile = new RecordFile( this->fcatInfo, tx);
     vector<char*> fieldsName ;
-    map<string, field_info*> *fields = new map<string, field_info*> ();
+    map<string, FieldInfo *> *fields = new map<string, FieldInfo *> ();
 
     while (fcatFile->record_file_next()) {
         char *name = new_id_name();
@@ -147,8 +147,8 @@ TableInfo *TableManager::table_manager_get_tableinfo(const char *tableName, Tran
             enum data_type type = (data_type)fcatFile->record_file_get_int( "type");
             int length = fcatFile->record_file_get_int( "length");
 
-            field_info *fi = field_info_create(type, length, fieldName);
-            fields->insert(pair<string, field_info*>(fieldName, fi));
+            FieldInfo *fi = new FieldInfo(type, length, fieldName);
+            fields->insert(pair<string, FieldInfo *>(fieldName, fi));
 
             fieldsName.push_back(fieldName);
         }

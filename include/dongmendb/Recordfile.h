@@ -80,15 +80,19 @@ typedef enum {
     RECORD_PAGE_INUSE
 } record_page_status;
 
-typedef struct field_info_ {
+class FieldInfo {
+public:
     char *fieldName;
     unsigned int hashCode;
     enum data_type type;
     int length;
-} field_info;
+
+    FieldInfo(enum data_type type, int length, char* fieldName);
+
+} ;
 
 typedef struct record_value_{
-    vector<field_info*> *fieldsInfo; //field_info list
+    vector<FieldInfo *> *fieldsInfo; //field_info list
     vector<variant*> *value;      //variant list
 }record_value;
 /**
@@ -104,13 +108,13 @@ typedef struct integer_ {
 class TableInfo {
 public:
     vector<char*> fieldsName;
-    map<string, field_info*> *fields;
+    map<string, FieldInfo *> *fields;
     map< unsigned int, int> *offsets;
     int recordLen;
     char *tableName;
 
 
-    TableInfo(const char *tableName,  vector<char*> fieldsName,  map<string, field_info*>  *fields);
+    TableInfo(const char *tableName,  vector<char*> fieldsName,  map<string, FieldInfo *>  *fields);
 
     int table_info_free();
 
@@ -134,7 +138,6 @@ typedef struct record_id_ {
     int id;
 } record_id;
 
-field_info *field_info_create(enum data_type type, int length, char* fieldName);
 
 record_page *record_page_create(Transaction *tx, TableInfo *tableInfo, DiskBlock *diskBlock);
 

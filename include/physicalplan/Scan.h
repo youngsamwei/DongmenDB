@@ -37,7 +37,7 @@ public:
 
     virtual int hasField(string tableName,string fieldName)=0;
 
-    virtual field_info* getField(string tableName, string fieldName)=0;
+    virtual FieldInfo * getField(string tableName, string fieldName)=0;
 
     virtual  vector<char*> getFieldsName(string tableName)=0;
 

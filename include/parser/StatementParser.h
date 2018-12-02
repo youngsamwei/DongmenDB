@@ -27,7 +27,7 @@ public:
     }
 
     sql_stmt_create *parse_sql_stmt_create();
-    field_info *parse_sql_stmt_columnexpr();
+    FieldInfo *parse_sql_stmt_columnexpr();
 
 };
 /*  在src_experiment\exp_01_stmt_parser\exp_01_02_insert.c 中实现*/;
