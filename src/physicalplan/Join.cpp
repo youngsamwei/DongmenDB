@@ -106,10 +106,10 @@ int Join::setString(string tableName, string fieldName, string value){
      return -1;
  };
 
- int Join::getRID(record_id *recordID){
+ int Join::getRID(RecordID *recordID){
      return -1;
  }
 
- int Join::moveTo(record_id *recordID){
+ int Join::moveTo(RecordID *recordID){
      return -1;
  };

@@ -80,13 +80,13 @@ int RecordFile::record_file_insert() {
     }
 }
 
-int RecordFile::record_file_moveto_recordid(record_id *recordId) {
+int RecordFile::record_file_moveto_recordid(RecordID *recordId) {
     record_file_moveto( recordId->blockNum);
     this->recordPage->record_page_moveto_id( recordId->id);
 }
 
-int RecordFile::record_file_current_recordid(record_id *recordId) {
-    recordId = (record_id *) malloc(sizeof(record_id));
+int RecordFile::record_file_current_recordid(RecordID *recordId) {
+    recordId = new RecordID();
     recordId->id = this->recordPage->currentSlot;
     recordId->blockNum = this->currentBlkNum;
     return 0;

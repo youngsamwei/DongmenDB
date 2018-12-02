@@ -26,7 +26,24 @@ using namespace std;
 
 class Transaction;
 class RecordPage;
-typedef struct record_id_ record_id;
+class FieldInfo;
+
+typedef enum {
+    RECORD_PAGE_EMPTY = 0,
+    RECORD_PAGE_INUSE
+} record_page_status;
+
+class RecordValue{
+public:
+    vector<FieldInfo *> *fieldsInfo; //field_info list
+    vector<variant*> *value;      //variant list
+};
+
+class RecordID  {
+public:
+    int blockNum;
+    int id;
+} ;
 
 class RecordFile {
 public:
@@ -35,7 +52,6 @@ public:
     char *fileName;
     RecordPage *recordPage;
     int currentBlkNum;
-
 
     RecordFile(TableInfo *tableInfo,
                            Transaction *tx);
@@ -60,9 +76,9 @@ public:
 
     int record_file_insert();
 
-    int record_file_moveto_recordid(record_id *recordId);
+    int record_file_moveto_recordid(RecordID *recordId);
 
-    int record_file_current_recordid(record_id *recordId);
+    int record_file_current_recordid(RecordID *recordId);
 
     int record_file_moveto(int currentBlkNum);
 
@@ -73,11 +89,6 @@ public:
     int record_file_record_formatter(MemoryPage *memoryPage);
 
 } ;
-
-typedef enum {
-    RECORD_PAGE_EMPTY = 0,
-    RECORD_PAGE_INUSE
-} record_page_status;
 
 class FieldInfo {
 public:
@@ -90,12 +101,6 @@ public:
 
 } ;
 
-typedef struct record_value_{
-    vector<FieldInfo *> *fieldsInfo; //field_info list
-    vector<variant*> *value;      //variant list
-}record_value;
-
-
 /**
  * 描述数据表的结构信息
  */
@@ -107,7 +112,6 @@ public:
     int recordLen;
     char *tableName;
 
-
     TableInfo(const char *tableName,  vector<char*> fieldsName,  map<string, FieldInfo *>  *fields);
 
     int table_info_free();
@@ -115,12 +119,6 @@ public:
     int table_info_offset(const char *fieldName);
 
 } ;
-
-typedef struct record_id_ {
-    int blockNum;
-    int id;
-} record_id;
-
 
 
 /**

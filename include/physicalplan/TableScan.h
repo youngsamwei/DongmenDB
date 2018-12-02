@@ -49,9 +49,9 @@ public:
 
     int insertRecord();
 
-    int getRID(record_id *recordID);
+    int getRID(RecordID *recordID);
 
-    int moveTo(record_id *recordID);
+    int moveTo(RecordID *recordID);
 };
 
 #endif //DONGMENDB_TABLESCAN_H

@@ -134,10 +134,10 @@ int Project::insertRecord() {
     return -1;
 };
 
-int Project::getRID(record_id *recordID) {
+int Project::getRID(RecordID *recordID) {
     return -1;
 };
 
-int Project::moveTo(record_id *recordID) {
+int Project::moveTo(RecordID *recordID) {
     return -1;
 };

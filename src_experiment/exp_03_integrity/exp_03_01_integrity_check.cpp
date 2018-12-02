@@ -13,15 +13,15 @@
  *
  * */
 
-int IntegrityManager::integrity_manager_entity_constraint_check(TableInfo *tableInfo, record_value *recordValue, sql_update_type sqlUpdateType){
+int IntegrityManager::integrity_manager_entity_constraint_check(TableInfo *tableInfo, RecordValue *recordValue, sql_update_type sqlUpdateType){
 
 };
-int IntegrityManager::integrity_manager_reference_constraint_check(TableInfo *tableInfo, record_value *recordValue, sql_update_type sqlUpdateType){
+int IntegrityManager::integrity_manager_reference_constraint_check(TableInfo *tableInfo, RecordValue *recordValue, sql_update_type sqlUpdateType){
 
 };
-int IntegrityManager::integrity_manager_check_constraint_check(TableInfo *tableInfo, record_value *recordValue){
+int IntegrityManager::integrity_manager_check_constraint_check(TableInfo *tableInfo, RecordValue *recordValue){
 
 };
-int IntegrityManager::integrity_manager_null_constraint_check(TableInfo *tableInfo, record_value *recordValue){
+int IntegrityManager::integrity_manager_null_constraint_check(TableInfo *tableInfo, RecordValue *recordValue){
 
 };

@@ -49,9 +49,9 @@ public:
 
     virtual int insertRecord()=0;
 
-    virtual int getRID(record_id *recordID)=0;
+    virtual int getRID(RecordID *recordID)=0;
 
-    virtual int moveTo(record_id *recordID)=0;
+    virtual int moveTo(RecordID *recordID)=0;
 
     Expression * evaluateExpression(Expression *expr, Scan* scan, variant *var);
 

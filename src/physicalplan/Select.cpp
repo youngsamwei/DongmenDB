@@ -83,10 +83,10 @@ int Select::deleteRecord() {
 
  };
 
- int Select::getRID(record_id *recordID){
+ int Select::getRID(RecordID *recordID){
 
  };
 
- int Select::moveTo(record_id *recordID){
+ int Select::moveTo(RecordID *recordID){
 
  };

@@ -109,10 +109,10 @@ int TableScan::insertRecord() {
     return m_recordFile->record_file_insert();
 };
 
-int TableScan::getRID(record_id *recordID) {
+int TableScan::getRID(RecordID *recordID) {
     return m_recordFile->record_file_current_recordid( recordID);
 };
 
-int TableScan::moveTo(record_id *recordID) {
+int TableScan::moveTo(RecordID *recordID) {
     return m_recordFile->record_file_moveto_recordid( recordID);
 };
