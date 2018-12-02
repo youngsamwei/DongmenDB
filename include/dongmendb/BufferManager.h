@@ -28,7 +28,6 @@ class TableInfo;
 
 typedef void *void_ptr;
 
-typedef struct table_info_ table_info;
 
 class MemoryBuffer {
 public:

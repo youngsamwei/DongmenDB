@@ -69,24 +69,14 @@ sql_stmt_insert *InsertParser::parse_sql_stmt_insert() {
     if (token->type == TOKEN_STRING || token->type == TOKEN_DECIMAL) {
         while (token->type == TOKEN_STRING || token->type == TOKEN_DECIMAL) {
             if (token->type == TOKEN_STRING){
-                /*去掉引号, 已经在tokenizer.c中完成*/
-               /* int len = strlen(token->text) - 1;
-                char *v = token->text + 1;
-                char *value = (char *) calloc(len, 1);
-                strcpy(value, v);
-                value[len-1] = '\0';*/
-
                 variant *v = (variant*)malloc(sizeof(variant*));
                 v->type == DATA_TYPE_CHAR;
                 v->strValue=token->text;
                 values.push_back(v);
             } else{
-                integer *i = (integer *)calloc(sizeof(integer *), 1);
-                i->val = atoi(token->text);
-
                 variant *v = (variant*)malloc(sizeof(variant*));
                 v->type == DATA_TYPE_INT;
-                v->intValue = i->val;
+                v->intValue = atoi(token->text);
                 values.push_back(v);
             }
 

@@ -44,7 +44,7 @@
 7.3 Hash索引
 
 8 逻辑记录文件管理
-8.1 table_info
+8.1 FieldInfo
 8.2 record_page
 8.3 逻辑记录文件操作：打开、关闭、读写、遍历
 

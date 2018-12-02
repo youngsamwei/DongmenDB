@@ -25,16 +25,15 @@ using namespace std;
 #define RECORD_FILE_EXT ".tbl"
 
 class Transaction;
-typedef struct table_info_ table_info;
+class RecordPage;
 typedef struct record_id_ record_id;
-typedef struct record_page_ record_page;
 
 class RecordFile {
 public:
     TableInfo *tableInfo;
     Transaction *tx;
     char *fileName;
-    record_page *recordPage;
+    RecordPage *recordPage;
     int currentBlkNum;
 
 
@@ -95,12 +94,7 @@ typedef struct record_value_{
     vector<FieldInfo *> *fieldsInfo; //field_info list
     vector<variant*> *value;      //variant list
 }record_value;
-/**
- * 用于保存在hashmap中的key和value
- */
-typedef struct integer_ {
-    int val;
-} integer;
+
 
 /**
  * 描述数据表的结构信息
@@ -122,51 +116,53 @@ public:
 
 } ;
 
-/**
- * 管理一个block中的记录。
- */
-typedef struct record_page_ {
-    DiskBlock *diskBlock;
-    TableInfo *tableInfo;
-    Transaction *tx;
-    int slotSize;
-    int currentSlot;
-} record_page;
-
 typedef struct record_id_ {
     int blockNum;
     int id;
 } record_id;
 
 
-record_page *record_page_create(Transaction *tx, TableInfo *tableInfo, DiskBlock *diskBlock);
 
-int record_page_close(record_page *recordPage);
+/**
+ * 管理一个block中的记录。
+ */
+class  RecordPage {
+public:
+    DiskBlock *diskBlock;
+    TableInfo *tableInfo;
+    Transaction *tx;
+    int slotSize;
+    int currentSlot;
 
-int record_page_insert(record_page *recordPage);
+    RecordPage(Transaction *tx, TableInfo *tableInfo, DiskBlock *diskBlock);
 
-int record_page_moveto_id(record_page *recordPage, int id);
+    int record_page_close();
 
-int record_page_next(record_page *recordPage);
+    int record_page_insert();
 
-int record_page_getint(record_page *recordPage,const  char *fieldName);
+    int record_page_moveto_id(int id);
 
-int record_page_getstring(record_page *recordPage, const char *fieldName, char *value);
+    int record_page_next();
 
-int record_page_setint(record_page *recordPage, const char *fieldName, int value);
+    int record_page_getint(const  char *fieldName);
 
-int record_page_setstring(record_page *recordPage,const  char *fieldName, const char *value);
+    int record_page_getstring(const char *fieldName, char *value);
 
-int record_page_delete(record_page *recordPage);
+    int record_page_setint(const char *fieldName, int value);
 
-int record_page_searchfor(record_page *recordPage, record_page_status status);
+    int record_page_setstring(const  char *fieldName, const char *value);
 
-int record_page_current_pos(record_page *recordPage);
+    int record_page_delete();
 
-int record_page_fieldpos(record_page *recordPage,const  char *fieldName);
+    int record_page_searchfor(record_page_status status);
 
-int record_page_is_valid_slot(record_page *recordPage);
+    int record_page_current_pos();
 
+    int record_page_fieldpos(const  char *fieldName);
+
+    int record_page_is_valid_slot();
+
+} ;
 
 
 

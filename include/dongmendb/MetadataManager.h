@@ -30,7 +30,6 @@ class Transaction;
 class TableManager;
 class FieldInfo;
 
-typedef struct field_info_ field_info;
 
 class TableManager {
 public:

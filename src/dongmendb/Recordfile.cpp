@@ -27,7 +27,7 @@ RecordFile::RecordFile(TableInfo *tableInfo,
 }
 
 int RecordFile::record_file_close() {
-    record_page_close(this->recordPage);
+    this->recordPage->record_page_close();
 }
 
 int RecordFile::record_file_before_first() {
@@ -36,7 +36,7 @@ int RecordFile::record_file_before_first() {
 
 int RecordFile::record_file_next() {
     while (1) {
-        if (record_page_next(this->recordPage)) {
+        if (this->recordPage->record_page_next()) {
             return 1;
         }
         if (record_file_atlast()) {
@@ -51,27 +51,27 @@ int RecordFile::record_file_atlast() {
 }
 
 int RecordFile::record_file_get_int(const char *fieldName) {
-    return record_page_getint(this->recordPage, fieldName);
+    return this->recordPage->record_page_getint(fieldName);
 }
 
 int RecordFile::record_file_get_string(const char *fieldName, char *value) {
-    return record_page_getstring(this->recordPage, fieldName, value);
+    return this->recordPage->record_page_getstring(fieldName, value);
 }
 
 int RecordFile::record_file_set_int(const char *fieldName, int value) {
-    return record_page_setint(this->recordPage, fieldName, value);
+    return this->recordPage->record_page_setint(fieldName, value);
 }
 
 int RecordFile::record_file_set_string(const char *fieldName, const char *value) {
-    return record_page_setstring(this->recordPage, fieldName, value);
+    return this->recordPage->record_page_setstring(fieldName, value);
 }
 
 int RecordFile::record_file_delete() {
-    return record_page_delete(this->recordPage);
+    return this->recordPage->record_page_delete();
 }
 
 int RecordFile::record_file_insert() {
-    while (!record_page_insert(this->recordPage)) {
+    while (!this->recordPage->record_page_insert()) {
         /*逻辑问题*/
         if (record_file_atlast_block()) {
             record_file_append_block();
@@ -82,7 +82,7 @@ int RecordFile::record_file_insert() {
 
 int RecordFile::record_file_moveto_recordid(record_id *recordId) {
     record_file_moveto( recordId->blockNum);
-    record_page_moveto_id(this->recordPage, recordId->id);
+    this->recordPage->record_page_moveto_id( recordId->id);
 }
 
 int RecordFile::record_file_current_recordid(record_id *recordId) {
@@ -94,14 +94,12 @@ int RecordFile::record_file_current_recordid(record_id *recordId) {
 
 int RecordFile::record_file_moveto(int currentBlkNum) {
     if (this->recordPage != NULL) {
-        record_page_close(this->recordPage);
+        this->recordPage-> record_page_close();
     }
     this->currentBlkNum = currentBlkNum;
     DiskBlock *diskBlock = new DiskBlock(this->fileName, currentBlkNum, this->tableInfo);
 
-    record_page *recordPage = record_page_create(this->tx, this->tableInfo, diskBlock);
-
-    this->recordPage = recordPage;
+    this->recordPage = new RecordPage(this->tx, this->tableInfo, diskBlock);
     return DONGMENDB_OK;
 }
 
@@ -181,83 +179,81 @@ int TableInfo::table_info_offset( const char *fieldName) {
     return offsets->find(fid)->second;
 };
 
-record_page *record_page_create(Transaction *tx, TableInfo *tableInfo, DiskBlock *diskBlock) {
-    record_page *recordPage = (record_page *) malloc(sizeof(record_page));
-    recordPage->diskBlock = diskBlock;
-    recordPage->tx = tx;
-    recordPage->tableInfo = tableInfo;
+RecordPage::RecordPage(Transaction *tx, TableInfo *tableInfo, DiskBlock *diskBlock) {
+    this->diskBlock = diskBlock;
+    this->tx = tx;
+    this->tableInfo = tableInfo;
     /*保留一个整型的位置保存slot的状态*/
-    recordPage->slotSize = tableInfo->recordLen + INT_SIZE;
-    recordPage->currentSlot = -1;
+    this->slotSize = tableInfo->recordLen + INT_SIZE;
+    this->currentSlot = -1;
     diskBlock->tableInfo = tableInfo;
     tx->transaction_pin( diskBlock);
-    return recordPage;
 };
 
-int record_page_close(record_page *recordPage) {
-    if (recordPage->diskBlock != NULL) {
-        recordPage->tx->transaction_unpin(recordPage->diskBlock);
-        recordPage->diskBlock = NULL;
+int RecordPage::record_page_close() {
+    if (this->diskBlock != NULL) {
+        this->tx->transaction_unpin(this->diskBlock);
+        this->diskBlock = NULL;
     }
 }
 
-int record_page_insert(record_page *recordPage) {
-    recordPage->currentSlot = -1;
-    if (record_page_searchfor(recordPage, RECORD_PAGE_EMPTY)) {
-        int position = record_page_current_pos(recordPage);
-        recordPage->tx->transaction_setint(recordPage->diskBlock, position, RECORD_PAGE_INUSE);
+int RecordPage::record_page_insert() {
+    this->currentSlot = -1;
+    if (record_page_searchfor(RECORD_PAGE_EMPTY)) {
+        int position = record_page_current_pos();
+        this->tx->transaction_setint(this->diskBlock, position, RECORD_PAGE_INUSE);
         return 1;
     }
     return 0;
 }
 
-int record_page_moveto_id(record_page *recordPage, int id) {
-    recordPage->currentSlot = id;
+int RecordPage::record_page_moveto_id(int id) {
+    this->currentSlot = id;
 }
 
-int record_page_next(record_page *recordPage) {
-    record_page_searchfor(recordPage, RECORD_PAGE_INUSE);
+int RecordPage::record_page_next() {
+    record_page_searchfor( RECORD_PAGE_INUSE);
 };
 
-int record_page_getint(record_page *recordPage, const char *fieldName) {
-    int position = record_page_fieldpos(recordPage, fieldName);
-    return recordPage->tx->transaction_getint(recordPage->diskBlock, position);
+int RecordPage::record_page_getint(const char *fieldName) {
+    int position = record_page_fieldpos( fieldName);
+    return this->tx->transaction_getint(this->diskBlock, position);
 };
 
-int record_page_getstring(record_page *recordPage, const char *fieldName, char *value) {
-    int position = record_page_fieldpos(recordPage, fieldName);
-    return recordPage->tx->transaction_getstring(recordPage->diskBlock, position, value);
+int RecordPage::record_page_getstring(const char *fieldName, char *value) {
+    int position = record_page_fieldpos( fieldName);
+    return this->tx->transaction_getstring(this->diskBlock, position, value);
 };
 
-int record_page_setint(record_page *recordPage, const char *fieldName, int value) {
-    int position = record_page_fieldpos(recordPage, fieldName);
-    return recordPage->tx->transaction_setint( recordPage->diskBlock, position, value);
+int RecordPage::record_page_setint(const char *fieldName, int value) {
+    int position = record_page_fieldpos( fieldName);
+    return this->tx->transaction_setint( this->diskBlock, position, value);
 };
 
-int record_page_setstring(record_page *recordPage, const char *fieldName, const char *value) {
-    int position = record_page_fieldpos(recordPage, fieldName);
-    return recordPage->tx->transaction_setstring( recordPage->diskBlock, position, value);
+int RecordPage::record_page_setstring(const char *fieldName, const char *value) {
+    int position = record_page_fieldpos( fieldName);
+    return this->tx->transaction_setstring( this->diskBlock, position, value);
 };
 
-int record_page_delete(record_page *recordPage) {
-    int position = record_page_current_pos(recordPage);
-    return recordPage->tx->transaction_setint( recordPage->diskBlock, position, RECORD_PAGE_EMPTY);
+int RecordPage::record_page_delete() {
+    int position = record_page_current_pos();
+    return this->tx->transaction_setint( this->diskBlock, position, RECORD_PAGE_EMPTY);
 };
 
-int record_page_searchfor(record_page *recordPage, record_page_status status) {
-    recordPage->currentSlot++;
-    while (record_page_is_valid_slot(recordPage)) {
-        int position = record_page_current_pos(recordPage);
-        if (recordPage->tx->transaction_getint( recordPage->diskBlock, position) == status) {
+int RecordPage::record_page_searchfor(record_page_status status) {
+    this->currentSlot++;
+    while (record_page_is_valid_slot()) {
+        int position = record_page_current_pos();
+        if (this->tx->transaction_getint( this->diskBlock, position) == status) {
             return 1;
         }
-        recordPage->currentSlot++;
+        this->currentSlot++;
     }
     return 0;
 };
 
-int record_page_current_pos(record_page *recordPage) {
-    return recordPage->currentSlot * recordPage->slotSize;
+int RecordPage::record_page_current_pos() {
+    return this->currentSlot * this->slotSize;
 };
 
 /**
@@ -269,13 +265,13 @@ int record_page_current_pos(record_page *recordPage) {
  * @param fieldName
  * @return
  */
-int record_page_fieldpos(record_page *recordPage, const char *fieldName) {
+int RecordPage::record_page_fieldpos(const char *fieldName) {
     unsigned int fid = bkdr_hash(fieldName);
-    int offset = recordPage->tableInfo->offsets->find(fid)->second;
+    int offset = this->tableInfo->offsets->find(fid)->second;
 
-    return recordPage->currentSlot * recordPage->slotSize + offset + INT_SIZE;
+    return this->currentSlot * this->slotSize + offset + INT_SIZE;
 };
 
-int record_page_is_valid_slot(record_page *recordPage) {
-    return record_page_current_pos(recordPage) + recordPage->slotSize <= DISK_BOLCK_SIZE;
+int RecordPage::record_page_is_valid_slot() {
+    return record_page_current_pos() + this->slotSize <= DISK_BOLCK_SIZE;
 }
