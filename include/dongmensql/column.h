@@ -17,16 +17,21 @@ enum constraint_type {
 
 class Expression;
 
-typedef struct ForeignKeyRef_s ForeignKeyRef_t;
-typedef struct ForeignKeyRef_s {
+class ForeignKeyRef {
+public:
     const char *col_name, *table_name, *table_col_name;
+
+/* constraints on single columns */
+    ForeignKeyRef(const char *cname);
+    ForeignKeyRef(const char *foreign_tname,
+                                     const char *foreign_cname);
 } ;
 
 typedef struct Constraint_s Constraint_t;
 typedef struct Constraint_s {
     enum constraint_type t;
     union {
-        ForeignKeyRef_t *ref;
+        ForeignKeyRef *ref;
         Literal_t *default_val;
         unsigned size;
         Expression *check;
@@ -43,20 +48,20 @@ typedef struct Column_s {
     Column_t *next;
 } ;
 
-typedef struct ColumnReference_s ColumnReference_t;
-typedef struct ColumnReference_s {
+class ColumnReference {
+public:
     char *tableName, *columnName, *columnAlias, *allName;
+    ColumnReference(const char *tname, const char *cname);
+    ColumnReference(char *allName);
+
 } ;
 
-/* constraints on single columns */
-ForeignKeyRef_t ForeignKeyRef_makeFull(const char *cname, ForeignKeyRef_t fkey);
-ForeignKeyRef_t ForeignKeyRef_make(const char *foreign_tname,
-                                   const char *foreign_cname);
+
 
 Constraint_t *NotNull(void);
 Constraint_t *AutoIncrement(void);
 Constraint_t *PrimaryKey(void);
-Constraint_t *ForeignKey(ForeignKeyRef_t *fkr);
+Constraint_t *ForeignKey(ForeignKeyRef *fkr);
 Constraint_t *Default(Literal_t *val);
 Constraint_t *Unique(void);
 Constraint_t *Check(Expression *cond);
@@ -66,9 +71,6 @@ Column_t *Column_addConstraint(Column_t *column, Constraint_t *constraints);
 Column_t *Column(const char *name, enum data_type type, Constraint_t *constraints);
 Column_t *Column_append(Column_t *columns, Column_t *column);
 
-ColumnReference_t *ColumnReference_make(const char *, const char *);
-
-ColumnReference_t *column_get_reference(char *);
 
 int Column_compareByName(const void *col1, const void *col2);
 void *Column_copy(void *col);

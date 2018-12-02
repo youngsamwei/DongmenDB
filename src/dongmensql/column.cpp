@@ -21,7 +21,7 @@ Constraint_t *PrimaryKey(void) {
     return con;
 }
 
-Constraint_t *ForeignKey(ForeignKeyRef_t *fkr) {
+Constraint_t *ForeignKey(ForeignKeyRef *fkr) {
     Constraint_t *con = (Constraint_t *) calloc(1, sizeof(Constraint_t));
     con->t = CONS_FOREIGN_KEY;
     con->constraint.ref = fkr;
@@ -130,18 +130,15 @@ void Constraint_printList(Constraint_t *constraints) {
     }
 }
 
-ForeignKeyRef_t ForeignKeyRef_makeFull(const char *cname, ForeignKeyRef_t fkey) {
-    fkey.col_name = cname;
-    return fkey;
+ForeignKeyRef::ForeignKeyRef(const char *cname) {
+    col_name = cname;
 }
 
-ForeignKeyRef_t ForeignKeyRef_make(const char *foreign_tname,
+ForeignKeyRef:: ForeignKeyRef(const char *foreign_tname,
                                    const char *foreign_cname) {
-    ForeignKeyRef_t fkey;
-    fkey.col_name = NULL;
-    fkey.table_name = foreign_tname;
-    fkey.table_col_name = foreign_cname;
-    return fkey;
+    col_name = NULL;
+    table_name = foreign_tname;
+    table_col_name = foreign_cname;
 }
 
 Column_t *Column(const char *name, enum data_type type, Constraint_t *constraints) {
@@ -219,30 +216,26 @@ Column_t *Column_append(Column_t *col1, Column_t *col2) {
     return app_col(col1, Column_append(col1->next, col2));
 }
 
-ColumnReference_t *ColumnReference_make(const char *tname, const char *cname) {
-    ColumnReference_t *ref = (ColumnReference_t *) calloc(1, sizeof(ColumnReference_t));
-    if (tname) ref->tableName = strdup(tname);
-    if (cname) ref->columnName = strdup(cname);
-    return ref;
+ColumnReference::ColumnReference(const char *tname, const char *cname) {
+    if (tname) tableName = strdup(tname);
+    if (cname) columnName = strdup(cname);
 }
 
 /**
- * 解析字段名，得到ColumnReference_t , 两种形式 student.sno,  sno
+ * 解析字段名，得到ColumnReference  , 两种形式 student.sno,  sno
  * @param allName
  * @return
  */
-ColumnReference_t *column_get_reference(char *allName){
+ColumnReference::ColumnReference(char *allName){
     char delims[] = ".";
 
-    ColumnReference_t *columnReference = (ColumnReference_t *)calloc(sizeof(ColumnReference_t), 1);
-    columnReference->allName  = strdup(allName);
-    columnReference->tableName = strtok(allName, delims);
-    columnReference->columnName = strtok(NULL, delims);
-    if (columnReference->columnName == NULL){
-        columnReference->columnName = columnReference->tableName;
-        columnReference->tableName = NULL;
+    this->allName  = strdup(allName);
+    this->tableName = strtok(allName, delims);
+    this->columnName = strtok(NULL, delims);
+    if (this->columnName == NULL){
+        this->columnName = this->tableName;
+        this->tableName = NULL;
     }
-    return columnReference;
 };
 
 int Column_compareByName(const void *c1, const void *c2) {

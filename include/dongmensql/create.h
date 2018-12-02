@@ -4,7 +4,7 @@
 #include "column.h"
 
 typedef struct Column_s Column_t;
-typedef struct ForeignKeyRef_s ForeignKeyRef_t;
+class ForeignKeyRef;
 
 typedef struct Table_s {
     char *name;
@@ -19,7 +19,7 @@ typedef struct KeyDec_s {
     enum key_dec_type t;
     union {
         StrList_t *primary_keys;
-        ForeignKeyRef_t *fkey;
+        ForeignKeyRef *fkey;
     } dec;
     struct KeyDec_s *next;
 } KeyDec_t;
@@ -51,7 +51,7 @@ void Table_free(void *table); /* void for generic */
 Table_t *Table_addKeyDecs(Table_t *table, KeyDec_t *decs);
 
 KeyDec_t *KeyDec_append(KeyDec_t *decs, KeyDec_t *dec);
-KeyDec_t *ForeignKeyDec(ForeignKeyRef_t fkr);
+KeyDec_t *ForeignKeyDec(ForeignKeyRef fkr);
 KeyDec_t *PrimaryKeyDec(StrList_t *col_names);
 
 TableReference_t *TableReference_make(char *table_name, char *alias);

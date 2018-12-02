@@ -2,7 +2,7 @@
 
 static Table_t *Table_addPrimaryKey(Table_t *table, const char *col_name);
 
-Table_t *Table_addForeignKey(Table_t *table, ForeignKeyRef_t *fkr)
+Table_t *Table_addForeignKey(Table_t *table, ForeignKeyRef *fkr)
 {
     if (table != NULL)
     {
@@ -48,7 +48,7 @@ Table_t *Table_addKeyDecs(Table_t *table, KeyDec_t *decs)
     return table;
 }
 
-KeyDec_t *ForeignKeyDec(ForeignKeyRef_t *fkr)
+KeyDec_t *ForeignKeyDec(ForeignKeyRef *fkr)
 {
     KeyDec_t *kdec = (KeyDec_t *)calloc(1, sizeof(KeyDec_t));
     kdec->t = KEY_DEC_FOREIGN;

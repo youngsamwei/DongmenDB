@@ -21,7 +21,7 @@ int Project::processExpressionList(){
     for (int i = 0; i < this->original_expr_list.size(); i++){
         Expression *expr = this->original_expr_list.at(i);
         if (expr->term !=NULL && expr->term->t == TERM_COLREF){
-            ColumnReference_t *columnReference = expr->term->ref;
+            ColumnReference *columnReference = expr->term->ref;
             if (stricmp(columnReference->columnName, "*")==0){
                 string tablename;
                 if (columnReference->tableName){
@@ -32,7 +32,7 @@ int Project::processExpressionList(){
                 vector<char*> names = this->getFieldsName(tablename);
                 for (int j = 0; j < names.size(); j ++){
                     char *name = names.at(j);
-                    ColumnReference_t *ref = column_get_reference(name);
+                    ColumnReference *ref = new ColumnReference(name);
                     Expression *expr0 = new Expression(TOKEN_WORD, NULL);
                     TermExpr *term = expr0->newTermExpr();
                     term->t = TERM_COLREF;

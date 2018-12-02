@@ -91,22 +91,27 @@ static const OPERATOR operators[] = {
 
 class Expression;
 
-typedef struct Func {
+/*函数*/
+class Func {
+    /*函数类型*/
     FuncType t;
+    /*函数参数*/
     Expression *expr;
-} Func;
+} ;
 
-typedef struct ColumnReference_s ColumnReference_t;
+class ColumnReference;
+
 /*终结符：标识符，常量*/
-typedef struct TermExpr_ {
+class TermExpr {
+public:
     TermType t;
     union {
         char *id;
         Literal_t *val;
-        ColumnReference_t *ref;
+        ColumnReference *ref;
         Func f;
     };
-} TermExpr;
+} ;
 
 class Expression {
 public:
