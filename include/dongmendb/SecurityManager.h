@@ -33,7 +33,7 @@ public:
     char *userName;
     char *password;
     vector<role*> *roles;
-//    vector<right*> *rights;
+    vector<right*> *rights;
 };
 
 class right {
@@ -46,7 +46,7 @@ class role {
 public:
     char *roleName;
     vector<role*> *roles;
-//    vector<right*> *rights;
+    vector<right*> *rights;
 };
 
 class SecurityManager {
