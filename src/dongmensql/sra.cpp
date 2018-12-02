@@ -509,7 +509,7 @@ static RA_t *desugar_natural_join(SRA_t *sra)
     // Expression *cond = NULL;
     // int first = 1; /* see below for purpose */
     // while (shared.size > 0) {
-    //    Column_t *shared_col = (Column_t *)list_removeFront(&shared);
+    //    Column *shared_col = (Column *)list_removeFront(&shared);
     //    if (first) {
     //       cond = Eq(Term(shared_col->name)
     //    }

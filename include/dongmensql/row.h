@@ -11,7 +11,7 @@ typedef struct Row_s {
     void *data;
 } Row_t;
 
-Row_t *Row_makeFirst(Column_t *cols);
+Row_t *Row_makeFirst(Column *cols);
 
 Row_t *Row_make(Row_t *row);
 

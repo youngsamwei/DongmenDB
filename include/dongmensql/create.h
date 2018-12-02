@@ -3,12 +3,12 @@
 
 #include "column.h"
 
-typedef struct Column_s Column_t;
 class ForeignKeyRef;
+class Column;
 
 typedef struct Table_s {
     char *name;
-    Column_t *columns;
+    Column *columns;
 } Table_t;
 
 enum key_dec_type {
@@ -45,7 +45,7 @@ typedef struct Create_s {
     };
 } Create_t;
 
-Table_t *Table_make(char *name, Column_t *columns, KeyDec_t *decs);
+Table_t *Table_make(char *name, Column *columns, KeyDec_t *decs);
 void Table_print(Table_t *table);
 void Table_free(void *table); /* void for generic */
 Table_t *Table_addKeyDecs(Table_t *table, KeyDec_t *decs);

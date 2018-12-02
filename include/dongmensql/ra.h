@@ -30,8 +30,8 @@ enum RA_Type {
 };
 
 class Expression;
+class Column;
 typedef struct RA_s RA_t;
-typedef struct Column_s Column_t;
 
 struct RA_s {
     enum RA_Type t;
@@ -56,7 +56,7 @@ struct RA_s {
             char *new_name;
         } rho;
     };
-    Column_t *columns;
+    Column *columns;
 };
 
 void RA_print(RA_t *ra);

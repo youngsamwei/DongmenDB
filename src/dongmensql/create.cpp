@@ -7,12 +7,12 @@ Table_t *Table_addForeignKey(Table_t *table, ForeignKeyRef *fkr)
     if (table != NULL)
     {
         /* find the column that matches the cname given, and add this reference */
-        Column_t *col = table->columns;
+        Column *col = table->columns;
         for (; col; col=col->next)
         {
             if (!strcmp(col->name, fkr->col_name))
             {
-                Column_addConstraint(col, ForeignKey(fkr));
+                col->Column_addConstraint( ForeignKey(fkr));
                 return table;
             }
         }
@@ -63,23 +63,23 @@ KeyDec_t *PrimaryKeyDec(StrList_t *col_names)
     return kdec;
 }
 
-Table_t *Table_make(char *name, Column_t *columns, KeyDec_t *decs)
+Table_t *Table_make(char *name, Column *columns, KeyDec_t *decs)
 {
     Table_t *new_table = (Table_t *)calloc(1, sizeof(Table_t));
     new_table->name = name;
     new_table->columns = columns;
-    Column_getOffsets(columns);
+    columns->Column_getOffsets();
     return Table_addKeyDecs(new_table, decs);
 }
 
 static Table_t *Table_addPrimaryKey(Table_t *table, const char *col_name)
 {
-    Column_t *col = table->columns;
+    Column *col = table->columns;
     for (; col; col = col->next)
     {
         if (!strcmp(col->name, col_name))
         {
-            Column_addConstraint(col, PrimaryKey());
+            col->Column_addConstraint( PrimaryKey());
             return table;
         }
     }
@@ -89,7 +89,7 @@ static Table_t *Table_addPrimaryKey(Table_t *table, const char *col_name)
 void Table_free(void *table_vptr)
 {
     Table_t *table = (Table_t *)table_vptr;
-    Column_freeList(table->columns);
+    table->columns->Column_freeList();
     free(table->name);
     free(table);
 }
@@ -110,7 +110,7 @@ void TableReference_free(TableReference_t *tref)
 
 void Table_print(Table_t *table)
 {
-    Column_t *col = table->columns;
+    Column *col = table->columns;
     int first = 1, count = 0;
     char buf[100];
     printf("Table %s (\n", table->name);

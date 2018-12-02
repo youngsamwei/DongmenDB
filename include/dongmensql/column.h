@@ -39,13 +39,33 @@ typedef struct Constraint_s {
     Constraint_t *next;
 } ;
 
-typedef struct Column_s Column_t;
-typedef struct Column_s {
+class Column {
+public:
     char *name;
     enum data_type type;
     Constraint_t *constraints;
     size_t offset; /* offset in bytes from the beginning of the row */
-    Column_t *next;
+    Column *next;
+
+    void *Column_addConstraint(Constraint_t *constraints);
+    Column(const char *name, enum data_type type, Constraint_t *constraints);
+    Column(){};
+    Column *Column_append(Column *column);
+    Column *app_col(Column *col2);
+
+    int Column_compareByName(const void *col1, const void *col2);
+    void *Column_copy(void *col);
+
+    void Column_getOffsets();
+    void Column_getOffsets_r(size_t offset);
+    void Column_getOffsets(Column *cols);
+
+    size_t Column_getSize();
+/* sets the size of the next column */
+    void Column_setSize(ssize_t size);
+
+    void Column_freeList();
+
 } ;
 
 class ColumnReference {
@@ -67,23 +87,9 @@ Constraint_t *Unique(void);
 Constraint_t *Check(Expression *cond);
 Constraint_t *ColumnSize(unsigned size);
 Constraint_t *Constraint_append(Constraint_t *constraints, Constraint_t *constraint);
-Column_t *Column_addConstraint(Column_t *column, Constraint_t *constraints);
-Column_t *Column(const char *name, enum data_type type, Constraint_t *constraints);
-Column_t *Column_append(Column_t *columns, Column_t *column);
 
-
-int Column_compareByName(const void *col1, const void *col2);
-void *Column_copy(void *col);
-
-void Column_getOffsets(Column_t *cols);
-size_t Column_getSize(Column_t *col);
 
 void Constraint_print(void *constraint);
 void Constraint_printList(Constraint_t *constraints);
-void Column_freeList(Column_t *column);
-
-/* sets the size of the next column */
-void Column_setSize(ssize_t size);
-
 
 #endif

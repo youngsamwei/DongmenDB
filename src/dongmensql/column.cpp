@@ -72,24 +72,22 @@ static void deleteConstraint_ts(Constraint_t *constraint) {
     }
 }
 
-void Column_freeList(Column_t *column) {
-    if (column) {
-        Column_t *next = column->next;
-        free(column->name);
-        deleteConstraint_ts(column->constraints);
-        free(column);
-        Column_freeList(next);
-    }
+void Column::Column_freeList() {
+        Column *next = this->next;
+        free(this->name);
+        deleteConstraint_ts(this->constraints);
+        free(this);
+    next->Column_freeList();
 }
 
-size_t Column_getSize(Column_t *col) {
-    Constraint_t *cons = col->constraints;
+size_t Column::Column_getSize() {
+    Constraint_t *cons = this->constraints;
     while (cons) {
         if (cons->t == CONS_SIZE)
             return cons->constraint.size;
         cons = cons->next;
     }
-    switch (col->type) {
+    switch (this->type) {
         case DATA_TYPE_CHAR:
             return sizeof(char);
         case DATA_TYPE_DOUBLE:
@@ -104,14 +102,13 @@ size_t Column_getSize(Column_t *col) {
     return 0;
 }
 
-static void Column_getOffsets_r(Column_t *cols, size_t offset) {
-    if (!cols) return;
-    cols->offset = offset;
-    Column_getOffsets_r(cols->next, Column_getSize(cols));
+void Column::Column_getOffsets_r(size_t offset) {
+    this->offset = offset;
+    this->next->Column_getOffsets_r( this->Column_getSize());
 }
 
-void Column_getOffsets(Column_t *cols) {
-    Column_getOffsets_r(cols, 0);
+void Column::Column_getOffsets() {
+    this->Column_getOffsets_r( 0);
 }
 
 void Constraint_printList(Constraint_t *constraints) {
@@ -141,22 +138,19 @@ ForeignKeyRef:: ForeignKeyRef(const char *foreign_tname,
     table_col_name = foreign_cname;
 }
 
-Column_t *Column(const char *name, enum data_type type, Constraint_t *constraints) {
-    Column_t *new_column = (Column_t *) calloc(1, sizeof(Column_t));
-    new_column->name = strdup(name);
-    new_column->type = type;
-    new_column->constraints = constraints;
+Column::Column(const char *name, enum data_type type, Constraint_t *constraints) {
+    this->name = strdup(name);
+    this->type = type;
+    this->constraints = constraints;
     /* if the parser found a size constraint, then size_constraitn will be > 0 */
     if (size_constraint > 0) {
-        Constraint_append(new_column->constraints, ColumnSize(size_constraint));
+        Constraint_append(this->constraints, ColumnSize(size_constraint));
         size_constraint = -1;
     }
-    return new_column;
 }
 
-Column_t *Column_addConstraint(Column_t *column, Constraint_t *constraints) {
-    column->constraints = Constraint_append(column->constraints, constraints);
-    return column;
+void *Column::Column_addConstraint(Constraint_t *constraints) {
+    Constraint_append(this->constraints, constraints);
 }
 
 Constraint_t *Constraint_append(Constraint_t *constraints, Constraint_t *constraint) {
@@ -202,18 +196,27 @@ void Constraint_print(void *constraint_voidp) {
     }
 }
 
-void Column_setSize(ssize_t size) {
+void Column::Column_setSize(ssize_t size) {
     size_constraint = size;
 }
 
-static Column_t *app_col(Column_t *col1, Column_t *col2) {
-    col1->next = col2;
-    return col1;
+Column *Column::Column_append(Column *col2) {
+    return next->app_col(Column_append(col2));
 }
 
-Column_t *Column_append(Column_t *col1, Column_t *col2) {
-    if (!col1) return col2;
-    return app_col(col1, Column_append(col1->next, col2));
+Column *Column::app_col(Column *col2) {
+    next = col2;
+}
+
+int Column::Column_compareByName(const void *c1, const void *c2) {
+    return strcmp(((Column *) c1)->name, ((Column *) c2)->name);
+}
+
+void *Column::Column_copy(void *col) {
+    Column *copy = new Column();
+    copy->name = strdup(((Column *) col)->name);
+    copy->next = NULL; /* just in case */
+    return copy;
 }
 
 ColumnReference::ColumnReference(const char *tname, const char *cname) {
@@ -237,15 +240,3 @@ ColumnReference::ColumnReference(char *allName){
         this->tableName = NULL;
     }
 };
-
-int Column_compareByName(const void *c1, const void *c2) {
-    return strcmp(((Column_t *) c1)->name, ((Column_t *) c2)->name);
-}
-
-void *Column_copy(void *col) {
-    Column_t *copy = (Column_t *) malloc(sizeof(Column_t));
-    memcpy(copy, col, sizeof(Column_t));
-    copy->name = strdup(((Column_t *) col)->name);
-    copy->next = NULL; /* just in case */
-    return copy;
-}

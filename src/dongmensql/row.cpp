@@ -1,12 +1,12 @@
 #include "dongmensql/row.h"
 
-Row_t *Row_makeFirst(Column_t *cols)
+Row_t *Row_makeFirst(Column *cols)
 {
     Row_t *row = (Row_t *)calloc(1, sizeof(Row_t));
-    Column_t *c = cols;
+    Column *c = cols;
     while (c)
     {
-        row->size += Column_getSize(c);
+        row->size += c->Column_getSize();
         row->num_cols++;
         /*row->*/
                 c = c->next;
