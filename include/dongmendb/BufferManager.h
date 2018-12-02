@@ -28,9 +28,6 @@ class MemoryPage;
 typedef void *void_ptr;
 
 typedef struct table_info_ table_info;
-typedef struct memory_page_ memory_page;
-typedef struct disk_block_ disk_block;
-typedef struct file_manager_ file_manager;
 
 class MemoryBuffer {
 public:
