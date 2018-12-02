@@ -52,8 +52,8 @@ typedef enum {
 typedef struct sql_stmt_grant_{
     sql_stmt_type sqlStmtType;   //SQL_STMT_GRANT, SQL_STMT_REVOKE
     grant_revoke_type grantType;
-    vector<role*> roles;
-    vector<user*> users;
+    vector<Role*> roles;
+    vector<User*> users;
 //    vector<right*> *rights;
 }sql_stmt_grant_revoke;
 
@@ -121,9 +121,9 @@ SetExpr *parseSetExpr(Parser *parser);
 //class InsertParser;
 
 
-user *parse_create_user(Parser *parser);
+User *parse_create_user(Parser *parser);
 
-role *parse_create_role(Parser *parser);
+Role *parse_create_role(Parser *parser);
 
 sql_stmt_grant_revoke *parse_grant(Parser *parser);
 

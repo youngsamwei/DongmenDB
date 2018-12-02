@@ -26,27 +26,25 @@ typedef enum{
 }right_type;
 
 
-class role;
-class right;
-class user{
-public:
-    char *userName;
-    char *password;
-    vector<role*> *roles;
-//    vector<right*> *rights; // error: template argument 1 is invalid
-};
-
-class right {
+class Right {
 public:
     char *objectName;
     right_type rightType;
 };
 
-class role {
+class Role {
 public:
     char *roleName;
-    vector<role*> *roles;
-//    vector<right*> *rights;
+    vector<Role*> *roles;
+    vector<Right*> *rights;
+};
+
+class User{
+public:
+    char *userName;
+    char *password;
+    vector<Role*> *roles;
+    vector<Right*> *rights; // error: template argument 1 is invalid
 };
 
 class SecurityManager {
@@ -143,14 +141,14 @@ public:
  * @param userName
  * @return
  */
-    user *security_manager_get_user(const char *userName);
+    User *security_manager_get_user(const char *userName);
 
 /**
  * 在 securitymanager.c 实现
  * @param roleName
  * @return
  */
-    role *security_manager_get_role(const char *roleName);
+    Role *security_manager_get_role(const char *roleName);
 
 /**
  * 初始化用于安全管理的系统数据表.

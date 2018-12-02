@@ -13,10 +13,10 @@ int security_manager_init(SecurityManager *securityManager){
 
 };
 
-user *security_manager_get_user(const char *userName){
+User *security_manager_get_user(const char *userName){
 
 };
 
-role *security_manager_get_role(const char *roleName){
+Role *security_manager_get_role(const char *roleName){
 
 };

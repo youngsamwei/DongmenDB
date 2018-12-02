@@ -24,11 +24,11 @@
  */
 
 
-user *parse_create_user(Parser *parser){
+User *parse_create_user(Parser *parser){
 
 };
 
-role *parse_create_role(Parser *parser){
+Role *parse_create_role(Parser *parser){
 
 };
 
