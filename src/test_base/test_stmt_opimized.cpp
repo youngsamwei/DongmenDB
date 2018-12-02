@@ -69,7 +69,7 @@ int opt_field_test(SRA_t *sra, const char *tableName, const char * columnName, T
     switch (sra->t){
         case SRA_TABLE:{
             if (tableName == NULL){
-                table_info *ti = tableManager->table_manager_get_tableinfo(sra->table.ref->table_name, NULL);
+                TableInfo *ti = tableManager->table_manager_get_tableinfo(sra->table.ref->table_name, NULL);
                 vector<char*> fieldsName = ti->fieldsName;
                 /*在fieldsName中查找columnName*/
                 return opt_search_in_fields(fieldsName, columnName);

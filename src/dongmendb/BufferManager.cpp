@@ -31,7 +31,7 @@ int BufferManager::buffer_manager_pin(DiskBlock *block, void_ptr *buffer) {
     buf->memory_buffer_pin();
 }
 
-int BufferManager::buffer_manager_pinnew(char *fileName, void_ptr *buffer, table_info *tableInfo) {
+int BufferManager::buffer_manager_pinnew(char *fileName, void_ptr *buffer, TableInfo *tableInfo) {
     buffer_manager_find_choose_unpinned_buffer(buffer);
     if (*buffer == NULL) {
         return -1;
@@ -149,7 +149,7 @@ int MemoryBuffer::memory_buffer_assignto(DiskBlock *block) {
     this->pins = 0;
 };
 
-int MemoryBuffer::memory_buffer_assignto_new(char *fileName, table_info *tableInfo) {
+int MemoryBuffer::memory_buffer_assignto_new(char *fileName, TableInfo *tableInfo) {
     memory_buffer_flush();
     this->contents->memory_page_record_formatter(tableInfo);
     this->contents->memory_page_append(this,fileName, tableInfo);

@@ -56,7 +56,7 @@ sql_stmt_create *CreateParser::parse_sql_stmt_create() {
         return NULL;
     }
     sql_stmt_create *sqlStmtCreate = (sql_stmt_create *)malloc(sizeof(sql_stmt_create));
-    sqlStmtCreate->tableInfo =  table_info_create(tableName, fieldsName, columns);
+    sqlStmtCreate->tableInfo =  new TableInfo(tableName, fieldsName, columns);
     sqlStmtCreate->constraints = NULL;
     return sqlStmtCreate;
 };

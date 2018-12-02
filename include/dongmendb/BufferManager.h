@@ -24,6 +24,7 @@ class FileManager;
 class DiskBlock;
 class MemoryBuffer;
 class MemoryPage;
+class TableInfo;
 
 typedef void *void_ptr;
 
@@ -50,7 +51,7 @@ public:
     int memory_buffer_is_modifiedby(int txnum);
 
     int memory_buffer_assignto(DiskBlock *block);
-    int memory_buffer_assignto_new(char *fileName, table_info *tableInfo);
+    int memory_buffer_assignto_new(char *fileName, TableInfo *tableInfo);
 
 
 } ;
@@ -70,7 +71,7 @@ public:
  */
     int buffer_manager_pin(DiskBlock *block, void_ptr *buffer);
 
-    int buffer_manager_pinnew(char *fileName, void_ptr *buffer, table_info *tableInfo);
+    int buffer_manager_pinnew(char *fileName, void_ptr *buffer, TableInfo *tableInfo);
 
     int buffer_manager_unpin(MemoryBuffer *buffer);
 

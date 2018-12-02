@@ -631,8 +631,8 @@ int dongmendb_shell_handle_cmd_desc(dongmendb_shell_handle_sql_t *ctx, struct ha
     if (ctx->db) {
         char *token = new_id_name();
         strcpy(token, tokens[1]);
-        table_info *tableInfo = ctx->db->tableManager->table_manager_get_tableinfo(token, ctx->db->tx);
-        table_info_free(tableInfo);
+        TableInfo *tableInfo = ctx->db->tableManager->table_manager_get_tableinfo(token, ctx->db->tx);
+        tableInfo->table_info_free();
         free(token);
     }
     return DONGMENDB_OK;

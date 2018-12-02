@@ -31,14 +31,14 @@ typedef struct record_page_ record_page;
 
 class RecordFile {
 public:
-    table_info *tableInfo;
+    TableInfo *tableInfo;
     Transaction *tx;
     char *fileName;
     record_page *recordPage;
     int currentBlkNum;
 
 
-    RecordFile(table_info *tableInfo,
+    RecordFile(TableInfo *tableInfo,
                            Transaction *tx);
 
     int record_file_close();
@@ -101,20 +101,29 @@ typedef struct integer_ {
 /**
  * 描述数据表的结构信息
  */
-typedef struct table_info_ {
+class TableInfo {
+public:
     vector<char*> fieldsName;
     map<string, field_info*> *fields;
     map< unsigned int, int> *offsets;
     int recordLen;
     char *tableName;
-} table_info;
+
+
+    TableInfo(const char *tableName,  vector<char*> fieldsName,  map<string, field_info*>  *fields);
+
+    int table_info_free();
+
+    int table_info_offset(const char *fieldName);
+
+} ;
 
 /**
  * 管理一个block中的记录。
  */
 typedef struct record_page_ {
     DiskBlock *diskBlock;
-    table_info *tableInfo;
+    TableInfo *tableInfo;
     Transaction *tx;
     int slotSize;
     int currentSlot;
@@ -127,13 +136,7 @@ typedef struct record_id_ {
 
 field_info *field_info_create(enum data_type type, int length, char* fieldName);
 
-table_info *table_info_create(const char *tableName,  vector<char*> fieldsName,  map<string, field_info*>  *fields);
-
-int table_info_free(table_info *tableInfo);
-
-int table_info_offset(table_info *tableInfo, const char *fieldName);
-
-record_page *record_page_create(Transaction *tx, table_info *tableInfo, DiskBlock *diskBlock);
+record_page *record_page_create(Transaction *tx, TableInfo *tableInfo, DiskBlock *diskBlock);
 
 int record_page_close(record_page *recordPage);
 

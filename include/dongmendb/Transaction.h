@@ -35,7 +35,7 @@ public:
     int buffer_list_unpin(DiskBlock *block);
     int buffer_list_unpin_all();
     MemoryBuffer *buffer_list_get_buffer(DiskBlock *block);
-    int buffer_list_pin_new(char *fileName, void_ptr *block, table_info *tableInfo);
+    int buffer_list_pin_new(char *fileName, void_ptr *block, TableInfo *tableInfo);
 
 } ;
 
@@ -61,7 +61,7 @@ public:
     int transaction_setstring(DiskBlock *block, int offset, const char *value);
 
     int transaction_size(char *fileName);
-    int transaction_append(char *fileName, table_info *tableInfo);
+    int transaction_append(char *fileName, TableInfo *tableInfo);
 
     int transaction_next_txnum();
 } ;

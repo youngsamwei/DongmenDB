@@ -20,7 +20,7 @@
     tableMetaFieldsName.push_back(fn_tablename);
     tableMetaFieldsName.push_back(fn_reclength);
 
-    this->tcatInfo = table_info_create("tablecat", tableMetaFieldsName, tableDescfields);
+    this->tcatInfo = new TableInfo("tablecat", tableMetaFieldsName, tableDescfields);
 
     map<string, field_info*> *fieldDescfields  = new map<string, field_info*>();
 
@@ -46,7 +46,7 @@
     fieldMetaFieldsName.push_back("offset");
 
     this->fcatInfo =
-            table_info_create("fieldcat", fieldMetaFieldsName, fieldDescfields);
+            new TableInfo("fieldcat", fieldMetaFieldsName, fieldDescfields);
 
     if (isNew) {
         table_manager_create_table( "tablecat", tableMetaFieldsName, tableDescfields, tx);
@@ -88,7 +88,7 @@ int TableManager::table_manager_create_table(char *tableName, vector<char*> fiel
     tcatFile->record_file_before_first();
 
 
-    table_info *tableInfo = table_info_create(tableName, fieldsName, fields);
+    TableInfo *tableInfo = new TableInfo(tableName, fieldsName, fields);
     /*增加元数据到table描述表中*/
     tcatFile->record_file_insert();
     tcatFile-> record_file_set_string("tablename", tableName);
@@ -119,7 +119,7 @@ int TableManager::table_manager_create_table(char *tableName, vector<char*> fiel
     return DONGMENDB_OK;
 };
 
-table_info *TableManager::table_manager_get_tableinfo(const char *tableName, Transaction *tx) {
+TableInfo *TableManager::table_manager_get_tableinfo(const char *tableName, Transaction *tx) {
     RecordFile *tcatFile = new RecordFile(this->tcatInfo, tx);
 
     int recordLen = -1;
@@ -156,7 +156,7 @@ table_info *TableManager::table_manager_get_tableinfo(const char *tableName, Tra
     }
     fcatFile->record_file_close();
     free(fcatFile);
-    table_info *tableInfo = table_info_create(tableName, fieldsName, fields);
+    TableInfo *tableInfo = new TableInfo(tableName, fieldsName, fields);
     tableInfo->recordLen = recordLen;
     return tableInfo;
 };

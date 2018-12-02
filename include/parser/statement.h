@@ -19,7 +19,7 @@
 using namespace std;
 
 typedef struct sql_stmt_create_ {
-    table_info *tableInfo;
+    TableInfo *tableInfo;
 
     Constraint_t *constraints;
 

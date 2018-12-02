@@ -13,7 +13,7 @@ class TableScan : public Scan {
 
 public:
     RecordFile *m_recordFile;
-    table_info *m_tableInfo;
+    TableInfo *m_tableInfo;
 
     TableScan(DongmenDB *db, string tableName, Transaction *tx);
 

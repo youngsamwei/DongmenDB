@@ -30,19 +30,19 @@ using  namespace std;
  */
 class MemoryBuffer;
 class FileManager;
-typedef struct table_info_ table_info;
+class TableInfo;
 
 /**
  * 描述保存在磁盘上的块
  */
 class DiskBlock {
 public:
-    table_info *tableInfo;
+    TableInfo *tableInfo;
     char *fileName;
     int blkNum;
 
 
-    DiskBlock(char *fileName, int blockNum, table_info *tableInfo);
+    DiskBlock(char *fileName, int blockNum, TableInfo *tableInfo);
 
     char *disk_block_get_num_string();
 } ;
@@ -63,8 +63,8 @@ public:
 
     int memory_page_write(DiskBlock *block);
 
-    int memory_page_append(MemoryBuffer *memoryBuffer, char *fileName, table_info *tableInfo);
-    int memory_page_record_formatter(table_info *tableInfo);
+    int memory_page_append(MemoryBuffer *memoryBuffer, char *fileName, TableInfo *tableInfo);
+    int memory_page_record_formatter(TableInfo *tableInfo);
     int memory_page_getint(int offset);
     int memory_page_setint(int offset, int val);
 
@@ -92,7 +92,7 @@ public:
 
     int file_manager_write(MemoryPage *memoryPage, DiskBlock *diskBlock);
 
-    int file_manager_append(MemoryBuffer *memoryBuffer, char *fileName, table_info *tableInfo);
+    int file_manager_append(MemoryBuffer *memoryBuffer, char *fileName, TableInfo *tableInfo);
 
     int file_manager_size(char *fileName);
 

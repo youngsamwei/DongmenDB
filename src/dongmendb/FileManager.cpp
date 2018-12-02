@@ -40,7 +40,7 @@ int FileManager::file_manager_write(MemoryPage *memoryPage, DiskBlock *diskBlock
     fwrite(memoryPage->contents, sizeof(char), size, fp);
 };
 
-int FileManager::file_manager_append(MemoryBuffer *memoryBuffer, char *fileName, table_info *tableInfo) {
+int FileManager::file_manager_append(MemoryBuffer *memoryBuffer, char *fileName, TableInfo *tableInfo) {
     int newBlockNum = file_manager_size( fileName);
     DiskBlock *diskBlock = new DiskBlock(fileName, newBlockNum, tableInfo);
 
@@ -111,7 +111,7 @@ int FileManager::file_manager_closeallfile(){
 
 }
 
-DiskBlock::DiskBlock(char *fileName, int blockNum, table_info *tableInfo) {
+DiskBlock::DiskBlock(char *fileName, int blockNum, TableInfo *tableInfo) {
 
     this->fileName = fileName;
     this->blkNum = blockNum;
@@ -142,7 +142,7 @@ int MemoryPage::memory_page_write(DiskBlock *block) {
     this->fileManager->file_manager_write(this, block);
 };
 
-int MemoryPage::memory_page_append(MemoryBuffer *memoryBuffer, char *fileName, table_info *tableInfo) {
+int MemoryPage::memory_page_append(MemoryBuffer *memoryBuffer, char *fileName, TableInfo *tableInfo) {
     memoryBuffer->contents->fileManager-> file_manager_append( memoryBuffer, fileName, tableInfo);
 };
 
@@ -153,7 +153,7 @@ int MemoryPage::memory_page_append(MemoryBuffer *memoryBuffer, char *fileName, t
  * @param tableInfo
  * @return
  */
-int MemoryPage::memory_page_record_formatter(table_info *tableInfo) {
+int MemoryPage::memory_page_record_formatter(TableInfo *tableInfo) {
 //    memset(contents->contents, 0, DISK_BOLCK_SIZE);
     /*保留一个整型位置保存slot的使用状态,默认RECORD_PAGE_EMPTY*/
     int recsize = tableInfo->recordLen + INT_SIZE;

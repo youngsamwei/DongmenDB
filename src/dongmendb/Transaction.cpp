@@ -78,7 +78,7 @@ int Transaction::transaction_size(char *fileName) {
     return this->db->fileManager->file_manager_size(fileName);
 }
 
-int Transaction::transaction_append(char *fileName, table_info *tableInfo) {
+int Transaction::transaction_append(char *fileName, TableInfo *tableInfo) {
     //concurrency_manager_xlock
     void_ptr *pblock = (void_ptr *) malloc(sizeof(void_ptr *));
     this->bufferList->buffer_list_pin_new( fileName, pblock, tableInfo);
@@ -145,7 +145,7 @@ MemoryBuffer *BufferList::buffer_list_get_buffer(DiskBlock *block) {
     return buffer1;
 };
 
-int BufferList::buffer_list_pin_new(char *fileName, void_ptr *pblock, table_info *tableInfo) {
+int BufferList::buffer_list_pin_new(char *fileName, void_ptr *pblock, TableInfo *tableInfo) {
     void_ptr *pbuffer = (void_ptr *) malloc(sizeof(void_ptr *));
     int r = this->bufferManager-> buffer_manager_pinnew( fileName, pbuffer, tableInfo);
     MemoryBuffer *buffer;

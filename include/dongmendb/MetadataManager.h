@@ -33,8 +33,8 @@ typedef struct field_info_ field_info;
 
 class TableManager {
 public:
-    table_info *tcatInfo;
-    table_info *fcatInfo;
+    TableInfo *tcatInfo;
+    TableInfo *fcatInfo;
 
     TableManager(int isNew, Transaction *tx);
 
@@ -42,7 +42,7 @@ public:
                                    map<string, field_info*> *fields,
                                    Transaction *tx);
 
-    table_info *table_manager_get_tableinfo(const char *tableName, Transaction *tx);
+    TableInfo *table_manager_get_tableinfo(const char *tableName, Transaction *tx);
 
 /*语义检查：表是否存在，在src_experiment\exp_02_semantic\exp_02_01_table_exists.c中实现*/
     int semantic_check_table_exists(char *tableName, Transaction *tx);

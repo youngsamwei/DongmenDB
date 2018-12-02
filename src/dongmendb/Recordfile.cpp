@@ -6,7 +6,7 @@
 #include <iostream>
 #include "dongmendb/Recordfile.h"
 
-RecordFile::RecordFile(table_info *tableInfo,
+RecordFile::RecordFile(TableInfo *tableInfo,
                        Transaction *tx) {
 
     this->tableInfo = tableInfo;
@@ -136,19 +136,18 @@ field_info *field_info_create(enum data_type type, int length, char* fieldName) 
     return fieldInfo;
 };
 
-table_info *table_info_create(const char *tableName, vector<char*> fieldsName,  map<string, field_info*>  *lfields) {
+TableInfo::TableInfo (const char *tableName, vector<char*> fieldsName,  map<string, field_info*>  *lfields) {
 
-    table_info *tableInfo = (table_info *) malloc(sizeof(table_info));
-    tableInfo->tableName = new_id_name();
-    strcpy( tableInfo->tableName, tableName);
-    tableInfo->fieldsName = fieldsName;
-    tableInfo->fields = lfields;
+    this->tableName = new_id_name();
+    strcpy( this->tableName, tableName);
+    this->fieldsName = fieldsName;
+    this->fields = lfields;
 
     /*TODO：需要释放*/
 //
     std::map<unsigned int, int> *lfs = new std::map<unsigned int, int>();
 
-    tableInfo->recordLen = 0;
+    this->recordLen = 0;
     int pos = 0;
 
     int count = fieldsName.size() - 1;
@@ -168,24 +167,23 @@ table_info *table_info_create(const char *tableName, vector<char*> fieldsName,  
         }
 
     }
-    tableInfo->offsets = lfs;
-    tableInfo->recordLen = pos;
-    return tableInfo;
+    this->offsets = lfs;
+    this->recordLen = pos;
 };
 
-int table_info_free(table_info *tableInfo) {
+int TableInfo::table_info_free() {
     /*free hashmap offsets*/
     // free hashmap fields
     // free arraylist fieldsName
     return DONGMENDB_OK;
 }
 
-int table_info_offset(table_info *tableInfo, const char *fieldName) {
+int TableInfo::table_info_offset( const char *fieldName) {
     unsigned int fid = bkdr_hash(fieldName);
-    return tableInfo->offsets->find(fid)->second;
+    return offsets->find(fid)->second;
 };
 
-record_page *record_page_create(Transaction *tx, table_info *tableInfo, DiskBlock *diskBlock) {
+record_page *record_page_create(Transaction *tx, TableInfo *tableInfo, DiskBlock *diskBlock) {
     record_page *recordPage = (record_page *) malloc(sizeof(record_page));
     recordPage->diskBlock = diskBlock;
     recordPage->tx = tx;
