@@ -3,6 +3,35 @@
 
 #include "common.h"
 
+class Literal{
+public:
+    enum data_type t;
+    char *original_value;
+
+    Literal(enum data_type t, char *original_value){
+        this->t = t;
+        this->original_value = strdup(original_value);
+    }
+};
+
+class IntLiteral : public Literal{
+public:
+    int value;
+
+    IntLiteral(enum data_type t, char *original_value) : Literal(t, original_value){
+        this->value= atoi(original_value);
+    }
+};
+
+class DoubleLiteral : public Literal{
+public:
+    double value;
+
+    DoubleLiteral(enum data_type t, char *original_value) : Literal(t, original_value){
+        this->value= atof(original_value);
+    }
+};
+
 union LitVal {
     int ival;
     double dval;
