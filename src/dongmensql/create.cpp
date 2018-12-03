@@ -119,7 +119,7 @@ void Table_print(Table_t *table)
         if (first) first = 0;
         else printf(",\n");
         printf("\t%s %s", col->name, typeToString(col->type, buf));
-        Constraint_printList(col->constraints);
+        col->Constraint_printList();
         if (++count == 10) break;
     }
     printf("\n)\n");

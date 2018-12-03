@@ -44,20 +44,20 @@ size_t Column::Column_getSize() {
 }
 
 
-void Constraint_printList(Constraint_t *constraints) {
+void Column::Constraint_printList() {
     int first = 1;
-    if (constraints) {
-        printf(" [");
-        for (; constraints; constraints = constraints->next) {
-            if (first) {
-                first = 0;
-            } else {
-                printf(", ");
-            }
-            Constraint_print(constraints);
-        }
-        printf("]");
-    }
+//    if (constraints) {
+//        printf(" [");
+//        for (; constraints; constraints = constraints->next) {
+//            if (first) {
+//                first = 0;
+//            } else {
+//                printf(", ");
+//            }
+//            Constraint_print(constraints);
+//        }
+//        printf("]");
+//    }
 }
 
 ForeignKeyRef::ForeignKeyRef(const char *cname) {
@@ -71,12 +71,12 @@ ForeignKeyRef:: ForeignKeyRef(const char *foreign_tname,
     table_col_name = foreign_cname;
 }
 
-Column::Column(const char *name, enum data_type type, Constraint_t *constraints) {
-    this->name = strdup(name);
-    this->type = type;
-    this->constraints = constraints;
-
-}
+//Column::Column(const char *name, enum data_type type, Constraint_t *constraints) {
+//    this->name = strdup(name);
+//    this->type = type;
+//    this->constraints = constraints;
+//
+//}
 
 Column::Column(const char *name, enum data_type type, map<string, Constraint*> *constraints) {
     this->name = strdup(name);
@@ -85,7 +85,7 @@ Column::Column(const char *name, enum data_type type, map<string, Constraint*> *
 
 }
 
-void Constraint_print(void *constraint_voidp) {
+void Constraint::Constraint_print(void *constraint_voidp) {
     Constraint_t *constraint = (Constraint_t *) constraint_voidp;
     switch (constraint->t) {
         case CONS_DEFAULT:

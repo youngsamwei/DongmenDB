@@ -48,6 +48,10 @@ public:
         this->type = type;
         this->column = column;
     }
+
+
+    void Constraint_print(void *constraint);
+
 };
 
 class NullConstraint : public Constraint{
@@ -117,10 +121,12 @@ public:
     size_t offset; /* offset in bytes from the beginning of the row */
     Column *next;
 
-    Column(const char *name, enum data_type type, Constraint_t *constraints);
+//    Column(const char *name, enum data_type type, Constraint_t *constraints);
     Column(const char *name, enum data_type type,  map<string, Constraint*> *cons);
 
     size_t Column_getSize();
+
+    void Constraint_printList();
 
 } ;
 
@@ -131,8 +137,5 @@ public:
     ColumnReference(char *allName);
 
 } ;
-
-void Constraint_print(void *constraint);
-void Constraint_printList(Constraint_t *constraints);
 
 #endif
