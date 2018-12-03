@@ -4,6 +4,11 @@
 #include "parser/expression.h"
 #include "literal.h"
 
+#include <map>
+#include <string>
+
+using namespace std;
+
 enum constraint_type {
     CONS_NOT_NULL,
     CONS_UNIQUE,
@@ -16,6 +21,7 @@ enum constraint_type {
 };
 
 class Expression;
+class Column;
 
 class ForeignKeyRef {
 public:
@@ -27,6 +33,55 @@ public:
                                      const char *foreign_cname);
 } ;
 
+/*约束的基础类*/
+class Constraint{
+public:
+    /*约束名称*/
+    char *name;
+    /*约束类型*/
+    enum constraint_type type;
+    /*约束影响的列,除主键和check外，外键，unique，default，null均是影响单列外*/
+    Column *column;
+
+    Constraint(char *name, enum constraint_type type, Column *column){
+        this->name = name;
+        this->type = type;
+        this->column = column;
+    }
+};
+
+class NullConstraint : public Constraint{
+public:
+    bool isNull;
+
+    NullConstraint(char *name, enum constraint_type type, Column *column, bool isNull) : Constraint(name, type, column){
+        this->isNull = isNull;
+    }
+};
+
+class UniqueConstraint : public Constraint{
+
+};
+
+class ForeignKeyConstaint : public Constraint{
+public:
+    ForeignKeyRef *ref;
+};
+
+class DefaultConstraint : public Constraint{
+public:
+    Literal_t *default_val;
+};
+
+class CheckConstraint : public Constraint{
+public:
+    Expression *check;
+};
+
+class PrimaryKeyConstraint : public Constraint {
+public:
+    map<string, Column*> columns;
+};
 typedef struct Constraint_s Constraint_t;
 typedef struct Constraint_s {
     enum constraint_type t;
