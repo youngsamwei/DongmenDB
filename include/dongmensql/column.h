@@ -116,10 +116,10 @@ class Column {
 public:
     char *name;
     enum data_type type;
-    Constraint_t *constraints;
+//    Constraint_t *constraints;
     map<string, Constraint*> *cons;
-    size_t offset; /* offset in bytes from the beginning of the row */
-    Column *next;
+//    size_t offset; /* offset in bytes from the beginning of the row */
+//    Column *next;
 
 //    Column(const char *name, enum data_type type, Constraint_t *constraints);
     Column(const char *name, enum data_type type,  map<string, Constraint*> *cons);

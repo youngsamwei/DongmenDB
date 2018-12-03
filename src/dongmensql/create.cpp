@@ -111,18 +111,18 @@ void TableReference_free(TableReference_t *tref)
 void Table_print(Table_t *table)
 {
     Column *col = table->columns;
-    int first = 1, count = 0;
-    char buf[100];
-    printf("Table %s (\n", table->name);
-    for (; col; col = col->next)
-    {
-        if (first) first = 0;
-        else printf(",\n");
-        printf("\t%s %s", col->name, typeToString(col->type, buf));
+//    int first = 1, count = 0;
+//    char buf[100];
+//    printf("Table %s (\n", table->name);
+//    for (; col; col = col->next)
+//    {
+//        if (first) first = 0;
+//        else printf(",\n");
+//        printf("\t%s %s", col->name, typeToString(col->type, buf));
         col->Constraint_printList();
-        if (++count == 10) break;
-    }
-    printf("\n)\n");
+//        if (++count == 10) break;
+//    }
+//    printf("\n)\n");
 }
 
 KeyDec_t *KeyDec_append(KeyDec_t *decs, KeyDec_t *dec)

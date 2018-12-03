@@ -22,12 +22,12 @@ static void deleteConstraint_ts(Constraint_t *constraint) {
 }
 
 size_t Column::Column_getSize() {
-    Constraint_t *cons = this->constraints;
-    while (cons) {
-        if (cons->t == CONS_SIZE)
-            return cons->constraint.size;
-        cons = cons->next;
-    }
+//    Constraint_t *cons = this->constraints;
+//    while (cons) {
+//        if (cons->t == CONS_SIZE)
+//            return cons->constraint.size;
+//        cons = cons->next;
+//    }
     switch (this->type) {
         case DATA_TYPE_CHAR:
             return sizeof(char);
@@ -45,19 +45,7 @@ size_t Column::Column_getSize() {
 
 
 void Column::Constraint_printList() {
-    int first = 1;
-//    if (constraints) {
-//        printf(" [");
-//        for (; constraints; constraints = constraints->next) {
-//            if (first) {
-//                first = 0;
-//            } else {
-//                printf(", ");
-//            }
-//            Constraint_print(constraints);
-//        }
-//        printf("]");
-//    }
+
 }
 
 ForeignKeyRef::ForeignKeyRef(const char *cname) {
