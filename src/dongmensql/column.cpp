@@ -3,57 +3,6 @@
 
 static ssize_t size_constraint = -1;
 
-Constraint_t *NotNull(void) {
-    Constraint_t *con = (Constraint_t *) calloc(1, sizeof(Constraint_t));
-    con->t = CONS_NOT_NULL;
-    return con;
-}
-
-Constraint_t *AutoIncrement(void) {
-    Constraint_t *con = (Constraint_t *) calloc(1, sizeof(Constraint_t));
-    con->t = CONS_AUTO_INCREMENT;
-    return con;
-}
-
-Constraint_t *PrimaryKey(void) {
-    Constraint_t *con = (Constraint_t *) calloc(1, sizeof(Constraint_t));
-    con->t = CONS_PRIMARY_KEY;
-    return con;
-}
-
-Constraint_t *ForeignKey(ForeignKeyRef *fkr) {
-    Constraint_t *con = (Constraint_t *) calloc(1, sizeof(Constraint_t));
-    con->t = CONS_FOREIGN_KEY;
-    con->constraint.ref = fkr;
-    return con;
-}
-
-Constraint_t *Default(Literal_t *val) {
-    Constraint_t *con = (Constraint_t *) calloc(1, sizeof(Constraint_t));
-    con->t = CONS_DEFAULT;
-    con->constraint.default_val = val;
-    return con;
-}
-
-Constraint_t *Unique(void) {
-    Constraint_t *con = (Constraint_t *) calloc(1, sizeof(Constraint_t));
-    con->t = CONS_UNIQUE;
-    return con;
-}
-
-Constraint_t *Check(Expression *cond) {
-    Constraint_t *con = (Constraint_t *) calloc(1, sizeof(Constraint_t));
-    con->t = CONS_CHECK;
-    con->constraint.check = cond;
-    return con;
-}
-
-Constraint_t *ColumnSize(unsigned size) {
-    Constraint_t *con = (Constraint_t *) calloc(1, sizeof(Constraint_t));
-    con->t = CONS_SIZE;
-    con->constraint.size = size;
-    return con;
-}
 
 static void deleteConstraint_ts(Constraint_t *constraint) {
     if (constraint) {
@@ -142,23 +91,7 @@ Column::Column(const char *name, enum data_type type, Constraint_t *constraints)
     this->name = strdup(name);
     this->type = type;
     this->constraints = constraints;
-    /* if the parser found a size constraint, then size_constraitn will be > 0 */
-    if (size_constraint > 0) {
-        Constraint_append(this->constraints, ColumnSize(size_constraint));
-        size_constraint = -1;
-    }
-}
 
-void *Column::Column_addConstraint(Constraint_t *constraints) {
-    Constraint_append(this->constraints, constraints);
-}
-
-Constraint_t *Constraint_append(Constraint_t *constraints, Constraint_t *constraint) {
-    if (constraints == NULL)
-        constraints = constraint;
-    else
-        constraints->next = constraint;
-    return constraints;
 }
 
 void Constraint_print(void *constraint_voidp) {

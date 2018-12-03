@@ -8,14 +8,14 @@ Table_t *Table_addForeignKey(Table_t *table, ForeignKeyRef *fkr)
     {
         /* find the column that matches the cname given, and add this reference */
         Column *col = table->columns;
-        for (; col; col=col->next)
-        {
-            if (!strcmp(col->name, fkr->col_name))
-            {
-                col->Column_addConstraint( ForeignKey(fkr));
-                return table;
-            }
-        }
+//        for (; col; col=col->next)
+//        {
+//            if (!strcmp(col->name, fkr->col_name))
+//            {
+//                col->Column_addConstraint( ForeignKey(fkr));
+//                return table;
+//            }
+//        }
         fprintf(stderr, "Error: column %s not in table\n", fkr->col_name);
         return table;
     }
@@ -75,14 +75,14 @@ Table_t *Table_make(char *name, Column *columns, KeyDec_t *decs)
 static Table_t *Table_addPrimaryKey(Table_t *table, const char *col_name)
 {
     Column *col = table->columns;
-    for (; col; col = col->next)
-    {
-        if (!strcmp(col->name, col_name))
-        {
-            col->Column_addConstraint( PrimaryKey());
-            return table;
-        }
-    }
+//    for (; col; col = col->next)
+//    {
+//        if (!strcmp(col->name, col_name))
+//        {
+//            col->Column_addConstraint( PrimaryKey());
+//            return table;
+//        }
+//    }
     return NULL;
 }
 

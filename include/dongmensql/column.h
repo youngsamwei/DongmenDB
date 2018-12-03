@@ -116,7 +116,6 @@ public:
     size_t offset; /* offset in bytes from the beginning of the row */
     Column *next;
 
-    void *Column_addConstraint(Constraint_t *constraints);
     Column(const char *name, enum data_type type, Constraint_t *constraints);
     Column(){};
     Column *Column_append(Column *column);
@@ -144,19 +143,6 @@ public:
     ColumnReference(char *allName);
 
 } ;
-
-
-
-Constraint_t *NotNull(void);
-Constraint_t *AutoIncrement(void);
-Constraint_t *PrimaryKey(void);
-Constraint_t *ForeignKey(ForeignKeyRef *fkr);
-Constraint_t *Default(Literal_t *val);
-Constraint_t *Unique(void);
-Constraint_t *Check(Expression *cond);
-Constraint_t *ColumnSize(unsigned size);
-Constraint_t *Constraint_append(Constraint_t *constraints, Constraint_t *constraint);
-
 
 void Constraint_print(void *constraint);
 void Constraint_printList(Constraint_t *constraints);
