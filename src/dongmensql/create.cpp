@@ -68,7 +68,7 @@ Table_t *Table_make(char *name, Column *columns, KeyDec_t *decs)
     Table_t *new_table = (Table_t *)calloc(1, sizeof(Table_t));
     new_table->name = name;
     new_table->columns = columns;
-    columns->Column_getOffsets();
+//    columns->Column_getOffsets();
     return Table_addKeyDecs(new_table, decs);
 }
 
@@ -89,7 +89,7 @@ static Table_t *Table_addPrimaryKey(Table_t *table, const char *col_name)
 void Table_free(void *table_vptr)
 {
     Table_t *table = (Table_t *)table_vptr;
-    table->columns->Column_freeList();
+//    table->columns->Column_freeList();
     free(table->name);
     free(table);
 }

@@ -124,15 +124,7 @@ public:
     int Column_compareByName(const void *col1, const void *col2);
     void *Column_copy(void *col);
 
-    void Column_getOffsets();
-    void Column_getOffsets_r(size_t offset);
-    void Column_getOffsets(Column *cols);
-
     size_t Column_getSize();
-/* sets the size of the next column */
-    void Column_setSize(ssize_t size);
-
-    void Column_freeList();
 
 } ;
 

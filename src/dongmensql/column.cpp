@@ -21,14 +21,6 @@ static void deleteConstraint_ts(Constraint_t *constraint) {
     }
 }
 
-void Column::Column_freeList() {
-        Column *next = this->next;
-        free(this->name);
-        deleteConstraint_ts(this->constraints);
-        free(this);
-    next->Column_freeList();
-}
-
 size_t Column::Column_getSize() {
     Constraint_t *cons = this->constraints;
     while (cons) {
@@ -51,14 +43,6 @@ size_t Column::Column_getSize() {
     return 0;
 }
 
-void Column::Column_getOffsets_r(size_t offset) {
-    this->offset = offset;
-    this->next->Column_getOffsets_r( this->Column_getSize());
-}
-
-void Column::Column_getOffsets() {
-    this->Column_getOffsets_r( 0);
-}
 
 void Constraint_printList(Constraint_t *constraints) {
     int first = 1;
@@ -127,10 +111,6 @@ void Constraint_print(void *constraint_voidp) {
         default:
             printf("Unknown constraint type");
     }
-}
-
-void Column::Column_setSize(ssize_t size) {
-    size_constraint = size;
 }
 
 Column *Column::Column_append(Column *col2) {
