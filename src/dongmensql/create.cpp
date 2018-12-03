@@ -90,6 +90,7 @@ void Table_free(void *table_vptr)
 {
     Table_t *table = (Table_t *)table_vptr;
 //    table->columns->Column_freeList();
+    table->columns->Constraint_printList();
     free(table->name);
     free(table);
 }
@@ -108,22 +109,7 @@ void TableReference_free(TableReference_t *tref)
     free(tref);
 }
 
-void Table_print(Table_t *table)
-{
-    Column *col = table->columns;
-//    int first = 1, count = 0;
-//    char buf[100];
-//    printf("Table %s (\n", table->name);
-//    for (; col; col = col->next)
-//    {
-//        if (first) first = 0;
-//        else printf(",\n");
-//        printf("\t%s %s", col->name, typeToString(col->type, buf));
-        col->Constraint_printList();
-//        if (++count == 10) break;
-//    }
-//    printf("\n)\n");
-}
+
 
 KeyDec_t *KeyDec_append(KeyDec_t *decs, KeyDec_t *dec)
 {
@@ -190,10 +176,10 @@ Create_t *Create_fromIndex(Index_t *idx)
 void Create_print(Create_t *cre)
 {
     printf("CREATE ");
-    if (cre->t == CREATE_TABLE)
-        Table_print(cre->table);
-    else
-        Index_print(cre->index);
+//    if (cre->t == CREATE_TABLE)
+//        Table_print(cre->table);
+//    else
+//        Index_print(cre->index);
 }
 
 void Create_free(Create_t *cre)

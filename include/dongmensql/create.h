@@ -46,7 +46,7 @@ typedef struct Create_s {
 } Create_t;
 
 Table_t *Table_make(char *name, Column *columns, KeyDec_t *decs);
-void Table_print(Table_t *table);
+//void Table_print(Table_t *table);
 void Table_free(void *table); /* void for generic */
 Table_t *Table_addKeyDecs(Table_t *table, KeyDec_t *decs);
 
