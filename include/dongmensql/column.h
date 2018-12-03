@@ -60,27 +60,41 @@ public:
 };
 
 class UniqueConstraint : public Constraint{
-
+    UniqueConstraint(char *name, enum constraint_type type, Column *column) : Constraint(name, type, column){
+    }
 };
 
 class ForeignKeyConstaint : public Constraint{
 public:
     ForeignKeyRef *ref;
+
+    ForeignKeyConstaint(char *name, enum constraint_type type, Column *column, ForeignKeyRef *ref) : Constraint(name, type, column){
+        this->ref = ref;
+    }
 };
 
 class DefaultConstraint : public Constraint{
 public:
     Literal_t *default_val;
+    DefaultConstraint(char *name, enum constraint_type type, Column *column, Literal_t *default_val) : Constraint(name, type, column){
+        this->default_val = default_val;
+    }
 };
 
 class CheckConstraint : public Constraint{
 public:
     Expression *check;
+    CheckConstraint(char *name, enum constraint_type type, Column *column, Expression *check) : Constraint(name, type, column){
+        this->check = check;
+    }
 };
 
 class PrimaryKeyConstraint : public Constraint {
 public:
     map<string, Column*> columns;
+    PrimaryKeyConstraint(char *name, enum constraint_type type, Column *column,  map<string, Column*> columns) : Constraint(name, type, column){
+        this->columns = columns;
+    }
 };
 typedef struct Constraint_s Constraint_t;
 typedef struct Constraint_s {
