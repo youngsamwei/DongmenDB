@@ -3,50 +3,11 @@
 
 static ssize_t size_constraint = -1;
 
-
-static void deleteConstraint_ts(Constraint_t *constraint) {
-    if (constraint) {
-        Constraint_t *next = constraint->next;
-        switch (constraint->t) {
-            case CONS_DEFAULT:
-                Literal_free(constraint->constraint.default_val);
-                break;
-            case CONS_CHECK:
-                constraint->constraint.check->expression_free();
-                break;
-            default:
-                break;
-        }
-        deleteConstraint_ts(next);
-    }
-}
-
 size_t Column::Column_getSize() {
-//    Constraint_t *cons = this->constraints;
-//    while (cons) {
-//        if (cons->t == CONS_SIZE)
-//            return cons->constraint.size;
-//        cons = cons->next;
-//    }
-    switch (this->type) {
-        case DATA_TYPE_CHAR:
-            return sizeof(char);
-        case DATA_TYPE_DOUBLE:
-            return sizeof(double);
-        case DATA_TYPE_BOOLEAN:
-        case DATA_TYPE_INT:
-            return sizeof(int);
-        case DATA_TYPE_TEXT:
-            return 250; /* default text length */
-    }
 
     return 0;
 }
 
-
-void Column::Constraint_printList() {
-
-}
 
 ForeignKeyRef::ForeignKeyRef(const char *cname) {
     col_name = cname;

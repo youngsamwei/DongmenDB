@@ -90,7 +90,7 @@ void Table_free(void *table_vptr)
 {
     Table_t *table = (Table_t *)table_vptr;
 //    table->columns->Column_freeList();
-    table->columns->Constraint_printList();
+    table->columns->Column_getSize();
     free(table->name);
     free(table);
 }
