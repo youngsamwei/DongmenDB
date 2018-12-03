@@ -78,6 +78,13 @@ Column::Column(const char *name, enum data_type type, Constraint_t *constraints)
 
 }
 
+Column::Column(const char *name, enum data_type type, map<string, Constraint*> *constraints) {
+    this->name = strdup(name);
+    this->type = type;
+    this->cons = constraints;
+
+}
+
 void Constraint_print(void *constraint_voidp) {
     Constraint_t *constraint = (Constraint_t *) constraint_voidp;
     switch (constraint->t) {
