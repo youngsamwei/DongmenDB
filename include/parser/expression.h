@@ -107,7 +107,7 @@ public:
     TermType t;
     union {
         char *id;
-        Literal_t *val;
+        Literal *val;
         ColumnReference *ref;
         Func f;
     };

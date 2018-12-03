@@ -136,9 +136,8 @@ Expression *Parser::parseReadLiteral() {
         expr0 = new Expression(token->type, NULL);
         TermExpr *term = expr0->newTermExpr();
         term->t = TERM_LITERAL;
-        Literal_t *literal
-                = newLiteral(DATA_TYPE_INT);
-        literal->val.ival = atoi(token->text);
+        Literal *literal
+                = new IntLiteral(DATA_TYPE_INT, token->text);
         term->val = literal;
         expr0->term = term;
         parseEatToken();
@@ -148,8 +147,8 @@ Expression *Parser::parseReadLiteral() {
         expr0 = new Expression(TOKEN_STRING, NULL);
         TermExpr *term = expr0->newTermExpr();
         term->t = TERM_LITERAL;
-        Literal_t *literal
-                = newLiteral(DATA_TYPE_CHAR);
+        Literal *literal
+                = new Literal(DATA_TYPE_CHAR);
 
         /*去掉引号*/
         if (token->text[0] == '"') {
@@ -158,9 +157,9 @@ Expression *Parser::parseReadLiteral() {
             char *value = (char *) calloc(len, 1);
             strcpy(value, v);
             value[len - 1] = '\0';
-            literal->val.strval = value;
+            literal->original_value = value;
         }else{
-            literal->val.strval = strdup(token->text);
+            literal->original_value = strdup(token->text);
         }
 
         term->val = literal;

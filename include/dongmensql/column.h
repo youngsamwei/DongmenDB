@@ -79,8 +79,8 @@ public:
 
 class DefaultConstraint : public Constraint{
 public:
-    Literal_t *default_val;
-    DefaultConstraint(char *name, enum constraint_type type, Column *column, Literal_t *default_val) : Constraint(name, type, column){
+    Literal *default_val;
+    DefaultConstraint(char *name, enum constraint_type type, Column *column, Literal *default_val) : Constraint(name, type, column){
         this->default_val = default_val;
     }
 };
@@ -105,7 +105,7 @@ typedef struct Constraint_s {
     enum constraint_type t;
     union {
         ForeignKeyRef *ref;
-        Literal_t *default_val;
+        Literal *default_val;
         unsigned size;
         Expression *check;
     } constraint;

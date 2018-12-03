@@ -20,12 +20,13 @@ int Expression::printTermExpression(char *exprs, TermExpr *term) {
         } else if (term->t == TERM_COLREF) {
             strcat(exprs, term->ref->allName);
         } else if (term->t == TERM_LITERAL){
-            Literal_t *val = term->val;
+            Literal *val = term->val;
             if (val->t == DATA_TYPE_CHAR || val->t == DATA_TYPE_TEXT) {
-                strcat(exprs,val->val.strval);
+
+                strcat(exprs, val->original_value);
             }else if (val->t == DATA_TYPE_INT || val->t == DATA_TYPE_DOUBLE){
                 char *ival = (char *)calloc(20,1);
-                itoa(val->val.ival, ival, 10);
+                itoa(((IntLiteral*)val)->value, ival, 10);
                 strcat(exprs, ival);
             }
         } else if(term->t == TERM_FUNC){

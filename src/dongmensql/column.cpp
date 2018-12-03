@@ -39,7 +39,7 @@ void Constraint::Constraint_print(void *constraint_voidp) {
     switch (constraint->t) {
         case CONS_DEFAULT:
             printf("Default: ");
-            Literal_print(constraint->constraint.default_val);
+//            Literal_print(constraint->constraint.default_val);
             break;
         case CONS_PRIMARY_KEY:
             printf("Primary Key");

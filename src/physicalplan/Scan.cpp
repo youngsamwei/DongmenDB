@@ -193,7 +193,6 @@ Expression *Scan::evaluateExpression(Expression *expr, Scan *scan, variant *var)
                         var->type = DATA_TYPE_CHAR;
                         var->strValue = (char *) calloc(fi->length, 1);
                         string v = scan->getString(tableName, fieldName);
-//                        const char*v = scan->getString(tableName, fieldName).c_str();
                         strcpy(var->strValue, v.c_str());
                         return expr->nextexpr;
                     }
@@ -209,13 +208,14 @@ Expression *Scan::evaluateExpression(Expression *expr, Scan *scan, variant *var)
         }
         case TOKEN_DECIMAL: {
             var->type = DATA_TYPE_INT;
-            var->intValue = expr->term->val->val.ival;
+            IntLiteral *il = (IntLiteral*)expr->term->val;
+            var->intValue = il->value;
             return expr->nextexpr;
         }
         case TOKEN_STRING:
         case TOKEN_CHAR: {
             var->type = DATA_TYPE_CHAR;
-            var->strValue = strdup(expr->term->val->val.strval);
+            var->strValue = strdup(expr->term->val->original_value);
             return expr->nextexpr;
         }
         default:
