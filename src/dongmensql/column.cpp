@@ -113,24 +113,6 @@ void Constraint_print(void *constraint_voidp) {
     }
 }
 
-Column *Column::Column_append(Column *col2) {
-    return next->app_col(Column_append(col2));
-}
-
-Column *Column::app_col(Column *col2) {
-    next = col2;
-}
-
-int Column::Column_compareByName(const void *c1, const void *c2) {
-    return strcmp(((Column *) c1)->name, ((Column *) c2)->name);
-}
-
-void *Column::Column_copy(void *col) {
-    Column *copy = new Column();
-    copy->name = strdup(((Column *) col)->name);
-    copy->next = NULL; /* just in case */
-    return copy;
-}
 
 ColumnReference::ColumnReference(const char *tname, const char *cname) {
     if (tname) tableName = strdup(tname);

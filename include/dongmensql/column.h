@@ -117,12 +117,6 @@ public:
     Column *next;
 
     Column(const char *name, enum data_type type, Constraint_t *constraints);
-    Column(){};
-    Column *Column_append(Column *column);
-    Column *app_col(Column *col2);
-
-    int Column_compareByName(const void *col1, const void *col2);
-    void *Column_copy(void *col);
 
     size_t Column_getSize();
 
