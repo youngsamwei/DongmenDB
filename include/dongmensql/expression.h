@@ -11,7 +11,6 @@
 #include <dongmensql/literal.h>
 
 #include <utils/utils.h>
-#include "utils/opstack.h"
 #include "parser/Tokenizer.h"
 #include "parser/parser.h"
 
