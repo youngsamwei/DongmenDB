@@ -6,7 +6,7 @@
 #include <dongmendb/Recordfile.h>
 #include <utils/utils.h>
 #include <dongmensql/sqlstatement.h>
-#include <dongmensql/optimizer.h>
+#include <relationalalgebra/optimizer.h>
 #include <physicalplan/ExecutionPlan.h>
 #include <physicalplan/Scan.h>
 #include <physicalplan/Project.h>

@@ -6,7 +6,7 @@
 #define DONGMENDB_SQLSTATEMENT_H
 
 #include <dongmensql/column.h>
-#include <dongmensql/sra.h>
+#include <relationalalgebra/sra.h>
 #include <dongmendb/Recordfile.h>
 #include <dongmendb/SecurityManager.h>
 

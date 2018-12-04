@@ -13,7 +13,7 @@
 #include <utils/utils.h>
 #include <parser/Tokenizer.h>
 #include <parser/parser.h>
-#include <dongmensql/sra.h>
+#include <relationalalgebra/sra.h>
 
 
 class TestStmtOptimized : public TestStmtParser {

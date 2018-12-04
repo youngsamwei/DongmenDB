@@ -13,7 +13,7 @@
 #include <utils/utils.h>
 #include <parser/Tokenizer.h>
 #include <parser/parser.h>
-#include <dongmensql/sra.h>
+#include <relationalalgebra/sra.h>
 #include <physicalplan/ExecutionPlan.h>
 
 /* 2018-10-27 测试sql语句的基础类。

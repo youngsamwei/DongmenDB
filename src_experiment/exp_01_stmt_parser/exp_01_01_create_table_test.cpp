@@ -12,7 +12,7 @@
 #include "dongmendb/DongmenDB.h"
 #include "parser/Tokenizer.h"
 #include "parser/parser.h"
-#include "dongmensql/sra.h"
+#include "relationalalgebra/sra.h"
 
 
 int select(const char *sqlselect) {

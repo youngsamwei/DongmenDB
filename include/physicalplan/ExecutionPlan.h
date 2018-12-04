@@ -6,7 +6,7 @@
 #define DONGMENDB_EXECUTIONPLAN_H
 
 #include <dongmendb/DongmenDB.h>
-#include <dongmensql/sra.h>
+#include <relationalalgebra/sra.h>
 #include <dongmensql/sqlstatement.h>
 #include <physicalplan/Scan.h>
 
