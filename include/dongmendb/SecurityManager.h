@@ -158,13 +158,6 @@ public:
  */
     int security_manager_init(SecurityManager *securityManager);
 
-/**
- * 在 securitymanager.c 中实现
- * @param db
- * @return
- */
-    SecurityManager *security_manager_create(DongmenDB *db);
-
 
 } ;
 

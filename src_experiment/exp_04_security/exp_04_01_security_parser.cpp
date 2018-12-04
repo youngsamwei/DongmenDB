@@ -4,7 +4,6 @@
 
 #include <parser/parser.h>
 #include <dongmendb/SecurityManager.h>
-#include <dongmensql/statement.h>
 /**
  * 安全性管理实验需要实现：
  * 1. 安全性定义：语句解析

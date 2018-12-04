@@ -5,6 +5,8 @@
 #ifndef DONGMENDB_STATEMENTPARSER_H
 #define DONGMENDB_STATEMENTPARSER_H
 
+#include <dongmensql/sqlstatement.h>
+
 /* 在src_experiment\exp_01_stmt_parser\exp_01_03_select.c 中实现*/
 class SelectParser : public Parser {
 public:

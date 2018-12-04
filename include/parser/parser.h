@@ -7,7 +7,9 @@
 
 #include "Tokenizer.h"
 #include "dongmensql/expression.h"
+#include <dongmensql/sqlstatement.h>
 #include <dongmensql/column.h>
+#include <dongmendb/SecurityManager.h>
 
 /*
  * 定义parser的基础数据结构和共用的函数
@@ -16,20 +18,6 @@
 
 #define PARSER_MESSAGE_LENTTH 128
 
-typedef enum{
-    SQL_STMT_SELECT,
-    SQL_STMT_INSERT,
-    SQL_STMT_UPDATE,
-    SQL_STMT_DELETE,
-    SQL_STMT_CREATE_TABLE,
-    SQL_STMT_CREATE_USER,
-    SQL_STMT_CREATE_ROLE,
-    SQL_STMT_DROP_TABLE,
-    SQL_STMT_DROP_USER,
-    SQL_STMT_DROP_ROLE,
-    SQL_STMT_GRANT,
-    SQL_STMT_REVOKE
-}sql_stmt_type;
 
 /*语法分析状态类型*/
 typedef enum {
@@ -39,6 +27,9 @@ typedef enum {
 } ParserStateType;
 
 class Expression;
+class User;
+class Role;
+class Right;
 
 class Parser {
 public:
@@ -170,6 +161,16 @@ public:
 
 } ;
 
+
+class  sql_stmt_grant_revoke;
+
+User *parse_create_user(Parser *parser);
+
+Role *parse_create_role(Parser *parser);
+
+sql_stmt_grant_revoke *parse_grant(Parser *parser);
+
+sql_stmt_grant_revoke *parse_revoke(Parser *parser);
 
 
 

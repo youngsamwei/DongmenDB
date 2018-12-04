@@ -47,13 +47,14 @@ data JoinCondition = On Condition
 
 
 #include "create.h"
-#include "ra.h"
+#include "dongmensql/ra.h"
 #include <vector>
 
 using namespace std;
 
 /* Forward declarations */
 typedef struct SRA_s SRA_t;
+typedef struct RA_s RA_t;
 typedef struct JoinCondition_s JoinCondition_t;
 typedef struct TableReference_s TableReference_t;
 

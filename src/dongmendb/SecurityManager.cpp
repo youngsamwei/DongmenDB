@@ -5,18 +5,14 @@
 #include <dongmendb/DongmenDB.h>
 #include "dongmendb/SecurityManager.h"
 
-SecurityManager *security_manager_create(DongmenDB *db){
+int SecurityManager::security_manager_init(SecurityManager *securityManager){
 
 };
 
-int security_manager_init(SecurityManager *securityManager){
+User *SecurityManager::security_manager_get_user(const char *userName){
 
 };
 
-User *security_manager_get_user(const char *userName){
-
-};
-
-Role *security_manager_get_role(const char *roleName){
+Role *SecurityManager::security_manager_get_role(const char *roleName){
 
 };

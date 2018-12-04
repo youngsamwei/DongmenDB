@@ -7,6 +7,24 @@
 #include <stdarg.h>
 #include <stdbool.h>
 
+
+typedef enum sql_statement_type_ {
+    SQL_CREATE_DATABASE,
+    SQL_CREATE_TABLE,
+    SQL_CREATE_VIEW,
+    SQL_CREATE_INDEX,
+    SQL_CREATE_USER,
+    SQL_CREATE_ROLE,
+    SQL_DROP,
+    SQL_SELECT,
+    SQL_INSERT,
+    SQL_UPDATE,
+    SQL_DELETE,
+    SQL_GRANT,
+    SQL_REVOKE,
+    SQL_DENY
+} sql_statement_type;
+
 enum query_type {
     SELECT_Q, CREATE_T_Q, CREATE_I_Q, INSERT_Q, DELETE_Q
 };
