@@ -112,7 +112,7 @@ Expression *Expression::expression_print(Expression *expr, char *desc) {
         } else {
             printf("(");
         }
-        OPERATOR op = operators[expr->opType];
+        Operator op = operators[expr->opType];
 
         if (op.numbers == 1) {
             if (desc) {

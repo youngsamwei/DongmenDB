@@ -42,25 +42,34 @@ typedef enum {
     right2left
 } associativity;
 
-typedef struct {
+class Operator {
+public:
     int numbers;        // 操作数
     int icp;            // 优先级
     int isp;            // 优先级
     associativity ass;  // 结合性
     TokenType oper; // 操作符
-} OPERATOR;
+
+    Operator(int numbers, int icp, int isp, associativity ass, TokenType oper) {
+        this->numbers = numbers;        // 操作数
+        this->icp = icp;            // 优先级
+        this->isp = isp;            // 优先级
+        this->ass = ass;  // 结合性
+        this->oper = oper; // 操作符
+    };
+};
 
 // [操作数，入栈优先级，出栈优先级，结合性，运算符编号]
-static const OPERATOR operators[] = {
+static const Operator operators[] = {
         /* 算数运算 */
-        {2, 18, 1,  left2right, TOKEN_OPEN_PAREN},     // 左括号
-        {2, 18, 18, left2right, TOKEN_CLOSE_PAREN},    // 右括号
-        {2, 14, 14, left2right, TOKEN_POWER},     // 幂
+        Operator(2, 18, 1, left2right, TOKEN_OPEN_PAREN),     // 左括号
+        Operator(2, 18, 18, left2right, TOKEN_CLOSE_PAREN),    // 右括号
+        Operator(2, 14, 14, left2right, TOKEN_POWER),     // 幂
 
-        {2, 12, 12, left2right, TOKEN_PLUS},      // 加
-        {2, 12, 12, left2right, TOKEN_MINUS},     // 减
-        {2, 13, 13, left2right, TOKEN_MULTIPLY},  // 乘
-        {2, 13, 13, left2right, TOKEN_DIVIDE},    // 除
+        Operator(2, 12, 12, left2right, TOKEN_PLUS),      // 加
+        Operator(2, 12, 12, left2right, TOKEN_MINUS),     // 减
+        Operator(2, 13, 13, left2right, TOKEN_MULTIPLY),  // 乘
+        Operator(2, 13, 13, left2right, TOKEN_DIVIDE),    // 除
 
 //        {2, 13, 13, left2right, TOKEN_MOD},       // 模
 
@@ -70,23 +79,23 @@ static const OPERATOR operators[] = {
 //        {2, 12, 12, left2right, TOKEN_CONCAT},
 
         /* 关系运算 */
-        {2, 10, 10, left2right, TOKEN_LT},        // 小于
-        {2, 10, 10, left2right, TOKEN_GT},        // 大于
-        {2, 10, 9,  left2right, TOKEN_EQ},          // 等于
-        {2, 10, 9,  left2right, TOKEN_NOT_EQUAL},          // 不等于
-        {2, 10, 10, left2right, TOKEN_LE},        // 不大于
-        {2, 10, 10, left2right, TOKEN_GE},        // 不小于
-        {2, 10, 9,  left2right, TOKEN_IN},
-        {2, 10, 9,  left2right, TOKEN_LIKE},
+        Operator(2, 10, 10, left2right, TOKEN_LT),        // 小于
+        Operator(2, 10, 10, left2right, TOKEN_GT),        // 大于
+        Operator(2, 10, 9, left2right, TOKEN_EQ),          // 等于
+        Operator(2, 10, 9, left2right, TOKEN_NOT_EQUAL),          // 不等于
+        Operator(2, 10, 10, left2right, TOKEN_LE),        // 不大于
+        Operator(2, 10, 10, left2right, TOKEN_GE),        // 不小于
+        Operator(2, 10, 9, left2right, TOKEN_IN),
+        Operator(2, 10, 9, left2right, TOKEN_LIKE),
         /* 逻辑运算 */
-        {2, 5,  5,  left2right, TOKEN_AND},         // 且
-        {2, 5,  4,  left2right, TOKEN_OR},          // 或
-        {1, 15, 15, right2left, TOKEN_NOT},       // 非
+        Operator(2, 5, 5, left2right, TOKEN_AND),         // 且
+        Operator(2, 5, 4, left2right, TOKEN_OR),          // 或
+        Operator(1, 15, 15, right2left, TOKEN_NOT),       // 非
         /* 赋值 */
-        {2, 2,  2,  right2left, TOKEN_ASSIGNMENT},  // 赋值
+        Operator(2, 2, 2, right2left, TOKEN_ASSIGNMENT),  // 赋值
         /* 最小优先级 */
-        {2, 17, 17, right2left, TOKEN_FUN},        //把函数解析为一个操作符
-        {2, 1,  1,  right2left, TOKEN_COMMA}
+        Operator(2, 17, 17, right2left, TOKEN_FUN),        //把函数解析为一个操作符
+        Operator(2, 1, 1, right2left, TOKEN_COMMA)
 };
 
 class Expression;
@@ -97,7 +106,7 @@ class Func {
     FuncType t;
     /*函数参数*/
     Expression *expr;
-} ;
+};
 
 class ColumnReference;
 
@@ -106,12 +115,16 @@ class TermExpr {
 public:
     TermType t;
     union {
+        /*标识符：表名等*/
         char *id;
+        /*常量*/
         Literal *val;
+        /*字段变量*/
         ColumnReference *ref;
+        /*函数*/
         Func f;
     };
-} ;
+};
 
 class Expression {
 public:
@@ -134,16 +147,16 @@ public:
 
     int expression_free();
 
-    Expression *expression_print( Expression *expr, char *desc);
+    Expression *expression_print(Expression *expr, char *desc);
 
 
-} ;
+};
 
-char *getExpressionNamesTitle(vector<Expression*> fields);
+char *getExpressionNamesTitle(vector<Expression *> fields);
 
-int expression_free_list(vector<Expression*> exprlist);
+int expression_free_list(vector<Expression *> exprlist);
 
-int expression_print_list(vector<Expression*> exprlist);
+int expression_print_list(vector<Expression *> exprlist);
 
 
 #endif //DONGMENDB_EXPRESSION_H

@@ -1,6 +1,14 @@
 #ifndef __LITERAL_H_
 #define __LITERAL_H_
 
+
+/* sql语句中常量值的定义
+ * 分为三类：字符串、整型、double型
+ *
+ * 基础类Literal，原始值都保存在Literal的original_value中。
+ *
+ *
+ * */
 #include "common.h"
 
 class Literal{
