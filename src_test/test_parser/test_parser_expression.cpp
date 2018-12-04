@@ -11,7 +11,7 @@
 #include <stdio.h>
 #include <gtest/gtest.h>
 #include "parser/parser.h"
-#include "parser/expression.h"
+#include "dongmensql/expression.h"
 
 int parse_expression(const char *sexpr){
     int result = 0;

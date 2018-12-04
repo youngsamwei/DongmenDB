@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <gtest/gtest.h>
-#include <parser/statement.h>
+#include <dongmensql/statement.h>
 
 #include "test/test_stmt_parser.h"
 

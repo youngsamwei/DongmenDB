@@ -5,7 +5,7 @@
 #include <string.h>
 #include <parser/Tokenizer.h>
 #include <parser/parser.h>
-#include <parser/expression.h>
+#include <dongmensql/expression.h>
 
 /**
  * @brief 创建语法解析器

@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <gtest/gtest.h>
-#include <parser/statement.h>
+#include <dongmensql/statement.h>
 #include <physicalplan/Scan.h>
 #include <physicalplan/ExecutionPlan.h>
 #include <physicalplan/Project.h>

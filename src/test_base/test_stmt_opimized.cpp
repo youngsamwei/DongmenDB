@@ -4,7 +4,7 @@
 
 #include <test/test_stmt_optimized.h>
 #include <dongmensql/optimizer.h>
-#include <parser/statement.h>
+#include <dongmensql/statement.h>
 #include <parser/StatementParser.h>
 
 

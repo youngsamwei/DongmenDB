@@ -1,7 +1,7 @@
 #ifndef __COLUMN_H_
 #define __COLUMN_H_
 
-#include "parser/expression.h"
+#include "expression.h"
 #include "literal.h"
 
 #include <map>

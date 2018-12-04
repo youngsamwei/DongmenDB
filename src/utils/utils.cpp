@@ -6,7 +6,7 @@
 #include <ctype.h>
 #include <malloc.h>
 #include <dongmendb/DongmenDB.h>
-#include <parser/expression.h>
+#include <dongmensql/expression.h>
 #include <io.h>
 #include <direct.h>
 #include "utils/utils.h"

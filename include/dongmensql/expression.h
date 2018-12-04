@@ -12,7 +12,7 @@
 
 #include <utils/utils.h>
 #include "utils/opstack.h"
-#include "Tokenizer.h"
+#include "parser/Tokenizer.h"
 #include "parser/parser.h"
 
 #include <vector>

@@ -12,7 +12,7 @@
 #include "dongmensql/column.h"
 #include <dongmensql/sra.h>
 #include <dongmensql/sqlstatement.h>
-#include "parser.h"
+#include "parser/parser.h"
 
 
 #include <vector>
