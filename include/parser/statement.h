@@ -58,68 +58,6 @@ typedef struct sql_stmt_grant_{
 }sql_stmt_grant_revoke;
 
 
-/*
-enum AlterType {
-    ALTER_ADD,
-    ALTER_REMOVE
-};
-
-typedef struct AlterStmt_ {
-    char *tableName;
-    enum AlterType type;
-    ColumnsExpr *columnsExpr;
-} AlterStmt;
-
-
-typedef struct DeleteStmt_ {
-    char *tableName;
-    Expression *whereExpr;
-} DeleteStmt;
-
-typedef struct UpdateStmt_ {
-    char *tableName;
-    SetExpr *setExpr;
-    Expression *whereExpr;
-} UpdateStmt;
-*/
-
-
-/*
-AlterStmt *createAlterStmt(char *tableName, enum AlterType type,
-                           ColumnsExpr *columnsExpr);
-
-DeleteStmt *createDeleteStmt(char *tableName,
-                             Expression *whereExpr);
-
-UpdateStmt *createUpdateStmt(char *tableName,
-                             SetExpr *setExpr,
-                             Expression *whereExpr);
-
-*/
-
-/*
-AlterStmt *parseAlter(Parser *parser);
-InsertStmt *parseInsert(Parser *parser);
-DeleteStmt *parseDelete(Parser *parser);
-UpdateStmt *parseUpdate(Parser *parser);
-*/
-/*
-TermExpr *parseTermExpr(Parser *parser);
-BinaryExpr *parseBinaryExpr(Parser *parser);
-UnaryExpr *parseUnaryExpr(Parser *parser);
-arraylist *parseGroupExpr(Parser *parser);
- */
-
-/*
-ColumnsExpr *parseColumnsExpr(Parser *parser);
-SetExpr *parseSetExpr(Parser *parser);
-*/
-
-/* 在src_experiment\exp_01_stmt_parser\exp_01_03_select.c 中实现*/
-//class SelectParser;
-
-//class InsertParser;
-
 
 User *parse_create_user(Parser *parser);
 
