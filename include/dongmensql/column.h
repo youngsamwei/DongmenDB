@@ -127,7 +127,10 @@ public:
 
 class ColumnReference {
 public:
-    char *tableName, *columnName, *columnAlias, *allName;
+    char *tableName;
+    char *columnName;
+    char *columnAlias;
+    char *allName;
     ColumnReference(const char *tname, const char *cname);
     ColumnReference(char *allName);
 

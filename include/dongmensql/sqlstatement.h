@@ -5,6 +5,18 @@
 #ifndef DONGMENDB_SQLSTATEMENT_H
 #define DONGMENDB_SQLSTATEMENT_H
 
+#define SQL_NOTVALID (-1)
+#define SQL_NULL (0)
+#define SQL_INTEGER_1BYTE (1)
+#define SQL_INTEGER_2BYTE (2)
+#define SQL_INTEGER_4BYTE (4)
+#define SQL_TEXT (13)
+
+#define STMT_CREATE (0)
+#define STMT_SELECT (1)
+#define STMT_INSERT (2)
+#define STMT_DELETE (3)
+
 enum sql_statement_type {
     SQL_CREATE_DATABASE,
     SQL_CREATE_TABLE,

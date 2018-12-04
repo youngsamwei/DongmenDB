@@ -1,4 +1,6 @@
-#include <dongmensql/dongmensql.h>
+
+#include <dongmensql/common.h>
+#include <dongmensql/sra.h>
 
 char *typeToString(enum data_type type, char *buf) {
     switch (type) {

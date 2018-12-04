@@ -3,7 +3,6 @@
 #include <utils/utils.h>
 
 #include <dongmendb/DongmenDB.h>
-#include <dongmensql/dongmensql.h>
 #include <dongmendb/Recordfile.h>
 #include <utils/utils.h>
 #include <parser/statement.h>
@@ -486,22 +485,22 @@ int dongmendb_shell_handle_cmd_open(dongmendb_shell_handle_sql_t *ctx, struct ha
 
 int dongmendb_shell_handle_cmd_parse(dongmendb_shell_handle_sql_t *ctx, struct handler_entry *e, const char **tokens,
                                      int ntokens) {
-    dongmensql_statement_t *sqlStmt;
-    int rc;
-
-    if (ntokens != 2) {
-        usage_error(e, "Invalid arguments");
-        return 1;
-    }
-
-    rc = dongmensql_parser(tokens[1], &sqlStmt);
-
-    if (rc != DONGMENDB_OK) {
-        return rc;
-    }
-
-    dongmensql_stmt_print(sqlStmt);
-    printf("\n");
+//    dongmensql_statement_t *sqlStmt;
+//    int rc;
+//
+//    if (ntokens != 2) {
+//        usage_error(e, "Invalid arguments");
+//        return 1;
+//    }
+//
+//    rc = dongmensql_parser(tokens[1], &sqlStmt);
+//
+//    if (rc != DONGMENDB_OK) {
+//        return rc;
+//    }
+//
+//    dongmensql_stmt_print(sqlStmt);
+//    printf("\n");
 
     return DONGMENDB_OK;
 }

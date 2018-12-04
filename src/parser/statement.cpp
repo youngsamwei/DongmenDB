@@ -4,7 +4,6 @@
 
 #include <malloc.h>
 #include "parser/statement.h"
-#include <dongmensql/dongmensql.h>
 
 
 sql_stmt_create *parseCreate(Parser *parser) { return NULL; };
@@ -30,8 +29,6 @@ ColumnsExpr *parseColumnsExpr(Parser *parser) { return NULL; };
 
 SetExpr *parseSetExpr(Parser *parser) { return NULL; };
 */
-int dongmensql_parser(const char *sql, dongmensql_statement_t **stmt){};
-int dongmensql_stmt_print(dongmensql_statement_t *stmt){};
 
 /* 打印 sql_stmt_update */
 int sql_stmt_update_print(sql_stmt_update *sqlStmtUpdate){

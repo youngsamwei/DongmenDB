@@ -2,6 +2,7 @@
 // Created by Sam on 2018/1/17.
 //
 
+#include <dongmensql/column.h>
 #include "parser/expression.h"
 
 
