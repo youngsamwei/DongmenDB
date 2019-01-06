@@ -1,4 +1,4 @@
-echo off
+@echo off
 set exp_target=%1
 cd  %~dp0
 %~d0
