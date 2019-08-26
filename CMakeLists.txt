@@ -1,7 +1,7 @@
 #
 # 注意：不要修改任何 CMakeLists.txt 文件中的任何内容，否则可能会导致编译不正确。
 # 如果不小心修改了，请使用对应目录下的原始CMakeLists.txt 文件覆盖。
-#
+# mingw参数：mingw-w64\i686-8.1.0-posix-dwarf-rt_v6-rev0\mingw32
 
 
 CMAKE_MINIMUM_REQUIRED(VERSION 3.9)
