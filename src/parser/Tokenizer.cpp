@@ -120,7 +120,7 @@ int Tokenizer::isReservedWord(char *word) {
             "user", "view", "rule", "default", "check", "between", "trigger", "primary", "key", "foreign"
     };
     int isReservedWord = 0;
-    int size = sizeof(reservedWords)/sizeof(1);
+    int size = sizeof(reservedWords)/sizeof(reservedWords[0]);
     for (int rWordIndex = 0; rWordIndex <= size - 1; rWordIndex++) {
         if (stricmp(word, reservedWords[rWordIndex]) == 0) {
             isReservedWord = 1;
