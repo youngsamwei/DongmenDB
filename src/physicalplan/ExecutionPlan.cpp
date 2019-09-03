@@ -94,11 +94,3 @@ int ExecutionPlan::executeInsert(DongmenDB *db, char *tableName,  vector<char*> 
     return DONGMENDB_OK;
 };
 
-int ExecutionPlan::executeUpdate(DongmenDB *db, sql_stmt_update *sqlStmtUpdate, Transaction *tx){
-
-    return -1;
-};
-
-int ExecutionPlan::executeDelete(DongmenDB *db, sql_stmt_delete *sqlStmtDelete, Transaction *tx){
-    return -1;
-};
