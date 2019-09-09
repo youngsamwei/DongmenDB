@@ -25,7 +25,7 @@ void TestStmtParser::createDB(const char *dbname) {
 }
 
 void TestStmtParser::createTable() {
-    int length = sizeof(_create_table_list) / sizeof(0);
+    int length = sizeof(_create_table_list) / sizeof(_create_table_list[0]);
 
     for (int i = 0; i < length; i++) {
         dongmendb_shell_handle_create_table(test_db_ctx, _create_table_list[i]);
@@ -35,7 +35,7 @@ void TestStmtParser::createTable() {
 
 /*为db增加数据*/
 void TestStmtParser::insertData() {
-    int length = sizeof(_insert_list) / sizeof(0);
+    int length = sizeof(_insert_list) / sizeof(_insert_list[0]);
 
     for (int i = 0; i < length; i++) {
         dongmendb_shell_handle_insert_table(test_db_ctx, _insert_list[i]);
