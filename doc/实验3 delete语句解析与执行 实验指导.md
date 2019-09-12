@@ -7,7 +7,7 @@
 
 简要流程：
 
-1. 首先匹配 `delete` ：使用 `matchToken(TOKEN_RESERVED_WORD, "delete")` 匹配
+1. 匹配 `delete` ：使用 `matchToken(TOKEN_RESERVED_WORD, "delete")` 匹配
 2. 匹配 `from` ：使用 `matchToken(TOKEN_RESERVED_WORD,"from")` 匹配
 3. 获取表名：使用 if 判断是否是 `TOKEN_WORD` 类型，如果是，获得表名；给字符串指针开空间的时候可以使用 `new_id_name()` 函数
 4. 匹配 `where` ： `matchToken(TOKEN_RESERVED_WORD,"where")` ，注意不是所有 `delete` 语句都伴随一个 `where` 表达式
@@ -67,7 +67,7 @@ public:
 
 1. 使用 `SRA_t` 类型的 `where` 构造执行计划( `Scan` 对象)；
 2. 遍历计划
-3. 在遍历计划过程的循环中，调用 `scan->deleteRecord();` 删除记录
+3. 在遍历计划过程的循环中，调用 `scan->deleteRecord()` 删除记录
 4. 在循环中更新删除的记录条数，作为最终的返回值。
 
 
