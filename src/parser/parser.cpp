@@ -25,6 +25,10 @@ Parser::Parser(Tokenizer *tokenizer) {
  * @param parser 解析器
  * @return Token
  */
+
+// 首先判断当前解析器中的词是否为 NULL
+// 如果是，就获取下一个 token
+// 否则就返回当前词
 Token *Parser::parseNextToken() {
     if (this->parserStateType == PARSER_WRONG) {
         return NULL;
@@ -40,6 +44,8 @@ Token *Parser::parseNextToken() {
  * @param parser  解析器
  * @return  NULL
  */
+
+//在解析完当前词之后，将当前解析器中的 token(词)置为 NULL
 Token *Parser::parseEatToken() {
     if (this->parserStateType == PARSER_WRONG) {
         return NULL;
@@ -53,6 +59,8 @@ Token *Parser::parseEatToken() {
  * @param parser
  * @return
  */
+
+//直接获取下一个词，不对当前解析器中的词进行判断
 Token *Parser::parseEatAndNextToken() {
     if (this->parserStateType == PARSER_WRONG) {
         return NULL;
@@ -67,6 +75,8 @@ Token *Parser::parseEatAndNextToken() {
  * @param message 错误消息
  * @return NULL
  */
+
+// 将解析状态修改为解析失败( PARSER_WRONG ),返回 NULL
 void *Parser::parseError( char *message) {
     strcpy(this->parserMessage, message);
     this->parserStateType = PARSER_WRONG;
@@ -77,9 +87,11 @@ void *Parser::parseError( char *message) {
 // 如果匹配成功，就直接获取下一个词放入解析器中
 // 否则输出错误信息，返回 NULL，不对解析器中的词修改
 int Parser::matchToken( TokenType type, char *text){
-    Token *token = parseNextToken();
+    Token *token = parseNextToken();  //获取当前解析器里面的词
+
+    // 对解析器中 token(词）的TokenType和text进行检查
     if (token && token->type == type && stricmp(token->text, text) == 0) {
-        parseEatAndNextToken();
+        parseEatAndNextToken();  // 获取下一个词放入解析器
         return 1;
     } else {
         strcpy(this->parserMessage, "invalid sql : missing ");
