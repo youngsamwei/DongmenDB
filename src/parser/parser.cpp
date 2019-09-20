@@ -73,6 +73,9 @@ void *Parser::parseError( char *message) {
     return NULL;
 };
 
+// 常用函数 对解析器中 token(词）的TokenType和text进行检查
+// 如果匹配成功，就直接获取下一个词放入解析器中
+// 否则输出错误信息，返回 NULL，不对解析器中的词修改
 int Parser::matchToken( TokenType type, char *text){
     Token *token = parseNextToken();
     if (token && token->type == type && stricmp(token->text, text) == 0) {
