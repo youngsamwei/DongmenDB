@@ -17,7 +17,12 @@
  */
 
 /*TODO: parse_sql_stmt_update， update语句解析*/
-sql_stmt_update *UpdateParser::parse_sql_stmt_update() {
-//    fprintf(stderr, "TODO: update is not implemented yet. in parse_sql_stmt_update \n");
-
+sql_stmt_update *UpdateParser::parse_sql_stmt_update()
+{
+//  fprintf(stderr, "TODO: update is not implemented yet. in parse_sql_stmt_update \n");
+  sql_stmt_update *sqlStmtUpdate = (sql_stmt_update*)malloc(sizeof(sql_stmt_update));
+  char *tableName = nullptr;
+  vector<char*> fields;
+  vector<Expression*> fieldsExpr;
+  SRA_t *where = nullptr;
 };
