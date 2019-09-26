@@ -2,8 +2,6 @@
 // Created by Sam on 2018/2/13.
 //
 
-
-
 #include <relationalalgebra/sra.h>
 #include <dongmensql/sqlstatement.h>
 #include <parser/StatementParser.h>

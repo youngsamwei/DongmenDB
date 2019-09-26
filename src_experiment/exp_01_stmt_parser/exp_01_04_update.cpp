@@ -5,6 +5,7 @@
 #include <dongmensql/sqlstatement.h>
 #include <parser/StatementParser.h>
 #include <cstring>
+#include <string>
 
 /**
  * 在现有实现基础上，实现update from子句
@@ -22,8 +23,8 @@ sql_stmt_update *UpdateParser::parse_sql_stmt_update()
 {
 //  fprintf(stderr, "TODO: update is not implemented yet. in parse_sql_stmt_update \n");
   char *tableName = nullptr;
-  vector<char*> fields;
-  vector<Expression*> fieldsExpr;
+  vector<char *> fields;
+  vector<Expression *> fieldsExpr;
   SRA_t *where = nullptr;
 
   //使用matchToken匹配update
@@ -35,20 +36,21 @@ sql_stmt_update *UpdateParser::parse_sql_stmt_update()
   //判断表名是否是TOKEN_WORD类型
   if(token->type == TOKEN_WORD)
   {
+    // 给字符串指针开新空间
     tableName = new_id_name();
-    memmove(tableName, token->text, sizeof(token->text));
+    memmove(tableName, token->text, strlen(token->text));
+    //将表名用SRA_t包裹并传入where
     SRA_t *sraTableName = static_cast<SRA_t *>(malloc(sizeof(SRA_t)));
     sraTableName->t = SRA_TABLE;
     SRA_Table_t *sraTable = static_cast<SRA_Table_t *>(malloc(sizeof(sraTable)));
     sraTable->ref = static_cast<TableReference_t *>(malloc(sizeof(TableReference_t)));
-    memmove(sraTable->ref->table_name, tableName, sizeof(tableName));
-
-    // TODO:将值传进where
+    memmove(sraTable->ref->table_name, tableName, strlen(tableName));
+    where = sraTableName;
   }
   else
   {
-    char *message = "invalid sql: missing table name.";
-    memmove(this->parserMessage, message, sizeof(message));
+    char const *message = std::string("invalid sql: missing table name.").c_str();
+    memmove(this->parserMessage, message, strlen(message));
     return nullptr;
   }
 
@@ -56,8 +58,22 @@ sql_stmt_update *UpdateParser::parse_sql_stmt_update()
   token = parseEatAndNextToken();
   if(!this->matchToken(TOKEN_RESERVED_WORD, "set"))
   {
-    char *message = "invalid sql: should be 'set'";
-    memmove(this->parserMessage, message, sizeof(message));
+    char const *message = std::string("invalid sql: should be 'set'").c_str();
+    memmove(this->parserMessage, message, strlen(message));
     return nullptr;
+  }
+
+  /*
+   * 循环获取更新的表达式：
+   * 1.获取字段名（TOKEN_WORD类型），存入fields中;
+   * 2.识别并跳过'='（TOKEN_EQ类型）;
+   * 3.使用parseExpressionRD()获得新值（或表达式）,存入fieldsExpr中即可获得一个完整的表达式
+   */
+  while((token = this->parseEatAndNextToken()))
+  {
+    if(this->matchToken(TOKEN_RESERVED_WORD, "where"))
+      break;
+    if(token->type == TOKEN_EQ)
+      continue;
   }
 };
