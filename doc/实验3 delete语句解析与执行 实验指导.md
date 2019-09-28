@@ -8,11 +8,10 @@
 简要流程：
 
 1. 匹配 `delete` ：使用 `matchToken(TOKEN_RESERVED_WORD, "delete")` 匹配
-2. 匹配 `from` ：使用 `matchToken(TOKEN_RESERVED_WORD,"from")` 匹配
-3. 获取表名：使用 if 判断是否是 `TOKEN_WORD` 类型，如果是，获得表名；给字符串指针开空间的时候可以使用 `new_id_name()` 函数
-4. 匹配 `where` ： `matchToken(TOKEN_RESERVED_WORD,"where")` ，注意不是所有 `delete` 语句都伴随一个 `where` 表达式
-6. 使用 `parseExpressionRD()` 获取值（或者表达式），并包裹在 `SRA_t` 中（ `SRA_SELECT` 类型），作为 `sql_stmt_delete->where` 的值。（语句若不伴随 `where` 则仅需构造 `SRA_TABLE` ，具体实现可参考 `exp_01_stmt_parser/exp_01_03_select.cpp`）
-7. 创建 `sql_stmt_delete` 类型的指针，分配内存空间并对各字段进行赋值，返回该指针
+2. 获取表名：使用 if 判断是否是 `TOKEN_WORD` 类型，如果是，获得表名；给字符串指针开空间的时候可以使用 `new_id_name()` 函数
+3. 匹配 `where` ： `matchToken(TOKEN_RESERVED_WORD,"where")` ，注意不是所有 `delete` 语句都伴随一个 `where` 表达式
+4. 使用 `parseExpressionRD()` 获取值（或者表达式），并包裹在 `SRA_t` 中（ `SRA_SELECT` 类型），作为 `sql_stmt_delete->where` 的值。（语句若不伴随 `where` 则仅需构造 `SRA_TABLE` ，具体实现可参考 `exp_01_stmt_parser/exp_01_03_select.cpp`）
+5. 创建 `sql_stmt_delete` 类型的指针，分配内存空间并对各字段进行赋值，返回该指针
 
 常用函数：
 
