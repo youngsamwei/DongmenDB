@@ -509,6 +509,7 @@ int dongmendb_shell_handle_cmd_opt(dongmendb_shell_handle_sql_t *ctx, struct han
                                    int ntokens) {
 
     char cmdstring[MAX_CMD];
+    memset(cmdstring, 0, sizeof(cmdstring));
     /*先将tokens中的select语句重新组合为一个*/
     for (int i = 1; i < ntokens; i++){
         strcat(cmdstring, tokens[i]);
@@ -527,6 +528,14 @@ int dongmendb_shell_handle_cmd_opt(dongmendb_shell_handle_sql_t *ctx, struct han
         SRA_print(selectStmt);
     } else {
         printf(parser->parserMessage);
+    }
+
+    if (ctx->db == nullptr) {
+        printf("\n------------------------------------------------------------\n"
+               "To display the optimized results, please open any database,\n"
+               "Opened database will not be executed by the SQL you tested!"
+               "\n------------------------------------------------------------\n");
+        return DONGMENDB_ERROR_IO;
     }
 
     SRA_t *optmiziedSelectStmt = dongmengdb_algebra_optimize_condition_pushdown(selectStmt, ctx->db->tableManager);
