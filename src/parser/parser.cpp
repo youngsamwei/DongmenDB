@@ -77,7 +77,7 @@ Token *Parser::parseEatAndNextToken() {
  */
 
 // 将解析状态修改为解析失败( PARSER_WRONG ),返回 NULL
-void *Parser::parseError( char *message) {
+void *Parser::parseError(char *message) {
     strcpy(this->parserMessage, message);
     this->parserStateType = PARSER_WRONG;
     return NULL;

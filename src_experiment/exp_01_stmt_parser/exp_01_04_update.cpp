@@ -37,14 +37,12 @@ sql_stmt_update *UpdateParser::parse_sql_stmt_update()
   if(token->type == TOKEN_WORD)
   {
     // 给字符串指针开新空间
-    tableName = new_id_name();
+    TableReference_t* tableReference = static_cast<TableReference_t*>(malloc(sizeof(TableReference_t)));
+    tableReference->table_name = new_id_name();
+    memmove(tableReference->table_name, token->text, strlen(token->text));
     memmove(tableName, token->text, strlen(token->text));
     //将表名用SRA_t包裹并传入where
-    SRA_t *sraTableName = static_cast<SRA_t *>(malloc(sizeof(SRA_t)));
-    sraTableName->t = SRA_TABLE;
-    SRA_Table_t *sraTable = static_cast<SRA_Table_t *>(malloc(sizeof(sraTable)));
-    sraTable->ref = static_cast<TableReference_t *>(malloc(sizeof(TableReference_t)));
-    memmove(sraTable->ref->table_name, tableName, strlen(tableName));
+    SRA_t *sraTableName = SRATable(tableReference);
     where = sraTableName;
   }
   else
@@ -69,11 +67,40 @@ sql_stmt_update *UpdateParser::parse_sql_stmt_update()
    * 2.识别并跳过'='（TOKEN_EQ类型）;
    * 3.使用parseExpressionRD()获得新值（或表达式）,存入fieldsExpr中即可获得一个完整的表达式
    */
-  while((token = this->parseEatAndNextToken()))
+  do
   {
-    if(this->matchToken(TOKEN_RESERVED_WORD, "where"))
-      break;
     if(token->type == TOKEN_EQ)
       continue;
+    if(stricmp(token->text, "where") == 0)
+      break;
+    if(token->type == TOKEN_WORD)
+      fields.push_back(token->text);
+    else
+      fieldsExpr.push_back(parseExpressionRD());
+  }while(this->parseEatAndNextToken());
+
+  //没有where的时候
+  if(token == nullptr || token->type == TOKEN_SEMICOLON)
+  {
+    sql_stmt_update *sqlStmtUpdate = static_cast<sql_stmt_update *>(malloc(sizeof(sql_stmt_update)));
+    sqlStmtUpdate->fields = fields;
+    sqlStmtUpdate->fieldsExpr = fieldsExpr;
+    sqlStmtUpdate->where = where;
+    memmove(sqlStmtUpdate->tableName, tableName, strlen(tableName));
+    return sqlStmtUpdate;
   }
+
+  //匹配where子句
+  token = this->parseNextToken();
+  if(!this->matchToken(TOKEN_RESERVED_WORD, "where"))
+  {
+    strcpy(this->parserMessage, "语法错误");
+    return nullptr;
+  }
+
+  //解析where子句表达式
+  token = this->parseNextToken();
+  Expression *whereExpr = this->parseExpressionRD();
+  if(this->parserStateType == PARSER_WRONG)
+    return nullptr;
 };
