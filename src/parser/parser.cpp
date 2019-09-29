@@ -154,7 +154,7 @@ Expression *Parser::parseReadLiteral() {
         if (token->text[0] == '"') {
             int len = strlen(token->text) - 1;
             char *v = token->text + 1;
-            char *value = (char *) calloc(len, 1);
+            char *value = (char *) calloc(1, sizeof(char) * len);
             strcpy(value, v);
             value[len - 1] = '\0';
             literal->original_value = value;
