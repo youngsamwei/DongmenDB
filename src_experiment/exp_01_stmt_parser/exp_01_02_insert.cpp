@@ -95,7 +95,7 @@ sql_stmt_insert *InsertParser::parse_sql_stmt_insert() {
         strcpy(this->parserMessage, "invalid sql: missing ).");
         return NULL;
     }
-    sql_stmt_insert *sqlStmtInsert = (sql_stmt_insert *)calloc(sizeof(sql_stmt_insert),1);
+    sql_stmt_insert *sqlStmtInsert = (sql_stmt_insert *)calloc(1, sizeof(sql_stmt_insert));
     sqlStmtInsert->tableName = tableName;
     sqlStmtInsert->fields = fields;
     sqlStmtInsert->values = values;
