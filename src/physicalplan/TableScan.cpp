@@ -55,7 +55,7 @@ string TableScan::getString(string tableName, string fieldName) {
         return "";
     }
     FieldInfo *fi = getField(tableName, fieldName);
-    char *value = (char *) calloc(fi->length, 1);
+    char *value = (char *) calloc(1, sizeof(char) * (fi->length));
     m_recordFile->record_file_get_string( fieldName.c_str(), value);
     return string(value);
 };

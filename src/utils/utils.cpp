@@ -12,7 +12,7 @@
 #include "utils/utils.h"
 
 char *new_id_name(){
-    char *name = (char *) calloc(MAX_ID_NAME_LENGTH, sizeof(char *));
+    char *name = (char *) calloc(MAX_ID_NAME_LENGTH, sizeof(char));
 //    char *name = (char *)malloc(MAX_ID_NAME_LENGTH);
 //    memset(name, 0, MAX_ID_NAME_LENGTH);
     return name;

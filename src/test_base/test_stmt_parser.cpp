@@ -9,7 +9,7 @@
 
 void TestStmtParser::createDB(const char *dbname) {
 
-    test_db_ctx = (dongmendb_shell_handle_sql_t *) calloc(sizeof(dongmendb_shell_handle_sql_t), 1);
+    test_db_ctx = (dongmendb_shell_handle_sql_t *) calloc(1, sizeof(dongmendb_shell_handle_sql_t));
     dongmendb_shell_init_ctx(test_db_ctx);
 
     DongmenDB *newdb = new DongmenDB();
