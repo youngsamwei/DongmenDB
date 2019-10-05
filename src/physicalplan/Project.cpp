@@ -72,7 +72,7 @@ variant *Project::getValueByIndex(int index) {
 
 int Project::getIntByIndex(int index) {
     Expression *expr = expr_list.at(index);
-    variant *var = (variant *) calloc(1, sizeof(variant);
+    variant *var = (variant *) calloc(1, sizeof(variant));
     evaluateExpression(expr, scan, var);
     if (var->type == DATA_TYPE_INT) {
         return var->intValue;
