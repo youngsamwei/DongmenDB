@@ -28,7 +28,7 @@ sql_stmt_update *UpdateParser::parse_sql_stmt_update()
   SRA_t *where = nullptr;
 
   //使用matchToken匹配update
-  if(!this->matchToken(TOKEN_RESERVED_WORD, "update"))
+  if(!this->matchToken(TOKEN_RESERVED_WORD, (char *) "update"))
     return nullptr;
 
   //获取表名tableName
@@ -37,10 +37,10 @@ sql_stmt_update *UpdateParser::parse_sql_stmt_update()
   if(token->type == TOKEN_WORD)
   {
     // 给字符串指针开新空间
-    TableReference_t* tableReference = static_cast<TableReference_t*>(malloc(sizeof(TableReference_t)));
+    TableReference_t *tableReference = static_cast<TableReference_t *>(calloc(sizeof(TableReference_t), 1));
     tableReference->table_name = new_id_name();
-    memmove(tableReference->table_name, token->text, strlen(token->text));
-    memmove(tableName, token->text, strlen(token->text));
+    strcpy(tableReference->table_name, token->text);
+    strcpy(tableName, token->text);
     //将表名用SRA_t包裹并传入where
     SRA_t *sraTableName = SRATable(tableReference);
     where = sraTableName;
@@ -48,59 +48,88 @@ sql_stmt_update *UpdateParser::parse_sql_stmt_update()
   else
   {
     char const *message = std::string("invalid sql: missing table name.").c_str();
-    memmove(this->parserMessage, message, strlen(message));
+    strcpy(this->parserMessage, message);
     return nullptr;
   }
 
   //使用matchToken匹配set
   token = parseEatAndNextToken();
-  if(!this->matchToken(TOKEN_RESERVED_WORD, "set"))
+  if(!this->matchToken(TOKEN_RESERVED_WORD, (char *) "set"))
   {
     char const *message = std::string("invalid sql: should be 'set'").c_str();
-    memmove(this->parserMessage, message, strlen(message));
+    strcpy(this->parserMessage, message);
     return nullptr;
   }
-
   /*
    * 循环获取更新的表达式：
    * 1.获取字段名（TOKEN_WORD类型），存入fields中;
    * 2.识别并跳过'='（TOKEN_EQ类型）;
    * 3.使用parseExpressionRD()获得新值（或表达式）,存入fieldsExpr中即可获得一个完整的表达式
    */
-  do
+  token = this->parseNextToken();
+  if(token->type == TOKEN_WORD)
   {
-    if(token->type == TOKEN_EQ)
-      continue;
-    if(stricmp(token->text, "where") == 0)
-      break;
-    if(token->type == TOKEN_WORD)
-      fields.push_back(token->text);
-    else
-      fieldsExpr.push_back(parseExpressionRD());
-  }while(this->parseEatAndNextToken());
+    while(token->type == TOKEN_WORD)
+    {
+      char *fieldName = new_id_name();
+      strcpy(fieldName, token->text);
+      fields.push_back(fieldName);
+      token = this->parseEatAndNextToken();
 
-  //没有where的时候
+      //遇到等号
+      if(token->type == TOKEN_EQ)
+      {
+        token = this->parseEatAndNextToken();
+        //解析等号后面的表达式
+        Expression *expression = this->parseExpressionRD();
+        fieldsExpr.push_back(expression);
+        token = this->parseNextToken();
+        if(token == nullptr)
+          break;
+        if(token->type == TOKEN_COMMA)
+          token = this->parseEatAndNextToken();
+        else
+          break;
+      }
+      else
+      {
+        strcpy(this->parserMessage, "invalid sql: missing '='.");
+        return nullptr;
+      }
+    }
+  }
+  else
+  {
+    strcpy(this->parserMessage, "invalid sql: missing field name.");
+    return nullptr;
+  }
+  TableReference_t *ref = TableReference_make(tableName, nullptr);
+  SRA_t *table = SRATable(ref);
   if(token == nullptr || token->type == TOKEN_SEMICOLON)
+    where = table;
+  else if(token->type == TOKEN_RESERVED_WORD)
   {
-    sql_stmt_update *sqlStmtUpdate = static_cast<sql_stmt_update *>(malloc(sizeof(sql_stmt_update)));
-    sqlStmtUpdate->fields = fields;
-    sqlStmtUpdate->fieldsExpr = fieldsExpr;
-    sqlStmtUpdate->where = where;
-    memmove(sqlStmtUpdate->tableName, tableName, strlen(tableName));
-    return sqlStmtUpdate;
+    //匹配where
+    if(!this->matchToken(TOKEN_RESERVED_WORD, (char *) "where"))
+    {
+      strcpy(this->parserMessage, "invalid sql: missing where.");
+      return nullptr;
+    }
+    //解析where语句
+    SRA_t *table = SRATable(ref);
+    Expression *whereExpr = this->parseExpressionRD();
+    if(this->parserStateType == PARSER_WRONG)
+      return nullptr;
+    SRA_t *select = SRASelect(table, whereExpr);
+    where = select;
   }
+  else
+    where = table;
 
-  //匹配where子句
-  token = this->parseNextToken();
-  if(!this->matchToken(TOKEN_RESERVED_WORD, "where"))
-  {
-    strcpy(this->parserMessage, "语法错误");
-    return nullptr;
-  }
-
-  //解析where子句表达式
-  token = this->parseNextToken();
-  Expression *whereExpr = this->parseExpressionRD();
-  if(this->parserStateType == PARSER_WRONG)
-    return nullptr;
-};
+  sql_stmt_update *sqlStmtUpdate = static_cast<sql_stmt_update *>(calloc(sizeof(sqlStmtUpdate), 1));
+  sqlStmtUpdate->tableName = tableName;
+  sqlStmtUpdate->fields = fields;
+  sqlStmtUpdate->fieldsExpr = fieldsExpr;
+  sqlStmtUpdate->where = where;
+  return sqlStmtUpdate;
+}
