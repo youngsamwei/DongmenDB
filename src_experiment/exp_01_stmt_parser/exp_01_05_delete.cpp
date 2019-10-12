@@ -43,7 +43,7 @@ sql_stmt_delete *DeleteParser::parse_sql_stmt_delete(){
   token = this->parseNextToken();
   if(token == nullptr || token->type == TOKEN_SEMICOLON)
   {
-    auto *sqlStmtDelete = static_cast<sql_stmt_delete *>(calloc(sizeof(sqlStmtDelete), 1));
+    auto *sqlStmtDelete = static_cast<sql_stmt_delete *>(calloc(sizeof(sql_stmt_delete), 1));
     sqlStmtDelete->where = where;
     sqlStmtDelete->tableName = tableName;
     return sqlStmtDelete;
@@ -51,7 +51,7 @@ sql_stmt_delete *DeleteParser::parse_sql_stmt_delete(){
 
   //匹配where
   token = this->parseNextToken();
-  if(!this->matchToken(TOKEN_RESERVED_WORD, "where"))
+  if(!this->matchToken(TOKEN_RESERVED_WORD, (char *)"where"))
   {
     strcpy(this->parserMessage, "语法错误.");
     return nullptr;
