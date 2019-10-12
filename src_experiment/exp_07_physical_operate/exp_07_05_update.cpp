@@ -35,8 +35,7 @@ int ExecutionPlan::executeUpdate(DongmenDB *db, sql_stmt_update *sqlStmtUpdate, 
     for(size_t i = 0; i < sqlStmtUpdate->fieldsExpr.size(); ++i)
     {
       //首先获取字段名
-      char *currentFieldName = static_cast<char *>(calloc(strlen(sqlStmtUpdate->fields[i]) * sizeof(char),
-                                                          strlen(sqlStmtUpdate->fields[i])));
+      char *currentFieldName = static_cast<char *>(calloc(sizeof(char), strlen(sqlStmtUpdate->fields[i]) + 1));
       memmove(currentFieldName, sqlStmtUpdate->fields[i], strlen(sqlStmtUpdate->fields[i]) * sizeof(char));
       //创建一个可变类型结构体
       auto *var = static_cast<variant *>(calloc(sizeof(variant), 1));
