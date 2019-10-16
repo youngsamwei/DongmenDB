@@ -35,7 +35,7 @@ int ExecutionPlan::executeUpdate(DongmenDB *db, sql_stmt_update *sqlStmtUpdate, 
     for(size_t i = 0; i < sqlStmtUpdate->fieldsExpr.size(); ++i)
     {
       //首先获取字段名
-      char *currentFieldName = static_cast<char *>(calloc(sizeof(char), strlen(sqlStmtUpdate->fields[i]) + 1));
+      char *currentFieldName = new_id_name();
       memmove(currentFieldName, sqlStmtUpdate->fields[i], strlen(sqlStmtUpdate->fields[i]) * sizeof(char));
       //创建一个可变类型结构体
       auto *var = static_cast<variant *>(calloc(sizeof(variant), 1));
@@ -63,11 +63,13 @@ int ExecutionPlan::executeUpdate(DongmenDB *db, sql_stmt_update *sqlStmtUpdate, 
         scan->setString(sqlStmtUpdate->tableName, currentFieldName, var->strValue);
         //TODO: 如果字符串长度超过了定义的长度，要进行截取处理
       }
+      else
+        return DONGMENDB_EINVALIDSQL;
     }
     //增加条数
     ++updated_count;
   }
   //关闭scan
   scan->close();
-  return DONGMENDB_OK;
+  return updated_count;
 };
