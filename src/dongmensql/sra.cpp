@@ -29,7 +29,7 @@ SRA_t *SRASelect(SRA_t *sra, Expression *cond)
     }
     else
     {
-        SRA_t *new_sra = (SRA_t *)calloc(1, sizeof(SRA_t));
+        SRA_t *new_sra = (SRA_t *)calloc(sizeof(SRA_t), 1);
         new_sra->t = SRA_SELECT;
         new_sra->select.sra = sra;
         new_sra->select.cond = cond;
