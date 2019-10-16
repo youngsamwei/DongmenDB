@@ -48,7 +48,7 @@ int ExecutionPlan::executeUpdate(DongmenDB *db, sql_stmt_update *sqlStmtUpdate, 
       if(var->type != field_type)
       {
         fprintf(stdout, "error");
-        return DONGMENDB_EINVALIDSQL;
+        return updated_count;
       }
       //匹配类型为Int
       if(var->type == DATA_TYPE_INT)
