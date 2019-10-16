@@ -36,13 +36,9 @@ sql_stmt_update *UpdateParser::parse_sql_stmt_update()
   if(token->type == TOKEN_WORD)
   {
     // 给字符串指针开新空间
-    TableReference_t *tableReference = static_cast<TableReference_t *>(calloc(sizeof(TableReference_t), 1));
-    tableReference->table_name = new_id_name();
-    strcpy(tableReference->table_name, token->text);
-    strcpy(tableName, token->text);
+    tableName = new_id_name();
     //将表名用SRA_t包裹并传入where
-    SRA_t *sraTableName = SRATable(tableReference);
-    where = sraTableName;
+    memmove(tableName, token->text, strlen(token->text) * sizeof(char));
   }
   else
   {
@@ -52,7 +48,7 @@ sql_stmt_update *UpdateParser::parse_sql_stmt_update()
   }
 
   //使用matchToken匹配set
-  token = parseEatAndNextToken();
+  token = this->parseEatAndNextToken();
   if(!this->matchToken(TOKEN_RESERVED_WORD, (char *) "set"))
   {
     char const *message = std::string("invalid sql: should be 'set'").c_str();
@@ -102,8 +98,8 @@ sql_stmt_update *UpdateParser::parse_sql_stmt_update()
     strcpy(this->parserMessage, "invalid sql: missing field name.");
     return nullptr;
   }
-  TableReference_t *ref = TableReference_make(tableName, nullptr);
-  SRA_t *table = SRATable(ref);
+  TableReference_t *tableReference = TableReference_make(tableName, nullptr);
+  SRA_t *table = SRATable(tableReference);
   if(token == nullptr || token->type == TOKEN_SEMICOLON)
     where = table;
   else if(token->type == TOKEN_RESERVED_WORD)
@@ -115,11 +111,11 @@ sql_stmt_update *UpdateParser::parse_sql_stmt_update()
       return nullptr;
     }
     //解析where语句
-    SRA_t *table = SRATable(ref);
-    Expression *whereExpr = this->parseExpressionRD();
+    SRA_t *table = SRATable(tableReference);
+    Expression *whereExpression = this->parseExpressionRD();
     if(this->parserStateType == PARSER_WRONG)
       return nullptr;
-    SRA_t *select = SRASelect(table, whereExpr);
+    SRA_t *select = SRASelect(table, whereExpression);
     where = select;
   }
   else

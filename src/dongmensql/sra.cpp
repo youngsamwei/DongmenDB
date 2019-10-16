@@ -6,7 +6,7 @@ static SRA_t *SRABinary(SRA_t *sra1, SRA_t *sra2, enum SRAType t);
 
 SRA_t *SRATable(TableReference_t *ref)
 {
-    SRA_t *sra = (SRA_t *)calloc(1, sizeof(SRA_t));
+    SRA_t *sra = (SRA_t *)calloc(sizeof(SRA_t), 1);
     sra->t = SRA_TABLE;
     sra->table.ref = ref;
     return sra;
@@ -14,7 +14,7 @@ SRA_t *SRATable(TableReference_t *ref)
 
 SRA_t *SRAProject(SRA_t *sra,  vector<Expression*> exprlist)
 {
-    SRA_t *new_sra = (SRA_t *)calloc(1, sizeof(SRA_t));
+    SRA_t *new_sra = (SRA_t *)calloc(sizeof(SRA_t), 1);
     new_sra->t = SRA_PROJECT;
     new_sra->project.sra = sra;
     new_sra->project.expr_list = exprlist;
@@ -39,7 +39,7 @@ SRA_t *SRASelect(SRA_t *sra, Expression *cond)
 
 SRA_t *SRAJoin(SRA_t *sra1, SRA_t *sra2, JoinCondition_t *cond)
 {
-    SRA_t *new_sra = (SRA_t *)calloc(1, sizeof(SRA_t));
+    SRA_t *new_sra = (SRA_t *)calloc(sizeof(SRA_t), 1);
     new_sra->t = SRA_JOIN;
     new_sra->join.sra1 = sra1;
     new_sra->join.sra2 = sra2;
@@ -69,7 +69,7 @@ SRA_t *SRAFullOuterJoin(SRA_t *sra1, SRA_t *sra2, JoinCondition_t *cond)
 
 static SRA_t *SRABinary(SRA_t *sra1, SRA_t *sra2, enum SRAType t)
 {
-    SRA_t *sra = (SRA_t *)calloc(1, sizeof(SRA_t));
+    SRA_t *sra = (SRA_t *)calloc(sizeof(SRA_t), 1);
     sra->t = t;
     sra->binary.sra1 = sra1;
     sra->binary.sra2 = sra2;
