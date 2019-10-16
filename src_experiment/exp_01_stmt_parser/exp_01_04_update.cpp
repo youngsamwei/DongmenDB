@@ -100,9 +100,9 @@ sql_stmt_update *UpdateParser::parse_sql_stmt_update()
   }
   TableReference_t *tableReference = TableReference_make(tableName, nullptr);
   SRA_t *table = SRATable(tableReference);
-  if(token == nullptr || token->type == TOKEN_SEMICOLON)
-    where = table;
-  else if(token->type == TOKEN_RESERVED_WORD)
+  where = table;
+
+  if(token->type == TOKEN_RESERVED_WORD)
   {
     //匹配where
     if(!this->matchToken(TOKEN_RESERVED_WORD, (char *) "where"))
@@ -118,10 +118,8 @@ sql_stmt_update *UpdateParser::parse_sql_stmt_update()
     SRA_t *select = SRASelect(table, whereExpression);
     where = select;
   }
-  else
-    where = table;
 
-  sql_stmt_update *sqlStmtUpdate = static_cast<sql_stmt_update *>(calloc(sizeof(sqlStmtUpdate), 1));
+  sql_stmt_update *sqlStmtUpdate = static_cast<sql_stmt_update *>(calloc(sizeof(sql_stmt_update), 1));
   sqlStmtUpdate->tableName = tableName;
   sqlStmtUpdate->fields = fields;
   sqlStmtUpdate->fieldsExpr = fieldsExpr;
