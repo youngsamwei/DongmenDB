@@ -64,7 +64,7 @@ int ExecutionPlan::executeUpdate(DongmenDB *db, sql_stmt_update *sqlStmtUpdate, 
         //TODO: 如果字符串长度超过了定义的长度，要进行截取处理
       }
       else
-        return DONGMENDB_EINVALIDSQL;
+        return updated_count;
     }
     //增加条数
     ++updated_count;
