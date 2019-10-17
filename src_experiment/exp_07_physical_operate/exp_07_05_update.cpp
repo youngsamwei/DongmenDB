@@ -38,7 +38,7 @@ int ExecutionPlan::executeUpdate(DongmenDB *db, sql_stmt_update *sqlStmtUpdate, 
       char *currentFieldName = new_id_name();
       memmove(currentFieldName, sqlStmtUpdate->fields[i], strlen(sqlStmtUpdate->fields[i]) * sizeof(char));
       //创建一个可变类型结构体
-      auto *var = static_cast<variant *>(calloc(sizeof(variant), 1));
+      variant *var = static_cast<variant *>(calloc(sizeof(variant), 1));
       //获取要更新的字段数据类型
       enum data_type field_type = scan->getField(sqlStmtUpdate->tableName, currentFieldName)->type;
       //计算表达式,获取更新的值的数据类型

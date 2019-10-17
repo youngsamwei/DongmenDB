@@ -24,10 +24,9 @@ sql_stmt_update *UpdateParser::parse_sql_stmt_update()
   char *tableName = nullptr;
   vector<char *> fields;
   vector<Expression *> fieldsExpr;
-  SRA_t *where = nullptr;
 
   //使用matchToken匹配update
-  if(!this->matchToken(TOKEN_RESERVED_WORD, (char *) "update"))
+  if(!this->matchToken(TOKEN_RESERVED_WORD, "update"))
     return nullptr;
 
   //获取表名tableName
@@ -37,22 +36,19 @@ sql_stmt_update *UpdateParser::parse_sql_stmt_update()
   {
     // 给字符串指针开新空间
     tableName = new_id_name();
-    //将表名用SRA_t包裹并传入where
-    memmove(tableName, token->text, strlen(token->text) * sizeof(char));
+    strcpy(tableName, token->text);
   }
   else
   {
-    char const *message = std::string("invalid sql: missing table name.").c_str();
-    strcpy(this->parserMessage, message);
+    strcpy(this->parserMessage, "invalid sql: missing table name.");
     return nullptr;
   }
 
   //使用matchToken匹配set
   token = this->parseEatAndNextToken();
-  if(!this->matchToken(TOKEN_RESERVED_WORD, (char *) "set"))
+  if(!this->matchToken(TOKEN_RESERVED_WORD, "set"))
   {
-    char const *message = std::string("invalid sql: should be 'set'").c_str();
-    strcpy(this->parserMessage, message);
+    strcpy(this->parserMessage, "invalid sql: should be 'set'");
     return nullptr;
   }
   /*
@@ -100,12 +96,14 @@ sql_stmt_update *UpdateParser::parse_sql_stmt_update()
   }
   TableReference_t *tableReference = TableReference_make(tableName, nullptr);
   SRA_t *table = SRATable(tableReference);
-  where = table;
+  SRA_t *where = table;
 
-  if(token->type == TOKEN_RESERVED_WORD)
+  if(token == nullptr || token->type == TOKEN_SEMICOLON)
+    where = table;
+  else if(token->type == TOKEN_RESERVED_WORD)
   {
     //匹配where
-    if(!this->matchToken(TOKEN_RESERVED_WORD, (char *) "where"))
+    if(!this->matchToken(TOKEN_RESERVED_WORD, "where"))
     {
       strcpy(this->parserMessage, "invalid sql: missing where.");
       return nullptr;
