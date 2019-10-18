@@ -61,7 +61,7 @@ sql_stmt_delete *DeleteParser::parse_sql_stmt_delete(){
     where = select;
   }
 
-  sql_stmt_delete *sqlStmtDelete = static_cast<sql_stmt_delete *>calloc(sizeof(sql_stmt_delete), 1);
+  sql_stmt_delete *sqlStmtDelete = static_cast<sql_stmt_delete *>(calloc(sizeof(sql_stmt_delete), 1));
   sqlStmtDelete->where = where;
   sqlStmtDelete->tableName = tableName;
   return sqlStmtDelete;
