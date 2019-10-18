@@ -24,6 +24,7 @@ sql_stmt_update *UpdateParser::parse_sql_stmt_update()
   char *tableName = nullptr;
   vector<char *> fields;
   vector<Expression *> fieldsExpr;
+  SRA_t *where = nullptr;
 
   //使用matchToken匹配update
   if(!this->matchToken(TOKEN_RESERVED_WORD, "update"))
@@ -96,7 +97,7 @@ sql_stmt_update *UpdateParser::parse_sql_stmt_update()
   }
   TableReference_t *tableReference = TableReference_make(tableName, nullptr);
   SRA_t *table = SRATable(tableReference);
-  SRA_t *where = table;
+  where = table;
 
   if(token == nullptr || token->type == TOKEN_SEMICOLON)
     where = table;
