@@ -27,8 +27,7 @@ int ExecutionPlan::executeDelete(DongmenDB *db, sql_stmt_delete *sqlStmtDelete, 
   //利用循环进行遍历
   while(scan->next())
   {
-    ///warning:不知道是不是删除所有记录。。。
-    ///update:是删除所有记录。。。
+    //删除记录
     scan->deleteRecord();
     ++deleted_count;
   }
