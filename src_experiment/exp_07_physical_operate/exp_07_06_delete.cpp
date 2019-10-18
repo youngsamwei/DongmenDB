@@ -30,10 +30,13 @@ int ExecutionPlan::executeDelete(DongmenDB *db, sql_stmt_delete *sqlStmtDelete, 
   Scan *scan = generateSelect(db, sqlStmtDelete->where, tx);
   //将扫描指针放到最前
   scan->beforeFirst();
+  SRA_print(sqlStmtDelete->where);
+  putchar('\n');
   //利用循环进行遍历
   while(scan->next())
   {
     ///warning:不知道是不是删除所有记录。。。
+    ///update:是删除所有记录。。。
     scan->deleteRecord();
     ++deleted_count;
   }
