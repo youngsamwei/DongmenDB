@@ -95,10 +95,12 @@ sql_stmt_update *UpdateParser::parse_sql_stmt_update()
     strcpy(this->parserMessage, "invalid sql: missing field name.");
     return nullptr;
   }
+
   TableReference_t *tableReference = TableReference_make(tableName, nullptr);
   SRA_t *table = SRATable(tableReference);
   where = table;
 
+  //如果没有where
   if(token == nullptr || token->type == TOKEN_SEMICOLON)
     where = table;
   else if(token->type == TOKEN_RESERVED_WORD)
