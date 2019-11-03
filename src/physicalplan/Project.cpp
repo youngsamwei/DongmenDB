@@ -65,14 +65,14 @@ int Project::close() {
 
 variant *Project::getValueByIndex(int index) {
     Expression *expr =  expr_list.at(index);
-    variant *var = (variant *) calloc(sizeof(variant), 1);
+    variant *var = (variant *) calloc(1, sizeof(variant));
     evaluateExpression(expr, scan, var);
     return var;
 };
 
 int Project::getIntByIndex(int index) {
     Expression *expr = expr_list.at(index);
-    variant *var = (variant *) calloc(sizeof(variant), 1);
+    variant *var = (variant *) calloc(1, sizeof(variant));
     evaluateExpression(expr, scan, var);
     if (var->type == DATA_TYPE_INT) {
         return var->intValue;
@@ -83,7 +83,7 @@ int Project::getIntByIndex(int index) {
 
 string Project::getStringByIndex(int index) {
     Expression *expr = expr_list.at(index);
-    variant *var = (variant *) calloc(sizeof(variant), 1);
+    variant *var = (variant *) calloc(1, sizeof(variant));
     evaluateExpression(expr, scan, var);
     if (var->type == DATA_TYPE_CHAR) {
         return string(var->strValue);
@@ -102,7 +102,7 @@ variant *Project::getValue(string fieldName) {
 
 string Project::getString(string tableName, string fieldName) {
     FieldInfo *fi = getField(tableName, fieldName);
-    char *value = (char *) calloc(fi->length, 1);
+    char *value = (char *) calloc(1, sizeof(char) * fi->length);
     return scan->getString(tableName, fieldName);
 };
 
