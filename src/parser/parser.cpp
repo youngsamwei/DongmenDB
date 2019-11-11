@@ -374,6 +374,7 @@ Expression *Parser::parseReadTerm() {
         parseEatToken();
         /*获得乘法的右表达式*/
         expr1 = parseReadPower();
+
         /*左右表达式合并为一个后缀表达式*/
         expr0 = concatExpression(expr0, expr1);
         /*在后缀表达式前增加乘法操作*/
@@ -381,7 +382,6 @@ Expression *Parser::parseReadTerm() {
         expr0 = expr2;
         token = parseNextToken();
     }
-
     return expr0;
 };
 

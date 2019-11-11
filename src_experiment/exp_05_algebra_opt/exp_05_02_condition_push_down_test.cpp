@@ -7,7 +7,6 @@
 class Exp_05_02_ConditionPushdownTest : public TestStmtOptimized {
 protected:
     virtual void SetUp() {
-
         _m_list[0] = "select student.*, sc.*, course.* from student, sc, course where student.sno = sc.sno and sc.cno = course.cno and course.cno = 'c001' and grade >= 80 and student.sname = 'tom simith'";
         _m_list[1] = "select student.sno, sc.cno,sname,grade, cname from student, sc, course where student.sno = sc.sno and sc.cno = course.cno and grade >= 80";
         _m_list[2] = "select sno,cno,grade, cname from sc, course where sc.cno = course.cno and grade > 80";

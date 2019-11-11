@@ -135,7 +135,6 @@ public:
     /*按链表顺序存操作数*/
     Expression *nextexpr;
 
-
     int printTermExpression(char *exprs, TermExpr *term);
 
     const char *getOperatorDesc(TokenType type);

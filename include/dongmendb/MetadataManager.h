@@ -13,7 +13,6 @@
 
 using namespace std;
 
-
 /**
  * 元数据管理
  * 包括：
@@ -27,30 +26,31 @@ using namespace std;
  */
 
 class Transaction;
+
 class TableManager;
+
 class FieldInfo;
 
-
-class TableManager {
+class TableManager
+{
 public:
-    TableInfo *tcatInfo;
-    TableInfo *fcatInfo;
+  TableInfo *tcatInfo;
+  TableInfo *fcatInfo;
 
-    TableManager(int isNew, Transaction *tx);
+  TableManager(int isNew, Transaction *tx);
 
-    int table_manager_create_table(char *tableName, vector<char *> fieldsName,
-                                   map<string, FieldInfo *> *fields,
-                                   Transaction *tx);
+  int table_manager_create_table(char *tableName, vector<char *> fieldsName,
+                                 map<string, FieldInfo *> *fields,
+                                 Transaction *tx);
 
-    TableInfo *table_manager_get_tableinfo(const char *tableName, Transaction *tx);
+  TableInfo *table_manager_get_tableinfo(const char *tableName, Transaction *tx);
 
 /*语义检查：表是否存在，在src_experiment\exp_02_semantic\exp_02_01_table_exists.c中实现*/
-    int semantic_check_table_exists(char *tableName, Transaction *tx);
+  int semantic_check_table_exists(char *tableName, Transaction *tx);
 
 /*语义检查：字段是否存在，在src_experiment\exp_02_semantic\exp_02_01_field_exists.c中实现*/
-    int semantic_check_field_exists(char *tableName, char *fieldName, Transaction *tx);
+  int semantic_check_field_exists(char *tableName, char *fieldName, Transaction *tx);
 
-
-} ;
+};
 
 #endif //DONGMENDB_METADATA_MANAGER_H
