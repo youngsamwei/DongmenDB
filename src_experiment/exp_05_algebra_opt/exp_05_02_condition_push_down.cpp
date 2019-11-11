@@ -119,12 +119,21 @@ void splitSra(SRA_s *ps)
 
   SRA_s *s = ps;
   Expression *condition = s->select.cond;
+  //左侧操作数
   Expression *operandListFront = condition->nextexpr;
   Expression *operandListBack = interceptSubexpression(operandListFront);
-
   auto frontEnd = goSubexpressionEnd(operandListFront, operandListBack);
   frontEnd->nextexpr = nullptr;
 
   s->select.sra = SRASelect(s->select.sra, operandListFront);
   s->select.cond = operandListBack;
+}
+
+Expression *goSubexpressionEnd(Expression *pFront, Expression *pBack)
+{
+  Expression *expression = pFront;
+  while(expression != nullptr && expression->nextexpr != pBack
+    && expression->nextexpr != nullptr)
+    expression = expression->nextexpr;
+  return expression;
 }
