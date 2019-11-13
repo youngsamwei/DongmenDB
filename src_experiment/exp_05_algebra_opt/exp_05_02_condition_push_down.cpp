@@ -4,14 +4,6 @@
 
 #include <relationalalgebra/optimizer.h>
 
-/**
- * 使用关于选择的等价变换规则将条件下推。
- */
-
-/*输入一个关系代数表达式，输出优化后的关系代数表达式
- * 要求：在查询条件符合合取范式的前提下，根据等价变换规则将查询条件移动至合适的位置。
- * */
-
 /*
  * 等价变换：将SRA_SELECT类型的节点进行条件串接
  * 传入指针的指针作为参数便于修改多于一个值
@@ -32,7 +24,7 @@ void splitSra(SRA_s *pS);
  * 当前标识符为 TOKEN_AND 时，获取当前的子表达式，也就是两个 AND
  * （或者只有一个 AND 另一个为 nullptr） 中间的子表达式，将其拆下
  * 长表达式，拆分成一个单独的 select 便于第二步中的 select 与 join
- * 的下推交    换处理
+ * 的下推交换处理
  */
 Expression *interceptSubexpression(Expression *pExpression);
 
@@ -45,16 +37,17 @@ Expression *goSubexpressionEnd(Expression *pFront, Expression *pBack);
  * 将上一步拆分得到的 select 子语句 下推，寻找到包含 select 所需属性的 join 语句
  * 将 select 语句放至 join 之前（下方）执行，也就是先筛选需要的属性再交
  */
-void conditionalExchange(SRA_t *pS, TableManager *tableManager);
+void conditionalExchange(SRA_t *pS, TableManager *tableManager, Transaction *transaction);
 
 /*
  * 检查 column 名是否存在于预定的 fieldsName 中
  */
-bool hasColumnNameInFieldsName(const vector<char *> &fieldsName, const char *columnName);
+bool hasColumnNameInFieldsName(const vector<char *> &fieldsName,
+                               const char *columnName);
 
-bool hasColumnNameInSra(SRA_t *sra, Expression *pExpression, TableManager *tableManager);
+bool hasColumnNameInSra(SRA_t *sra, Expression *pExpression, TableManager *tableManager, Transaction *transaction);
 
-SRA_t *dongmengdb_algebra_optimize_condition_pushdown(SRA_t *sra, TableManager *tableManager)
+SRA_t *dongmengdb_algebra_optimize_condition_pushdown(SRA_t *sra, TableManager *tableManager, Transaction *transaction)
 {
 
   /*初始关系代数语法树sra由三个操作构成：SRA_PROJECT -> SRA_SELECT -> SRA_JOIN，即对应语法树中三个节点。
@@ -78,7 +71,7 @@ SRA_t *dongmengdb_algebra_optimize_condition_pushdown(SRA_t *sra, TableManager *
   splitAndConcatenate(sra);
 
   //选择交换
-  conditionalExchange(sra, tableManager);
+  conditionalExchange(sra, tableManager, transaction);
 
   return sra;
 }
@@ -122,7 +115,7 @@ void splitSra(SRA_s *ps)
   //左侧操作数
   Expression *operandListFront = condition->nextexpr;
   Expression *operandListBack = interceptSubexpression(operandListFront);
-  auto frontEnd = goSubexpressionEnd(operandListFront, operandListBack);
+  Expression *frontEnd = goSubexpressionEnd(operandListFront, operandListBack);
   frontEnd->nextexpr = nullptr;
 
   s->select.sra = SRASelect(s->select.sra, operandListFront);
@@ -133,7 +126,127 @@ Expression *goSubexpressionEnd(Expression *pFront, Expression *pBack)
 {
   Expression *expression = pFront;
   while(expression != nullptr && expression->nextexpr != pBack
-    && expression->nextexpr != nullptr)
+        && expression->nextexpr != nullptr)
     expression = expression->nextexpr;
   return expression;
+}
+
+Expression *interceptSubexpression(Expression *expression)
+{
+  if(expression == nullptr)
+    return expression;
+  else if(expression->term == nullptr)
+  {
+    if(expression->opType <= TOKEN_COMMA)
+    {
+      int numOfOperators = 0;
+      numOfOperators = operators[expression->opType].numbers;
+      expression = expression->nextexpr;
+
+      while(numOfOperators--)
+        expression = interceptSubexpression(expression);
+    }
+    return expression;
+  }
+  else if(expression->term)
+    return expression->nextexpr;
+  return nullptr;
+}
+
+bool hasLegalKeyword(Expression *expression)
+{
+  return expression == nullptr ? false : expression->opType == TOKEN_AND;
+}
+
+bool hasColumnNameInFieldsName(const vector<char *> &fieldsName, const char *columnName)
+{
+  for(char *name : fieldsName)
+    if(strcmp(name, columnName) == 0)
+      return true;
+  return false;
+}
+
+bool hasColumnNameInSra(SRA_t *sra, Expression *expression, TableManager *tableManager, Transaction *transaction)
+{
+  SRAType sraType = sra->t;
+  if(sraType == SRA_SELECT)
+    return hasColumnNameInSra(sra->select.sra, expression, tableManager, transaction);
+  else if(sraType == SRA_JOIN)
+  {
+    bool f1 = hasColumnNameInSra(sra->join.sra1, expression, tableManager, transaction);
+    bool f2 = hasColumnNameInSra(sra->join.sra2, expression, tableManager, transaction);
+    return f1 || f2;
+  }
+  else if(sraType == SRA_TABLE)
+  {
+    for(auto point = expression; point != nullptr; point = point->nextexpr)
+    {
+      if(point->term != nullptr && point->term->t == TERM_COLREF)
+      {
+        if(point->term->ref->tableName != nullptr)
+        {
+          if(strcmp(point->term->ref->tableName, sra->table.ref->table_name) == 0)
+            return true;
+        }
+        else
+        {
+          TableInfo *tableInfo = tableManager->table_manager_get_tableinfo(sra->table.ref->table_name, transaction);
+          if(hasColumnNameInFieldsName(tableInfo->fieldsName, point->term->ref->columnName))
+            return true;
+        }
+      }
+    }
+    return false;
+  }
+  return false;
+}
+
+void conditionalExchange(SRA_t *ps, TableManager *tableManager, Transaction *transaction)
+{
+  SRA_t *sra = ps;
+  if(sra == nullptr)
+    return;
+  else if(sra->t == SRA_SELECT)
+  {
+    conditionalExchange(sra->select.sra, tableManager, transaction);
+    SRA_t *selectSra = sra->select.sra;
+    if(selectSra->t == SRA_SELECT)
+    {
+      sra->select.sra = selectSra->select.sra;
+      selectSra->select.sra = sra;
+      ps = selectSra;
+      conditionalExchange(selectSra->select.sra, tableManager, transaction);
+    }
+    else if(selectSra->t == SRA_JOIN)
+    {
+      bool leftBranch = hasColumnNameInSra(selectSra->join.sra1,
+              sra->select.cond, tableManager, transaction);
+      bool rightBranch = hasColumnNameInSra(selectSra->join.sra2,
+              sra->select.cond, tableManager, transaction);
+
+      if(leftBranch == true && rightBranch == false)
+      {
+        sra->select.sra = selectSra->join.sra1;
+        selectSra->join.sra1 = sra;
+        ps = selectSra;
+
+        conditionalExchange(selectSra->join.sra1, tableManager, transaction);
+      }
+      else if(leftBranch == false && rightBranch == true)
+      {
+        sra->select.sra = selectSra->join.sra2;
+        selectSra->join.sra2 = sra;
+        ps = selectSra;
+
+        conditionalExchange(selectSra->join.sra2, tableManager, transaction);
+      }
+    }
+  }
+  else if(sra->t == SRA_PROJECT)
+    conditionalExchange(sra->project.sra, tableManager, transaction);
+  else if(sra->t == SRA_JOIN)
+  {
+    conditionalExchange(sra->join.sra1, tableManager, transaction);
+    conditionalExchange(sra->join.sra2, tableManager, transaction);
+  }
 }
