@@ -75,7 +75,7 @@ void *Parser::parseError( char *message) {
 
 int Parser::matchToken( TokenType type, char *text){
     Token *token = parseNextToken();
-    if (token && token->type == type && stricmp(token->text, text) == 0) {
+    if (token && token->type == type && strcmp_ic(token->text, text) == 0) {
         parseEatAndNextToken();
         return 1;
     } else {
@@ -201,7 +201,7 @@ Expression *Parser::parseReadBuiltin() {
 
         if (token != NULL && token->type == TOKEN_OPEN_PAREN) {
             /*函数*/
-            if (stricmp(text, "ltrim") == 0) {
+            if (strcmp_ic(text, "ltrim") == 0) {
                 /*函数参数个数的检测*/
                 token = parseEatAndNextToken();
                 /*如果紧跟着右括号，则丢失参数*/
@@ -222,7 +222,7 @@ Expression *Parser::parseReadBuiltin() {
                     return NULL;
                 }
                 expr0 = new Expression(TOKEN_FUN, param0);
-            } else if (stricmp(text, "round") == 0) {
+            } else if (strcmp_ic(text, "round") == 0) {
                 /*函数参数个数的检测*/
                 token = parseEatAndNextToken();
                 if (token->type == TOKEN_CLOSE_PAREN) {

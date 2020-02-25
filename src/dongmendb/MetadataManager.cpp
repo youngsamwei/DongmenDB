@@ -126,7 +126,7 @@ TableInfo *TableManager::table_manager_get_tableinfo(const char *tableName, Tran
     while (tcatFile->record_file_next()) {
         char *name = new_id_name();
         tcatFile->record_file_get_string("tablename", name);
-        if (stricmp(tableName, name) == 0) {
+        if (strcmp_ic(tableName, name) == 0) {
             recordLen = tcatFile->record_file_get_int("reclength");
         }
         // free(name);
@@ -141,7 +141,7 @@ TableInfo *TableManager::table_manager_get_tableinfo(const char *tableName, Tran
     while (fcatFile->record_file_next()) {
         char *name = new_id_name();
         fcatFile->record_file_get_string( "tablename", name);
-        if (stricmp(tableName, name) == 0) {
+        if (strcmp_ic(tableName, name) == 0) {
             char *fieldName = new_id_name();
             fcatFile->record_file_get_string( "fieldname", fieldName);
             enum data_type type = (data_type)fcatFile->record_file_get_int( "type");

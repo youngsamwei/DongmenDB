@@ -15,7 +15,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
-#include <string.h>
+#include <utils/utils.h>
 #include <assert.h>
 #include "parser/Tokenizer.h"
 
@@ -122,7 +122,7 @@ int Tokenizer::isReservedWord(char *word) {
     int isReservedWord = 0;
     int size = sizeof(reservedWords)/sizeof(reservedWords[0]);
     for (int rWordIndex = 0; rWordIndex <= size - 1; rWordIndex++) {
-        if (stricmp(word, reservedWords[rWordIndex]) == 0) {
+        if (strcmp_ic(word, reservedWords[rWordIndex]) == 0) {
             isReservedWord = 1;
         }
     }

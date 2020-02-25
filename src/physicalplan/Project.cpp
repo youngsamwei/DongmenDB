@@ -22,7 +22,7 @@ int Project::processExpressionList(){
         Expression *expr = this->original_expr_list.at(i);
         if (expr->term !=NULL && expr->term->t == TERM_COLREF){
             ColumnReference *columnReference = expr->term->ref;
-            if (stricmp(columnReference->columnName, "*")==0){
+            if (strcmp_ic(columnReference->columnName, "*") == 0){
                 string tablename;
                 if (columnReference->tableName){
                     tablename = columnReference->tableName;

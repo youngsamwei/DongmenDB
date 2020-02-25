@@ -78,7 +78,7 @@ Expression *Scan::evaluateExpression(Expression *expr, Scan *scan, variant *var)
             if (var1->type == DATA_TYPE_INT) {
                 var->booleanValue = var1->intValue > var2->intValue;
             } else if (var1->type == DATA_TYPE_CHAR) {
-                var->booleanValue = stricmp(var1->strValue, var2->strValue);
+                var->booleanValue = strcmp_ic(var1->strValue, var2->strValue);
             }
             return nextexpr2;
         }
@@ -92,7 +92,7 @@ Expression *Scan::evaluateExpression(Expression *expr, Scan *scan, variant *var)
             if (var1->type == DATA_TYPE_INT) {
                 var->booleanValue = var1->intValue < var2->intValue;
             } else if (var1->type == DATA_TYPE_CHAR) {
-                var->booleanValue = stricmp(var1->strValue, var2->strValue);
+                var->booleanValue = strcmp_ic(var1->strValue, var2->strValue);
             }
             return nextexpr2;
         }
@@ -106,7 +106,7 @@ Expression *Scan::evaluateExpression(Expression *expr, Scan *scan, variant *var)
             if (var1->type == DATA_TYPE_INT) {
                 var->booleanValue = var1->intValue <= var2->intValue;
             } else if (var1->type == DATA_TYPE_CHAR) {
-                var->booleanValue = stricmp(var1->strValue, var2->strValue);
+                var->booleanValue = strcmp_ic(var1->strValue, var2->strValue);
             }
 
             return nextexpr2;
@@ -121,7 +121,7 @@ Expression *Scan::evaluateExpression(Expression *expr, Scan *scan, variant *var)
             if (var1->type == DATA_TYPE_INT) {
                 var->booleanValue = var1->intValue >= var2->intValue;
             } else if (var1->type == DATA_TYPE_CHAR) {
-                var->booleanValue = stricmp(var1->strValue, var2->strValue);
+                var->booleanValue = strcmp_ic(var1->strValue, var2->strValue);
             }
 
             return nextexpr2;
@@ -136,7 +136,7 @@ Expression *Scan::evaluateExpression(Expression *expr, Scan *scan, variant *var)
             if (var1->type == DATA_TYPE_INT) {
                 var->booleanValue = var1->intValue == var2->intValue;
             } else if (var1->type == DATA_TYPE_CHAR) {
-                var->booleanValue = !stricmp(var1->strValue, var2->strValue);
+                var->booleanValue = !strcmp_ic(var1->strValue, var2->strValue);
             }
             return nextexpr2;
         }
@@ -150,7 +150,7 @@ Expression *Scan::evaluateExpression(Expression *expr, Scan *scan, variant *var)
             if (var1->type == DATA_TYPE_INT) {
                 var->booleanValue = var1->intValue != var2->intValue;
             } else if (var1->type == DATA_TYPE_CHAR) {
-                var->booleanValue = stricmp(var1->strValue, var2->strValue);
+                var->booleanValue = strcmp_ic(var1->strValue, var2->strValue);
             }
             return nextexpr2;
         }

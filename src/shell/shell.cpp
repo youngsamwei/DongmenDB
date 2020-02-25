@@ -4,7 +4,6 @@
 
 #include <dongmendb/DongmenDB.h>
 #include <dongmendb/Recordfile.h>
-#include <utils/utils.h>
 #include <dongmensql/sqlstatement.h>
 #include <relationalalgebra/optimizer.h>
 #include <physicalplan/ExecutionPlan.h>
@@ -87,16 +86,16 @@ int dongmendb_shell_handle_cmd(dongmendb_shell_handle_sql_t *ctx, const char *cm
             fprintf(stderr, "ERROR: No database is open.\n");
             return 1;
         } else {
-            if (stricmp(tokens[0], "select") == 0) {
+            if (strcmp_ic(tokens[0], "select") == 0) {
                 dongmendb_shell_handle_select_table(ctx, cmd);
                 //rc = dongmendb_shell_handle_sql(ctx, cmd);
-            } else if (stricmp(tokens[0], "create") == 0 && stricmp(tokens[1], "table") == 0) {
+            } else if (strcmp_ic(tokens[0], "create") == 0 && strcmp_ic(tokens[1], "table") == 0) {
                 dongmendb_shell_handle_create_table(ctx, cmd);
-            } else if (stricmp(tokens[0], "insert") == 0 && stricmp(tokens[1], "into") == 0) {
+            } else if (strcmp_ic(tokens[0], "insert") == 0 && strcmp_ic(tokens[1], "into") == 0) {
                 dongmendb_shell_handle_insert_table(ctx, cmd);
-            } else if (stricmp(tokens[0], "update") == 0) {
+            } else if (strcmp_ic(tokens[0], "update") == 0) {
                 dongmendb_shell_handle_update_data(ctx, cmd);
-            } else if (stricmp(tokens[0], "delete") == 0) {
+            } else if (strcmp_ic(tokens[0], "delete") == 0) {
                 dongmendb_shell_handle_delete_data(ctx, cmd);
             } else {
                 fprintf(stderr, "ERROR: not support %s.\n", tokens[0]);

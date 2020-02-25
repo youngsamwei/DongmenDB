@@ -2,13 +2,18 @@
 // Created by Sam on 2018/1/25.
 //
 
-#include <stddef.h>
-#include <ctype.h>
+#include <cstddef>
+#include <cctype>
 #include <malloc.h>
 #include <dongmendb/DongmenDB.h>
-#include <dongmensql/expression.h>
+#ifdef __MINGW32__
 #include <io.h>
 #include <direct.h>
+#endif
+#ifdef __linux__
+#include <ftw.h>
+#endif
+
 #include "utils/utils.h"
 
 char *new_id_name(){
@@ -99,6 +104,17 @@ int dongmendb_tokenize(char *str, char ***tokens)
     return ntokens;
 }
 
+#ifdef __linux
+int unlink_cb(const char *fpath, const struct stat *sb, int typeflag, struct FTW *ftwbuf)
+{
+    int rv = remove(fpath);
+    if (rv) {
+        perror(fpath);
+    }
+    return rv;
+}
+#endif
+
 /*
 函数入口：文件夹的绝对路径
           const char*  dirPath
@@ -108,7 +124,7 @@ int dongmendb_tokenize(char *str, char ***tokens)
 */
 int  removeDir(const char*  dirPath)
 {
-
+#ifdef __MINGW32__
     struct _finddata_t fb;   //查找相同属性文件的存储结构体
     char  path[250];
     long    handle;
@@ -159,9 +175,14 @@ int  removeDir(const char*  dirPath)
     //移除文件夹
     resultone = rmdir(dirPath);
     return  resultone;
+#endif
+
+#ifdef __linux
+    return nftw(dirPath, unlink_cb, 64, FTW_DEPTH | FTW_PHYS);
+#endif
 }
 
-
+#ifdef __MINGW32__
 /*
 函数入口：文件夹的绝对路径
           const wchar_t*  dirPath
@@ -171,7 +192,6 @@ int  removeDir(const char*  dirPath)
 */
 int  removeDirW(const wchar_t*  dirPath)
 {
-
     struct _wfinddata_t fb;   //查找相同属性文件的存储结构体
 
     wchar_t  path[250];
@@ -223,4 +243,13 @@ int  removeDirW(const wchar_t*  dirPath)
     resultone = _wrmdir(dirPath);
     return  resultone;
 }
+#endif
 
+int strcmp_ic(char const *a, char const *b)
+{
+    for (;; a++, b++) {
+        int d = tolower((unsigned char)*a) - tolower((unsigned char)*b);
+        if (d != 0 || !*a)
+            return d;
+    }
+}

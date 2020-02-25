@@ -22,8 +22,11 @@ char *new_id_name();
 /* 删除指定文件夹以及其中文档*/
 int  removeDir(const char*  dirPath);
 
+#ifdef __MINGW32__
 int  removeDirW(const wchar_t*  dirPath);
+#endif
 
-
+/* case insensitive char strcmp */
+int strcmp_ic(char const *a, char const *b);
 
 #endif //DONGMENDB_UTILS_H

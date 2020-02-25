@@ -6,7 +6,7 @@
 #define DONGMENDB_EXPRESSION_H
 
 #include <malloc.h>
-#include <mem.h>
+#include <string.h>
 #include <stdio.h>
 #include <dongmensql/literal.h>
 
