@@ -2,52 +2,65 @@
 // Created by Sam on 2018/2/11.
 //
 
-#include <stdlib.h>
+#include <cstdio>
 #include <gtest/gtest.h>
+#include <map>
+#include <parser/StatementParser.h>
+#include <parser/Tokenizer.h>
 #include <test/test_stmt_parser.h>
 
-
-class Exp_01_05_DeleteTest : public TestStmtParser {
+class Exp_01_05_DeleteTest : public testing::Test {
 protected:
+    void SetUp() override {
+        sqlList[0] = "delete student where sname = 'tom simith'";;
 
-    virtual void SetUp() {
-        _m_list[0] = "delete student where sname = 'tom simith'";
-        _m_list[1] = "select * from student where sname = 'tom simith'";
-        _m_list[2] = "delete student where sno = '2012010102'";
-        _m_list[3] = "select *  from student where sno = '2012010102'";
-        _m_list[4] = "delete student  where sname = 'john simith' and ssex='male'";
-        _m_list[5] = "select *  from student  where sname = 'john simith' and ssex='male'";
-        _m_list[6] = "delete sc where sno = '2012010103' ";
-        _m_list[7] = "select *  from sc where sno = '2012010103' ";
-        _m_list[8] = "delete sc  where grade >= 80 and cno = 'c003'";
-        _m_list[9] = "select *  from sc  where grade >= 80 and cno = 'c003'";
+        expectList[0] = setupTest0();
     }
-    const char *_m_list[11];
-    const char *dbname = "test_demodb";
+
+    static sql_stmt_delete parse(const char *sql) {
+        auto *tokenizer = new Tokenizer(sql);
+        auto *ip = new DeleteParser(tokenizer);
+        auto *stmt = ip->parse_sql_stmt_delete();
+        return *stmt;
+    }
+
+    char *sqlList[10]{};
+    sql_stmt_delete expectList[10]{};
+
+private:
+    static sql_stmt_delete setupTest0();
 };
 
-TEST_F(Exp_01_05_DeleteTest, Correct){
-    /*据指定的数据库名称创建数据库*/
-    createDB(dbname);
-/*创建表*/
-    createTable();
-/*增加数据*/
-    insertData();
+TEST_F(Exp_01_05_DeleteTest, Correct) {
 
-    /* 执行删除的测试用例，返回结果1*/
-    EXPECT_EQ(1, delete_( _m_list[0]));
-    /*执行验证删除的测试用例，返回结果0，看是否真的删除*/
-    EXPECT_EQ(0, select( _m_list[1]));
-    EXPECT_EQ(1, delete_( _m_list[2]));
-    EXPECT_EQ(0, select( _m_list[3]));
-    EXPECT_EQ(1, delete_( _m_list[4]));
-    EXPECT_EQ(0, select( _m_list[5]));
-    EXPECT_EQ(2, delete_( _m_list[6]));
-    EXPECT_EQ(0, select( _m_list[7]));
-    EXPECT_EQ(3, delete_( _m_list[8]));
-    EXPECT_EQ(0, select( _m_list[9]));
+    try {
+        sql_stmt_delete resultList[10];
 
-    /*删除数据库*/
-    dropDB();
+        resultList[0] = parse(sqlList[0]);
+        EXPECT_TRUE(equal_table_name(resultList[0], expectList[0]));
+        EXPECT_TRUE(equal_where(resultList[0], expectList[0]));
+        EXPECT_TRUE(equal(resultList[0], expectList[0]));
 
+    } catch (const exception &e) {
+        cout << e.what() << endl;
+    }
 }
+
+// region 测试用例
+
+sql_stmt_delete Exp_01_05_DeleteTest::setupTest0() {
+    char *tableName{"student"};
+    vector<char *> fields{"sname"};
+    vector<Expression *> fieldsExpr{
+            (new Parser(new Tokenizer("'Tom Cruise'")))->parseExpressionRD()
+    };
+    SRA_t *where = nullptr;
+
+    auto stmt = sql_stmt_delete();
+    stmt.tableName = tableName;
+    stmt.where = where;
+
+    return stmt;
+}
+
+// endregion

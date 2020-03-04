@@ -35,10 +35,12 @@ public:
     char *text;
     sql_statement_type type;
 
-    SQLStatement(char *text, sql_statement_type type){
+    SQLStatement(char *text, sql_statement_type type) {
         this->text = strdup(text);
         this->type = type;
     }
+
+    SQLStatement() = default;
 };
 
 

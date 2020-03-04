@@ -2,77 +2,133 @@
 // Created by Sam on 2018/2/11.
 //
 
-#include <stdio.h>
-#include <stdlib.h>
+#include <cstdio>
 #include <gtest/gtest.h>
-#include <dongmensql/sqlstatement.h>
+#include <map>
+#include <parser/StatementParser.h>
+#include <parser/Tokenizer.h>
+#include <test/test_stmt_parser.h>
 
-#include "test/test_stmt_parser.h"
-
-/* 2018-10-27 测试类改进：每次测试都重新创建数据库，重新初始化数据。
- * 测试类继承自 TestStmtParser
-
-这个测试用例设计的还是不完善，只能做简单的测试，尚不能准确的测试是否解析的正确.*/
-
-
-class Exp_01_04_UpdateTest : public TestStmtParser {
-
-
+class Exp_01_04_UpdateTest : public testing::Test {
 protected:
+    void SetUp() override {
+        // 一般更新
+        sqlList[0] = "update student set sage = sage + 1";
+        // 带 where 的更新
+        sqlList[1] = "update student set sname = 'Tom Cruise' where sno = '2012010101'";
+        // 多字段
+        sqlList[2] = "update student set sname = 'li simith', ssex= 'male' where sname = 'zhang simith'";
 
-    virtual void SetUp() {
-        _m_list[0] = "update student set sname = 'Tom Cruise' where sno = '2012010101' ";
-        _m_list[1] = "update student set sname = 'zhang simith' where sname = 'li simith' ";
-        _m_list[2] = "update student set sname = 'li simith', ssex= 'male' where sname = 'zhang simith'; ";
-        _m_list[3] = "update student set sname = 'zhang simith', ssex= 'male', sage = sage + 1 where sname = 'li simith'";
-        _m_list[4] = "update student set sname = 'li simith' where sname = 'zhang simith'";
-        _m_list[5] = "update student set sage = sage + 1 where sname = 'li simith'";
-        _m_list[6] = "update student set sage = sage + 1 " ;
-        _m_list[7] = "update student set sage = 20 where sno = '2012010101'";
-        _m_list[8] = "update student set sname = 'To mCruise' where sage > 30; ";
-        _m_list[9] = "update student set sage = sage + 1 where sage > 30 and ssex = 'male'; ";
-
-        _expect_list[0] = 1;
-        _expect_list[1] = 1;
-        _expect_list[2] = 1;
-        _expect_list[3] = 1;
-        _expect_list[4] = 1;
-        _expect_list[5] = 1;
-        _expect_list[6] = 9;
-        _expect_list[7] = 1;
-        _expect_list[8] = 0;
-        _expect_list[9] = 0;
+        expectList[0] = setupTest0();
+        expectList[1] = setupTest1();
+        expectList[2] = setupTest2();
     }
-    /* 测试用例*/
-    const char *_m_list[11];
-    /* 执行测试用例返回的影响记录条数*/
-    int _expect_list[11];
-    /*准备使用的测试数据库名称 */
-    const char *dbname = "test_demodb";
+
+    static sql_stmt_update parse(const char *sql) {
+        auto *tokenizer = new Tokenizer(sql);
+        auto *ip = new UpdateParser(tokenizer);
+        auto *sqlStmtUpdate = ip->parse_sql_stmt_update();
+        return *sqlStmtUpdate;
+    }
+
+    char *sqlList[10]{};
+    sql_stmt_update expectList[10]{};
+
+private:
+    static sql_stmt_update setupTest0();
+
+    static sql_stmt_update setupTest1();
+
+    static sql_stmt_update setupTest2();
 };
 
-TEST_F(Exp_01_04_UpdateTest, Correct){
+TEST_F(Exp_01_04_UpdateTest, Correct) {
 
-    /*据指定的数据库名称创建数据库*/
-    createDB(dbname);
-/*创建表*/
-    createTable();
-/*增加数据*/
-    insertData();
+    try {
+        sql_stmt_update resultList[2];
 
-    /*执行测试，不能写成循环，因为无法清楚显示哪个测试用例失败了*/
-    EXPECT_EQ(_expect_list[0], update(_m_list[0]));
-    EXPECT_EQ(_expect_list[1], update(_m_list[1]));
-    EXPECT_EQ(_expect_list[2], update(_m_list[2]));
-    EXPECT_EQ(_expect_list[3], update(_m_list[3]));
-    EXPECT_EQ(_expect_list[4], update(_m_list[4]));
-    EXPECT_EQ(_expect_list[5], update(_m_list[5]));
-    EXPECT_EQ(_expect_list[6], update(_m_list[6]));
-    EXPECT_EQ(_expect_list[7], update(_m_list[7]));
-    EXPECT_EQ(_expect_list[8], update(_m_list[8]));
-    EXPECT_EQ(_expect_list[9], update(_m_list[9]));
+        resultList[0] = parse(sqlList[0]);
+        EXPECT_TRUE(equal_table_name(resultList[0], expectList[0]));
+        EXPECT_TRUE(equal_where(resultList[0], expectList[0]));
+        EXPECT_TRUE(equal_fields_expr(resultList[0], expectList[0]));
+        EXPECT_TRUE(equal_fields(resultList[0], expectList[0]));
+        EXPECT_TRUE(equal(resultList[0], expectList[0]));
 
-    /*删除数据库*/
-    dropDB();
+        resultList[1] = parse(sqlList[1]);
+        EXPECT_TRUE(equal_table_name(resultList[1], expectList[1]));
+        EXPECT_TRUE(equal_where(resultList[1], expectList[1]));
+        EXPECT_TRUE(equal_fields_expr(resultList[1], expectList[1]));
+        EXPECT_TRUE(equal_fields(resultList[1], expectList[1]));
+        EXPECT_TRUE(equal(resultList[1], expectList[1]));
 
+        resultList[2] = parse(sqlList[2]);
+        EXPECT_TRUE(equal_table_name(resultList[2], expectList[2]));
+        EXPECT_TRUE(equal_where(resultList[2], expectList[2]));
+        EXPECT_TRUE(equal_fields_expr(resultList[2], expectList[2]));
+        EXPECT_TRUE(equal_fields(resultList[2], expectList[2]));
+        EXPECT_TRUE(equal(resultList[2], expectList[2]));
+
+    } catch (const exception &e) {
+        cout << e.what() << endl;
+    }
 }
+
+// region 测试用例
+
+sql_stmt_update Exp_01_04_UpdateTest::setupTest0() {
+    char *tableName{"student"};
+    vector<char *> fields{"sname"};
+    vector<Expression *> fieldsExpr{
+            (new Parser(new Tokenizer("'Tom Cruise'")))->parseExpressionRD()
+    };
+    SRA_t *where = nullptr;
+
+    auto stmt = sql_stmt_update();
+    stmt.tableName = tableName;
+    stmt.fields = fields;
+    stmt.fieldsExpr = fieldsExpr;
+    stmt.where = where;
+
+    return stmt;
+}
+
+sql_stmt_update Exp_01_04_UpdateTest::setupTest1() {
+    char *tableName{"student"};
+    vector<char *> fields{"sage"};
+    vector<Expression *> fieldsExpr{
+            (new Parser(new Tokenizer("Tom Cruise")))->parseExpressionRD()
+    };
+    Expression *whereExpr = (new Parser(new Tokenizer("sno = '2012010101'")))->parseExpressionRD();
+    SRA_t *table = SRATable(TableReference_make(tableName, nullptr));
+    SRA_t *where = SRASelect(table, whereExpr);
+
+    auto stmt = sql_stmt_update();
+    stmt.tableName = tableName;
+    stmt.fields = fields;
+    stmt.fieldsExpr = fieldsExpr;
+    stmt.where = where;
+
+    return stmt;
+}
+
+sql_stmt_update Exp_01_04_UpdateTest::setupTest2() {
+    char *tableName{"student"};
+    vector<char *> fields{"sname", "ssex"};
+    vector<Expression *> fieldsExpr{
+            (new Parser(new Tokenizer("li simith")))->parseExpressionRD(),
+            (new Parser(new Tokenizer("male")))->parseExpressionRD()
+    };
+    Expression *whereExpr = (new Parser(new Tokenizer("sname = 'zhang simith'")))->parseExpressionRD();
+    SRA_t *table = SRATable(TableReference_make(tableName, nullptr));
+    SRA_t *where = SRASelect(table, whereExpr);
+
+    auto stmt = sql_stmt_update();
+    stmt.tableName = tableName;
+    stmt.fields = fields;
+    stmt.fieldsExpr = fieldsExpr;
+    stmt.where = where;
+
+    return stmt;
+}
+
+// endregion

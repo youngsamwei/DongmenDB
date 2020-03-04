@@ -14,9 +14,9 @@
 #include <parser/Tokenizer.h>
 #include <parser/parser.h>
 #include <relationalalgebra/sra.h>
+#include "test_physical_operate.h"
 
-
-class TestStmtOptimized : public TestStmtParser {
+class TestStmtOptimized : public TestPhysicalOperate {
 public:
     /*关系代数优化之查询条件优化的测试
      * 参数：select语句
