@@ -1,4 +1,5 @@
 
+#include <ostream>
 #include <relationalalgebra/sra.h>
 #include "dongmensql/expression.h"
 
@@ -572,6 +573,7 @@ RA_t *SRA_desugar(SRA_t *sra)
     SRA_free(sra);
     return res;
 }
+
 /*
 RA_t *SRA_desugar(SRA_t *sra) {
    List_t temp_tables;
@@ -581,3 +583,142 @@ RA_t *SRA_desugar(SRA_t *sra) {
    list_destroy(&temp_tables);
    return res;
 }*/
+
+string get_indent(int inc = 0) {
+    static int ind = 0;
+    string buffer;
+    ind += inc;
+    if (ind < 0) ind = 0;
+    for (int i = 0; i < ind; ++i) buffer += "  ";
+    return buffer;
+}
+
+std::ostream &operator<<(std::ostream &os, JoinCondition_t *cond) {
+    if (cond == nullptr) {
+        os << "<nullptr>";
+        return os;
+    }
+    switch (cond->t) {
+        case JOIN_COND_ON:
+            os << "CondOn(" << cond->on;
+            break;
+        case JOIN_COND_USING:
+            os << "CondUsing(" << cond->col_list;
+            break;
+        default:
+            os << "<cond-unknown>";
+            break;
+    }
+    return os;
+}
+
+std::ostream &operator<<(std::ostream &os, SRA_t *sra) {
+    if (sra == nullptr) {
+        os << "<nullptr>";
+        return os;
+    }
+    switch (sra->t) {
+        case SRA_TABLE:
+            os << "Table(" << sra->table.ref->table_name;
+            if (sra->table.ref->alias) os << sra->table.ref->table_name << " as %s";
+            os << ')';
+            break;
+        case SRA_SELECT:
+            os << "Select(" << endl;
+            os << get_indent(1) << sra->select.cond << ',' << endl;
+            os << get_indent() << sra->select.sra << endl;
+            os << get_indent(-1) << ')';
+            break;
+        case SRA_PROJECT:
+            os << "Project(" << endl;
+            os << get_indent(1) << sra->project.expr_list << ',' << endl;
+            os << get_indent() << sra->project.sra;
+            if (sra->project.distinct) {
+                os << ',' << endl;
+                os << get_indent() << "Distinct()";
+            }
+            if (!sra->project.group_by.empty()) {
+                os << ',' << endl;
+                os << get_indent() << "GroupBy" << sra->project.group_by;
+            }
+            if (!sra->project.order_by.empty()) {
+                os << ',' << endl;
+                os << get_indent() << "OrderBy" << sra->project.order_by;
+            }
+            os << endl;
+            os << get_indent(-1) << ')';
+            break;
+        case SRA_UNION:
+            os << "Union(";
+            os << get_indent(1) << sra->binary.sra1 << ',' << endl;
+            os << get_indent() << sra->binary.sra2 << endl;
+            os << get_indent(-1) << ')';
+            break;
+        case SRA_EXCEPT:
+            os << "Except(";
+            os << get_indent(1) << sra->binary.sra1 << ',' << endl;
+            os << get_indent() << sra->binary.sra2 << endl;
+            os << get_indent(-1) << ')';
+            break;
+        case SRA_INTERSECT:
+            os << "Intersect(" << endl;
+            os << get_indent(1) << sra->binary.sra1 << ',' << endl;
+            os << get_indent() << sra->binary.sra2 << endl;
+            os << get_indent(-1) << ')';
+            break;
+        case SRA_JOIN:
+            os << "Join(" << endl;
+            os << get_indent(1) << sra->binary.sra1 << ',' << endl;
+            os << get_indent() << sra->binary.sra2;
+            if (sra->join.opt_cond) {
+                os << ',' << endl;
+                os << get_indent() << sra->join.opt_cond;
+            }
+            os << endl;
+            os << get_indent(-1) << ')';
+            break;
+        case SRA_NATURAL_JOIN:
+            os << "NaturalJoin(" << endl;
+            os << get_indent(1) << sra->binary.sra1 << ',' << endl;
+            os << get_indent() << sra->binary.sra2 << endl;
+            os << get_indent(-1) << ')';
+            break;
+        case SRA_LEFT_OUTER_JOIN:
+            os << "LeftOuterJoin(" << endl;
+            os << get_indent(1) << sra->binary.sra1 << ',' << endl;
+            os << get_indent() << sra->binary.sra2;
+            if (sra->join.opt_cond) {
+                os << ',' << endl;
+                os << get_indent() << sra->join.opt_cond;
+            }
+            os << endl;
+            os << get_indent(-1) << ')';
+            break;
+        case SRA_RIGHT_OUTER_JOIN:
+            os << "RightOuterJoin(" << endl;
+            os << get_indent(1) << sra->binary.sra1 << ',' << endl;
+            os << get_indent() << sra->binary.sra2;
+            if (sra->join.opt_cond) {
+                os << ',' << endl;
+                os << get_indent() << sra->join.opt_cond;
+            }
+            os << endl;
+            os << get_indent(-1) << ')';
+            break;
+        case SRA_FULL_OUTER_JOIN:
+            os << "FullOuterJoin(" << endl;
+            os << get_indent(1) << sra->binary.sra1 << ',' << endl;
+            os << get_indent() << sra->binary.sra2;
+            if (sra->join.opt_cond) {
+                os << ',' << endl;
+                os << get_indent() << sra->join.opt_cond;
+            }
+            os << endl;
+            os << get_indent(-1) << ')';
+            break;
+        default:
+            puts("<sra-unknown>");
+            break;
+    }
+    return os;
+}

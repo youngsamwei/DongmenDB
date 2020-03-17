@@ -45,5 +45,6 @@ public:
     }
 };
 
+std::ostream &operator<<(std::ostream &os, Literal *val);
 
 #endif
