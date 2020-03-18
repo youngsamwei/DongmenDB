@@ -53,17 +53,19 @@ bool equal_table_name(const sql_stmt_create &stmt1, const sql_stmt_create &stmt2
 }
 
 bool equal_fields_name(const sql_stmt_create &stmt1, const sql_stmt_create &stmt2) {
-    return std::equal(stmt1.tableInfo->fieldsName.cbegin(), stmt1.tableInfo->fieldsName.cend(),
-                      stmt2.tableInfo->fieldsName.cbegin(),
-                      [](const char *s1, const char *s2) { return strcmp(s1, s2) == 0; });
+    for (auto &&it1 = stmt1.tableInfo->fieldsName.cbegin(), it2 = stmt2.tableInfo->fieldsName.cbegin();
+         it1 != stmt1.tableInfo->fieldsName.cend() && it2 != stmt2.tableInfo->fieldsName.cend();
+         ++it1, ++it2)
+        if (strcmp(*it1, *it2) != 0) return false;
+    return true;
 }
 
 bool equal_fields(const sql_stmt_create &stmt1, const sql_stmt_create &stmt2) {
-    return std::equal(stmt1.tableInfo->fields->cbegin(), stmt1.tableInfo->fields->cend(),
-                      stmt2.tableInfo->fields->cbegin(), [](const pair<string, FieldInfo *> &info1,
-                                                            const pair<string, FieldInfo *> &info2) {
-                return info1.first == info2.first && *(info1.second) == *(info2.second);
-            });
+    for (auto &&it1 = stmt1.tableInfo->fields->cbegin(), it2 = stmt2.tableInfo->fields->cbegin();
+         it1 != stmt1.tableInfo->fields->cend() && it2 != stmt2.tableInfo->fields->cend();
+         ++it1, ++it2)
+        if (it1->first == it2->first && *(it1->second) == *(it2->second)) return false;
+    return true;
 }
 
 bool equal_table_info(const sql_stmt_create &stmt1, const sql_stmt_create &stmt2) {
@@ -96,13 +98,19 @@ bool equal_table_name(const sql_stmt_insert &stmt1, const sql_stmt_insert &stmt2
 }
 
 bool equal_fields(const sql_stmt_insert &stmt1, const sql_stmt_insert &stmt2) {
-    return std::equal(stmt1.fields.cbegin(), stmt1.fields.cend(), stmt2.fields.cbegin(),
-                      [](const char *s1, const char *s2) { return strcmp(s1, s2) == 0; });
+    for (auto &&it1 = stmt1.fields.cbegin(), it2 = stmt2.fields.cbegin();
+         it1 != stmt1.fields.cend() && it2 != stmt2.fields.cend();
+         ++it1, ++it2)
+        if (strcmp(*it1, *it2) != 0) return false;
+    return true;
 }
 
 bool equal_values(const sql_stmt_insert &stmt1, const sql_stmt_insert &stmt2) {
-    return std::equal(stmt1.values.cbegin(), stmt1.values.cend(), stmt2.values.cbegin(),
-                      [](const variant *v1, const variant *v2) { return *v1 == *v2; });
+    for (auto &&it1 = stmt1.values.cbegin(), it2 = stmt2.values.cbegin();
+         it1 != stmt1.values.cend() && it2 != stmt2.values.cend();
+         ++it1, ++it2)
+        if (*it1 == *it2) return false;
+    return true;
 }
 
 bool equal(const sql_stmt_insert &stmt1, const sql_stmt_insert &stmt2) {
@@ -125,8 +133,11 @@ bool equal_fields_expr(const sql_stmt_update &stmt1, const sql_stmt_update &stmt
 }
 
 bool equal_fields(const sql_stmt_update &stmt1, const sql_stmt_update &stmt2) {
-    return std::equal(stmt1.fields.cbegin(), stmt1.fields.cend(), stmt2.fields.cbegin(),
-                      [](const char *s1, const char *s2) { return strcmp(s1, s2) == 0; });
+    for (auto &&it1 = stmt1.fields.cbegin(), it2 = stmt2.fields.cbegin();
+         it1 != stmt1.fields.cend() && it2 != stmt2.fields.cend();
+         ++it1, ++it2)
+        if (strcmp(*it1, *it2) != 0) return false;
+    return true;
 }
 
 bool equal(const sql_stmt_update &stmt1, const sql_stmt_update &stmt2) {
