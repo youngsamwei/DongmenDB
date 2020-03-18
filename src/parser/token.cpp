@@ -63,4 +63,6 @@ std::ostream &operator<<(std::ostream &os, TokenType type) {
             break;
     }
 
+    return os;
+
 }

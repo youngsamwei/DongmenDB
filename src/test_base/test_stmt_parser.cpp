@@ -120,6 +120,7 @@ bool equal(const sql_stmt_insert &stmt1, const sql_stmt_insert &stmt2) {
 
 bool equal_table_name(const sql_stmt_update &stmt1, const sql_stmt_update &stmt2) {
     if (!stmt1.tableName && !stmt2.tableName) return true;
+    if (!stmt1.tableName || !stmt2.tableName) return false;
     return strcmp(stmt1.tableName, stmt2.tableName) == 0;
 }
 
