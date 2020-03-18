@@ -4,63 +4,31 @@
 
 #include <cstdio>
 #include <gtest/gtest.h>
-#include <map>
 #include <parser/StatementParser.h>
 #include <parser/Tokenizer.h>
 #include <test/test_stmt_parser.h>
 
-class Exp_01_02_InsertTest : public testing::Test {
+class InsertParserTest : public testing::Test {
 protected:
+    vector<string> sql{"insert into student(sname, sage) values ('John', 17)",
+                       "insert into student(sname, sage) values ('John', 17), ('Terry', 19)"};
+    vector<sql_stmt_insert> expects{};
+    vector<sql_stmt_insert> results{};
+
     void SetUp() override {
-        sqlList[0] = "insert into student(sname, sage) values ('John', 17)";
-        sqlList[1] = "insert into student(sname, sage) values ('John', 17), ('Terry', 19)";
-        expectList[0] = setupTest0();
-        expectList[1] = setupTest1();
+        setupTest0();
+        setupTest1();
     }
-
-    static sql_stmt_insert parse(const char *sql) {
-        auto *tokenizer = new Tokenizer(sql);
-        auto *ip = new InsertParser(tokenizer);
-        auto *sqlStmtInsert = ip->parse_sql_stmt_insert();
-        return *sqlStmtInsert;
-    }
-
-    char *sqlList[10]{};
-    sql_stmt_insert expectList[10]{};
 
 private:
-    static sql_stmt_insert setupTest0();
+    void setupTest0();
 
-    static sql_stmt_insert setupTest1();
+    void setupTest1();
+
+    static sql_stmt_insert parser(const string &sql);
 };
 
-TEST_F(Exp_01_02_InsertTest, Correct) {
-
-    try {
-        sql_stmt_insert resultList[2];
-
-        resultList[0] = parse(sqlList[0]);
-        EXPECT_TRUE(equal_table_name(resultList[0], expectList[0]));
-        EXPECT_TRUE(equal_fields(resultList[0], expectList[0]));
-        EXPECT_TRUE(equal_values(resultList[0], expectList[0]));
-        EXPECT_TRUE(equal(resultList[0], expectList[0]));
-
-
-        resultList[1] = parse(sqlList[1]);
-        EXPECT_TRUE(equal_table_name(resultList[1], expectList[1]));
-        EXPECT_TRUE(equal_fields(resultList[1], expectList[1]));
-        EXPECT_TRUE(equal_values(resultList[1], expectList[1]));
-        EXPECT_TRUE(equal(resultList[1], expectList[1]));
-
-    } catch (const exception &e) {
-        cout << e.what() << endl;
-    }
-
-}
-
-// region 测试用例
-
-sql_stmt_insert Exp_01_02_InsertTest::setupTest0() {
+void InsertParserTest::setupTest0() {
     char *tableName{"student"};
     vector<char *> fields{"sname", "sage", "sgender"};
     vector<variant *> values;
@@ -74,15 +42,18 @@ sql_stmt_insert Exp_01_02_InsertTest::setupTest0() {
     v->intValue = 17;
     values.push_back(v);
 
-    auto sqlStmtInsert = sql_stmt_insert();
-    sqlStmtInsert.tableName = tableName;
-    sqlStmtInsert.fields = fields;
-    sqlStmtInsert.values = values;
+    auto x = sql_stmt_insert();
+    x.tableName = tableName;
+    x.fields = fields;
+    x.values = values;
+    expects.push_back(x);
 
-    return sqlStmtInsert;
+    auto y = parser(sql[0]);
+    results.push_back(y);
+
 }
 
-sql_stmt_insert Exp_01_02_InsertTest::setupTest1() {
+void InsertParserTest::setupTest1() {
     char *tableName{"student"};
     vector<char *> fields{"sname", "sage", "sgender"};
     vector<variant *> values;
@@ -104,12 +75,51 @@ sql_stmt_insert Exp_01_02_InsertTest::setupTest1() {
     v->intValue = 19;
     values.push_back(v);
 
-    auto sqlStmtInsert = sql_stmt_insert();
-    sqlStmtInsert.tableName = tableName;
-    sqlStmtInsert.fields = fields;
-    sqlStmtInsert.values = values;
+    auto x = sql_stmt_insert();
+    x.tableName = tableName;
+    x.fields = fields;
+    x.values = values;
+    expects.push_back(x);
 
-    return sqlStmtInsert;
+    auto y = parser(sql[0]);
+    results.push_back(y);
 }
 
-// endregion
+sql_stmt_insert InsertParserTest::parser(const string &sql) {
+    auto *tokenizer = new Tokenizer(sql.c_str());
+    auto *ip = new InsertParser(tokenizer);
+    auto *sqlStmtInsert = ip->parse_sql_stmt_insert();
+    return *sqlStmtInsert;
+}
+
+TEST_F(InsertParserTest, Test_01_TableName) {
+    EXPECT_TRUE(equal_table_name(expects[0], results[0]));
+}
+
+TEST_F(InsertParserTest, Test_02_Fields) {
+    EXPECT_TRUE(equal_fields(expects[0], results[0]));
+}
+
+TEST_F(InsertParserTest, Test_03_Values) {
+    EXPECT_TRUE(equal_values(expects[0], results[0]));
+}
+
+TEST_F(InsertParserTest, Test_04_Full) {
+    EXPECT_TRUE(equal(expects[0], results[0]));
+}
+
+TEST_F(InsertParserTest, Test_05_TableName) {
+    EXPECT_TRUE(equal_table_name(expects[1], results[1]));
+}
+
+TEST_F(InsertParserTest, Test_06_Fields) {
+    EXPECT_TRUE(equal_fields(expects[1], results[1]));
+}
+
+TEST_F(InsertParserTest, Test_07_Values) {
+    EXPECT_TRUE(equal_values(expects[1], results[1]));
+}
+
+TEST_F(InsertParserTest, Test_08_Full) {
+    EXPECT_TRUE(equal(expects[1], results[1]));
+}
