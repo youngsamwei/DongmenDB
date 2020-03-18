@@ -66,7 +66,7 @@ TEST_F(DeleteParserTest_01_Normal, Full) {
 }
 
 
-class DeleteParserTest_02_MultiFields : public testing::Test {
+class DeleteParserTest_02_MultiRows : public testing::Test {
 protected:
     void SetUp() override {
         char *tableName{"student"};
@@ -104,19 +104,19 @@ protected:
     sql_stmt_insert actual{};
 };
 
-TEST_F(DeleteParserTest_02_MultiFields, TableName) {
+TEST_F(DeleteParserTest_02_MultiRows, TableName) {
     EXPECT_TRUE(equal_table_name(expect, actual));
 }
 
-TEST_F(DeleteParserTest_02_MultiFields, Fields) {
+TEST_F(DeleteParserTest_02_MultiRows, Fields) {
     EXPECT_TRUE(equal_fields(expect, actual));
 }
 
-TEST_F(DeleteParserTest_02_MultiFields, Values) {
+TEST_F(DeleteParserTest_02_MultiRows, Values) {
     EXPECT_TRUE(equal_values(expect, actual));
 }
 
-TEST_F(DeleteParserTest_02_MultiFields, Full) {
+TEST_F(DeleteParserTest_02_MultiRows, Full) {
     EXPECT_TRUE(equal(expect, actual))
                         << "Actual:" << endl
                         << actual << endl
