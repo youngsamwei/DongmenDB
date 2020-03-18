@@ -12,8 +12,9 @@ sql_stmt_update &&parse(const string &sql) {
     auto *ip = new UpdateParser(tokenizer);
     auto *sqlStmtUpdate = ip->parse_sql_stmt_update();
     if (sqlStmtUpdate == nullptr) {
-        cout << ip->parserMessage << endl;
-        throw std::runtime_error("parser failed");
+        string info{"parser failed: "};
+        info += ip->parserMessage;
+        throw std::runtime_error(info);
     }
     return std::move(*sqlStmtUpdate);
 }

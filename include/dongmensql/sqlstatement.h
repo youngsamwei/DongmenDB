@@ -91,7 +91,13 @@ public:
 /* 打印 sql_stmt_update */
 int sql_stmt_update_print(sql_stmt_update *sqlStmtUpdate);
 
+ostream &operator<<(ostream &os, const sql_stmt_create &stmt);
+
+ostream &operator<<(ostream &os, const sql_stmt_insert &stmt);
+
 ostream &operator<<(ostream &os, const sql_stmt_update &stmt);
+
+ostream &operator<<(ostream &os, const sql_stmt_delete &stmt);
 
 
 #endif //DONGMENDB_SQLSTATEMENT_H
