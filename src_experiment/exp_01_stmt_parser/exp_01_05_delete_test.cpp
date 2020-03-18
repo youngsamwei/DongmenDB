@@ -2,65 +2,50 @@
 // Created by Sam on 2018/2/11.
 //
 
-#include <cstdio>
 #include <gtest/gtest.h>
-#include <map>
 #include <parser/StatementParser.h>
 #include <parser/Tokenizer.h>
 #include <test/test_stmt_parser.h>
 
-class Exp_01_05_DeleteTest : public testing::Test {
+sql_stmt_delete parse(const string &sql) {
+    auto *tokenizer = new Tokenizer(sql.c_str());
+    auto *ip = new DeleteParser(tokenizer);
+    auto *stmt = ip->parse_sql_stmt_delete();
+    return *stmt;
+}
+
+class DeleteParserTest_01_Normal : public testing::Test {
 protected:
     void SetUp() override {
-        sqlList[0] = "delete student where sname = 'tom simith'";;
+        char *tableName{"student"};
+        vector<char *> fields{"sname"};
+        vector<Expression *> fieldsExpr{
+                (new Parser(new Tokenizer("'Tom Cruise'")))->parseExpressionRD()
+        };
+        SRA_t *where = nullptr;
 
-        expectList[0] = setupTest0();
+        expect.tableName = tableName;
+        expect.where = where;
     }
 
-    static sql_stmt_delete parse(const char *sql) {
-        auto *tokenizer = new Tokenizer(sql);
-        auto *ip = new DeleteParser(tokenizer);
-        auto *stmt = ip->parse_sql_stmt_delete();
-        return *stmt;
-    }
-
-    char *sqlList[10]{};
-    sql_stmt_delete expectList[10]{};
-
-private:
-    static sql_stmt_delete setupTest0();
+    const string sql = "delete student where sname = 'tom simith'";
+    sql_stmt_delete expect{};
+    sql_stmt_delete actual{};
 };
 
-TEST_F(Exp_01_05_DeleteTest, Correct) {
-
-    try {
-        sql_stmt_delete resultList[10];
-
-        resultList[0] = parse(sqlList[0]);
-        EXPECT_TRUE(equal_table_name(resultList[0], expectList[0]));
-        EXPECT_TRUE(equal_where(resultList[0], expectList[0]));
-        EXPECT_TRUE(equal(resultList[0], expectList[0]));
-
-    } catch (const exception &e) {
-        cout << e.what() << endl;
-    }
+TEST_F(DeleteParserTest_01_Normal, Runtime) {
+    ASSERT_EXIT((expect = parse(sql), exit(0)),
+                ::testing::ExitedWithCode(0), ".*");
 }
 
-// region 测试用例
-
-sql_stmt_delete Exp_01_05_DeleteTest::setupTest0() {
-    char *tableName{"student"};
-    vector<char *> fields{"sname"};
-    vector<Expression *> fieldsExpr{
-            (new Parser(new Tokenizer("'Tom Cruise'")))->parseExpressionRD()
-    };
-    SRA_t *where = nullptr;
-
-    auto stmt = sql_stmt_delete();
-    stmt.tableName = tableName;
-    stmt.where = where;
-
-    return stmt;
+TEST_F(DeleteParserTest_01_Normal, TableName) {
+    EXPECT_TRUE(equal_table_name(expect, actual));
 }
 
-// endregion
+TEST_F(DeleteParserTest_01_Normal, Where) {
+    EXPECT_TRUE(equal_where(expect, actual));
+}
+
+TEST_F(DeleteParserTest_01_Normal, Full) {
+    EXPECT_TRUE(equal(expect, actual));
+}
