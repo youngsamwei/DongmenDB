@@ -18,15 +18,15 @@ int sql_stmt_update_print(sql_stmt_update *sqlStmtUpdate) {
 };
 
 ostream &operator<<(ostream &os, const sql_stmt_update &stmt) {
-    os << stmt.tableName;
+    os << '[' << stmt.tableName << ', ';
     if (!stmt.fields.empty()) {
         os << '(' << stmt.fields[0];
         for (auto it = ++stmt.fields.cbegin(); it != stmt.fields.cend(); ++it) {
             os << ", " << *it;
         }
-        os << ')';
+        os << "), ";
     }
-    os << stmt.fieldsExpr;
-    os << stmt.where;
+    os << stmt.fieldsExpr << ', ';
+    os << "where" << std::endl << stmt.where << std::endl << ']';
     return os;
 };
