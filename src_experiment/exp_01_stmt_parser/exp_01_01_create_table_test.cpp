@@ -7,12 +7,8 @@
 #include <parser/Tokenizer.h>
 #include <test/test_stmt_parser.h>
 
-class CreateTableParserTest : public testing::Test {
+class CreateTableParserTest_01_Normal : public testing::Test {
 public:
-    string sql{"create table typeTest(colChar char(10), colInt integer);"};
-    sql_stmt_create expect{};
-    sql_stmt_create result{};
-
     void SetUp() override {
         /* char *sql = "create table typeTest(colChar char(10), colInt integer, colBoolean boolean, colDouble double, colText text);"; */
 
@@ -32,34 +28,31 @@ public:
         auto *tokenizer = new Tokenizer(sql.c_str());
         auto *cp = new CreateParser(tokenizer);
         auto *stmt = cp->parse_sql_stmt_create();
-        result = *stmt;
+        actual = *stmt;
     }
 
+    string sql{"create table typeTest(colChar char(10), colInt integer);"};
+    sql_stmt_create expect{};
+    sql_stmt_create actual{};
 };
 
-TEST_F(CreateTableParserTest, Test_01_TableName) {
-
-    // 表名
-    EXPECT_TRUE(equal_table_name(expect, result));
+TEST_F(CreateTableParserTest_01_Normal, Test_01_TableName) {
+    EXPECT_TRUE(equal_table_name(expect, actual));
 }
 
-TEST_F(CreateTableParserTest, Test_01_FieldName) {
-    // 字段名
-    EXPECT_TRUE(equal_fields_name(expect, result));
+TEST_F(CreateTableParserTest_01_Normal, Test_01_FieldName) {
+    EXPECT_TRUE(equal_fields_name(expect, actual));
 }
 
-TEST_F(CreateTableParserTest, Test_01_Field) {
-    // 字段
-    EXPECT_TRUE(equal_fields(expect, result));
+TEST_F(CreateTableParserTest_01_Normal, Test_01_Field) {
+    EXPECT_TRUE(equal_fields(expect, actual));
 }
 
-TEST_F(CreateTableParserTest, Test_01_TableInfo) {
-    // 表信息
-    EXPECT_TRUE(equal_table_info(expect, result));
+TEST_F(CreateTableParserTest_01_Normal, Test_01_TableInfo) {
+    EXPECT_TRUE(equal_table_info(expect, actual));
 }
 
-TEST_F(CreateTableParserTest, Test_01_Full) {
-    // 判断
-    EXPECT_TRUE(equal(expect, result));
+TEST_F(CreateTableParserTest_01_Normal, Test_01_Full) {
+    EXPECT_TRUE(equal(expect, actual));
 
 }
