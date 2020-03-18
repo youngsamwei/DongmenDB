@@ -7,10 +7,22 @@
 #include <parser/Tokenizer.h>
 #include <test/test_stmt_parser.h>
 
+sql_stmt_create parse(const string &sql) {
+    auto *tokenizer = new Tokenizer(sql.c_str());
+    auto *ip = new CreateParser(tokenizer);
+    auto *stmt = ip->parse_sql_stmt_create();
+    if (stmt == nullptr) {
+        string info{"parser failed: "};
+        info += ip->parserMessage;
+        throw std::runtime_error(info);
+    }
+    return *stmt;
+}
+
 class CreateTableParserTest_01_Normal : public testing::Test {
 public:
     void SetUp() override {
-        /* char *sql = "create table typeTest(colChar char(10), colInt integer, colBoolean boolean, colDouble double, colText text);"; */
+        /* "create table typeTest(colChar char(10), colInt integer, colBoolean boolean, colDouble double, colText text)" */
 
         const char *tableName = "typeTest";
         vector<char *> fieldsName{"colChar", "colInt" /* , "colBoolean", "colDouble", "colText" */ };
@@ -25,13 +37,10 @@ public:
         expect.tableInfo = new TableInfo(tableName, fieldsName, columns);
         expect.constraints = nullptr;
 
-        auto *tokenizer = new Tokenizer(sql.c_str());
-        auto *cp = new CreateParser(tokenizer);
-        auto *stmt = cp->parse_sql_stmt_create();
-        actual = *stmt;
+        actual = parse(sql);
     }
 
-    string sql{"create table typeTest(colChar char(10), colInt integer);"};
+    const string sql{"create table typeTest(colChar char(10), colInt integer)"};
     sql_stmt_create expect{};
     sql_stmt_create actual{};
 };

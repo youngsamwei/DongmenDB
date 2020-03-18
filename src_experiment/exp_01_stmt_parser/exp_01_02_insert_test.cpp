@@ -11,8 +11,13 @@
 sql_stmt_insert &&parse(const string &sql) {
     auto *tokenizer = new Tokenizer(sql.c_str());
     auto *ip = new InsertParser(tokenizer);
-    auto *sqlStmtInsert = ip->parse_sql_stmt_insert();
-    return std::move(*sqlStmtInsert);
+    auto *stmt = ip->parse_sql_stmt_insert();
+    if (stmt == nullptr) {
+        string info{"parser failed: "};
+        info += ip->parserMessage;
+        throw std::runtime_error(info);
+    }
+    return std::move(*stmt);
 }
 
 class DeleteParserTest_01_Normal : public testing::Test {
