@@ -349,14 +349,17 @@ void ProjectOption_print(ProjectOption_t *op)
 {
     if (!op->order_by.empty())
     {
-        printf("Order by: (%p) ", op->order_by);
+        printf("Order by: (");
+        expression_print_list(op->order_by);
+        printf(") ");
         expression_print_list(op->order_by);
         printf(op->asc_desc == ORDER_BY_ASC ? " ascending" : " descending");
     }
     if (!op->group_by.empty())
     {
-        printf("Group by: (%p) ", op->group_by);
+        printf("Order by: (");
         expression_print_list(op->group_by);
+        printf(") ");
     }
     if (op->order_by.empty() && op->group_by.empty())
     {
