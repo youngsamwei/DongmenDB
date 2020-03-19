@@ -146,6 +146,8 @@ TEST(SelectParserTest, Test_06_MultiTable) {
                         << result;
 }
 
+/*
+
 TEST(SelectParserTest, Test_07_MultiTable) {
     string sql = "select student.sno, sname, grade from student, sc where student.sno = sc.sno";
 
@@ -219,6 +221,8 @@ TEST(SelectParserTest, Test_09_Group) {
                         << "Actual:" << endl
                         << result;
 }
+
+*/
 
 TEST(SelectParserTest, Test_10_Sort) {
     string sql = "select sname, sage from student order by sage";
