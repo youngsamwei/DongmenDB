@@ -9,7 +9,7 @@
 #include <shell/shell.h>
 
 class TestPhysicalOperate : public testing::Test {
-public:
+protected:
     dongmendb_shell_handle_sql_t *test_db_ctx;
 
     /*创建数据库*/

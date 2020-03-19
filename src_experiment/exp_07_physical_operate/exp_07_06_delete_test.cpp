@@ -7,45 +7,70 @@
 #include <test/test_stmt_parser.h>
 #include <test/test_physical_operate.h>
 
-class Exp_01_05_DeleteTest : public TestPhysicalOperate {
+class DeleteOperateTest : public TestPhysicalOperate {
 protected:
-
     void SetUp() override {
-        _m_list[0] = "delete student where sname = 'tom simith'";
-        _m_list[1] = "select * from student where sname = 'tom simith'";
-        _m_list[2] = "delete student where sno = '2012010102'";
-        _m_list[3] = "select *  from student where sno = '2012010102'";
-        _m_list[4] = "delete student  where sname = 'john simith' and ssex='male'";
-        _m_list[5] = "select *  from student  where sname = 'john simith' and ssex='male'";
-        _m_list[6] = "delete sc where sno = '2012010103' ";
-        _m_list[7] = "select *  from sc where sno = '2012010103' ";
-        _m_list[8] = "delete sc  where grade >= 80 and cno = 'c003'";
-        _m_list[9] = "select *  from sc  where grade >= 80 and cno = 'c003'";
+        if (count++ == 0) {
+            createDB(dbname);
+            createTable();
+            insertData();
+            ctx = test_db_ctx;
+        } else {
+            test_db_ctx = ctx;
+        }
     }
 
-    const char *_m_list[11]{};
+    void TearDown() override {
+        if (count-- == 0) {
+            dropDB();
+        }
+    }
+
     const char *dbname = "test_demodb";
+public:
+    static dongmendb_shell_handle_sql_t *ctx;
+    static int count;
 };
 
-TEST_F(Exp_01_05_DeleteTest, Correct) {
-    try {
-        createDB(dbname);
-        createTable();
-        insertData();
+int DeleteOperateTest::count = 0;
+dongmendb_shell_handle_sql_t *DeleteOperateTest::ctx = nullptr;
 
-        EXPECT_EQ(1, delete_(_m_list[0]));
-        EXPECT_EQ(0, select(_m_list[1]));
-        EXPECT_EQ(1, delete_(_m_list[2]));
-        EXPECT_EQ(0, select(_m_list[3]));
-        EXPECT_EQ(1, delete_(_m_list[4]));
-        EXPECT_EQ(0, select(_m_list[5]));
-        EXPECT_EQ(2, delete_(_m_list[6]));
-        EXPECT_EQ(0, select(_m_list[7]));
-        EXPECT_EQ(3, delete_(_m_list[8]));
-        EXPECT_EQ(0, select(_m_list[9]));
+TEST_F(DeleteOperateTest, Test1) {
+    EXPECT_EQ(1, delete_("delete student where sname = 'tom simith'"));
+}
 
-        dropDB();
-    } catch (const std::exception &e) {
-        cout << e.what() << endl;
-    }
+TEST_F(DeleteOperateTest, Test2) {
+    EXPECT_EQ(0, delete_("select * from student where sname = 'tom simith'"));
+}
+
+TEST_F(DeleteOperateTest, Test3) {
+    EXPECT_EQ(1, delete_("delete student where sno = '2012010102'"));
+}
+
+TEST_F(DeleteOperateTest, Test4) {
+    EXPECT_EQ(0, delete_("select *  from student where sno = '2012010102'"));
+}
+
+TEST_F(DeleteOperateTest, Test5) {
+    EXPECT_EQ(1, delete_("delete student  where sname = 'john simith' and ssex='male'"));
+}
+
+TEST_F(DeleteOperateTest, Test6) {
+    EXPECT_EQ(0, delete_("select *  from student  where sname = 'john simith' and ssex='male'"));
+}
+
+TEST_F(DeleteOperateTest, Test7) {
+    EXPECT_EQ(2, delete_("delete sc where sno = '2012010103'"));
+}
+
+TEST_F(DeleteOperateTest, Test8) {
+    EXPECT_EQ(0, delete_("select *  from sc where sno = '2012010103' "));
+}
+
+TEST_F(DeleteOperateTest, Test9) {
+    EXPECT_EQ(3, delete_("delete sc  where grade >= 80 and cno = 'c003'"));
+}
+
+TEST_F(DeleteOperateTest, Test10) {
+    EXPECT_EQ(0, delete_("select *  from sc  where grade >= 80 and cno = 'c003'"));
 }
