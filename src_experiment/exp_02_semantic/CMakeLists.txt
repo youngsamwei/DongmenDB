@@ -7,5 +7,5 @@
 add_executable(exp_02_01_table_exists_test exp_02_01_table_exists_test.cpp ../../src/shell/shell.cpp)
 target_link_libraries(exp_02_01_table_exists_test ${TEST_LIBRARIES})
 
-#add_executable(exp_02_02_field_exists_test exp_02_02_field_exists_test.cpp ../../src/shell/shell.cpp)
-#target_link_libraries(exp_02_02_field_exists_test ${TEST_LIBRARIES})
+add_executable(exp_02_02_field_exists_test exp_02_02_field_exists_test.cpp ../../src/shell/shell.cpp)
+target_link_libraries(exp_02_02_field_exists_test ${TEST_LIBRARIES})
