@@ -18,7 +18,7 @@ int sql_stmt_update_print(sql_stmt_update *sqlStmtUpdate) {
 };
 
 ostream &operator<<(ostream &os, const sql_stmt_insert &stmt) {
-    os << '[' << stmt.tableName << ', ';
+    os << '[' << stmt.tableName << ", ";
     os << '(';
     if (!stmt.fields.empty()) {
         os << stmt.fields[0];
@@ -38,7 +38,7 @@ ostream &operator<<(ostream &os, const sql_stmt_insert &stmt) {
 }
 
 ostream &operator<<(ostream &os, const sql_stmt_update &stmt) {
-    os << '[' << stmt.tableName << ', ';
+    os << '[' << stmt.tableName << ", ";
     os << '(';
     if (!stmt.fields.empty()) {
         os << stmt.fields[0];
@@ -46,13 +46,13 @@ ostream &operator<<(ostream &os, const sql_stmt_update &stmt) {
             os << ", " << *it;
         }
     }
-    os << "), " << stmt.fieldsExpr << ', ';
+    os << "), " << stmt.fieldsExpr << ", ";
     os << "where" << std::endl << stmt.where << std::endl << ']';
     return os;
 }
 
 ostream &operator<<(ostream &os, const sql_stmt_delete &stmt) {
-    os << '[' << stmt.tableName << ', ';
+    os << '[' << stmt.tableName << ", ";
     os << "where" << std::endl << stmt.where << std::endl << ']';
     return os;
 }
