@@ -23,11 +23,10 @@ class DeleteParserTest_01_Normal : public testing::Test {
 protected:
     void SetUp() override {
         char *tableName{"student"};
-        vector<char *> fields{"sname"};
-        vector<Expression *> fieldsExpr{
-                (new Parser(new Tokenizer("'Tom Cruise'")))->parseExpressionRD()
-        };
-        SRA_t *where = nullptr;
+        Expression *whereExpr =
+                (new Parser(new Tokenizer("sname = 'tom simith'")))->parseExpressionRD();
+        SRA_t *table = SRATable(TableReference_make(tableName, nullptr));
+        SRA_t *where = SRASelect(table, whereExpr);
 
         expect.tableName = tableName;
         expect.where = where;
