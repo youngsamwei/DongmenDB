@@ -6,7 +6,7 @@
 #include <test/test_stmt_parser.h>
 #include <test/test_physical_operate.h>
 
-class TableExistsSemanticTest : public TestPhysicalOperate {
+class FieldExistsSemanticTest : public TestPhysicalOperate {
 protected:
     void SetUp() override {
         createDB(dbname);
@@ -19,14 +19,14 @@ protected:
     const char *dbname = "test_demodb";
 };
 
-TEST_F(TableExistsSemanticTest, TableExists) {
+TEST_F(FieldExistsSemanticTest, FieldExists) {
     dongmendb_shell_handle_create_table(test_db_ctx,
                                         "create table student(sno char(10), sname char(20), sage integer, ssex char(10));");
     int code = test_db_ctx->db->tableManager->semantic_check_field_exists("student", "sno", test_db_ctx->db->tx);
     EXPECT_TRUE(code == DONGMENDB_OK);
 }
 
-TEST_F(TableExistsSemanticTest, TableNotExists) {
+TEST_F(FieldExistsSemanticTest, FieldNotExists) {
     int code = test_db_ctx->db->tableManager->semantic_check_field_exists("student", "cname", test_db_ctx->db->tx);
     EXPECT_FALSE(code == DONGMENDB_OK);
 }
