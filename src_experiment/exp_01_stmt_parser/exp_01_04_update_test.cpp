@@ -72,7 +72,7 @@ protected:
         char *tableName{"student"};
         vector<char *> fields{"sname"};
         vector<Expression *> fieldsExpr{
-                (new Parser(new Tokenizer("Tom Cruise")))->parseExpressionRD()};
+                (new Parser(new Tokenizer("sname = 'Tom Cruise'")))->parseExpressionRD()};
         Expression *whereExpr =
                 (new Parser(new Tokenizer("sno = '2012010101'")))->parseExpressionRD();
         SRA_t *table = SRATable(TableReference_make(tableName, nullptr));
@@ -121,8 +121,9 @@ protected:
         char *tableName{"student"};
         vector<char *> fields{"sname", "ssex"};
         vector<Expression *> fieldsExpr{
-                (new Parser(new Tokenizer("li simith")))->parseExpressionRD(),
-                (new Parser(new Tokenizer("male")))->parseExpressionRD()};
+                (new Parser(new Tokenizer("'li simith'")))->parseExpressionRD(),
+                (new Parser(new Tokenizer("'male'")))->parseExpressionRD()
+        };
         Expression *whereExpr = (new Parser(new Tokenizer("sname = 'zhang simith'")))
                 ->parseExpressionRD();
         SRA_t *table = SRATable(TableReference_make(tableName, nullptr));
