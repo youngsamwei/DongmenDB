@@ -1,5 +1,5 @@
 
-
+#include <ostream>
 #include <dongmensql/column.h>
 
 static ssize_t size_constraint = -1;
@@ -84,11 +84,24 @@ ColumnReference::ColumnReference(const char *tname, const char *cname) {
 ColumnReference::ColumnReference(char *allName){
     char delims[] = ".";
 
-    this->allName  = strdup(allName);
+    this->allName = strdup(allName);
     this->tableName = strtok(allName, delims);
     this->columnName = strtok(NULL, delims);
-    if (this->columnName == NULL){
+    if (this->columnName == NULL) {
         this->columnName = this->tableName;
         this->tableName = NULL;
     }
 };
+
+std::ostream &operator<<(std::ostream &os, ColumnReference *ref) {
+    if (ref == nullptr) {
+        os << "<nullptr>";
+        return os;
+    }
+    os << "ColumnRef(";
+    os << ref->tableName;
+    os << ref->columnName;
+    if (ref->columnAlias) os << ref->columnAlias;
+    os << ')';
+    return os;
+}

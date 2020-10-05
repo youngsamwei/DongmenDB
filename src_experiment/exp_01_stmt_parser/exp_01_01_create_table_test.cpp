@@ -2,61 +2,66 @@
 // Created by Sam on 2018/2/11.
 //
 
-#include <stdio.h>
-#include <stdlib.h>
 #include <gtest/gtest.h>
-#include <dongmensql/sqlstatement.h>
-#include <physicalplan/Scan.h>
-#include <physicalplan/ExecutionPlan.h>
-#include <physicalplan/Project.h>
-#include "dongmendb/DongmenDB.h"
-#include "parser/Tokenizer.h"
-#include "parser/parser.h"
-#include "relationalalgebra/sra.h"
+#include <parser/StatementParser.h>
+#include <parser/Tokenizer.h>
+#include <test/test_stmt_parser.h>
 
-
-int select(const char *sqlselect) {
-    char *sql = (char *) calloc(1, strlen(sqlselect));
-    strcpy(sql, sqlselect);
-    Tokenizer *tokenizer = new Tokenizer(sql);
-    Parser *parser = new Parser(tokenizer);
-    memset(parser->parserMessage, 0, sizeof(parser->parserMessage));
-
-    SRA_t *selectStmt = parse_sql_stmt_select(parser);
-    ExecutionPlan plan;
-
-    Scan* scan = plan.generateSelect(db, selectStmt, db->tx);
-    Project *project = (Project*) scan;
-    project->beforeFirst();
-    int count = 0;
-    while (project->next()) {
-        count++;
+sql_stmt_create parse(const string &sql) {
+    auto *tokenizer = new Tokenizer(sql.c_str());
+    auto *ip = new CreateParser(tokenizer);
+    auto *stmt = ip->parse_sql_stmt_create();
+    if (stmt == nullptr) {
+        string info{"parser failed: "};
+        info += ip->parserMessage;
+        throw std::runtime_error(info);
     }
-    project->close();
-    dongmendb_close(db);
-    return count;
+    return *stmt;
 }
 
-int test(const char *dbname, const char *strselect) {
-    DongmenDB *newdb = (DongmenDB *) calloc(1, sizeof(DongmenDB));
-    int rc = dongmendb_open(dbname, newdb);
-    int count = select(newdb, strselect);
-    return count;
+class CreateTableParserTest_01_Normal : public testing::Test {
+public:
+    void SetUp() override {
+        /* "create table typeTest(colChar char(10), colInt integer, colBoolean boolean, colDouble double, colText text)" */
+
+        const char *tableName = "typeTest";
+        vector<char *> fieldsName{"colChar", "colInt" /* , "colBoolean", "colDouble", "colText" */ };
+        auto *columns = new map<string, FieldInfo *>();
+        columns->insert(pair<string, FieldInfo *>("colChar", new FieldInfo(DATA_TYPE_CHAR, 10, "colChar")));
+        columns->insert(pair<string, FieldInfo *>("colInt", new FieldInfo(DATA_TYPE_INT, INT_SIZE, "colInt")));
+        /* NOT IMPLEMENT YET
+        columns->insert(pair<string, FieldInfo *>("colBoolean", new Fi  eldInfo(DATA_TYPE_BOOLEAN, BOOLEAN_SIZE, "colBoolean")));
+        columns->insert(pair<string, FieldInfo *>("colDouble", new FieldInfo(DATA_TYPE_DOUBLE, DOUBLE_SIZE, "colDouble")));
+        columns->insert(pair<string, FieldInfo *>("colText", new FieldInfo(DATA_TYPE_TEXT, TEXT_SIZE, "colText")));
+         */
+        expect.tableInfo = new TableInfo(tableName, fieldsName, columns);
+        expect.constraints = nullptr;
+
+        actual = parse(sql);
+    }
+
+    const string sql{"create table typeTest(colChar char(10), colInt integer)"};
+    sql_stmt_create expect{};
+    sql_stmt_create actual{};
+};
+
+TEST_F(CreateTableParserTest_01_Normal, Test_01_TableName) {
+    EXPECT_TRUE(equal_table_name(expect, actual));
 }
 
-TEST(test_01_03_select, c1){
-    const char *dbname = "demodb";
-    const char *strselect = "select sno from student";
-    EXPECT_EQ(8, test(dbname, strselect));
+TEST_F(CreateTableParserTest_01_Normal, Test_01_FieldName) {
+    EXPECT_TRUE(equal_fields_name(expect, actual));
 }
 
-TEST(test_01_03_select, c2){
-    const char *dbname = "demodb";
-    const char *strselect = "select sno from student where sage < 25";
-    EXPECT_EQ(5, test(dbname, strselect));
+TEST_F(CreateTableParserTest_01_Normal, Test_01_Field) {
+    EXPECT_TRUE(equal_fields(expect, actual));
 }
 
-GTEST_API_ int main(int argc, char** argv){
-    testing::InitGoogleTest(&argc, argv);
-    return RUN_ALL_TESTS();
+TEST_F(CreateTableParserTest_01_Normal, Test_01_TableInfo) {
+    EXPECT_TRUE(equal_table_info(expect, actual));
+}
+
+TEST_F(CreateTableParserTest_01_Normal, Test_01_Full) {
+    EXPECT_TRUE(equal(expect, actual));
+
 }

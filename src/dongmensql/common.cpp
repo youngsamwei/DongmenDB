@@ -122,6 +122,17 @@ void Query_free(Query_t *query) {
     }
 }
 
+std::ostream &operator<<(std::ostream &os, StrList_t *col_list) {
+    if (col_list == nullptr) {
+        os << "[]";
+        return os;
+    }
+    os << '[' << col_list->str;
+    for (auto p = col_list->next; p != nullptr; p = p->next)
+        os << ", " << p->str;
+    os << ']';
+}
+
 /*#define COMMON_TEST*/
 #ifdef COMMON_TEST
 int main(int argc, char const *argv[])

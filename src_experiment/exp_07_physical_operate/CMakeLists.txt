@@ -4,8 +4,8 @@
 #
 
 
-#add_executable(exp_04_01_rights_manager_test exp_04_01_rights_manager_test.cpp)
-#target_link_libraries(exp_04_01_rights_manager_test ${TEST_LIBRARIES} securitymanager)
-#
-#add_executable(exp_04_02_rights_check_test exp_04_02_rights_check_test.cpp)
-#target_link_libraries(exp_04_02_rights_check_test ${TEST_LIBRARIES} securitymanager)
+add_executable(exp_07_05_update_test exp_07_05_update_test.cpp ../../src/shell/shell.cpp)
+target_link_libraries(exp_07_05_update_test ${TEST_LIBRARIES})
+
+add_executable(exp_07_06_delete_test exp_07_06_delete_test.cpp ../../src/shell/shell.cpp)
+target_link_libraries(exp_07_06_delete_test ${TEST_LIBRARIES})

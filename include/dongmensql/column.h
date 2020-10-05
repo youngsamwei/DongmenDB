@@ -131,9 +131,13 @@ public:
     char *columnName;
     char *columnAlias;
     char *allName;
+
     ColumnReference(const char *tname, const char *cname);
+
     ColumnReference(char *allName);
 
-} ;
+};
+
+std::ostream &operator<<(std::ostream &os, ColumnReference *ref);
 
 #endif

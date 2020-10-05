@@ -6,6 +6,7 @@
 #include <cctype>
 #include <malloc.h>
 #include <dongmendb/DongmenDB.h>
+#include <ostream>
 #ifdef __MINGW32__
 #include <io.h>
 #include <direct.h>

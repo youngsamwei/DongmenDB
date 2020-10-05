@@ -2,9 +2,11 @@
 // Created by Sam on 2018/1/25.
 //
 
+#include <dongmensql/sqlstatement.h>
+#include <dongmensql/expression.h>
+
 #ifndef DONGMENDB_UTILS_H
 #define DONGMENDB_UTILS_H
-
 
 
 int dongmendb_tokenize(char *str, char ***tokens);
