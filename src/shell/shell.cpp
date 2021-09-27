@@ -61,7 +61,8 @@ int dongmendb_shell_handle_cmd(dongmendb_shell_handle_sql_t *ctx, const char *cm
     char *cmddup = strdup(cmd), **tokens;
 
     ntokens = dongmendb_tokenize(cmddup, &tokens);
-    if (cmd[0] == '.') {
+
+    if (tokens[0][0] == '.') {
 
         for (h = 0; handlers[h].name != NULL; h++) {
             if (!strncmp(tokens[0] + 1, handlers[h].name, handlers[h].name_len)) {
@@ -87,21 +88,22 @@ int dongmendb_shell_handle_cmd(dongmendb_shell_handle_sql_t *ctx, const char *cm
             fprintf(stderr, "ERROR: No database is open.\n");
             return 1;
         } else {
-            if (stricmp(tokens[0], "select") == 0) {
-                dongmendb_shell_handle_select_table(ctx, cmd);
-                //rc = dongmendb_shell_handle_sql(ctx, cmd);
-            } else if (stricmp(tokens[0], "create") == 0 && stricmp(tokens[1], "table") == 0) {
-                dongmendb_shell_handle_create_table(ctx, cmd);
-            } else if (stricmp(tokens[0], "insert") == 0 && stricmp(tokens[1], "into") == 0) {
-                dongmendb_shell_handle_insert_table(ctx, cmd);
-            } else if (stricmp(tokens[0], "update") == 0) {
-                dongmendb_shell_handle_update_data(ctx, cmd);
-            } else if (stricmp(tokens[0], "delete") == 0) {
-                dongmendb_shell_handle_delete_data(ctx, cmd);
-            } else {
-                fprintf(stderr, "ERROR: not support %s.\n", tokens[0]);
+            if ( strlen(tokens[0])> 0 ) {
+                if (stricmp(tokens[0], "select") == 0) {
+                    dongmendb_shell_handle_select_table(ctx, cmd);
+                    //rc = dongmendb_shell_handle_sql(ctx, cmd);
+                } else if (stricmp(tokens[0], "create") == 0 && stricmp(tokens[1], "table") == 0) {
+                    dongmendb_shell_handle_create_table(ctx, cmd);
+                } else if (stricmp(tokens[0], "insert") == 0 && stricmp(tokens[1], "into") == 0) {
+                    dongmendb_shell_handle_insert_table(ctx, cmd);
+                } else if (stricmp(tokens[0], "update") == 0) {
+                    dongmendb_shell_handle_update_data(ctx, cmd);
+                } else if (stricmp(tokens[0], "delete") == 0) {
+                    dongmendb_shell_handle_delete_data(ctx, cmd);
+                } else {
+                    fprintf(stderr, "ERROR:  '%s' statement is not supported. \n", tokens[0]);
+                }
             }
-
             return rc;
         }
     }

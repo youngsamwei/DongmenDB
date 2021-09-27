@@ -68,11 +68,16 @@ Scan* ExecutionPlan::generateScan(DongmenDB *db, SRA_t *sra, Transaction *tx){
 int ExecutionPlan::executeInsert(DongmenDB *db, char *tableName,  vector<char*> fieldNames,  vector<variant*> values, Transaction *tx){
     TableScan tableScan(db, tableName, tx);
     tableScan.insertRecord();
+    std::map<string, FieldInfo *>::iterator mapit;
+
     for (size_t i = 0; i < fieldNames.size(); i++){
 
         char *fieldName = fieldNames.at(i);
 
         void_ptr *ptr = (void_ptr *) calloc(1, sizeof(void_ptr));
+
+        mapit = tableScan.m_tableInfo->fields->find(fieldName);
+
         FieldInfo *fieldInfo = tableScan.m_tableInfo->fields->find(fieldName)->second;
         variant *val = (variant *)values.at(i);
 

@@ -52,7 +52,7 @@ int dongmendb_tokenize(char *str, char ***tokens)
 
     /* First pass: Add \0 at the end of each token
      * and count the number of tokens */
-    while(isspace(*s)) s++;
+    while(isspace(*s) || iscntrl(*s)) s++;
 
     while(*s != '\0')
     {
