@@ -7,7 +7,7 @@
 #include <physicalplan/Project.h>
 
 
-#define  MAX_CMD 512
+#define  MAX_CMD 5120
 
 typedef enum shell_mode
 {
