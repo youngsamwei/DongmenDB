@@ -40,7 +40,7 @@ return string("");
 };
 
 int TableScan::getInt(string tableName, string fieldName) {
-    if (!tableName.empty() && stricmp(m_tableInfo->tableName, tableName.c_str()) != 0) {
+    if (!tableName.empty() && strcmp_ic(m_tableInfo->tableName, tableName.c_str()) != 0) {
         return 0;
     }
     return m_recordFile->record_file_get_int(fieldName.c_str());
@@ -51,7 +51,7 @@ variant* TableScan::getValue(string fieldName){
 };
 
 string TableScan::getString(string tableName, string fieldName) {
-    if (!tableName.empty() && stricmp(m_tableInfo->tableName, tableName.c_str()) != 0) {
+    if (!tableName.empty() && strcmp_ic(m_tableInfo->tableName, tableName.c_str()) != 0) {
         return "";
     }
     FieldInfo *fi = getField(tableName, fieldName);
@@ -61,7 +61,7 @@ string TableScan::getString(string tableName, string fieldName) {
 };
 
 int TableScan::hasField(string tableName,string fieldName) {
-    if (!tableName.empty() && stricmp(m_tableInfo->tableName, tableName.c_str()) != 0){
+    if (!tableName.empty() && strcmp_ic(m_tableInfo->tableName, tableName.c_str()) != 0){
         return 0;
     }
     if (getField( tableName, fieldName)){
@@ -72,7 +72,7 @@ int TableScan::hasField(string tableName,string fieldName) {
 };
 
 FieldInfo * TableScan::getField(string tableName, string fieldName) {
-    if (!tableName.empty() && stricmp(m_tableInfo->tableName, tableName.c_str()) != 0){
+    if (!tableName.empty() && strcmp_ic(m_tableInfo->tableName, tableName.c_str()) != 0){
         return NULL;
     }
 
@@ -85,7 +85,7 @@ FieldInfo * TableScan::getField(string tableName, string fieldName) {
 };
 
 vector<char*> TableScan::getFieldsName(string tableName) {
-    if (tableName.empty() || stricmp(tableName.c_str(), m_tableInfo->tableName) == 0){
+    if (tableName.empty() || strcmp_ic(tableName.c_str(), m_tableInfo->tableName) == 0){
         return m_tableInfo->fieldsName;
     }
     vector<char*> v;

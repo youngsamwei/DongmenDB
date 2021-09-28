@@ -12,7 +12,6 @@
 
 
 #include <malloc.h>
-#include <mem.h>
 #include "dongmendb/Transaction.h"
 #include <dongmensql/common.h>
 #include "dongmendb/FileManager.h"

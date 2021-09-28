@@ -4,7 +4,7 @@
 
 #include <dongmensql/column.h>
 #include "dongmensql/expression.h"
-
+#include <cstdlib>
 
 using namespace std;
 
@@ -27,7 +27,7 @@ int Expression::printTermExpression(char *exprs, TermExpr *term) {
                 strcat(exprs, val->original_value);
             }else if (val->t == DATA_TYPE_INT || val->t == DATA_TYPE_DOUBLE){
                 char *ival = (char *)calloc(20,1);
-                itoa(((IntLiteral*)val)->value, ival, 10);
+                sprintf(ival, "%d", ((IntLiteral *) val)->value);
                 strcat(exprs, ival);
             }
         } else if(term->t == TERM_FUNC){

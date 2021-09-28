@@ -4,19 +4,32 @@
 
 #include <sys/stat.h>
 #include <utils/utils.h>
+#ifdef __MINGW32__
 #include <io.h>
-#include <iostream>
+#endif
+#ifdef __linux__
+#include <sys/types.h>
+#endif
 
 #include "dongmendb/FileManager.h"
 
 FileManager::FileManager(char *directory, const char *dbName) {
     this->isNew = 0;
-    /*如果对应的文件夹不存在*/
+    /* 如果对应的文件夹不存在则创建 */
+#ifdef __MINGW32__
     int exists = access(dbName, F_OK);
     if (exists != 0) {
         this->isNew = 1;
         mkdir(dbName);
     }
+#endif
+#ifdef __linux__
+    struct stat buffer;
+    if (stat(dbName, &buffer) != 0) {
+        this->isNew = 1;
+        mkdir(dbName, 0777);
+    }
+#endif
 
     this->dbDirectoryName = strdup(dbName);
     this->dbDirectory = fopen(dbName, "rw");
@@ -121,7 +134,7 @@ DiskBlock::DiskBlock(char *fileName, int blockNum, TableInfo *tableInfo) {
 
 char *DiskBlock::disk_block_get_num_string() {
     char *blockNum = new_id_name();
-    itoa(this->blkNum, blockNum, 10);
+    sprintf(blockNum, "%d", this->blkNum);
 
     char *blockName = new_id_name();
     strcat(blockName, this->tableInfo->tableName);

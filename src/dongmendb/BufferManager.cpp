@@ -62,7 +62,7 @@ int BufferManager::buffer_manager_find_existing(DiskBlock *block, void_ptr *buff
     for (int i = 0; i <= BUFFER_MAX_SIZE - 1; i++) {
         MemoryBuffer *buf = this->bufferPool[i];
         DiskBlock *b = buf->block;
-        if (b != NULL && stricmp(b->fileName, block->fileName)==0 && (b->blkNum == block->blkNum)) {
+        if (b != NULL && strcmp_ic(b->fileName, block->fileName) == 0 && (b->blkNum == block->blkNum)) {
             *buffer = buf;
             return 0;
         }

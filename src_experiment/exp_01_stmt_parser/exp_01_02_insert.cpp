@@ -70,12 +70,12 @@ sql_stmt_insert *InsertParser::parse_sql_stmt_insert() {
         while (token->type == TOKEN_STRING || token->type == TOKEN_DECIMAL) {
             if (token->type == TOKEN_STRING){
                 variant *v = (variant*)malloc(sizeof(variant*));
-                v->type == DATA_TYPE_CHAR;
+                v->type = DATA_TYPE_CHAR;
                 v->strValue=token->text;
                 values.push_back(v);
             } else{
                 variant *v = (variant*)malloc(sizeof(variant*));
-                v->type == DATA_TYPE_INT;
+                v->type = DATA_TYPE_INT;
                 v->intValue = atoi(token->text);
                 values.push_back(v);
             }

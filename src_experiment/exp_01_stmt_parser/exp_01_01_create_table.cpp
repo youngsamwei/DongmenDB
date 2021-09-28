@@ -75,11 +75,11 @@ FieldInfo *CreateParser::parse_sql_stmt_columnexpr() {
     }
     token = this->parseEatAndNextToken();
     if (token->type == TOKEN_RESERVED_WORD) {
-        if (stricmp(token->text, "int") == 0 || stricmp(token->text, "integer") == 0) {
+        if (strcmp_ic(token->text, "int") == 0 || strcmp_ic(token->text, "integer") == 0) {
             type = DATA_TYPE_INT;
             length = INT_SIZE;
             token = this->parseEatAndNextToken();
-        } else if (stricmp(token->text, "char") == 0) {
+        } else if (strcmp_ic(token->text, "char") == 0) {
             type = DATA_TYPE_CHAR;
             token = this->parseEatAndNextToken();
             if (this->matchToken( TOKEN_OPEN_PAREN, "(")) {
