@@ -66,12 +66,19 @@ sql_stmt_insert *InsertParser::parse_sql_stmt_insert() {
         return NULL;
     }
     token = this->parseNextToken();
-    if (token->type == TOKEN_STRING || token->type == TOKEN_DECIMAL) {
-        while (token->type == TOKEN_STRING || token->type == TOKEN_DECIMAL) {
+    if (token->type == TOKEN_STRING || token->type == TOKEN_DECIMAL || token->type == TOKEN_ZERO || token->type == TOKEN_NULL) {
+        while (token->type == TOKEN_STRING || token->type == TOKEN_DECIMAL || token->type == TOKEN_ZERO || token->type == TOKEN_NULL) {
             if (token->type == TOKEN_STRING){
                 variant *v = (variant*)malloc(sizeof(variant*));
                 v->type = DATA_TYPE_CHAR;
                 v->strValue=token->text;
+                values.push_back(v);
+            } else if (token->type == TOKEN_NULL) {
+                variant *v = (variant*)malloc(sizeof(variant*));
+                v->type = DATA_TYPE_NULL;
+                v->strValue=NULL;
+                v->booleanValue = NULL;
+                v->intValue = NULL;
                 values.push_back(v);
             } else{
                 variant *v = (variant*)malloc(sizeof(variant*));

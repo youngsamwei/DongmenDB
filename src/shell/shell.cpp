@@ -262,6 +262,10 @@ int dongmendb_shell_handle_insert_table(dongmendb_shell_handle_sql_t *ctx, const
     InsertParser *ip = new InsertParser(tokenizer);
     sql_stmt_insert *sqlStmtInsert = ip->parse_sql_stmt_insert();
 
+    if (sqlStmtInsert == NULL){
+        fprintf(stderr, ip->parserMessage);
+        return 1;
+    }
     /* TODO: 语义检查:检查表和字段是否存在*/
     int status = ctx->db->tableManager->semantic_check_table_exists(sqlStmtInsert->tableName, ctx->db->tx);
     if (status != DONGMENDB_OK) {
@@ -285,8 +289,10 @@ int dongmendb_shell_handle_insert_table(dongmendb_shell_handle_sql_t *ctx, const
 
     if (status == DONGMENDB_OK) {
         ctx->db->tx->transaction_commit();
-//        fprintf(stdout, "insert  success!");
+        fprintf(stdout, "insert  success!");
         return DONGMENDB_OK;
+    } else if (status == DONGMENDB_TABLENOTEXISTS){
+        fprintf(stderr, "insert  failed: table does not exist.");
     } else {
 //        fprintf(stderr, "insert  failed!");
         return DONGMENDB_ERROR_IO;

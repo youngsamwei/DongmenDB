@@ -134,6 +134,11 @@ TableInfo *TableManager::table_manager_get_tableinfo(const char *tableName, Tran
     tcatFile-> record_file_close();
     free(tcatFile);
 
+    /*数据表不存在*/
+    if (recordLen <= 0) {
+        return NULL;
+    }
+
     RecordFile *fcatFile = new RecordFile( this->fcatInfo, tx);
     vector<char*> fieldsName ;
     map<string, FieldInfo *> *fields = new map<string, FieldInfo *> ();
