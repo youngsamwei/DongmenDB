@@ -45,7 +45,8 @@ enum data_type {
     DATA_TYPE_DOUBLE,
     DATA_TYPE_CHAR,
     DATA_TYPE_TEXT,
-    DATA_TYPE_BOOLEAN
+    DATA_TYPE_BOOLEAN,
+    DATA_TYPE_NULL
 };
 
 /**

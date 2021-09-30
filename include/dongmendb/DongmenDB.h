@@ -41,6 +41,8 @@ typedef struct dongmendb_stmt dongmendb_stmt;
 #define DONGMENDB_ERROR_IO (7)
 #define DONGMENDB_EMISUSE (8)
 
+#define DONGMENDB_TABLENOTEXISTS (10)
+
 #define DONGMENDB_ROW (100)
 #define DONGMENDB_DONE (101)
 
