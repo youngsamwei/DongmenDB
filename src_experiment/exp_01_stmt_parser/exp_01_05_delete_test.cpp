@@ -2,52 +2,55 @@
 // Created by Sam on 2018/2/11.
 //
 
-#include <stdlib.h>
 #include <gtest/gtest.h>
+#include <parser/StatementParser.h>
+#include <parser/Tokenizer.h>
 #include <test/test_stmt_parser.h>
 
-
-class Exp_01_05_DeleteTest : public TestStmtParser {
-protected:
-
-    virtual void SetUp() {
-        _m_list[0] = "delete student where sname = 'tom simith'";
-        _m_list[1] = "select * from student where sname = 'tom simith'";
-        _m_list[2] = "delete student where sno = '2012010102'";
-        _m_list[3] = "select *  from student where sno = '2012010102'";
-        _m_list[4] = "delete student  where sname = 'john simith' and ssex='male'";
-        _m_list[5] = "select *  from student  where sname = 'john simith' and ssex='male'";
-        _m_list[6] = "delete sc where sno = '2012010103' ";
-        _m_list[7] = "select *  from sc where sno = '2012010103' ";
-        _m_list[8] = "delete sc  where grade >= 80 and cno = 'c003'";
-        _m_list[9] = "select *  from sc  where grade >= 80 and cno = 'c003'";
+sql_stmt_delete parse(const string &sql) {
+    auto *tokenizer = new Tokenizer(sql.c_str());
+    auto *ip = new DeleteParser(tokenizer);
+    auto *stmt = ip->parse_sql_stmt_delete();
+    if (stmt == nullptr) {
+        string info{"parser failed: "};
+        info += ip->parserMessage;
+        throw std::runtime_error(info);
     }
-    const char *_m_list[11];
-    const char *dbname = "test_demodb";
+    return *stmt;
+}
+
+class DeleteParserTest_01_Normal : public testing::Test {
+protected:
+    void SetUp() override {
+        char *tableName{"student"};
+        Expression *whereExpr =
+                (new Parser(new Tokenizer("sname = 'tom simith'")))->parseExpressionRD();
+        SRA_t *table = SRATable(TableReference_make(tableName, nullptr));
+        SRA_t *where = SRASelect(table, whereExpr);
+
+        expect.tableName = tableName;
+        expect.where = where;
+
+        actual = parse(sql);
+    }
+
+    const string sql = "delete student where sname = 'tom simith'";
+    sql_stmt_delete expect{};
+    sql_stmt_delete actual{};
 };
 
-TEST_F(Exp_01_05_DeleteTest, Correct){
-    /*据指定的数据库名称创建数据库*/
-    createDB(dbname);
-/*创建表*/
-    createTable();
-/*增加数据*/
-    insertData();
+TEST_F(DeleteParserTest_01_Normal, TableName) {
+    EXPECT_TRUE(equal_table_name(expect, actual));
+}
 
-    /* 执行删除的测试用例，返回结果1*/
-    EXPECT_EQ(1, delete_( _m_list[0]));
-    /*执行验证删除的测试用例，返回结果0，看是否真的删除*/
-    EXPECT_EQ(0, select( _m_list[1]));
-    EXPECT_EQ(1, delete_( _m_list[2]));
-    EXPECT_EQ(0, select( _m_list[3]));
-    EXPECT_EQ(1, delete_( _m_list[4]));
-    EXPECT_EQ(0, select( _m_list[5]));
-    EXPECT_EQ(2, delete_( _m_list[6]));
-    EXPECT_EQ(0, select( _m_list[7]));
-    EXPECT_EQ(3, delete_( _m_list[8]));
-    EXPECT_EQ(0, select( _m_list[9]));
+TEST_F(DeleteParserTest_01_Normal, Where) {
+    EXPECT_TRUE(equal_where(expect, actual));
+}
 
-    /*删除数据库*/
-    dropDB();
-
+TEST_F(DeleteParserTest_01_Normal, Full) {
+    EXPECT_TRUE(equal(expect, actual))
+                        << "Actual:" << endl
+                        << actual << endl
+                        << "Expected:" << endl
+                        << expect;
 }

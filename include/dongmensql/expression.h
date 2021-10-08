@@ -101,6 +101,7 @@ class Expression;
 
 /*函数*/
 class Func {
+public:
     /*函数类型*/
     FuncType t;
     /*函数参数*/
@@ -157,5 +158,10 @@ int expression_free_list(vector<Expression *> exprlist);
 
 int expression_print_list(vector<Expression *> exprlist);
 
+std::ostream &operator<<(std::ostream &os, TermExpr *term);
+
+std::ostream &operator<<(std::ostream &os, Expression *expr);
+
+std::ostream &operator<<(std::ostream &os, const vector<Expression *> &expr_list);
 
 #endif //DONGMENDB_EXPRESSION_H

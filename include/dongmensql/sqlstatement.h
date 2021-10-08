@@ -35,10 +35,12 @@ public:
     char *text;
     sql_statement_type type;
 
-    SQLStatement(char *text, sql_statement_type type){
+    SQLStatement(char *text, sql_statement_type type) {
         this->text = strdup(text);
         this->type = type;
     }
+
+    SQLStatement() = default;
 };
 
 
@@ -81,13 +83,21 @@ class sql_stmt_grant_revoke  : public SQLStatement{
 public:
     sql_statement_type sqlStmtType;   //SQL_STMT_GRANT, SQL_STMT_REVOKE
     grant_revoke_type grantType;
-    vector<Role*> roles;
-    vector<User*> users;
-    vector<Right*> *rights;
+    vector<Role *> roles;
+    vector<User *> users;
+    vector<Right *> *rights;
 };
 
 /* 打印 sql_stmt_update */
 int sql_stmt_update_print(sql_stmt_update *sqlStmtUpdate);
+
+ostream &operator<<(ostream &os, const sql_stmt_create &stmt);
+
+ostream &operator<<(ostream &os, const sql_stmt_insert &stmt);
+
+ostream &operator<<(ostream &os, const sql_stmt_update &stmt);
+
+ostream &operator<<(ostream &os, const sql_stmt_delete &stmt);
 
 
 #endif //DONGMENDB_SQLSTATEMENT_H

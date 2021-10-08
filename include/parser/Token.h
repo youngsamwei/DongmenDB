@@ -7,6 +7,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <ostream>
 
 /*与operators中的排序一致，方便按照顺序访问operators*/
 typedef enum TokenType_ {
@@ -65,12 +66,14 @@ public:
             char *v = text + 1;
             int len = strlen(text) - 1;
             strcpy(this->text, v);
-            this->text[len-1] = '\0';
+            this->text[len - 1] = '\0';
         } else {
             strcpy(this->text, text);
         }
 
     }
 };
+
+std::ostream &operator<<(std::ostream &os, TokenType type);
 
 #endif //DONGMENDB_TOKEN_H

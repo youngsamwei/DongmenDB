@@ -2,6 +2,8 @@
 // Created by Sam on 2018/1/17.
 //
 
+#include <ostream>
+#include <dongmensql/literal.h>
 #include <dongmensql/column.h>
 #include "dongmensql/expression.h"
 #include <cstdlib>
@@ -177,3 +179,83 @@ int expression_print_list(vector<Expression*> exprlist) {
     }
     printf("]");
 };
+
+std::ostream &operator<<(std::ostream &os, TermExpr *term) {
+    if (term == nullptr) {
+        os << "<nullptr>";
+        return os;
+    }
+    switch (term->t) {
+        case TERM_UNKNOWN:
+            os << "unknown";
+            break;
+        case TERM_LITERAL:
+            os << term->val;
+            break;
+        case TERM_ID:
+            os << term->id;
+            break;
+        case TERM_NULL:
+            os << "null";
+            break;
+        case TERM_COLREF:
+            os << term->ref->allName;
+            break;
+        case TERM_FUNC:
+            os << term->f.t;
+            os << '(' << term->f.expr << ')';
+            break;
+        default:
+            os << "<term-unknown>";
+            break;
+    }
+    return os;
+}
+
+Expression *find2edOperand(Expression *expr) {
+    if (expr == nullptr) return nullptr;
+    if (expr->opType) {
+        int operand = operators[expr->opType].numbers;
+        if (operand == 1)
+            return find2edOperand(expr->nextexpr);
+        if (operand == 2)
+            return find2edOperand(find2edOperand(expr->nextexpr));
+    }
+    return expr->nextexpr;
+}
+
+std::ostream &operator<<(std::ostream &os, Expression *expr) {
+    if (expr == nullptr) return os;
+    if (expr->term) {
+        os << expr->term;
+    } else if (expr->opType) {
+        int operand = operators[expr->opType].numbers;
+        os << '(';
+        if (operand == 1) {
+            os << expr->opType;
+            os << expr->nextexpr;
+        }
+        if (operand == 2) {
+            os << expr->nextexpr;
+            os << expr->opType;
+            os << find2edOperand(expr->nextexpr);
+        }
+        os << ')';
+    } else if (expr->alias) {
+        os << " as" << expr->alias;
+    }
+    return os;
+}
+
+std::ostream &operator<<(std::ostream &os, const vector<Expression *> &expr_list) {
+    if (expr_list.empty()) {
+        os << "()";
+        return os;
+    }
+    os << '(' << expr_list[0];
+    for (auto i = 1; i < expr_list.size(); ++i) {
+        os << ", " << expr_list[i];
+    }
+    os << ')';
+    return os;
+}

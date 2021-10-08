@@ -4,5 +4,5 @@
 #
 
 
-add_executable(Exp_05_02_ConditionPushdownTest exp_05_02_condition_push_down_test.cpp ../../src/shell/shell.cpp)
-target_link_libraries(Exp_05_02_ConditionPushdownTest ${TEST_LIBRARIES})
+add_executable(exp_05_02_condition_push_down_test exp_05_02_condition_push_down_test.cpp ../../src/shell/shell.cpp)
+target_link_libraries(exp_05_02_condition_push_down_test ${TEST_LIBRARIES})

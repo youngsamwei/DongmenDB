@@ -6,7 +6,7 @@
 #include <string.h>
 #include <stdarg.h>
 #include <stdbool.h>
-
+#include <ostream>
 
 typedef enum sql_statement_type_ {
     SQL_CREATE_DATABASE,
@@ -78,5 +78,6 @@ void indent_print(const char *format, ...);
 
 void Query_free(Query_t *query);
 
+std::ostream &operator<<(std::ostream &os, StrList_t *col_list);
 
 #endif

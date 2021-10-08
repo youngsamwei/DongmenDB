@@ -171,10 +171,15 @@ JoinCondition_t *Using(StrList_t *col_list);
 void SRA_free(SRA_t *sra);
 
 void SRA_print(SRA_t *sra);
+
 void JoinCondition_print(JoinCondition_t *cond);
+
 void JoinCondition_free(JoinCondition_t *cond);
 
 RA_t *SRA_desugar(SRA_t *sra);
 
+std::ostream &operator<<(std::ostream &os, JoinCondition_t *cond);
+
+std::ostream &operator<<(std::ostream &os, SRA_t *sra);
 
 #endif
